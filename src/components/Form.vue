@@ -13,7 +13,11 @@
         <h1>Formulario de creación para {{ titulo_form }}</h1>
       </v-card-text>
       <v-card-text>
-        <v-form autocomplete="off" @submit.prevent="registrarFormulario">
+        <v-form
+          :disabled="loading"
+          autocomplete="off"
+          @submit.prevent="registrarFormulario"
+        >
           <div v-for="(campo, index) in campos" :key="index">
             <v-text-field
               v-if="campo.type === 1"
@@ -77,7 +81,9 @@
             />
           </div>
           <v-card-actions>
-            <v-btn block color="success" type="submit">Registrar</v-btn>
+            <v-btn :loading="loading" block color="success" type="submit">
+              Registrar
+            </v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>
@@ -101,6 +107,7 @@ export default {
     key_value: [],
     coleccion_form: "",
     datos: {},
+    loading: false,
   }),
   props: {
     titulo: String,
@@ -121,6 +128,7 @@ export default {
       });
     },
     async registrarFormulario() {
+      this.loading = true;
       await this.capturarCampos();
       await GUARDAR(this.coleccion_form, this.datos);
       this.cargarInformacion();
@@ -128,6 +136,10 @@ export default {
       this.datos = {};
       this.dialog_form = false;
       await this.$emit("registrado", true);
+      this.campos.forEach((campo) => {
+        campo.model = null;
+      });
+      this.loading = true;
     },
   },
   created() {
