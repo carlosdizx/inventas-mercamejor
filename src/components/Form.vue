@@ -139,7 +139,7 @@ export default {
       this.campos.forEach((campo) => {
         campo.model = null;
       });
-      this.loading = true;
+      this.loading = false;
     },
   },
   created() {
