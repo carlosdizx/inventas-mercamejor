@@ -26,7 +26,10 @@
               :type="campo.format"
               dense
               outlined
+              :required="campo.required"
               v-model="campo.model"
+              :rules="campo.rules"
+              @change="validarFormulario"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -81,7 +84,13 @@
             />
           </div>
           <v-card-actions>
-            <v-btn :loading="loading" block color="success" type="submit">
+            <v-btn
+              :disabled="errores > 0"
+              :loading="loading"
+              block
+              color="success"
+              type="submit"
+            >
               Registrar
             </v-btn>
           </v-card-actions>
@@ -108,6 +117,7 @@ export default {
     coleccion_form: "",
     datos: {},
     loading: false,
+    errores: 0,
   }),
   props: {
     titulo: String,
@@ -129,22 +139,51 @@ export default {
     },
     async registrarFormulario() {
       this.loading = true;
-      await this.capturarCampos();
-      await GUARDAR(this.coleccion_form, this.datos);
-      this.cargarInformacion();
-      await Swal.fire("Registro exitoso", "Datos registrados", "success");
-      this.datos = {};
-      this.dialog_form = false;
-      await this.$emit("registrado", true);
-      this.campos.forEach((campo) => {
-        campo.model = null;
-      });
+      const esValido = await this.validarFormulario();
+      if (esValido) {
+        await this.capturarCampos();
+        await GUARDAR(this.coleccion_form, this.datos);
+        this.cargarInformacion();
+        await Swal.fire("Registro exitoso", "Datos registrados", "success");
+        this.datos = {};
+        this.dialog_form = false;
+        await this.$emit("registrado", true);
+        this.campos.forEach((campo) => {
+          campo.model = null;
+        });
+        await this.validarFormulario();
+      } else {
+        await Swal.fire("No cumple", "", "error");
+      }
       this.loading = false;
     },
+    async validarFormulario() {
+      let contador = 0;
+      this.errores = 0;
+      this.campos.forEach((campo) => {
+        if (campo !== null) {
+          if (campo.required && (campo.model === null || campo.model === "")) {
+            contador++;
+            campo.rules = ["Campo requerdio"];
+            campo.color = "red";
+          } else if (campo.blank && campo.model.trim() === "") {
+            contador++;
+            campo.rules = ["Campo no puede estar vacio"];
+            campo.color = "red";
+          } else {
+            campo.rules = [];
+            campo.color = null;
+          }
+        }
+      });
+      this.errores = contador;
+      return this.errores === 0;
+    },
   },
-  created() {
+  async created() {
     this.coleccion_form = this.coleccion;
     this.cargarInformacion();
+    await this.validarFormulario();
   },
 };
 </script>

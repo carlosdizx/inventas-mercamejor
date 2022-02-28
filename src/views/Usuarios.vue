@@ -8,6 +8,7 @@
       llave="documento"
       :campos_detalle="campos_detalle"
       :campos_form="campos_form"
+      elimacion
     />
   </v-container>
 </template>
