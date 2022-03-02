@@ -1,9 +1,18 @@
 export const CAMPOS = [
   {
+    label: "Tipo documento",
+    prepend_icon: "mdi-card-account-details",
+    type: 6,
+    items: ["Cédula de ciudadania", "Tarjeta de identidad", "Otro"],
+    name: "tipo_documento",
+    model: "",
+    blank: true,
+  },
+  {
     label: "Documento",
     prepend_icon: "mdi-card-account-details",
     type: 1,
-    format: "number",
+    format: "text",
     name: "documento",
     model: "",
     blank: true,
@@ -18,6 +27,8 @@ export const CAMPOS = [
     name: "nombres",
     model: "",
     blank: true,
+    min: 3,
+    max: 40,
   },
   {
     label: "Apellidos",
@@ -27,6 +38,8 @@ export const CAMPOS = [
     name: "apellidos",
     model: "",
     blank: true,
+    min: 3,
+    max: 40,
   },
   {
     label: "Correo",
@@ -76,5 +89,6 @@ export const CAMPOS = [
     items: ["Activo", "Inactivo", "Pendiente"],
     name: "estado",
     model: "",
+    blank: true,
   },
 ];

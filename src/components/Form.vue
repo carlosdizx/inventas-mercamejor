@@ -147,15 +147,20 @@ export default {
         await GUARDAR(this.coleccion_form, this.datos);
         this.cargarInformacion();
         await Swal.fire("Registro exitoso", "Datos registrados", "success");
-        this.datos = {};
         this.dialog_form = false;
+        this.datos = {};
         await this.$emit("registrado", true);
         this.campos.forEach((campo) => {
-          campo.model = null;
+          campo.model = "";
         });
-        await this.validarFormulario();
+        this.errores = [];
       } else {
-        await Swal.fire("No cumple", "", "error");
+        await Swal.fire({
+          timer: 1000,
+          title: "Error en el formulario",
+          icon: "error",
+          showConfirmButton: false,
+        });
       }
       this.loading = false;
     },
@@ -165,11 +170,17 @@ export default {
         if (campo !== null) {
           if (campo.blank && campo.model.trim() === "") {
             this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
-            if (campo.min && campo.max) {
-              this.errores.push(
-                `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres`
-              );
-            }
+          }
+          const caracteres = campo.model.trim().length;
+          if (
+            campo.min &&
+            campo.max &&
+            (caracteres < campo.min || caracteres > campo.max)
+          ) {
+            this.errores.push(
+              `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
+               actualmente tiene ${caracteres}`
+            );
           }
         }
       });
