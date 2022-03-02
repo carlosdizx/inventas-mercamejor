@@ -4,8 +4,20 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn fab color="info darken-3" v-bind="attrs" v-on="on">
+      <v-btn v-if="!id" fab color="info darken-3" v-bind="attrs" v-on="on">
         <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <v-btn
+        small
+        outlined
+        dark
+        v-if="id"
+        fab
+        color="amber"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
     <v-card class="py-2">
@@ -92,8 +104,23 @@
             />
           </div>
           <v-card-actions>
-            <v-btn :loading="loading" block color="success" type="submit">
+            <v-btn
+              v-if="!id"
+              :loading="loading"
+              block
+              color="success"
+              type="submit"
+            >
               Registrar
+            </v-btn>
+            <v-btn
+              v-if="id"
+              :loading="loading"
+              block
+              color="info"
+              type="submit"
+            >
+              Actualizar
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -125,6 +152,7 @@ export default {
     titulo: String,
     campos_form: Array,
     coleccion: String,
+    id: String,
   },
   methods: {
     cargarInformacion() {

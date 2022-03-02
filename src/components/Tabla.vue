@@ -40,9 +40,13 @@
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <v-btn fab color="amber" small outlined>
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
+          <Form
+            @registrado="cargarInformacion"
+            :titulo="titulo"
+            :campos_form="campos_form"
+            :coleccion="coleccion"
+            :id="item.id"
+          />
         </template>
         <template v-slot:item.detalle="{ item }">
           <Detail :campos_detalle="campos_detalle" :objeto="item" />

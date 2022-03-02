@@ -5,6 +5,7 @@ import {
   getDoc,
   deleteDoc,
   addDoc,
+  setDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 
@@ -19,3 +20,6 @@ export const BUSCAR = async (colection: string, id: string) =>
 
 export const ELIMINAR = async (colection: string, id: string) =>
   await deleteDoc(doc(FIRESTORE, colection, id));
+
+export const EDITAR = async (colection: string, id: string, datos: any) =>
+  await setDoc(doc(FIRESTORE, colection, id), datos);
