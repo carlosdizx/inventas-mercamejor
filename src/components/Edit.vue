@@ -4,8 +4,8 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn fab color="info darken-3" v-bind="attrs" v-on="on">
-        <v-icon>mdi-plus</v-icon>
+      <v-btn small outlined dark fab color="amber" v-bind="attrs" v-on="on">
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
     <v-card class="py-2">
@@ -20,13 +20,14 @@
         {{ error }}
       </v-alert>
       <v-card-text>
-        <h1>Formulario de creación para {{ titulo_form }}</h1>
+        <h1>Formulario de edición para {{ titulo_form }}</h1>
+        <h6>ID: {{ objeto.id }}</h6>
       </v-card-text>
       <v-card-text>
         <v-form
           :disabled="loading"
           autocomplete="off"
-          @submit.prevent="registrarFormulario"
+          @submit.prevent="actualizarFormulario"
         >
           <div v-for="(campo, index) in campos" :key="index">
             <v-text-field
@@ -92,8 +93,8 @@
             />
           </div>
           <v-card-actions>
-            <v-btn :loading="loading" block color="success" type="submit">
-              Registrar
+            <v-btn :loading="loading" block color="info" type="submit">
+              Actualizar
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -110,7 +111,7 @@ import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 
 export default {
-  name: "Form",
+  name: "Edit",
   data: () => ({
     dialog_form: false,
     titulo_form: "",
@@ -125,31 +126,38 @@ export default {
     titulo: String,
     campos_form: Array,
     coleccion: String,
+    objeto: Object,
   },
   methods: {
-    async inicializarForm() {
+    async inicializarEdit() {
       this.campos = [];
       this.titulo_form = this.titulo;
-      this.campos_form.forEach((campo) => {
-        this.campos.push(campo);
+      this.campos = [...this.campos_form];
+      this.campos.map((campo) => {
+        campo.model = this.objeto[campo.name];
       });
+      console.log(this.campos);
     },
     async capturarCampos() {
       this.campos_form.forEach((campo) => {
         this.datos[campo.name] = campo.model;
       });
     },
-    async registrarFormulario() {
+    async actualizarFormulario() {
       this.loading = true;
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await GUARDAR(this.coleccion_form, this.datos);
-        await this.inicializarForm();
-        await Swal.fire("Registro exitoso", "Datos registrados", "success");
+        await EDITAR(this.coleccion_form, this.objeto.id, this.datos);
+        await this.inicializarEdit();
+        await Swal.fire(
+          "Actualización exitosa",
+          "Datos registrados",
+          "success"
+        );
         this.dialog_form = false;
         this.datos = {};
-        await this.$emit("registrado", true);
+        await this.$emit("editado", true);
         this.campos.forEach((campo) => {
           campo.model = "";
         });
@@ -189,8 +197,8 @@ export default {
   },
   async created() {
     this.coleccion_form = this.coleccion;
-    console.log("Soy el form");
-    await this.inicializarForm();
+    console.log("Soy el edit");
+    await this.inicializarEdit();
   },
 };
 </script>
