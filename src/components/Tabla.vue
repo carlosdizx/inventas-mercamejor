@@ -41,9 +41,9 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
           <Edit
-            @registrado="cargarInformacion"
+            @editado="cargarInformacion"
             :titulo="titulo"
-            :campos_form="campos_form"
+            :campos_edit="campos_edit"
             :coleccion="coleccion"
             :objeto="item"
           />
@@ -147,6 +147,7 @@ export default Vue.extend({
     campos_detalle: Array,
     objeto_form: Object,
     campos_form: Array,
+    campos_edit: Array,
   },
   methods: {
     filtrarPorLlave(valor: any, buscado: any) {

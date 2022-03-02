@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     async cargarInformacion() {
-      this.llaves = await Object.keys(this.objeto);
+      this.llaves = Object.keys(this.objeto);
       this.llaves.forEach((llave, index) => {
         this.campos_detalle.forEach((detail) => {
           if (llave === detail.value) {
@@ -54,7 +54,7 @@ export default {
           }
         });
       });
-      this.valores = await Object.values(this.objeto);
+      this.valores = Object.values(this.objeto);
     },
   },
   created() {

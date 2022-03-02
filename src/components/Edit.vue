@@ -9,6 +9,7 @@
       </v-btn>
     </template>
     <v-card class="py-2">
+      {{ data }}
       <v-alert
         class="mx-4"
         v-for="(error, index) of errores"
@@ -107,16 +108,17 @@
 </template>
 
 <script>
-import { EDITAR, GUARDAR } from "@/services/crud";
+import { EDITAR } from "@/services/crud";
 import Swal from "sweetalert2";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   name: "Edit",
   data: () => ({
     dialog_form: false,
     titulo_form: "",
     campos: [],
-    key_value: [],
+    data: [],
     coleccion_form: "",
     datos: {},
     loading: false,
@@ -124,22 +126,30 @@ export default {
   }),
   props: {
     titulo: String,
-    campos_form: Array,
+    campos_edit: Array,
     coleccion: String,
     objeto: Object,
   },
   methods: {
     async inicializarEdit() {
-      this.campos = [];
+      this.campos = [...this.campos_edit];
       this.titulo_form = this.titulo;
-      this.campos = [...this.campos_form];
+
+      this.data = Object.entries(this.objeto).map(([key, value]) => ({
+        key,
+        value,
+      }));
+
       this.campos.map((campo) => {
-        campo.model = this.objeto[campo.name];
+        this.data.forEach((dat) => {
+          if (dat.key === campo.name) {
+            campo.model = dat.value;
+          }
+        });
       });
-      console.log(this.campos);
     },
     async capturarCampos() {
-      this.campos_form.forEach((campo) => {
+      this.campos_edit.forEach((campo) => {
         this.datos[campo.name] = campo.model;
       });
     },
@@ -197,10 +207,9 @@ export default {
   },
   async created() {
     this.coleccion_form = this.coleccion;
-    console.log("Soy el edit");
     await this.inicializarEdit();
   },
-};
+});
 </script>
 
 <style scoped></style>

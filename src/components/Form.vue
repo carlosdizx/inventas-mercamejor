@@ -106,16 +106,16 @@
 </template>
 
 <script>
-import { EDITAR, GUARDAR } from "@/services/crud";
+import { GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   name: "Form",
   data: () => ({
     dialog_form: false,
     titulo_form: "",
     campos: [],
-    key_value: [],
     coleccion_form: "",
     datos: {},
     loading: false,
@@ -128,11 +128,8 @@ export default {
   },
   methods: {
     async inicializarForm() {
-      this.campos = [];
-      this.titulo_form = this.titulo;
-      this.campos_form.forEach((campo) => {
-        this.campos.push(campo);
-      });
+      this.campos = [...this.campos_form];
+      this.errores = [];
     },
     async capturarCampos() {
       this.campos_form.forEach((campo) => {
@@ -189,10 +186,9 @@ export default {
   },
   async created() {
     this.coleccion_form = this.coleccion;
-    console.log("Soy el form");
     await this.inicializarForm();
   },
-};
+});
 </script>
 
 <style scoped></style>

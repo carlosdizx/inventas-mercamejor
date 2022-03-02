@@ -8,6 +8,7 @@
       llave="documento"
       :campos_detalle="campos_detalle"
       :campos_form="campos_form"
+      :campos_edit="campos_edit"
       elimacion
     />
   </v-container>
@@ -15,7 +16,7 @@
 
 <script lang="ts">
 import Tabla from "@/components/Tabla.vue";
-import { CAMPOS } from "@/models/Usuarios/FormUsuario";
+import { CAMPOS, CAMPOS_EDIT } from "@/models/Usuarios/FormUsuario";
 import { COLUMNAS } from "@/models/Usuarios/ColumnasUsuario";
 import { COLUMNAS_DETALLE } from "@/models/Usuarios/ColumnasDetalleUsuario";
 import Vue from "vue";
@@ -27,6 +28,7 @@ export default Vue.extend({
     columnas: COLUMNAS,
     campos_detalle: COLUMNAS_DETALLE,
     campos_form: CAMPOS,
+    campos_edit: CAMPOS_EDIT,
   }),
 });
 </script>
