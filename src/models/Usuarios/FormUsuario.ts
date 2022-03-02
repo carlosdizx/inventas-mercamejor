@@ -5,9 +5,10 @@ export const CAMPOS = [
     type: 1,
     format: "number",
     name: "documento",
-    model: null,
-    required: true,
-    error: "",
+    model: "",
+    blank: true,
+    min: 5,
+    max: 10,
   },
   {
     label: "Nombres",
@@ -17,7 +18,6 @@ export const CAMPOS = [
     name: "nombres",
     model: "",
     blank: true,
-    error: "",
   },
   {
     label: "Apellidos",
@@ -27,7 +27,6 @@ export const CAMPOS = [
     name: "apellidos",
     model: "",
     blank: true,
-    error: "",
   },
   {
     label: "Correo",
@@ -60,6 +59,7 @@ export const CAMPOS = [
     items: ["Masculino", "Femenino", "Otro"],
     name: "genero",
     model: "",
+    blank: true,
   },
   {
     label: "Fecha de nacimiento",

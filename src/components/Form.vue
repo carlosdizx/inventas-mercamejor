@@ -9,6 +9,16 @@
       </v-btn>
     </template>
     <v-card class="py-2">
+      <v-alert
+        class="mx-4"
+        v-for="(error, index) of errores"
+        :key="index"
+        type="error"
+        dense
+        outlined
+      >
+        {{ error }}
+      </v-alert>
       <v-card-text>
         <h1>Formulario de creación para {{ titulo_form }}</h1>
       </v-card-text>
@@ -28,8 +38,6 @@
               outlined
               :required="campo.required"
               v-model="campo.model"
-              :rules="campo.rules"
-              @change="validarFormulario"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -84,13 +92,7 @@
             />
           </div>
           <v-card-actions>
-            <v-btn
-              :disabled="errores > 0"
-              :loading="loading"
-              block
-              color="success"
-              type="submit"
-            >
+            <v-btn :loading="loading" block color="success" type="submit">
               Registrar
             </v-btn>
           </v-card-actions>
@@ -117,7 +119,7 @@ export default {
     coleccion_form: "",
     datos: {},
     loading: false,
-    errores: 0,
+    errores: [],
   }),
   props: {
     titulo: String,
@@ -158,32 +160,25 @@ export default {
       this.loading = false;
     },
     async validarFormulario() {
-      let contador = 0;
-      this.errores = 0;
+      this.errores = [];
       this.campos.forEach((campo) => {
         if (campo !== null) {
-          if (campo.required && (campo.model === null || campo.model === "")) {
-            contador++;
-            campo.rules = ["Campo requerdio"];
-            campo.color = "red";
-          } else if (campo.blank && campo.model.trim() === "") {
-            contador++;
-            campo.rules = ["Campo no puede estar vacio"];
-            campo.color = "red";
-          } else {
-            campo.rules = [];
-            campo.color = null;
+          if (campo.blank && campo.model.trim() === "") {
+            this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
+            if (campo.min && campo.max) {
+              this.errores.push(
+                `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres`
+              );
+            }
           }
         }
       });
-      this.errores = contador;
-      return this.errores === 0;
+      return this.errores.length === 0;
     },
   },
   async created() {
     this.coleccion_form = this.coleccion;
     this.cargarInformacion();
-    await this.validarFormulario();
   },
 };
 </script>
