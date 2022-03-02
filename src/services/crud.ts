@@ -6,6 +6,9 @@ import {
   deleteDoc,
   addDoc,
   setDoc,
+  query,
+  orderBy,
+  startAt,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 
@@ -23,3 +26,9 @@ export const ELIMINAR = async (colection: string, id: string) =>
 
 export const EDITAR = async (colection: string, id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, colection, id), datos);
+
+export const PAGINAR = async (colection: string, ordenardor: string) => {
+  const entidadRef = await collection(FIRESTORE, colection);
+  const consulta = query(entidadRef, orderBy(ordenardor), startAt(1000000));
+  console.log(consulta);
+};

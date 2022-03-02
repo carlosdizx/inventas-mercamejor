@@ -4,20 +4,8 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn v-if="!id" fab color="info darken-3" v-bind="attrs" v-on="on">
+      <v-btn fab color="info darken-3" v-bind="attrs" v-on="on">
         <v-icon>mdi-plus</v-icon>
-      </v-btn>
-      <v-btn
-        small
-        outlined
-        dark
-        v-if="id"
-        fab
-        color="amber"
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
     <v-card class="py-2">
@@ -104,23 +92,8 @@
             />
           </div>
           <v-card-actions>
-            <v-btn
-              v-if="!id"
-              :loading="loading"
-              block
-              color="success"
-              type="submit"
-            >
+            <v-btn :loading="loading" block color="success" type="submit">
               Registrar
-            </v-btn>
-            <v-btn
-              v-if="id"
-              :loading="loading"
-              block
-              color="info"
-              type="submit"
-            >
-              Actualizar
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -133,7 +106,7 @@
 </template>
 
 <script>
-import { GUARDAR } from "@/services/crud";
+import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 
 export default {
@@ -152,10 +125,10 @@ export default {
     titulo: String,
     campos_form: Array,
     coleccion: String,
-    id: String,
+    objeto: Object,
   },
   methods: {
-    cargarInformacion() {
+    async inicializarForm() {
       this.campos = [];
       this.titulo_form = this.titulo;
       this.campos_form.forEach((campo) => {
@@ -173,7 +146,7 @@ export default {
       if (esValido) {
         await this.capturarCampos();
         await GUARDAR(this.coleccion_form, this.datos);
-        this.cargarInformacion();
+        await this.inicializarForm();
         await Swal.fire("Registro exitoso", "Datos registrados", "success");
         this.dialog_form = false;
         this.datos = {};
@@ -217,7 +190,7 @@ export default {
   },
   async created() {
     this.coleccion_form = this.coleccion;
-    this.cargarInformacion();
+    await this.inicializarForm();
   },
 };
 </script>
