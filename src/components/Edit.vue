@@ -9,7 +9,6 @@
       </v-btn>
     </template>
     <v-card class="py-2">
-      {{ data }}
       <v-alert
         class="mx-4"
         v-for="(error, index) of errores"
@@ -29,6 +28,7 @@
           :disabled="loading"
           autocomplete="off"
           @submit.prevent="actualizarFormulario"
+          id="formulario"
         >
           <div v-for="(campo, index) in campos" :key="index">
             <v-text-field
@@ -37,9 +37,10 @@
               :prepend-icon="campo.prepend_icon"
               :type="campo.format"
               dense
+              counter
               outlined
-              :required="campo.required"
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -52,7 +53,8 @@
               small-chips
               dense
               outlined
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             />
             <v-textarea
               v-if="campo.type === 3"
@@ -61,20 +63,23 @@
               :prepend-icon="campo.prepend_icon"
               dense
               counter
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             />
             <v-switch
               color="deep-purple"
               v-if="campo.type === 4"
               inset
               :label="campo.label"
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             />
             <v-radio-group
               :label="campo.label"
               v-if="campo.type === 5"
               row
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             >
               <br />
               <v-radio
@@ -90,7 +95,8 @@
               :items="campo.items"
               :label="campo.label"
               solo
-              v-model="campo.model"
+              :value="objeto[campo.name]"
+              :id="campo.name"
             />
           </div>
           <v-card-actions>
@@ -118,7 +124,6 @@ export default Vue.extend({
     dialog_form: false,
     titulo_form: "",
     campos: [],
-    data: [],
     coleccion_form: "",
     datos: {},
     loading: false,
@@ -134,27 +139,20 @@ export default Vue.extend({
     async inicializarEdit() {
       this.campos = [...this.campos_edit];
       this.titulo_form = this.titulo;
-
-      this.data = Object.entries(this.objeto).map(([key, value]) => ({
-        key,
-        value,
-      }));
-
-      this.campos.map((campo) => {
-        this.data.forEach((dat) => {
-          if (dat.key === campo.name) {
-            campo.model = dat.value;
-          }
-        });
-      });
     },
     async capturarCampos() {
+      const formulario = document.getElementById("formulario");
+      console.log(formulario);
       this.campos_edit.forEach((campo) => {
-        this.datos[campo.name] = campo.model;
+        const campoHTML = document.getElementById(campo.name);
+        if (campoHTML.value) {
+          this.datos[campo.name] = campoHTML.value;
+        }
       });
     },
     async actualizarFormulario() {
       this.loading = true;
+      await this.capturarCampos();
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
@@ -185,11 +183,13 @@ export default Vue.extend({
     async validarFormulario() {
       this.errores = [];
       this.campos.forEach((campo) => {
-        if (campo !== null) {
-          if (campo.blank && campo.model.trim() === "") {
+        const value = this.datos[campo.name];
+        console.log(campo.name, value);
+        if (value) {
+          if (campo.blank && value.trim() === "") {
             this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
           }
-          const caracteres = campo.model.trim().length;
+          const caracteres = value.trim().length;
           if (
             campo.min &&
             campo.max &&
@@ -200,12 +200,18 @@ export default Vue.extend({
                actualmente tiene ${caracteres}`
             );
           }
+        } else {
+          if (campo.blank) {
+            this.errores.push(
+              `El campo '${campo.label}' no se pudo capturar, llame al ingeniero!`
+            );
+          }
         }
       });
       return this.errores.length === 0;
     },
   },
-  async created() {
+  async mounted() {
     this.coleccion_form = this.coleccion;
     await this.inicializarEdit();
   },
