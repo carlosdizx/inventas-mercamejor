@@ -21,6 +21,7 @@
             <v-col cols="2">
               <Form
                 @registrado="cargarInformacion"
+                @editado="cargarInformacion"
                 :titulo="titulo"
                 :campos_form="campos_form"
                 :coleccion="coleccion"
@@ -40,12 +41,12 @@
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
-          <Edit
-            @editado="cargarInformacion"
+          <Form
+            @registrado="cargarInformacion"
             :titulo="titulo"
-            :campos_edit="campos_edit"
+            :campos_form="campos_form"
             :coleccion="coleccion"
-            :objeto="item"
+            :item="item"
           />
         </template>
         <template v-slot:item.detalle="{ item }">
@@ -129,11 +130,10 @@ import Swal from "sweetalert2";
 import { tipo_dato } from "../formats/formats";
 import Detail from "@/components/Detail.vue";
 import Form from "@/components/Form.vue";
-import Edit from "@/components/Edit.vue";
 
 export default Vue.extend({
   name: "Tabla",
-  components: { Detail, Form, Edit },
+  components: { Detail, Form },
   data: () => ({
     buscado: "",
     filas: [""],
