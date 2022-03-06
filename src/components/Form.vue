@@ -53,6 +53,7 @@
               outlined
               :required="campo.required"
               v-model="campo.model"
+              :counter="campo.counter"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -66,6 +67,7 @@
               dense
               outlined
               v-model="campo.model"
+              :counter="campo.counter"
             />
             <v-textarea
               v-if="campo.type === 3"
@@ -73,8 +75,8 @@
               :label="campo.label"
               :prepend-icon="campo.prepend_icon"
               dense
-              counter
               v-model="campo.model"
+              :counter="campo.counter"
             />
             <v-switch
               color="deep-purple"
@@ -104,6 +106,7 @@
               :label="campo.label"
               solo
               v-model="campo.model"
+              :counter="campo.counter"
             />
           </div>
           <v-card-actions>
@@ -144,6 +147,8 @@
               :required="campo.required"
               v-model="item[campo.name]"
               :counter="campo.counter"
+              :readonly="campo.readOnly"
+              :messages="campo.readOnly ? '**No editable' : ''"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -158,6 +163,7 @@
               outlined
               v-model="item[campo.name]"
               :counter="campo.counter"
+              :readonly="campo.readOnly"
             />
             <v-textarea
               v-if="campo.type === 3"
@@ -167,6 +173,7 @@
               dense
               v-model="item[campo.name]"
               :counter="campo.counter"
+              :readonly="campo.readOnly"
             />
             <v-switch
               color="deep-purple"
@@ -174,12 +181,14 @@
               inset
               :label="campo.label"
               v-model="item[campo.name]"
+              :readonly="campo.readOnly"
             />
             <v-radio-group
               :label="campo.label"
               v-if="campo.type === 5"
               row
               v-model="item[campo.name]"
+              :readonly="campo.readOnly"
             >
               <br />
               <v-radio
@@ -197,6 +206,7 @@
               solo
               v-model="item[campo.name]"
               :counter="campo.counter"
+              :readonly="campo.readOnly"
             />
           </div>
           <v-card-actions>

@@ -19,6 +19,7 @@ export const CAMPOS = [
     min: 5,
     max: 10,
     counter: true,
+    readOnly: true,
   },
   {
     label: "Nombres",
