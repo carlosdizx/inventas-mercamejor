@@ -143,6 +143,7 @@
               outlined
               :required="campo.required"
               v-model="item[campo.name]"
+              :counter="campo.counter"
             />
             <v-combobox
               v-if="campo.type === 2"
@@ -156,6 +157,7 @@
               dense
               outlined
               v-model="item[campo.name]"
+              :counter="campo.counter"
             />
             <v-textarea
               v-if="campo.type === 3"
@@ -163,8 +165,8 @@
               :label="campo.label"
               :prepend-icon="campo.prepend_icon"
               dense
-              counter
               v-model="item[campo.name]"
+              :counter="campo.counter"
             />
             <v-switch
               color="deep-purple"
@@ -194,6 +196,7 @@
               :label="campo.label"
               solo
               v-model="item[campo.name]"
+              :counter="campo.counter"
             />
           </div>
           <v-card-actions>
@@ -269,7 +272,13 @@ export default Vue.extend({
         await this.capturarCampos();
         await GUARDAR(this.coleccion_form, this.datos);
         await this.inicializarForm();
-        await Swal.fire("Registro exitoso", "Datos registrados", "success");
+        await Swal.fire({
+          title: "Registro exitoso",
+          html: "Datos registrados",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1000,
+        });
         this.dialog_form = false;
         this.datos = {};
         await this.$emit("registrado", true);
@@ -294,11 +303,13 @@ export default Vue.extend({
         await this.capturarCampos();
         await EDITAR(this.coleccion_form, this.item.id, this.datos);
         await this.inicializarForm();
-        await Swal.fire(
-          "Actualización exitosa",
-          "Datos actualizados",
-          "success"
-        );
+        await Swal.fire({
+          title: "Actualización exitosa",
+          html: "Datos actualizados",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1000,
+        });
         this.dialog_form = false;
         this.datos = {};
         await this.$emit("editado", true);
@@ -319,40 +330,35 @@ export default Vue.extend({
     async validarFormulario() {
       this.errores = [];
       this.campos.forEach((campo) => {
-        if (campo) {
-          if (campo.blank && campo.model.trim() === "") {
-            if (this.item) {
-              if (this.item[campo.name] === "") {
-                this.errores.push(
-                  `El campo '${campo.label}' no puede estar vacío`
-                );
-              }
-            }
+        if (this.item) {
+          if (campo.blank && this.item[campo.name].trim() === "") {
+            this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
           }
-          if (this.item) {
-            const caracteres = this.item[campo.name].trim().length;
-            if (
-              campo.min &&
-              campo.max &&
-              (caracteres < campo.min || caracteres > campo.max)
-            ) {
-              this.errores.push(
-                `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
+          const caracteres = this.item[campo.name].trim().length;
+          if (
+            campo.min &&
+            campo.max &&
+            (caracteres < campo.min || caracteres > campo.max)
+          ) {
+            this.errores.push(
+              `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
                actualmente tiene ${caracteres}`
-              );
-            }
-          } else {
-            const caracteres = campo.model.trim().length;
-            if (
-              campo.min &&
-              campo.max &&
-              (caracteres < campo.min || caracteres > campo.max)
-            ) {
-              this.errores.push(
-                `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
+            );
+          }
+        } else {
+          if (campo.blank && campo.model.trim() === "") {
+            this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
+          }
+          const caracteres = campo.model.trim().length;
+          if (
+            campo.min &&
+            campo.max &&
+            (caracteres < campo.min || caracteres > campo.max)
+          ) {
+            this.errores.push(
+              `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
                actualmente tiene ${caracteres}`
-              );
-            }
+            );
           }
         }
       });
