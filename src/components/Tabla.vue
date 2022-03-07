@@ -189,6 +189,7 @@ export default Vue.extend({
             title: "Eliminado!",
             icon: "success",
             timer: 1000,
+            showConfirmButton: false,
           });
         }
       });

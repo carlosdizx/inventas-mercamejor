@@ -21,7 +21,18 @@
         <v-subheader>Detalle</v-subheader>
         <v-list-item-group>
           <v-list-item v-for="(item, index) in llaves" :key="index">
-            {{ item }}: {{ valores[index] }}
+            <div v-if="typeof valores[index] === 'object'">
+              {{ item }}:
+              <div
+                :key="subIndex"
+                v-for="(subItem, subIndex) in valores[index]"
+              >
+                {{ Object.values(subItem).toLocaleString() }}
+              </div>
+            </div>
+            <div v-else-if="typeof valores[index] !== 'object'">
+              {{ item }}: {{ valores[index] }}
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>

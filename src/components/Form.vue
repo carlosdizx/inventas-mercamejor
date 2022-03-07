@@ -341,7 +341,6 @@ export default Vue.extend({
       this.errores = [];
       this.campos.forEach((campo) => {
         if (campo.type === 2) {
-          console.log("Es un xd");
           return;
         }
         if (this.item) {
