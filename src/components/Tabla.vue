@@ -185,7 +185,11 @@ export default Vue.extend({
           await ELIMINAR(this.coleccion, id);
           this.filas = [];
           await this.cargarInformacion();
-          await Swal.fire("Eliminado!", "", "success");
+          await Swal.fire({
+            title: "Eliminado!",
+            icon: "success",
+            timer: 1000,
+          });
         }
       });
     },

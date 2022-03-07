@@ -1,3 +1,11 @@
+import { LISTAR_ROLES } from "@/models/Usuarios/Funciones";
+const roles: any[] = [];
+async function listado2() {
+  (await LISTAR_ROLES()).forEach((rol) => roles.push(rol.data()));
+  return roles;
+}
+listado2();
+
 export const CAMPOS = [
   {
     label: "Tipo documento",
@@ -94,5 +102,16 @@ export const CAMPOS = [
     name: "estado",
     model: "",
     blank: true,
+  },
+  {
+    label: "Roles",
+    prepend_icon: "mdi-account-details",
+    type: 2,
+    items: roles,
+    name: "roles",
+    llave: "name",
+    model: "",
+    blank: true,
+    multiple: true,
   },
 ];

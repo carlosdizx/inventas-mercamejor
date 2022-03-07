@@ -24,8 +24,7 @@ export const tipo_dato = (valor: any) => {
     } else if (key === "calificacion") {
       aux = parseFloat(dato);
     } else {
-      console.log(dato);
-      aux = "Error en formato";
+      aux = valor;
     }
   });
   return aux;

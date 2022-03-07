@@ -9,4 +9,5 @@ export const COLUMNAS_DETALLE = [
   { text: "Dirección", value: "direccion" },
   { text: "Género", value: "genero" },
   { text: "Fecha de nacimiento", value: "fecha_nacimiento" },
+  { text: "Roles", value: "roles" },
 ];

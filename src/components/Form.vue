@@ -340,6 +340,10 @@ export default Vue.extend({
     async validarFormulario() {
       this.errores = [];
       this.campos.forEach((campo) => {
+        if (campo.type === 2) {
+          console.log("Es un xd");
+          return;
+        }
         if (this.item) {
           if (campo.blank && this.item[campo.name].trim() === "") {
             this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
