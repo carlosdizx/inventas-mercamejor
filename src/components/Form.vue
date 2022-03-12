@@ -243,6 +243,7 @@ import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import Vue from "vue";
 import { VALIDAR_FORM } from "@/generals/validaciones";
+import { CAPTURAR_CAMPOS } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "Form",
@@ -266,15 +267,7 @@ export default Vue.extend({
       this.errores = [];
     },
     async capturarCampos() {
-      if (this.item) {
-        Object.values(this.item).forEach((value, index) => {
-          this.datos[Object.keys(this.item)[index]] = value;
-        });
-      } else {
-        this.campos_form.forEach((campo) => {
-          this.datos[campo.name] = campo.model;
-        });
-      }
+      this.datos = await CAPTURAR_CAMPOS(this.item, this.campos);
     },
     async registrarFormulario() {
       this.loading = true;
