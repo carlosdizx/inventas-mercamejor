@@ -24,3 +24,6 @@ pnpm-debug.log*
 .prettierrc
 package-lock.json
 src/firebase/config.ts
+
+# Local Netlify folder
+.netlify

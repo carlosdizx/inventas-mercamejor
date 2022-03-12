@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "vue-cli-service serve --open",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --prod",
+    "deploy": "netlify deploy --prod",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "core-js": "^3.6.5",
     "firebase": "^9.6.4",
     "moment": "^2.29.1",
+    "netlify-cli": "^9.13.0",
     "roboto-fontface": "*",
     "sweetalert2": "^11.4.4",
     "vue": "^2.6.11",
