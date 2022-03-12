@@ -243,14 +243,16 @@ import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import Vue from "vue";
 import { VALIDAR_FORM } from "@/generals/validaciones";
-import { CAPTURAR_CAMPOS } from "@/generals/procesamientos";
+import {
+  CAPTURAR_CAMPOS,
+  REGISTRAR_FORMULARIO,
+} from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "Form",
   data: () => ({
     dialog_form: false,
     campos: [...[]],
-    coleccion_form: "",
     datos: {},
     loading: false,
     errores: [],
@@ -274,26 +276,16 @@ export default Vue.extend({
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await GUARDAR(this.coleccion_form, this.datos);
+        await REGISTRAR_FORMULARIO(this.coleccion, this.datos, this.campos);
         await this.inicializarForm();
-        await Swal.fire({
-          title: "Registro exitoso",
-          html: "Datos registrados",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1000,
-        });
         this.dialog_form = false;
         this.datos = {};
         await this.$emit("registrado", true);
-        this.campos.forEach((campo) => {
-          campo.model = "";
-        });
         this.errores = [];
       } else {
         await Swal.fire({
           timer: 1000,
-          title: "Error en el formulario",
+          title: "Verificar el formulario",
           icon: "error",
           showConfirmButton: false,
         });
@@ -305,7 +297,7 @@ export default Vue.extend({
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await EDITAR(this.coleccion_form, this.item.id, this.datos);
+        await EDITAR(this.coleccion, this.item.id, this.datos);
         await this.inicializarForm();
         await Swal.fire({
           title: "Actualización exitosa",
@@ -324,7 +316,7 @@ export default Vue.extend({
       } else {
         await Swal.fire({
           timer: 1000,
-          title: "Error en el formulario",
+          title: "Verificar el formulario",
           icon: "error",
           showConfirmButton: false,
         });
@@ -337,7 +329,6 @@ export default Vue.extend({
     },
   },
   async created() {
-    this.coleccion_form = this.coleccion;
     await this.inicializarForm();
   },
 });

@@ -1,3 +1,6 @@
+import { GUARDAR } from "@/services/crud";
+import Swal from "sweetalert2";
+
 export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
   const datos = {};
   if (item) {
@@ -15,3 +18,21 @@ export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
   }
   return datos;
 };
+
+export async function REGISTRAR_FORMULARIO(
+  coleccion: string,
+  datos: any,
+  campos: any
+) {
+  await GUARDAR(coleccion, datos);
+  await Swal.fire({
+    title: "Registro exitoso",
+    html: "Datos registrados",
+    icon: "success",
+    showConfirmButton: false,
+    timer: 1000,
+  });
+  campos.forEach((campo: any) => {
+    campo.model = "";
+  });
+}
