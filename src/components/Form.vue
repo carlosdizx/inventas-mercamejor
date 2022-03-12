@@ -242,6 +242,7 @@
 import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import Vue from "vue";
+import { VALIDAR_FORM } from "@/generals/validaciones";
 
 export default Vue.extend({
   name: "Form",
@@ -338,43 +339,7 @@ export default Vue.extend({
       this.loading = false;
     },
     async validarFormulario() {
-      this.errores = [];
-      this.campos.forEach((campo) => {
-        if (campo.type === 2) {
-          return;
-        }
-        if (this.item) {
-          if (campo.blank && this.item[campo.name].trim() === "") {
-            this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
-          }
-          const caracteres = this.item[campo.name].trim().length;
-          if (
-            campo.min &&
-            campo.max &&
-            (caracteres < campo.min || caracteres > campo.max)
-          ) {
-            this.errores.push(
-              `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
-               actualmente tiene ${caracteres}`
-            );
-          }
-        } else {
-          if (campo.blank && campo.model.trim() === "") {
-            this.errores.push(`El campo '${campo.label}' no puede estar vacío`);
-          }
-          const caracteres = campo.model.trim().length;
-          if (
-            campo.min &&
-            campo.max &&
-            (caracteres < campo.min || caracteres > campo.max)
-          ) {
-            this.errores.push(
-              `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
-               actualmente tiene ${caracteres}`
-            );
-          }
-        }
-      });
+      this.errores = await VALIDAR_FORM(this.campos, this.item);
       return this.errores.length === 0;
     },
   },

@@ -74,7 +74,7 @@
 <script lang="ts">
 import { GUARDAR } from "@/services/crud";
 import Vue from "vue";
-import { toDate } from "@/formats/formats";
+import { toDate } from "@/generals/formats";
 import Swal from "sweetalert2";
 import Tabla from "../components/Tabla.vue";
 
