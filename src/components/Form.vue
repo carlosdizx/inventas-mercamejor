@@ -239,13 +239,12 @@
 </template>
 
 <script>
-import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import Vue from "vue";
 import { VALIDAR_FORM } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
-  REGISTRAR_FORMULARIO,
+  PROCESAR_FORMULARIO,
 } from "@/generals/procesamientos";
 
 export default Vue.extend({
@@ -276,7 +275,12 @@ export default Vue.extend({
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await REGISTRAR_FORMULARIO(this.coleccion, this.datos, this.campos);
+        await PROCESAR_FORMULARIO(
+          this.coleccion,
+          this.datos,
+          this.campos,
+          this.item
+        );
         await this.inicializarForm();
         this.dialog_form = false;
         this.datos = {};
@@ -297,21 +301,16 @@ export default Vue.extend({
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await EDITAR(this.coleccion, this.item.id, this.datos);
+        await PROCESAR_FORMULARIO(
+          this.coleccion,
+          this.datos,
+          this.campos,
+          this.item
+        );
         await this.inicializarForm();
-        await Swal.fire({
-          title: "Actualización exitosa",
-          html: "Datos actualizados",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1000,
-        });
         this.dialog_form = false;
         this.datos = {};
         await this.$emit("editado", true);
-        this.campos.forEach((campo) => {
-          campo.model = "";
-        });
         this.errores = [];
       } else {
         await Swal.fire({
