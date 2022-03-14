@@ -21,6 +21,7 @@
       </v-stepper-content>
 
       <v-stepper-content step="2">
+        <UserCredentials />
         <v-btn color="success" @click="etapa = etapa + 1" class="mx-2 my-2">
           Registrar
           <v-icon>mdi-plus</v-icon>
@@ -45,10 +46,11 @@
 
 <script lang="ts">
 import PersonalDetails from "@/components/autenticacion/PersonalDetails.vue";
+import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
 import Vue from "vue";
 export default Vue.extend({
   name: "Registro",
-  components: { PersonalDetails },
+  components: { PersonalDetails, UserCredentials },
   data: () => ({
     etapa: 1,
   }),
