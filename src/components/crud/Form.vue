@@ -68,6 +68,7 @@
               outlined
               v-model="campo.model"
               :counter="campo.counter"
+              @change="validarCombo(campo.model)"
             />
             <v-textarea
               v-if="campo.type === 3"
@@ -241,7 +242,7 @@
 <script>
 import Swal from "sweetalert2";
 import Vue from "vue";
-import { VALIDAR_FORM } from "@/generals/validaciones";
+import { VALIDAR_FORM, VALIDAR_COMBO } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
   PROCESAR_FORMULARIO,
@@ -325,6 +326,9 @@ export default Vue.extend({
     async validarFormulario() {
       this.errores = await VALIDAR_FORM(this.campos, this.item);
       return this.errores.length === 0;
+    },
+    validarCombo(modelo) {
+      modelo = VALIDAR_COMBO(modelo);
     },
   },
   async created() {

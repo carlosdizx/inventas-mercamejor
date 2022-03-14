@@ -1,10 +1,10 @@
 import { LISTAR_ROLES } from "@/models/Usuarios/Funciones";
 const roles: any[] = [];
-async function listado2() {
+async function listarRoles() {
   (await LISTAR_ROLES()).forEach((rol) => roles.push(rol.data()));
   return roles;
 }
-listado2();
+listarRoles();
 
 export const CAMPOS = [
   {
