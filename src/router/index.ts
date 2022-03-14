@@ -30,6 +30,11 @@ const routes: Array<RouteConfig> = [
     name: "usuarios",
     component: () => import("../views/Usuarios.vue"),
   },
+  {
+    path: "/login",
+    name: "InicioSesion",
+    component: () => import("../views/InicioSesion.vue"),
+  },
 ];
 
 const router = new VueRouter({
