@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Tabla from "@/components/Tabla.vue";
+import Tabla from "@/components/crud/Tabla.vue";
 
 export default Vue.extend({
   name: "Requirements",

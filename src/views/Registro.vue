@@ -17,7 +17,10 @@
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-btn color="success" @click="etapa = 1"> Registrar </v-btn>
+        <v-btn color="success" @click="etapa = 3"> Registrar </v-btn>
+      </v-stepper-content>
+      <v-stepper-content step="3">
+        <v-progress-linear indeterminate color="yellow darken-2" />
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>

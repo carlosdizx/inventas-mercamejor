@@ -76,7 +76,7 @@ import { GUARDAR } from "@/services/crud";
 import Vue from "vue";
 import { toDate } from "@/generals/formats";
 import Swal from "sweetalert2";
-import Tabla from "../components/Tabla.vue";
+import Tabla from "../components/crud/Tabla.vue";
 
 export default Vue.extend({
   name: "Asistance",

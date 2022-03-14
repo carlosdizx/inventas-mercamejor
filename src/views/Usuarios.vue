@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import Tabla from "@/components/Tabla.vue";
+import Tabla from "@/components/crud/Tabla.vue";
 import { CAMPOS } from "@/models/Usuarios/FormUsuario";
 import { COLUMNAS } from "@/models/Usuarios/ColumnasUsuario";
 import { COLUMNAS_DETALLE } from "@/models/Usuarios/ColumnasDetalleUsuario";

@@ -127,9 +127,9 @@
 import Vue from "vue";
 import { ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
-import { tipo_dato } from "../generals/formats";
-import Detail from "@/components/Detail.vue";
-import Form from "@/components/Form.vue";
+import { tipo_dato } from "../../generals/formats";
+import Detail from "@/components/crud/Detail.vue";
+import Form from "@/components/crud/Form.vue";
 
 export default Vue.extend({
   name: "Tabla",
