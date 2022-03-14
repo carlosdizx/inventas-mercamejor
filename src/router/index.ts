@@ -31,7 +31,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/Usuarios.vue"),
   },
   {
-    path: "/login",
+    path: "/inicioSesion",
     name: "InicioSesion",
     component: () => import("../views/InicioSesion.vue"),
   },
