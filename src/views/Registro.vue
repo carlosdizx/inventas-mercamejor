@@ -14,11 +14,27 @@
     <v-stepper-items>
       <v-stepper-content step="1">
         <PersonalDetails />
-        <v-btn color="primary" @click="etapa = 2"> Continuar </v-btn>
+        <v-btn color="primary" @click="etapa = etapa + 1" outlined class="mx-2">
+          Continuar
+          <v-icon>mdi-arrow-right</v-icon>
+        </v-btn>
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-btn color="success" @click="etapa = 3"> Registrar </v-btn>
+        <v-btn color="success" @click="etapa = etapa + 1" class="mx-2 my-2">
+          Registrar
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+        <br />
+        <v-btn
+          color="dark"
+          @click="etapa = etapa - 1"
+          outlined
+          class="mx-2 my-2"
+        >
+          Volver
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
       </v-stepper-content>
       <v-stepper-content step="3">
         <v-progress-linear indeterminate color="yellow darken-2" />
