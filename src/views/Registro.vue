@@ -13,6 +13,7 @@
 
     <v-stepper-items>
       <v-stepper-content step="1">
+        <PersonalDetails />
         <v-btn color="primary" @click="etapa = 2"> Continuar </v-btn>
       </v-stepper-content>
 
@@ -27,9 +28,11 @@
 </template>
 
 <script lang="ts">
+import PersonalDetails from "@/components/autenticacion/PersonalDetails.vue";
 import Vue from "vue";
 export default Vue.extend({
   name: "Registro",
+  components: { PersonalDetails },
   data: () => ({
     etapa: 1,
   }),
