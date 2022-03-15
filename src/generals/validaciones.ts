@@ -39,6 +39,9 @@ export const VALIDAR_FORM_REGISTRO = async (campos: any[]) => {
       }
     } else {
       if (campo.blank) {
+        if (!campo.model) {
+          await comprobarErrores(campo.label + " es requerido", errores);
+        }
         if (typeof campo.model === "string") {
           await comprobarErrores(campo.label + " es requerido", errores);
         } else if (
@@ -80,14 +83,10 @@ export const VALIDAR_FORM_ACTUALIZACION = async (campos: any[], item: any) => {
       }
     } else {
       if (campo.blank) {
-        console.log(item[campo.name], typeof item[campo.name]);
-        if (typeof item[campo.name] === "string") {
+        if (!item[campo.name]) {
           await comprobarErrores(campo.label + " es requerido", errores);
-        } else if (typeof item[campo.name] === "object") {
-          if (item[campo.name] === null)
-            await comprobarErrores(campo.label + " es requerido", errores);
-          else if (item[campo.name].length === 0)
-            await comprobarErrores(campo.label + " es requerido", errores);
+        } else if (item[campo.name].length === 0) {
+          await comprobarErrores(campo.label + " es requerido", errores);
         }
       }
     }

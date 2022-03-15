@@ -32,7 +32,7 @@
         {{ error }}
       </v-alert>
       <v-card-text>
-        <h1 v-if="!item">Formulario de creacioón para {{ titulo }}</h1>
+        <h1 v-if="!item">Formulario de creación para {{ titulo }}</h1>
         <h1 v-if="item">Formulario de edición para {{ titulo }}</h1>
         <h6 v-if="item">{{ item.id }}</h6>
       </v-card-text>
