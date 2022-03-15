@@ -37,16 +37,26 @@ export const VALIDAR_FORM_REGISTRO = async (campos: any[]) => {
           errores
         );
       }
+    } else {
+      if (campo.blank) {
+        if (typeof campo.model === "string") {
+          await comprobarErrores(campo.label + " es requerido", errores);
+        } else if (
+          typeof campo.model === "object" &&
+          campo.model.length === 0
+        ) {
+          await comprobarErrores(campo.label + " es requerido", errores);
+        }
+      }
     }
   }
   return errores;
 };
 
-export const VALIDAR_FORM = async (campos: any[], item: any) => {
+export const VALIDAR_FORM_ACTUALIZACION = async (campos: any[], item: any) => {
   const errores: any[] = [];
   for (const campo of campos) {
-    if (item) {
-      console.log(item[campo.name], campo.name);
+    if (campo.type !== 2) {
       if (campo.type === 1) {
         await VALIDAR_INPUT(item[campo.name], campo.format, errores);
       }
@@ -69,29 +79,15 @@ export const VALIDAR_FORM = async (campos: any[], item: any) => {
         );
       }
     } else {
-      if (campo.type === 2) {
-        await VALIDAR_COMBO(campo.model);
-      } else {
-        if (campo.type === 1) {
-          await VALIDAR_INPUT(campo.model, campo.format, errores);
-        }
-        if (campo.blank && campo.model.trim() === "") {
-          await comprobarErrores(
-            `El campo '${campo.label}' no puede estar vacío`,
-            errores
-          );
-        }
-        const caracteres = campo.model.trim().length;
-        if (
-          campo.min &&
-          campo.max &&
-          (caracteres < campo.min || caracteres > campo.max)
-        ) {
-          await comprobarErrores(
-            `El campo '${campo.label}' minimo ${campo.min} y maximo ${campo.max} de caracteres,
-               actualmente tiene ${caracteres}`,
-            errores
-          );
+      if (campo.blank) {
+        console.log(item[campo.name], typeof item[campo.name]);
+        if (typeof item[campo.name] === "string") {
+          await comprobarErrores(campo.label + " es requerido", errores);
+        } else if (typeof item[campo.name] === "object") {
+          if (item[campo.name] === null)
+            await comprobarErrores(campo.label + " es requerido", errores);
+          else if (item[campo.name].length === 0)
+            await comprobarErrores(campo.label + " es requerido", errores);
         }
       }
     }
@@ -108,14 +104,14 @@ export const VALIDAR_INPUT = async (
     if (type === "email") {
       if (!/.+@.+\..+/.test(modelo)) {
         await Swal.fire({
-          timer: 1000,
+          timer: 3000,
           title: "Correo electrónico incorrecto",
-          html: "recomendable volver a escribir bien",
+          html: "Escribalo con formato correcto, sí no es requerido no lo utilice",
           showConfirmButton: false,
           icon: "warning",
         });
+        await comprobarErrores("Correo electrónico incorrecto", errores);
       }
-      await comprobarErrores("Correo electrónico incorrecto", errores);
     }
   }
 };

@@ -244,10 +244,10 @@
 import Swal from "sweetalert2";
 import Vue from "vue";
 import {
-  VALIDAR_FORM,
   VALIDAR_COMBO,
   VALIDAR_INPUT,
   VALIDAR_FORM_REGISTRO,
+  VALIDAR_FORM_ACTUALIZACION,
 } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
@@ -331,7 +331,7 @@ export default Vue.extend({
     },
     async validarFormulario() {
       if (this.item) {
-        this.errores = await VALIDAR_FORM(this.campos, this.item);
+        this.errores = await VALIDAR_FORM_ACTUALIZACION(this.campos, this.item);
       } else {
         this.errores = await VALIDAR_FORM_REGISTRO(this.campos);
       }
