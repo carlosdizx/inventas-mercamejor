@@ -1,7 +1,7 @@
 <template>
   <v-card-text>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
-      <v-form class="my-2">
+      <v-form class="my-2" @submit.prevent="crearCuenta" :disabled="cargando">
         <validation-provider
           v-slot="{ errors }"
           name="Correo eléctronico"
@@ -56,7 +56,13 @@
         <v-chip v-if="invalid" class="ma-2" color="amber lighten-2">
           Complete los campos solicitados <v-icon>mdi-alert</v-icon>
         </v-chip>
-        <v-btn block color="success" :disabled="invalid">
+        <v-btn
+          block
+          color="success"
+          :disabled="invalid || cargando"
+          type="submit"
+          :loading="cargando"
+        >
           Registrarme <v-icon>mdi-account-plus</v-icon>
         </v-btn>
       </v-form>
@@ -66,6 +72,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { CREAR_CUENTA } from "@/services/auth";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "UserCredentials",
@@ -74,7 +82,34 @@ export default Vue.extend({
     correo: "",
     pass1: "",
     pass2: "",
+    cargando: false,
   }),
+  methods: {
+    async crearCuenta() {
+      this.cargando = !this.cargando;
+      try {
+        const registro = JSON.parse(
+          JSON.stringify(await CREAR_CUENTA(this.correo, this.pass1))
+        );
+        await Swal.fire({
+          timer: 2000,
+          title: "Registro exitoso",
+          icon: "success",
+          showConfirmButton: false,
+        });
+        console.log(registro.user);
+        console.log(registro._tokenResponse);
+      } catch (e) {
+        await Swal.fire({
+          timer: 2000,
+          title: e.code,
+          icon: "error",
+          showConfirmButton: false,
+        });
+      }
+      this.cargando = !this.cargando;
+    },
+  },
 });
 </script>
 

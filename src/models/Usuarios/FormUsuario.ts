@@ -62,6 +62,15 @@ export const CAMPOS = [
     model: "",
   },
   {
+    label: "Correo",
+    prepend_icon: "mdi-email",
+    type: 1,
+    format: "email",
+    name: "correo",
+    model: "",
+    blank: true,
+  },
+  {
     label: "Dirección",
     prepend_icon: "mdi-home",
     type: 1,
