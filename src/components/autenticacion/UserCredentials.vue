@@ -37,7 +37,7 @@
         </validation-provider>
         <validation-provider
           v-slot="{ errors }"
-          name="Contraseña"
+          name="Verificación de contraseña"
           rules="required|min:8|max:60"
         >
           <v-text-field
@@ -53,6 +53,9 @@
             v-model="pass2"
           />
         </validation-provider>
+        <v-chip v-if="invalid" class="ma-2" color="amber lighten-2">
+          Complete los campos solicitados <v-icon>mdi-alert</v-icon>
+        </v-chip>
         <v-btn block color="success" :disabled="invalid">
           Registrarme <v-icon>mdi-account-plus</v-icon>
         </v-btn>
