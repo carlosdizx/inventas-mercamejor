@@ -247,6 +247,7 @@ import {
   VALIDAR_FORM,
   VALIDAR_COMBO,
   VALIDAR_INPUT,
+  VALIDAR_FORM_REGISTRO,
 } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
@@ -329,7 +330,11 @@ export default Vue.extend({
       this.loading = false;
     },
     async validarFormulario() {
-      this.errores = await VALIDAR_FORM(this.campos, this.item);
+      if (this.item) {
+        this.errores = await VALIDAR_FORM(this.campos, this.item);
+      } else {
+        this.errores = await VALIDAR_FORM_REGISTRO(this.campos);
+      }
       return this.errores.length === 0;
     },
     validarInput(modelo, type) {
