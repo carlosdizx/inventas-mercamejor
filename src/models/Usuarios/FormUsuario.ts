@@ -54,14 +54,6 @@ export const CAMPOS = [
     counter: true,
   },
   {
-    label: "Correo",
-    prepend_icon: "mdi-email",
-    type: 1,
-    format: "email",
-    name: "correo",
-    model: "",
-  },
-  {
     label: "Celular",
     prepend_icon: "mdi-phone",
     type: 1,
