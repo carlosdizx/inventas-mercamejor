@@ -149,8 +149,9 @@
               :required="campo.required"
               v-model="item[campo.name]"
               :counter="campo.counter"
+              :color="campo.readOnly ? 'red' : 'primary'"
               :readonly="campo.readOnly"
-              :messages="campo.readOnly ? '**No editable' : ''"
+              :messages="campo.readOnly ? '**No editable**' : ''"
             />
             <v-combobox
               v-if="campo.type === 2"
