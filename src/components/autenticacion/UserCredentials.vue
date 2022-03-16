@@ -74,6 +74,7 @@
 import Vue from "vue";
 import { CREAR_CUENTA } from "@/services/auth";
 import Swal from "sweetalert2";
+import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 
 export default Vue.extend({
   name: "UserCredentials",
@@ -87,26 +88,29 @@ export default Vue.extend({
   methods: {
     async crearCuenta() {
       this.cargando = !this.cargando;
-      try {
-        const registro = JSON.parse(
-          JSON.stringify(await CREAR_CUENTA(this.correo, this.pass1))
-        );
+      if (this.pass1.trim() === this.pass2.trim())
+        try {
+          const registro = JSON.parse(
+            JSON.stringify(await CREAR_CUENTA(this.correo, this.pass1))
+          );
+          await Swal.fire({
+            timer: 2000,
+            title: "Registro exitoso",
+            icon: "success",
+            showConfirmButton: false,
+          });
+          console.log(registro.user);
+          console.log(registro._tokenResponse);
+        } catch (e) {
+          await NOTIFICAR_ERROR(e.code);
+        }
+      else
         await Swal.fire({
-          timer: 2000,
-          title: "Registro exitoso",
-          icon: "success",
-          showConfirmButton: false,
-        });
-        console.log(registro.user);
-        console.log(registro._tokenResponse);
-      } catch (e) {
-        await Swal.fire({
-          timer: 2000,
-          title: e.code,
+          timer: 1500,
+          title: "Las contraseñas no coinciden",
           icon: "error",
           showConfirmButton: false,
         });
-      }
       this.cargando = !this.cargando;
     },
   },
