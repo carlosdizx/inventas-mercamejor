@@ -14,7 +14,12 @@
           Formulario de creación para {{ titulo }}
         </h1>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
-          <v-form class="my-2" :disabled="cargando" autocomplete="off">
+          <v-form
+            class="my-2"
+            :disabled="cargando"
+            autocomplete="off"
+            @submit.prevent="registrarDatos"
+          >
             <div v-for="(campo, index) in campos" :key="index">
               <validation-provider
                 v-slot="{ errors }"
@@ -144,6 +149,9 @@
 <script>
 import Vue from "vue";
 import { VALIDAR_COMBO } from "@/generals/validaciones";
+import { CAPTURAR_CAMPOS } from "@/generals/procesamientos";
+import { GUARDAR } from "@/services/crud";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "FormCreate",
@@ -151,6 +159,7 @@ export default Vue.extend({
     dialog_form: false,
     cargando: false,
     campos: [...[]],
+    datos: {},
   }),
   props: {
     titulo: String,
@@ -163,6 +172,25 @@ export default Vue.extend({
     },
     validarCombo(modelo) {
       modelo = VALIDAR_COMBO(modelo);
+    },
+    async capturarCampos() {
+      this.datos = await CAPTURAR_CAMPOS(null, this.campos);
+    },
+    async registrarDatos() {
+      this.cargando = !this.cargando;
+      await this.capturarCampos();
+      await GUARDAR(this.coleccion, this.datos);
+      await this.$emit("registrado", true);
+      this.dialog_form = !this.dialog_form;
+      await this.inicializarForm();
+      await Swal.fire({
+        title: "Registro exitoso",
+        html: "Datos registrados",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      this.cargando = !this.cargando;
     },
   },
   async created() {

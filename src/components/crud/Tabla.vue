@@ -21,6 +21,7 @@
               </v-col>
               <v-col cols="2">
                 <FormCreate
+                  @registrado="cargarInformacion"
                   :titulo="titulo"
                   :campos_form="campos_form"
                   :coleccion="coleccion"
