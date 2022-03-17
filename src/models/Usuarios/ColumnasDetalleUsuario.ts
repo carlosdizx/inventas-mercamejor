@@ -9,5 +9,8 @@ export const COLUMNAS_DETALLE = [
   { text: "Dirección", value: "direccion" },
   { text: "Género", value: "genero" },
   { text: "Fecha de nacimiento", value: "fecha_nacimiento" },
-  { text: "Roles", value: "roles" },
+  { text: "Roles", value: "roles", key: "name" },
+  { text: "Regional", value: "regional" },
+  { text: "Detalles extra", value: "detalles_extra" },
+  { text: "Áreas", value: "areas" },
 ];

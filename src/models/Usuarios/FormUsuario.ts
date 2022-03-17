@@ -62,6 +62,7 @@ export const CAMPOS = [
     format: "email",
     name: "correo",
     model: "",
+    rules: "email",
   },
   {
     label: "Dirección",

@@ -41,8 +41,8 @@
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
-            <Form
-              @registrado="cargarInformacion"
+            <FormEdit
+              @actualizado="cargarInformacion"
               :titulo="titulo"
               :campos_form="campos_form"
               :coleccion="coleccion"
@@ -134,12 +134,12 @@ import { ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import { tipo_dato } from "@/generals/formats";
 import Detail from "@/components/crud/Detail.vue";
-import Form from "@/components/crud/Form.vue";
 import FormCreate from "@/components/crud/FormCreate.vue";
+import FormEdit from "@/components/crud/FormEdit.vue";
 
 export default Vue.extend({
   name: "Tabla",
-  components: { Detail, Form, FormCreate },
+  components: { Detail, FormCreate, FormEdit },
   data: () => ({
     buscado: "",
     filas: [""],
