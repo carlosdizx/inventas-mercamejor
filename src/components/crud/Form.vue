@@ -5,7 +5,7 @@
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
       <v-btn fab color="info darken-3" v-bind="attrs" v-on="on" v-if="!item">
-        <v-icon>mdi-plus</v-icon>
+        <v-icon>mdi-plus</v-icon>HOla
       </v-btn>
       <v-btn
         small

@@ -3,7 +3,7 @@
     <Tabla
       class="my-2"
       coleccion="usuarios"
-      titulo="Usuarios"
+      titulo="usuarios"
       :columnas="columnas"
       llave="documento"
       :campos_detalle="campos_detalle"

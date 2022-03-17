@@ -20,9 +20,7 @@
                 />
               </v-col>
               <v-col cols="2">
-                <Form
-                  @registrado="cargarInformacion"
-                  @editado="cargarInformacion"
+                <FormCreate
                   :titulo="titulo"
                   :campos_form="campos_form"
                   :coleccion="coleccion"
@@ -133,13 +131,14 @@
 import Vue from "vue";
 import { ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
-import { tipo_dato } from "../../generals/formats";
+import { tipo_dato } from "@/generals/formats";
 import Detail from "@/components/crud/Detail.vue";
 import Form from "@/components/crud/Form.vue";
+import FormCreate from "@/components/crud/FormCreate.vue";
 
 export default Vue.extend({
   name: "Tabla",
-  components: { Detail, Form },
+  components: { Detail, Form, FormCreate },
   data: () => ({
     buscado: "",
     filas: [""],
