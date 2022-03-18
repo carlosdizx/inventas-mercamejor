@@ -149,7 +149,10 @@
 <script>
 import Vue from "vue";
 import { VALIDAR_COMBO } from "@/generals/validaciones";
-import { CAPTURAR_CAMPOS } from "@/generals/procesamientos";
+import {
+  CAPTURAR_CAMPOS,
+  PROCESAR_FORMULARIO,
+} from "@/generals/procesamientos";
 import { GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 
@@ -179,17 +182,11 @@ export default Vue.extend({
     async registrarDatos() {
       this.cargando = !this.cargando;
       await this.capturarCampos();
-      await GUARDAR(this.coleccion, this.datos);
-      await this.$emit("registrado", true);
       this.dialog_form = !this.dialog_form;
       await this.inicializarForm();
-      await Swal.fire({
-        title: "Registro exitoso",
-        html: "Datos registrados",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 1000,
-      });
+      await PROCESAR_FORMULARIO(this.coleccion, this.datos, this.campos, null);
+      await this.$emit("registrado", true);
+      this.datos = {};
       this.cargando = !this.cargando;
     },
   },
