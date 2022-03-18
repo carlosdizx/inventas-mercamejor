@@ -1,14 +1,17 @@
 <template>
   <div>
-    <Toolbar :titulo="'Inventas - ' + nombre" :botones="botones" />
-    {{ color }}
+    <Toolbar
+      permitirNavdrawer
+      permitirColor
+      :titulo="'Inventas - ' + nombre"
+      :botones="botones"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
-import { mapState } from "vuex";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -22,9 +25,6 @@ export default Vue.extend({
       { icon: "mdi-pipe", link: "/" },
     ],
   }),
-  computed: {
-    ...mapState(["color"]),
-  },
 });
 </script>
 
