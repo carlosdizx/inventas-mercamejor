@@ -40,6 +40,11 @@ const routes: Array<RouteConfig> = [
     name: "Registro",
     component: () => import("../views/Registro.vue"),
   },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    component: () => import("../views/Dashboard.vue"),
+  },
 ];
 
 const router = new VueRouter({
