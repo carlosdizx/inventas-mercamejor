@@ -26,6 +26,7 @@ export const CAMPOS = [
     name: "documento",
     model: "",
     rules: "required|min:4|max:25",
+    readOnly: true,
   },
   {
     label: "Nombres",

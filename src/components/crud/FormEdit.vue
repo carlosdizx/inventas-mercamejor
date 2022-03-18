@@ -32,6 +32,10 @@
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :type="campo.format"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
+                  :hint="campo.readOnly ? '**No editable**' : ''"
+                  persistent-hint
                   dense
                   outlined
                   counter
