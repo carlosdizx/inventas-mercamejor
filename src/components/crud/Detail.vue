@@ -18,7 +18,7 @@
     </template>
     <v-card>
       <v-list>
-        <v-subheader>Detalle</v-subheader>
+        <v-subheader>Detalles</v-subheader>
         <v-list-item-group>
           <v-list-item v-for="(item, index) in llaves" :key="index">
             <div v-if="typeof valores[index] === 'object'">
@@ -34,7 +34,13 @@
               </div>
             </div>
             <div v-else-if="typeof valores[index] !== 'object'">
-              {{ item }}: {{ valores[index] }}
+              {{ item }}:
+              <div v-if="typeof valores[index] === 'boolean'">
+                {{ valores[index] ? "Si" : "No" }}
+              </div>
+              <div v-if="typeof valores[index] !== 'boolean'">
+                {{ valores[index] }}
+              </div>
             </div>
           </v-list-item>
         </v-list-item-group>
