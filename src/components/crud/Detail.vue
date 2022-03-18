@@ -27,7 +27,10 @@
                 :key="subIndex"
                 v-for="(subItem, subIndex) in valores[index]"
               >
-                {{ Object.values(subItem).toLocaleString() }}
+                <div v-if="typeof subItem !== 'string'">
+                  {{ formaterObjetos(subItem, item) }}
+                </div>
+                <div v-if="typeof subItem === 'string'">- {{ subItem }}</div>
               </div>
             </div>
             <div v-else-if="typeof valores[index] !== 'object'">
@@ -66,6 +69,15 @@ export default {
         });
       });
       this.valores = Object.values(this.objeto);
+    },
+    formaterObjetos(subItem, key) {
+      let respuesta = "";
+      this.campos_detalle.forEach((campo) => {
+        if (campo.key && campo.text === key) {
+          respuesta = "- " + subItem[campo.key];
+        }
+      });
+      return respuesta;
     },
   },
   created() {

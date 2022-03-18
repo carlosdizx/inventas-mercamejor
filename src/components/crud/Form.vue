@@ -283,7 +283,7 @@ export default Vue.extend({
       const esValido = await this.validarFormulario();
       if (esValido) {
         await this.capturarCampos();
-        await PROCESPROCESAR_FORMULARIOAR_FORMULARIO(
+        await PROCESAR_FORMULARIO(
           this.coleccion,
           this.datos,
           this.campos,
