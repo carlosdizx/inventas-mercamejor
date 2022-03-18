@@ -1,4 +1,5 @@
 export const COLUMNAS_DETALLE = [
+  { text: "Código de seguridad", value: "id" },
   { text: "Tipo documento", value: "tipo_documento" },
   { text: "Documento", value: "documento" },
   { text: "Nombres", value: "nombres" },
