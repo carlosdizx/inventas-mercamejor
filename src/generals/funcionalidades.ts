@@ -21,14 +21,14 @@ export const FUNCIONES: any[] = [
     color: "red darken-1",
   },
   { id: 7, tipo: 2, icono: "mdi-shape-plus", titulo: "Productos" },
-  { id: 7, tipo: 2, icono: "mdi-warehouse", titulo: "Bodegas" },
+  { id: 8, tipo: 2, icono: "mdi-warehouse", titulo: "Bodegas" },
   {
     tipo: 1,
     titulo: "Modulo de usuarios",
     color: "indigo darken-1",
   },
   {
-    id: 7,
+    id: 9,
     tipo: 2,
     icono: "mdi-account-multiple",
     titulo: "Empleados",

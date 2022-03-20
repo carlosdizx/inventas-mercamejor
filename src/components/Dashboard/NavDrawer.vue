@@ -1,7 +1,9 @@
 <template>
   <v-navigation-drawer v-model="nav" relative app>
-    <v-list nav dense>
-      <ListadoFunciones />
+    <v-list shaped dense>
+      <v-list-item-group>
+        <ListadoFunciones v-on:item="item = $event" />
+      </v-list-item-group>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -17,6 +19,7 @@ export default Vue.extend({
   data: () => ({
     element: null,
     nav: false,
+    item: 0,
   }),
   computed: {
     ...mapState(["color"]),
@@ -27,6 +30,9 @@ export default Vue.extend({
     },
     change() {
       this.nav = !this.nav;
+    },
+    cambiarItem(id: number) {
+      console.log(id);
     },
   },
 });
