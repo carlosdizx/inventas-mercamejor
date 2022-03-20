@@ -45,6 +45,11 @@ const routes: Array<RouteConfig> = [
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
   },
+  {
+    path: "*",
+    name: "PageNotFound",
+    component: () => import("../views/PageNotFound.vue"),
+  },
 ];
 
 const router = new VueRouter({
