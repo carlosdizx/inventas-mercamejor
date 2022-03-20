@@ -5,7 +5,7 @@
       permitirColor
       :titulo="'Inventas - ' + nombre"
       :botones="botones"
-      @cambiarEstadoNavDrawer="changeStateBar"
+      @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" />
   </div>
@@ -14,7 +14,7 @@
 <script>
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
-import NavDrawer from "@/components/NavDrawer.vue";
+import NavDrawer from "@/components/Dashboard/NavDrawer.vue";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -29,11 +29,7 @@ export default Vue.extend({
     ],
   }),
   methods: {
-    itemSelector(idItem) {
-      this.item = idItem;
-      this.navigation = false;
-    },
-    changeStateBar() {
+    cambiarEstadoNavDrawer() {
       this.navigation = !this.navigation;
       this.$refs.NavDrawer.change();
     },

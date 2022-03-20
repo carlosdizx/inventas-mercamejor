@@ -1,11 +1,7 @@
 <template>
   <v-navigation-drawer v-model="nav" relative app>
     <v-list nav dense>
-      <h1>Item 1</h1>
-      <h1>Item 2</h1>
-      <h1>Item 3</h1>
-      <h1>Item 4</h1>
-      <h1>Item 5</h1>
+      <ListadoFunciones />
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -13,9 +9,11 @@
 <script lang="ts">
 import { mapState } from "vuex";
 import Vue from "vue";
+import ListadoFunciones from "@/components/Dashboard/ListadoFunciones.vue";
 
 export default Vue.extend({
   name: "NavDrawer",
+  components: { ListadoFunciones },
   data: () => ({
     element: null,
     nav: false,
