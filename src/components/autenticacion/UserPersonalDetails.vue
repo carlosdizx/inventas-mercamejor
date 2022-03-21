@@ -1,7 +1,11 @@
 <template>
   <v-card-text>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
-      <v-form class="my-2" @submit.prevent="" :disabled="cargando">
+      <v-form
+        class="my-2"
+        @submit.prevent="cambiarEtapa(2)"
+        :disabled="cargando"
+      >
         <validation-provider
           v-slot="{ errors }"
           name="Nombre completo"
@@ -55,6 +59,11 @@ export default Vue.extend({
   data: () => ({
     cargando: false,
   }),
+  methods: {
+    cambiarEtapa(etapa: number) {
+      this.$emit("etapa", etapa);
+    },
+  },
 });
 </script>
 

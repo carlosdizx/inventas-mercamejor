@@ -53,9 +53,12 @@
             v-model="pass2"
           />
         </validation-provider>
-        <v-chip v-if="invalid" class="ma-2" color="amber lighten-2">
-          Complete los campos solicitados <v-icon>mdi-alert</v-icon>
-        </v-chip>
+        <small>
+          <v-chip dense small v-if="invalid" color="orange lighten-2">
+            Complete los campos solicitados <v-icon>mdi-alert</v-icon>
+          </v-chip>
+        </small>
+
         <v-btn
           block
           color="success"
@@ -101,6 +104,7 @@ export default Vue.extend({
           });
           console.log(registro.user);
           console.log(registro._tokenResponse);
+          this.cambiarEtapa(3);
         } catch (e) {
           await NOTIFICAR_ERROR(e.code);
         }
@@ -112,6 +116,9 @@ export default Vue.extend({
           showConfirmButton: false,
         });
       this.cargando = !this.cargando;
+    },
+    cambiarEtapa(etapa: number) {
+      this.$emit("etapa", etapa);
     },
   },
 });

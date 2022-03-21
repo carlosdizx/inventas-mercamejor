@@ -7,8 +7,34 @@
         </v-avatar>
       </v-row>
     </v-card-subtitle>
-    <UserPersonalDetails />
-    <UserCredentials />
+    <!--  AQUÍ VA EL STEPSHADER   -->
+    <v-stepper v-model="etapa">
+      <v-stepper-header>
+        <v-stepper-step :complete="etapa > 1" step="1">
+          Datos personales
+        </v-stepper-step>
+
+        <v-divider></v-divider>
+
+        <v-stepper-step :complete="etapa > 2" step="2">
+          Credenciales de acceso
+        </v-stepper-step>
+
+        <v-divider></v-divider>
+      </v-stepper-header>
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <UserPersonalDetails v-on:etapa="etapa = $event" />
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <v-btn text @click="etapa = etapa - 1">
+            <v-icon>mdi-arrow-left</v-icon> Regresar
+          </v-btn>
+          <UserCredentials />
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
   </v-card>
 </template>
 
