@@ -19,8 +19,6 @@ import { CAMPOS } from "@/models/Usuarios/FormUsuario";
 import { COLUMNAS } from "@/models/Usuarios/ColumnasUsuario";
 import { COLUMNAS_DETALLE } from "@/models/Usuarios/ColumnasDetalleUsuario";
 
-import { TRAERDATOSUSUARIO } from "@/services/auth";
-
 import Vue from "vue";
 
 export default Vue.extend({
@@ -35,9 +33,6 @@ export default Vue.extend({
   methods: {
     async usuarioConectado() {
       const tempUID = localStorage.getItem("uid");
-      if (tempUID) {
-        this.datosUsuario = await TRAERDATOSUSUARIO(tempUID);
-      }
     },
   },
   created() {

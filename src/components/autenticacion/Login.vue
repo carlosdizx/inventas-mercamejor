@@ -47,14 +47,7 @@ export default Vue.extend({
     },
     async loginUser() {
       try {
-        const datosUsuario = (await INICIAR_SESION(this.email, this.passwd))
-          .user.providerData;
-        datosUsuario.map((dato: any) => {
-          dato.displayName = "Alguien";
-          dato.phoneNumber = "316000000";
-          dato.photoURL = "elpepe.png";
-          dato.roles = ["Admin", "Vendedor", "Otra verga"];
-        });
+        const datosUsuario = await INICIAR_SESION(this.email, this.passwd);
         console.log(datosUsuario);
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);

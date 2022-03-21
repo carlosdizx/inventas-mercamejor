@@ -25,14 +25,21 @@
         </v-stepper-header>
         <v-stepper-items>
           <v-stepper-content step="1">
-            <UserPersonalDetails v-on:etapa="etapa = $event" />
+            <UserPersonalDetails
+              v-on:etapa="etapa = $event"
+              v-on:datos="datos = $event"
+            />
           </v-stepper-content>
 
           <v-stepper-content step="2">
             <v-btn text @click="etapa = etapa - 1">
               <v-icon>mdi-arrow-left</v-icon> Regresar
             </v-btn>
-            <UserCredentials v-on:etapa="etapa = $event" />
+            <UserCredentials
+              v-on:etapa="etapa = $event"
+              v-on:credenciales="credenciales = $event"
+              @registrar="registrarUsuario"
+            />
           </v-stepper-content>
           <v-stepper-content step="3">
             <v-card loading>
@@ -50,13 +57,48 @@
 <script lang="ts">
 import UserPersonalDetails from "@/components/autenticacion/UserPersonalDetails.vue";
 import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
+import { ACTUALIZAR, ACTUALIZAR_CELULAR, CREAR_CUENTA } from "@/services/auth";
+import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
+import Swal from "sweetalert2";
 import Vue from "vue";
+import firebase from "firebase/compat";
+import User = firebase.User;
 export default Vue.extend({
   name: "Registro",
   components: { UserPersonalDetails, UserCredentials },
   data: () => ({
     etapa: 1,
+    datos: {
+      nombre: "",
+      documento: "",
+    },
+    credenciales: { correo: "", password: "" },
   }),
+  methods: {
+    async registrarUsuario() {
+      try {
+        const respuesta = await CREAR_CUENTA(
+          this.credenciales.correo,
+          this.credenciales.password
+        );
+        const usuario = respuesta.user;
+        const datos = {
+          nombre: this.datos.nombre,
+          documento: this.datos.documento,
+        };
+        await ACTUALIZAR(usuario, datos);
+        await Swal.fire({
+          timer: 2000,
+          title: "Registro exitoso",
+          icon: "success",
+          showConfirmButton: false,
+        });
+      } catch (e) {
+        await NOTIFICAR_ERROR(e.code);
+        console.log(e);
+      }
+    },
+  },
 });
 </script>
 

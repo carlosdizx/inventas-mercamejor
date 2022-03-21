@@ -18,6 +18,7 @@
             prepend-icon="mdi-account"
             counter
             :error-messages="errors"
+            v-model="datos.nombre"
           />
         </validation-provider>
         <validation-provider
@@ -32,6 +33,7 @@
             prepend-icon="mdi-account"
             counter
             :error-messages="errors"
+            v-model="datos.documento"
           />
         </validation-provider>
         <v-chip v-if="invalid" class="ma-2" color="amber lighten-2">
@@ -58,10 +60,12 @@ export default Vue.extend({
   name: "UserPersonalDetails",
   data: () => ({
     cargando: false,
+    datos: {},
   }),
   methods: {
     cambiarEtapa(etapa: number) {
       this.$emit("etapa", etapa);
+      this.$emit("datos", this.datos);
     },
   },
 });

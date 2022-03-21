@@ -75,9 +75,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { CREAR_CUENTA } from "@/services/auth";
 import Swal from "sweetalert2";
-import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 
 export default Vue.extend({
   name: "UserCredentials",
@@ -103,6 +101,12 @@ export default Vue.extend({
     },
     cambiarEtapa(etapa: number) {
       this.$emit("etapa", etapa);
+      const credenciales = {
+        correo: this.correo,
+        password: this.pass1,
+      };
+      this.$emit("credenciales", credenciales);
+      this.$emit("registrar");
     },
   },
 });

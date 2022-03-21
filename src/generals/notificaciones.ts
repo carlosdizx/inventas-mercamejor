@@ -29,5 +29,12 @@ export const NOTIFICAR_ERROR = async (codigo: any) => {
       showConfirmButton: false,
       timer: 2000,
     });
+  } else if (codigo === "auth/admin-restricted-operation") {
+    await Swal.fire({
+      title: "Operación bloqueada!",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }
 };
