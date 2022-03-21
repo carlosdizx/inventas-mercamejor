@@ -18,7 +18,7 @@
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-btn block color="primary">Iniciar sesión</v-btn>
+      <v-btn @click="loginUser()" block color="primary">Iniciar sesión</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -26,15 +26,23 @@
 <script lang="ts">
 import Vue from "vue";
 
+import { LOGIN } from "@/services/auth";
+
 export default Vue.extend({
   name: "Login",
   data: () => ({
     validacion: true,
     showPass: false,
+    email: "",
+    passwd: "",
   }),
   methods: {
     mostrarPassword(): boolean {
       return (this.showPass = !this.showPass);
+    },
+    async loginUser() {
+      const uid = await LOGIN(this.email, this.passwd);
+      console.log(uid);
     },
   },
 });
