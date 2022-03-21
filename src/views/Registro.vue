@@ -7,16 +7,18 @@
         </v-avatar>
       </v-row>
     </v-card-subtitle>
+    <UserPersonalDetails />
     <UserCredentials />
   </v-card>
 </template>
 
 <script lang="ts">
+import UserPersonalDetails from "@/components/autenticacion/UserPersonalDetails.vue";
 import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
 import Vue from "vue";
 export default Vue.extend({
   name: "Registro",
-  components: { UserCredentials },
+  components: { UserPersonalDetails, UserCredentials },
   data: () => ({
     etapa: 1,
   }),

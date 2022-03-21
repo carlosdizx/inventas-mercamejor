@@ -56,10 +56,8 @@ export default Vue.extend({
           dato.roles = ["Admin", "Vendedor", "Otra verga"];
         });
         console.log(datosUsuario);
-        user
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
-        console.log(e.code);
       }
     },
   },
