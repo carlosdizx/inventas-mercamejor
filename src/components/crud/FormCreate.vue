@@ -153,8 +153,6 @@ import {
   CAPTURAR_CAMPOS,
   PROCESAR_FORMULARIO,
 } from "@/generals/procesamientos";
-import { GUARDAR } from "@/services/crud";
-import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "FormCreate",

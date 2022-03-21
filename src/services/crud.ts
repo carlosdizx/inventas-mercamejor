@@ -1,13 +1,13 @@
 import {
+  addDoc,
   collection,
-  getDocs,
+  deleteDoc,
   doc,
   getDoc,
-  deleteDoc,
-  addDoc,
-  setDoc,
-  query,
+  getDocs,
   orderBy,
+  query,
+  setDoc,
   startAt,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";

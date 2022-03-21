@@ -57,12 +57,11 @@
 <script lang="ts">
 import UserPersonalDetails from "@/components/autenticacion/UserPersonalDetails.vue";
 import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
-import { ACTUALIZAR, ACTUALIZAR_CELULAR, CREAR_CUENTA } from "@/services/auth";
+import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import Swal from "sweetalert2";
 import Vue from "vue";
-import firebase from "firebase/compat";
-import User = firebase.User;
+
 export default Vue.extend({
   name: "Registro",
   components: { UserPersonalDetails, UserCredentials },

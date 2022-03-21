@@ -246,9 +246,9 @@ import Swal from "sweetalert2";
 import Vue from "vue";
 import {
   VALIDAR_COMBO,
-  VALIDAR_INPUT,
-  VALIDAR_FORM_REGISTRO,
   VALIDAR_FORM_ACTUALIZACION,
+  VALIDAR_FORM_REGISTRO,
+  VALIDAR_INPUT,
 } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,

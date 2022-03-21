@@ -1,4 +1,5 @@
 import { LISTAR_ROLES } from "@/models/Usuarios/Funciones";
+
 const roles: any[] = [];
 async function listarRoles() {
   (await LISTAR_ROLES()).forEach((rol) => roles.push(rol.data()));

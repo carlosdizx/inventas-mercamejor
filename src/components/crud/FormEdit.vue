@@ -158,8 +158,6 @@ import {
   CAPTURAR_CAMPOS,
   PROCESAR_FORMULARIO,
 } from "@/generals/procesamientos";
-import { EDITAR } from "@/services/crud";
-import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "FormEdit",

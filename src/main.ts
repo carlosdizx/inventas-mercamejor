@@ -7,9 +7,8 @@ import "@babel/polyfill";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
 // ---------------------- REGLAS VALIDACIÓN CAMPOS ----------------------
-import { ValidationProvider, ValidationObserver } from "vee-validate";
-import { required, digits, email, max, min } from "vee-validate/dist/rules";
-import { extend } from "vee-validate";
+import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { digits, email, max, min, required } from "vee-validate/dist/rules";
 
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("ValidationProvider", ValidationProvider);
