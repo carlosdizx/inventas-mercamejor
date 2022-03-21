@@ -31,11 +31,13 @@ export default Vue.extend({
     campos_detalle: COLUMNAS_DETALLE,
     campos_form: CAMPOS,
     datosUsuario: {},
-    uid: null,
   }),
   methods: {
     async usuarioConectado() {
-      this.datosUsuario = await TRAERDATOSUSUARIO(this.uid);
+      const tempUID = localStorage.getItem("uid");
+      if (tempUID) {
+        this.datosUsuario = await TRAERDATOSUSUARIO(tempUID);
+      }
     },
   },
   created() {

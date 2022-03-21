@@ -7,26 +7,31 @@
       />
     </v-card-title>
     <v-card-text>
-      <v-form ref="form" v-model="validacion" lazy-validation>
-        <v-text-field prepend-icon="mdi-account" />
+      <v-form
+        ref="form"
+        v-model="validacion"
+        lazy-validation
+        @submit.prevent="loginUser"
+      >
+        <v-text-field prepend-icon="mdi-account" v-model="email" />
         <v-text-field
           prepend-icon="mdi-lock"
           :type="showPass ? 'text' : 'password'"
           @click:append="mostrarPassword"
           :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+          v-model="passwd"
         />
+        <v-btn type="submit" block color="primary">Iniciar sesión</v-btn>
       </v-form>
     </v-card-text>
-    <v-card-actions>
-      <v-btn @click="loginUser()" block color="primary">Iniciar sesión</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import { LOGIN } from "@/services/auth";
+import { INICIAR_SESION } from "@/services/auth";
+import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 
 export default Vue.extend({
   name: "Login",
@@ -41,8 +46,21 @@ export default Vue.extend({
       return (this.showPass = !this.showPass);
     },
     async loginUser() {
-      const uid = await LOGIN(this.email, this.passwd);
-      console.log(uid);
+      try {
+        const datosUsuario = (await INICIAR_SESION(this.email, this.passwd))
+          .user.providerData;
+        datosUsuario.map((dato: any) => {
+          dato.displayName = "Alguien";
+          dato.phoneNumber = "316000000";
+          dato.photoURL = "elpepe.png";
+          dato.roles = ["Admin", "Vendedor", "Otra verga"];
+        });
+        console.log(datosUsuario);
+        user
+      } catch (e) {
+        await NOTIFICAR_ERROR(e.code);
+        console.log(e.code);
+      }
     },
   },
 });

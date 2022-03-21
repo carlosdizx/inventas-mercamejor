@@ -8,5 +8,26 @@ export const NOTIFICAR_ERROR = async (codigo: any) => {
       showConfirmButton: false,
       timer: 1500,
     });
+  } else if (codigo === "auth/invalid-email") {
+    await Swal.fire({
+      title: "Correo invalido",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else if (codigo === "auth/user-not-found") {
+    await Swal.fire({
+      title: "Correo no registrado",
+      icon: "warning",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else if (codigo === "auth/user-disabled") {
+    await Swal.fire({
+      title: "Este usuario esta desabilitado",
+      icon: "warning",
+      showConfirmButton: false,
+      timer: 2000,
+    });
   }
 };
