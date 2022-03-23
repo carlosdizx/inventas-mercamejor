@@ -19,7 +19,6 @@ export const CAMPOS = [
     name: "miembro",
     model: "",
     rules: "required",
-    readOnly: true,
   },
   {
     label: "¿Qué hiciste?",
@@ -29,7 +28,6 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
-    readOnly: true,
   },
   {
     label: "¿Qué dificultades?",
@@ -39,7 +37,6 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
-    readOnly: true,
   },
   {
     label: "¿Qué harás?",
@@ -49,7 +46,6 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
-    readOnly: true,
   },
   {
     label: "Calificación",

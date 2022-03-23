@@ -50,7 +50,7 @@
             />
           </template>
           <template v-slot:item.detalle="{ item }">
-            <Detail :campos_detalle="campos_detalle" :objeto="item" />
+            <FormView :campos_form="campos_form" :item="item" />
           </template>
           <template v-slot:item.calificacion="{ item }">
             <v-tooltip color="primary" bottom>
@@ -133,13 +133,13 @@ import Vue from "vue";
 import { ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import { tipo_dato } from "@/generals/formats";
-import Detail from "@/components/crud/Detail.vue";
 import FormCreate from "@/components/crud/FormCreate.vue";
 import FormEdit from "@/components/crud/FormEdit.vue";
+import FormView from "@/components/crud/FormView.vue";
 
 export default Vue.extend({
   name: "Tabla",
-  components: { Detail, FormCreate, FormEdit },
+  components: { FormCreate, FormEdit, FormView },
   data: () => ({
     buscado: "",
     filas: [""],
