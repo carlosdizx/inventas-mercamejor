@@ -36,6 +36,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/InicioSesion.vue"),
   },
   {
+    path: "/sprints",
+    name: "Sprints",
+    component: () => import("../views/Sprints.vue"),
+  },
+  {
     path: "/registro",
     name: "Registro",
     component: () => import("../views/Registro.vue"),
