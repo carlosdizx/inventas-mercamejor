@@ -13,7 +13,9 @@
         <h1 class="text-center my-3">
           Formulario de edición para {{ titulo }}
         </h1>
-        <h6 v-if="item">{{ item.id }}</h6>
+        <h3 class="text-center my-3" v-if="item">
+          Código de seguridad: {{ item.id }}
+        </h3>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-form
             class="my-2"

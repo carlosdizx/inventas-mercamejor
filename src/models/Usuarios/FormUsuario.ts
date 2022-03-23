@@ -1,4 +1,4 @@
-import { LISTAR_ROLES } from "@/models/Usuarios/Funciones";
+import { LISTAR_ROLES } from "@/generals/Funciones";
 
 const roles: any[] = [];
 async function listarRoles() {

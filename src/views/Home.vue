@@ -6,7 +6,6 @@
       titulo="usuarios"
       :columnas="columnas"
       llave="documento"
-      :campos_detalle="campos_detalle"
       :campos_form="campos_form"
       elimacion
     />
@@ -17,7 +16,6 @@
 import Tabla from "@/components/crud/Tabla.vue";
 import { CAMPOS } from "@/models/Usuarios/FormUsuario";
 import { COLUMNAS } from "@/models/Usuarios/ColumnasUsuario";
-import { COLUMNAS_DETALLE } from "@/models/Usuarios/ColumnasDetalleUsuario";
 
 import Vue from "vue";
 
@@ -26,7 +24,6 @@ export default Vue.extend({
   components: { Tabla },
   data: () => ({
     columnas: COLUMNAS,
-    campos_detalle: COLUMNAS_DETALLE,
     campos_form: CAMPOS,
     datosUsuario: {},
   }),
