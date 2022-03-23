@@ -1,4 +1,4 @@
-import { EDITAR, GUARDAR } from "@/services/crud";
+import {EDITAR, GUARDAR} from "@/services/crud";
 import Swal from "sweetalert2";
 
 export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {

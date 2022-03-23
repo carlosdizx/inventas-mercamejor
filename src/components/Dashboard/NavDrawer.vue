@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { mapState } from "vuex";
+import {mapState} from "vuex";
 import Vue from "vue";
 import ListadoFunciones from "@/components/Dashboard/ListadoFunciones.vue";
 
