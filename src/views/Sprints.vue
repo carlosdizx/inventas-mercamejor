@@ -2,8 +2,8 @@
   <v-container>
     <Tabla
       class="my-2"
-      coleccion="springs"
-      titulo="springs"
+      coleccion="sprints"
+      titulo="sprints"
       :columnas="columnas"
       llave="semana"
       :campos_form="campos_form"
