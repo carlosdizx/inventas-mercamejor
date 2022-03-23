@@ -1,9 +1,9 @@
 export const COLUMNAS = [
-  { text: "Detalle", value: "detalle" },
-  { text: "Documento", value: "documento" },
-  { text: "Nombres", value: "nombres" },
-  { text: "Apellidos", value: "apellidos" },
-  { text: "Correo", value: "correo" },
-  { text: "Estado", value: "estado" },
+  { text: "Semana", value: "semana" },
+  { text: "Integrante", value: "miembro" },
+  { text: "¿Qué hiciste?", value: "resumen" },
+  { text: "¿Qué dificultades?", value: "dificultades" },
+  { text: "¿Qué harás?", value: "realizar" },
+  { text: "Calificación", value: "calificacion" },
   { text: "Acciones", value: "acciones" },
 ];

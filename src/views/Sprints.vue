@@ -18,12 +18,13 @@ import Tabla from "@/components/crud/Tabla.vue";
 import { CAMPOS } from "@/models/Sprints/FormSprint";
 
 import Vue from "vue";
+import { COLUMNAS } from "@/models/Sprints/ColumnasUsuario";
 
 export default Vue.extend({
   name: "Sprints",
   components: { Tabla },
   data: () => ({
-    columnas: [],
+    columnas: COLUMNAS,
     campos_detalle: [],
     campos_form: CAMPOS,
     datosUsuario: {},
