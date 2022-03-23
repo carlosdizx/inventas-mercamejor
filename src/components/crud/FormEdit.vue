@@ -55,6 +55,8 @@
                   :items="campo.items"
                   :item-text="campo.llave"
                   :multiple="campo.multiple"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
                   hide-selected
                   small-chips
                   dense
@@ -74,6 +76,8 @@
                   outlined
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
                   dense
                   counter
                   v-model="item[campo.name]"
@@ -91,6 +95,8 @@
                   inset
                   :label="campo.label"
                   v-model="item[campo.name]"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -105,6 +111,8 @@
                   row
                   v-model="item[campo.name]"
                   :error-messages="errors"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
                 >
                   <br />
                   <v-radio
@@ -127,11 +135,32 @@
                   :label="campo.label"
                   :multiple="campo.multiple"
                   :solo="campo.solo"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
                   counter
                   outlined
                   dense
                   v-model="item[campo.name]"
                   :error-messages="errors"
+                />
+              </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 7"
+              >
+                <v-slider
+                  :label="campo.label"
+                  :step="campo.step"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
+                  :min="campo.min"
+                  :max="campo.max"
+                  thumb-label
+                  ticks
+                  :error-messages="errors"
+                  v-model="item[campo.name]"
                 />
               </validation-provider>
             </div>

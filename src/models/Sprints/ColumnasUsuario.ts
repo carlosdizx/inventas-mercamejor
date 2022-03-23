@@ -1,4 +1,5 @@
 export const COLUMNAS = [
+  { text: "Detalle", value: "detalle" },
   { text: "Semana", value: "semana" },
   { text: "Integrante", value: "miembro" },
   { text: "¿Qué hiciste?", value: "resumen" },

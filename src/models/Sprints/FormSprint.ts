@@ -19,6 +19,7 @@ export const CAMPOS = [
     name: "miembro",
     model: "",
     rules: "required",
+    readOnly: true,
   },
   {
     label: "¿Qué hiciste?",
@@ -28,6 +29,7 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
+    readOnly: true,
   },
   {
     label: "¿Qué dificultades?",
@@ -37,6 +39,7 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
+    readOnly: true,
   },
   {
     label: "¿Qué harás?",
@@ -46,16 +49,15 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
+    readOnly: true,
   },
   {
     label: "Calificación",
-    prepend_icon: "mdi-counter",
-    type: 6,
-    multiple: false,
-    solo: true,
-    items: [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0],
     name: "calificacion",
-    model: "",
+    type: 7,
+    min: 0,
+    max: 5,
+    step: 0.1,
     rules: "required",
   },
 ];

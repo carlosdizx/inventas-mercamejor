@@ -129,6 +129,25 @@
                   :error-messages="errors"
                 />
               </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 7"
+              >
+                <v-slider
+                  :label="campo.label"
+                  :step="campo.step"
+                  :readonly="campo.readOnly"
+                  :disabled="campo.readOnly"
+                  :min="campo.min"
+                  :max="campo.max"
+                  thumb-label
+                  ticks
+                  :error-messages="errors"
+                  v-model="campo.model"
+                />
+              </validation-provider>
             </div>
             <v-btn
               block

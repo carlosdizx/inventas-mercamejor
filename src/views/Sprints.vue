@@ -8,7 +8,6 @@
       llave="semana"
       :campos_detalle="campos_detalle"
       :campos_form="campos_form"
-      elimacion
     />
   </v-container>
 </template>
@@ -19,13 +18,14 @@ import { CAMPOS } from "@/models/Sprints/FormSprint";
 
 import Vue from "vue";
 import { COLUMNAS } from "@/models/Sprints/ColumnasUsuario";
+import { COLUMNAS_DETALLE } from "@/models/Sprints/ColumnasDetalleUsuario";
 
 export default Vue.extend({
   name: "Sprints",
   components: { Tabla },
   data: () => ({
     columnas: COLUMNAS,
-    campos_detalle: [],
+    campos_detalle: COLUMNAS_DETALLE,
     campos_form: CAMPOS,
     datosUsuario: {},
   }),
