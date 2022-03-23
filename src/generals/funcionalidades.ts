@@ -33,4 +33,15 @@ export const FUNCIONES: any[] = [
     icono: "mdi-account-multiple",
     titulo: "Empleados",
   },
+  {
+    tipo: 1,
+    titulo: "Modulo de usuarios",
+    color: "purple darken-1",
+  },
+  {
+    id: 10,
+    tipo: 2,
+    icono: "mdi-calendar-account",
+    titulo: "Sprints",
+  },
 ];

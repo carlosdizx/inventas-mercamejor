@@ -7,18 +7,20 @@
       :botones="botones"
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
-    <NavDrawer ref="NavDrawer" />
+    <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <Sprints v-if="item === 10" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
-import NavDrawer from "@/components/Dashboard/NavDrawer.vue";
+import NavDrawer from "@/components/dashboard/NavDrawer.vue";
+import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer },
+  components: { Toolbar, NavDrawer, Sprints },
   data: () => ({
     item: 0,
     navigation: true,

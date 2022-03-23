@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {FUNCIONES} from "@/generals/funcionalidades";
+import { FUNCIONES } from "@/generals/funcionalidades";
 
 export default Vue.extend({
   name: "ListadoFunciones",
@@ -33,5 +33,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped></style>
