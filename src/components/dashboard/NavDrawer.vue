@@ -1,7 +1,6 @@
 <template>
   <v-navigation-drawer v-model="nav" relative app>
     <v-list shaped dense>
-      {{ item }}
       <v-list-item-group>
         <ListadoFunciones v-on:item="cambiarItem($event)" />
       </v-list-item-group>

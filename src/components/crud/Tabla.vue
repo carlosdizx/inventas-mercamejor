@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="elevation-5" color="black">
+    <v-card class="elevation-5" :color="color">
       <v-card-title class="white--text">Listado de {{ titulo }} </v-card-title>
       <v-card-text>
         <v-data-table
@@ -136,6 +136,7 @@ import { tipo_dato } from "@/generals/formats";
 import FormCreate from "@/components/crud/FormCreate.vue";
 import FormEdit from "@/components/crud/FormEdit.vue";
 import FormView from "@/components/crud/FormView.vue";
+import { mapState } from "vuex";
 
 export default Vue.extend({
   name: "Tabla",
@@ -144,6 +145,9 @@ export default Vue.extend({
     buscado: "",
     filas: [""],
   }),
+  computed: {
+    ...mapState(["color"]),
+  },
   props: {
     coleccion: String,
     titulo: String,
