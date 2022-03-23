@@ -6,10 +6,10 @@
         <v-data-table
           :headers="columnas"
           :items="filas"
-          :item-key="llave"
           class="elevation-2"
           :search="buscado"
           :custom-filter="filtrarPorLlave"
+          fixed-header
         >
           <template v-slot:top>
             <v-row class="mx-2">

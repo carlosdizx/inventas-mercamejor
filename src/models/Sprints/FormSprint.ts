@@ -7,7 +7,6 @@ export const CAMPOS = [
     name: "semana",
     model: "",
     rules: "required",
-    readOnly: true,
   },
   {
     label: "Miembro del equipo",
