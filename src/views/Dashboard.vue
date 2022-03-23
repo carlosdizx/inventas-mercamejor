@@ -33,7 +33,10 @@ export default Vue.extend({
   methods: {
     cambiarEstadoNavDrawer() {
       this.navigation = !this.navigation;
-      this.$refs.NavDrawer.change();
+      const nav_drawer: any = this.$refs.NavDrawer;
+      if (nav_drawer) {
+        nav_drawer.cambiarEstado();
+      }
     },
   },
 });

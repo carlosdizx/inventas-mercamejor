@@ -25,7 +25,7 @@ export default Vue.extend({
     ...mapState(["color"]),
   },
   methods: {
-    change() {
+    cambiarEstado() {
       this.nav = !this.nav;
     },
     cambiarItem(id: number) {
