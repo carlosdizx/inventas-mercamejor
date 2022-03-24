@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="nav" fixed>
+  <v-navigation-drawer v-model="nav" fixed app>
     <v-list shaped dense>
       <v-list-item-group>
         <ListadoFunciones v-on:item="cambiarItem($event)" />
@@ -18,7 +18,7 @@ export default Vue.extend({
   components: { ListadoFunciones },
   data: () => ({
     element: null,
-    nav: false,
+    nav: true,
     item: 0,
   }),
   computed: {
