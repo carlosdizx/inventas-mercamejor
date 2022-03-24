@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="nav" fixed app>
+  <v-navigation-drawer v-model="nav" fixed>
     <v-list shaped dense>
       <v-list-item-group>
         <ListadoFunciones v-on:item="cambiarItem($event)" />
