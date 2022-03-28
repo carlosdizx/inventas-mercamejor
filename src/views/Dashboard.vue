@@ -9,6 +9,8 @@
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
     <Sprints v-if="item === 10" />
+    <Productos v-if="item === 11" />
+    <Proveedores v-if="item === 12" />
   </div>
 </template>
 
@@ -17,10 +19,12 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
+import Productos from "@/components/dashboard/modulos/Productos.vue";
+import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer, Sprints },
+  components: { Toolbar, NavDrawer, Sprints, Productos, Proveedores },
   data: () => ({
     item: 0,
     navigation: true,

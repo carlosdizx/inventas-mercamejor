@@ -8,7 +8,14 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
 // ---------------------- REGLAS VALIDACIÓN CAMPOS ----------------------
 import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
-import { digits, email, max, min, required } from "vee-validate/dist/rules";
+import {
+  digits,
+  email,
+  max,
+  min,
+  required,
+  numeric,
+} from "vee-validate/dist/rules";
 
 Vue.component("ValidationObserver", ValidationObserver);
 Vue.component("ValidationProvider", ValidationProvider);
@@ -19,7 +26,7 @@ extend("digits", {
 });
 extend("required", {
   ...required,
-  message: "{_field_}: no puede estar vacio",
+  message: "{_field_}: no puede estar vacio, o es un valor errado",
 });
 extend("max", {
   ...max,
@@ -32,6 +39,10 @@ extend("min", {
 extend("email", {
   ...email,
   message: "Correo con formato incorrecto",
+});
+extend("numeric", {
+  ...numeric,
+  message: "Numero incorrecto",
 });
 
 Vue.config.productionTip = false;
