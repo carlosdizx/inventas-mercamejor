@@ -8,7 +8,7 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
-    <Sprints v-if="item === 10" />
+    <Sprints v-show="item === 10" />
     <Productos v-if="item === 11" />
     <Proveedores v-if="item === 12" />
   </div>

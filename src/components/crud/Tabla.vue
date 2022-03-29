@@ -12,8 +12,20 @@
           fixed-header
         >
           <template v-slot:top>
-            <v-row class="mx-2">
-              <v-col cols="10">
+            <v-row class="mx-1">
+              <v-col cols="1">
+                <v-tooltip color="orange darken-4" bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on">
+                      <v-btn fab small @click="forzarRecarga">
+                        <v-icon>mdi-reload</v-icon>
+                      </v-btn>
+                    </span>
+                  </template>
+                  <span>Forzar a recargar <v-icon dark>mdi-alert</v-icon></span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="9">
                 <v-text-field
                   v-model="buscado"
                   :label="'Buscar por \'' + llave + '\''"
@@ -208,6 +220,9 @@ export default Vue.extend({
           });
         }
       });
+    },
+    forzarRecarga() {
+      this.$router.go(0);
     },
   },
   async created() {
