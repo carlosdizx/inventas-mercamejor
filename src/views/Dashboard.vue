@@ -8,6 +8,7 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <RegistroUsuarios v-if="item === 9" />
     <Sprints v-if="item === 10" />
   </div>
 </template>
@@ -16,11 +17,12 @@
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
+import RegistroUsuarios from "@/components/dashboard/modulos/RegistroUsuarios.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer, Sprints },
+  components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios },
   data: () => ({
     item: 0,
     navigation: true,
