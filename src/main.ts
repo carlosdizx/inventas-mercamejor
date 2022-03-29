@@ -47,6 +47,9 @@ extend("numeric", {
 
 Vue.config.productionTip = false;
 
+import VuetifyMoney from "@/plugins/vuetify-money";
+Vue.use(VuetifyMoney);
+
 new Vue({
   router,
   store,

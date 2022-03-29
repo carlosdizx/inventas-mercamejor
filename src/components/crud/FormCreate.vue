@@ -148,6 +148,23 @@
                   v-model="campo.model"
                 />
               </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 8"
+              >
+                <vuetify-money
+                  :label="campo.label"
+                  :prepend-icon="campo.prepend_icon"
+                  :type="campo.format"
+                  dense
+                  outlined
+                  counter
+                  v-model="campo.model"
+                  :error-messages="errors"
+                />
+              </validation-provider>
             </div>
             <v-btn
               block
