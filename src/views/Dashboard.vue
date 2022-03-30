@@ -8,9 +8,8 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
-    <Sprints v-show="item === 10" />
-    <Productos v-if="item === 11" />
-    <Proveedores v-if="item === 12" />
+    <Sprints v-if="item === 10" />
+    <RegistroUsuarios v-if="item === 9" />
   </div>
 </template>
 
@@ -19,12 +18,11 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
-import Productos from "@/components/dashboard/modulos/Productos.vue";
-import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
+import RegistroUsuarios from "@/components/dashboard/modulos/RegistroUsuarios.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer, Sprints, Productos, Proveedores },
+  components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios },
   data: () => ({
     item: 0,
     navigation: true,
