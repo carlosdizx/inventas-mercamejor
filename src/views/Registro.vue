@@ -81,10 +81,7 @@ export default Vue.extend({
           this.credenciales.password
         );
         const usuario = respuesta.user;
-        const datos = {
-          nombre: this.datos.nombre,
-          documento: this.datos.documento,
-        };
+        const datos = JSON.stringify(this.datos);
         await ACTUALIZAR(usuario, datos);
         await Swal.fire({
           timer: 2000,

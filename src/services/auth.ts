@@ -13,6 +13,5 @@ export const INICIAR_SESION = async (correo: string, password: string) =>
 
 export const ACTUALIZAR = async (user: any, datos: any) =>
   await updateProfile(user, {
-    displayName: datos.nombre,
-    photoURL: "https://documento." + datos.documento,
+    displayName: datos,
   });

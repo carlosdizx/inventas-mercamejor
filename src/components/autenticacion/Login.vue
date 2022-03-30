@@ -32,6 +32,7 @@ import Vue from "vue";
 
 import { INICIAR_SESION } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
+import userCredentials from "@/components/autenticacion/UserCredentials.vue";
 
 export default Vue.extend({
   name: "Login",
@@ -47,8 +48,14 @@ export default Vue.extend({
     },
     async loginUser() {
       try {
-        const datosUsuario = await INICIAR_SESION(this.email, this.passwd);
-        console.log(datosUsuario);
+        const userCredential = await INICIAR_SESION(this.email, this.passwd);
+        const datos = userCredential.user.providerData[0].displayName;
+        if (datos) {
+          const datosParseados = JSON.parse(datos);
+          console.log(datosParseados);
+        } else {
+          console.log("Fallo");
+        }
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
       }
