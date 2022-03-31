@@ -26,7 +26,7 @@ export default Vue.extend({
   name: "Dashboard",
   components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios },
   data: () => ({
-    item: 0,
+    item: 9,
     navigation: true,
     nombre: "Mercamejor",
     botones: [
