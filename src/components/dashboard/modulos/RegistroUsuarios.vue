@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>Registrar Usuarios</v-card-title>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form class="my-2" @submit.prevent="crearCuenta" :disabled="cargando">
+        <v-form class="my-2" @submit.prevent="crearCuenta">
           <v-card-text>
             <v-row class="mr-5 ml-5">
               <v-col>
@@ -88,7 +88,7 @@
                 >
                   <v-text-field
                     type="email"
-                    v-model="datosUsuario.email"
+                    v-model="datosAuth.email"
                     label="Correo Electrónico"
                     :error-messages="errors"
                   ></v-text-field>
@@ -134,7 +134,7 @@
                 >
                   <v-text-field
                     type="password"
-                    v-model="datosUsuario.passwd"
+                    v-model="datosAuth.passwd"
                     label="Contraseña"
                     :items="generosDisponibles"
                     :error-messages="errors"
@@ -218,11 +218,7 @@
             >
               Cancelar
             </v-btn>
-            <v-btn
-              color="green darken-1"
-              text
-              @click="mostrarConfirmacion = false"
-            >
+            <v-btn color="green darken-1" text @click="registrarUsuario()">
               Guardar Usuario
             </v-btn>
           </v-card-actions>
@@ -234,11 +230,16 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
+import { CREAR_CUENTA } from "@/services/auth";
+import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
+
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
   data: () => ({
-    rolesDisponibles: ["Empleado", "Administrador"],
+    rolesDisponibles: ["Empleado"], //"Administrador"],
     generosDisponibles: ["Masculino", "Femenino", "Otro"],
     estadosDisponible: ["Habilitado", "Desabilitado"],
     datosUsuario: {
@@ -247,10 +248,12 @@ export default Vue.extend({
       apellidos: "",
       documento: "",
       celular: "",
-      email: "",
       genero: "",
+      estado: "Habilitado",
+    },
+    datosAuth: {
+      email: "",
       passwd: "",
-      estado: "",
     },
     datosVerificacion: {
       confirmarEmail: "",
@@ -261,33 +264,67 @@ export default Vue.extend({
   computed: {
     validarCorreo() {
       if (
-        this.datosUsuario.email.length === 0 &&
+        this.datosAuth.email.length === 0 &&
         this.datosVerificacion.confirmarEmail.length === 0
       )
         return false;
       if (
-        this.datosUsuario.email.length >= 6 &&
+        this.datosAuth.email.length >= 6 &&
         this.datosVerificacion.confirmarEmail.length >= 6 &&
-        this.datosUsuario.email === this.datosVerificacion.confirmarEmail
+        this.datosAuth.email === this.datosVerificacion.confirmarEmail
       )
         return false;
       return true;
     },
     validarContra() {
       if (
-        this.datosUsuario.passwd.length === 0 &&
+        this.datosAuth.passwd.length === 0 &&
         this.datosVerificacion.confirmarPasswd.length === 0
       )
         return false;
       if (
-        this.datosUsuario.passwd.length >= 6 &&
+        this.datosAuth.passwd.length >= 6 &&
         this.datosVerificacion.confirmarPasswd.length >= 6 &&
-        this.datosUsuario.passwd === this.datosVerificacion.confirmarPasswd
+        this.datosAuth.passwd === this.datosVerificacion.confirmarPasswd
       )
         return false;
       return true;
     },
   },
-  methods: {},
+  methods: {
+    async registrarUsuario() {
+      try {
+        const respuesta = await CREAR_CUENTA(
+          this.datosAuth.email,
+          this.datosAuth.passwd
+        );
+        const uid = respuesta.user.uid;
+        await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
+        this.mostrarConfirmacion = false;
+        this.limpiarDatos();
+        await Swal.fire({
+          timer: 2000,
+          title: "Registro exitoso",
+          icon: "success",
+          showConfirmButton: false,
+        });
+      } catch (e) {
+        await NOTIFICAR_ERROR(e.code);
+        console.log(e);
+      }
+    },
+    limpiarDatos() {
+      this.datosUsuario.rol = "";
+      this.datosUsuario.nombres = "";
+      this.datosUsuario.apellidos = "";
+      this.datosUsuario.documento = "";
+      this.datosUsuario.celular = "";
+      this.datosUsuario.genero = "";
+      this.datosAuth.email = "";
+      this.datosAuth.passwd = "";
+      this.datosVerificacion.confirmarEmail = "";
+      this.datosVerificacion.confirmarPasswd = "";
+    },
+  },
 });
 </script>

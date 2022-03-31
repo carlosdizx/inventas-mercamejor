@@ -8,8 +8,8 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
-    <Sprints v-if="item === 10" />
     <RegistroUsuarios v-if="item === 9" />
+    <Sprints v-if="item === 12" />
     <v-btn @click="logout()">Logout</v-btn>
   </div>
 </template>
