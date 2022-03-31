@@ -20,6 +20,17 @@ export const CAMPOS = [
     rules: "required",
   },
   {
+    label: "Colaboradores",
+    prepend_icon: "mdi-account-group",
+    type: 6,
+    multiple: true,
+    solo: false,
+    items: ["Carlos Díaz", "Edwin Valencia", "Cristhian Rosas", "Brayan Tobar"],
+    name: "colaboradores",
+    model: "",
+    rules: "",
+  },
+  {
     label: "¿Qué hiciste?",
     prepend_icon: "mdi-info",
     type: 3,
@@ -45,6 +56,15 @@ export const CAMPOS = [
     model: "",
     multiple: true,
     rules: "required|min:5|max:1000",
+  },
+  {
+    label: "Semana de entrega de actividades",
+    prepend_icon: "mdi-calendar-week",
+    type: 1,
+    format: "week",
+    name: "semana_entrega",
+    model: "",
+    rules: "required",
   },
   {
     label: "Calificación",
