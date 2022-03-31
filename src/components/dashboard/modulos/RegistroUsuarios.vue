@@ -89,22 +89,22 @@
                   <v-text-field
                     type="email"
                     v-model="datosAuth.email"
-                    label="Correo Electrónico"
                     :error-messages="errors"
+                    label="Correo Electrónico"
                   ></v-text-field>
                 </validation-provider>
               </v-col>
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Correo Electrónico"
+                  name="Confirmar Correo"
                   rules="required|email"
                 >
                   <v-text-field
                     type="email"
                     v-model="datosVerificacion.confirmarEmail"
-                    label="Confirmar Correo"
                     :error-messages="errors"
+                    label="Confirmar Correo"
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -156,7 +156,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <v-row class="mr-5 ml-5">
+            <!-- <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
@@ -171,12 +171,12 @@
                   ></v-select>
                 </validation-provider>
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-card-text>
           <v-card-text>
             <small>
               <v-chip dense small v-if="invalid" color="orange lighten-2">
-                Complete los campos solicitados <v-icon>mdi-alert</v-icon>
+                Complete todos los campos <v-icon>mdi-alert</v-icon>
               </v-chip>
               <v-chip dense small v-if="validarCorreo" color="orange lighten-2">
                 Correo Electronico no coinciden <v-icon>mdi-alert</v-icon>
@@ -243,7 +243,7 @@ export default Vue.extend({
     generosDisponibles: ["Masculino", "Femenino", "Otro"],
     estadosDisponible: ["Habilitado", "Desabilitado"],
     datosUsuario: {
-      rol: "",
+      rol: "Empleado",
       nombres: "",
       apellidos: "",
       documento: "",
@@ -299,9 +299,11 @@ export default Vue.extend({
           this.datosAuth.passwd
         );
         const uid = respuesta.user.uid;
+        this.datosUsuario.email = this.datosAuth.email;
         await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
         this.mostrarConfirmacion = false;
         this.limpiarDatos();
+        this.$refs.observer.reset();
         await Swal.fire({
           timer: 2000,
           title: "Registro exitoso",
