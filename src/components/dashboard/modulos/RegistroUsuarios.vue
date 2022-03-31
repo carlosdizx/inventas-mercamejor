@@ -1,29 +1,293 @@
 <template>
   <v-container>
-    <Tabla
-      class="my-2"
-      coleccion="usuarios"
-      titulo="usuarios"
-      :columnas="columnas"
-      llave="semana"
-      :campos_form="campos_form"
-    />
+    <v-card>
+      <v-card-title>Registrar Usuarios</v-card-title>
+      <ValidationObserver ref="observer" v-slot="{ invalid }">
+        <v-form class="my-2" @submit.prevent="crearCuenta" :disabled="cargando">
+          <v-card-text>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Tipo de usuario"
+                  rules="required"
+                >
+                  <v-select
+                    label="Tipo de usuario"
+                    :items="rolesDisponibles"
+                    v-model="datosUsuario.rol"
+                    :error-messages="errors"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Nombres"
+                  rules="required|min:3|max:50"
+                >
+                  <v-text-field
+                    v-model="datosUsuario.nombres"
+                    label="Nombres"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Apellidos"
+                  rules="required|min:3|max:50"
+                >
+                  <v-text-field
+                    v-model="datosUsuario.apellidos"
+                    label="Apellidos"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Número de Documento"
+                  rules="required|min:5|max:50"
+                >
+                  <v-text-field
+                    v-model="datosUsuario.documento"
+                    label="Número de Documento"
+                    :error-messages="errors"
+                    type="number"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Celular"
+                  rules="required|min:5|max:50"
+                >
+                  <v-text-field
+                    type="number"
+                    v-model="datosUsuario.celular"
+                    :error-messages="errors"
+                    label="Celular"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Correo Electrónico"
+                  rules="required|email"
+                >
+                  <v-text-field
+                    type="email"
+                    v-model="datosUsuario.email"
+                    label="Correo Electrónico"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Correo Electrónico"
+                  rules="required|email"
+                >
+                  <v-text-field
+                    type="email"
+                    v-model="datosVerificacion.confirmarEmail"
+                    label="Confirmar Correo"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Sexo"
+                  rules="required"
+                >
+                  <v-select
+                    v-model="datosUsuario.genero"
+                    label="Sexo"
+                    :items="generosDisponibles"
+                    :error-messages="errors"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Contraseña"
+                  rules="required|min:6|max:32"
+                >
+                  <v-text-field
+                    type="password"
+                    v-model="datosUsuario.passwd"
+                    label="Contraseña"
+                    :items="generosDisponibles"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Confirmar contraseña"
+                  rules="required|min:6|max:32"
+                >
+                  <v-text-field
+                    v-model="datosVerificacion.confirmarPasswd"
+                    type="password"
+                    label="Confirmar contraseña"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Estado del Usuario"
+                  rules="required"
+                >
+                  <v-select
+                    v-model="datosUsuario.estado"
+                    label="Estado del Usuario"
+                    :items="estadosDisponible"
+                    :error-messages="errors"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-text>
+            <small>
+              <v-chip dense small v-if="invalid" color="orange lighten-2">
+                Complete los campos solicitados <v-icon>mdi-alert</v-icon>
+              </v-chip>
+              <v-chip dense small v-if="validarCorreo" color="orange lighten-2">
+                Correo Electronico no coinciden <v-icon>mdi-alert</v-icon>
+              </v-chip>
+              <v-chip dense small v-if="validarContra" color="orange lighten-2">
+                Contraseñas no coinciden <v-icon>mdi-alert</v-icon>
+              </v-chip>
+            </small>
+          </v-card-text>
+          <v-card-actions>
+            <v-container class="mr-5 ml-5">
+              <v-btn
+                @click="mostrarConfirmacion = true"
+                :disabled="invalid || validarCorreo || validarContra"
+                block
+                large
+                class="success"
+                >Registrar</v-btn
+              >
+            </v-container>
+          </v-card-actions>
+        </v-form>
+      </ValidationObserver>
+    </v-card>
+
+    <v-row justify="center">
+      <v-dialog v-model="mostrarConfirmacion" persistent max-width="600">
+        <v-card>
+          <v-card-title class="text-h5">
+            Confirmar registro de usuario
+          </v-card-title>
+          <v-card-text>Esta seguro de guardar este usuario</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="mostrarConfirmacion = false"
+            >
+              Cancelar
+            </v-btn>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="mostrarConfirmacion = false"
+            >
+              Guardar Usuario
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import Tabla from "@/components/crud/Tabla.vue";
-import { CAMPOS } from "@/models/UsuariosEmpresa/FormUsuarioEmpresa";
-import { COLUMNAS } from "@/models/UsuariosEmpresa/ColumnasUsuario";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
-  components: { Tabla },
   data: () => ({
-    columnas: COLUMNAS,
-    campos_form: CAMPOS,
-    datosUsuario: {},
+    rolesDisponibles: ["Empleado", "Administrador"],
+    generosDisponibles: ["Masculino", "Femenino", "Otro"],
+    estadosDisponible: ["Habilitado", "Desabilitado"],
+    datosUsuario: {
+      rol: "",
+      nombres: "",
+      apellidos: "",
+      documento: "",
+      celular: "",
+      email: "",
+      genero: "",
+      passwd: "",
+      estado: "",
+    },
+    datosVerificacion: {
+      confirmarEmail: "",
+      confirmarPasswd: "",
+    },
+    mostrarConfirmacion: false,
   }),
+  computed: {
+    validarCorreo() {
+      if (
+        this.datosUsuario.email.length === 0 &&
+        this.datosVerificacion.confirmarEmail.length === 0
+      )
+        return false;
+      if (
+        this.datosUsuario.email.length >= 6 &&
+        this.datosVerificacion.confirmarEmail.length >= 6 &&
+        this.datosUsuario.email === this.datosVerificacion.confirmarEmail
+      )
+        return false;
+      return true;
+    },
+    validarContra() {
+      if (
+        this.datosUsuario.passwd.length === 0 &&
+        this.datosVerificacion.confirmarPasswd.length === 0
+      )
+        return false;
+      if (
+        this.datosUsuario.passwd.length >= 6 &&
+        this.datosVerificacion.confirmarPasswd.length >= 6 &&
+        this.datosUsuario.passwd === this.datosVerificacion.confirmarPasswd
+      )
+        return false;
+      return true;
+    },
+  },
+  methods: {},
 });
 </script>
