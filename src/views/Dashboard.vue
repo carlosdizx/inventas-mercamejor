@@ -10,6 +10,7 @@
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
     <Sprints v-if="item === 10" />
     <RegistroUsuarios v-if="item === 9" />
+    <v-btn @click="logout()">Logout</v-btn>
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/RegistroUsuarios.vue";
+import { LOGOUT } from "@/services/auth";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -39,6 +41,9 @@ export default Vue.extend({
       if (nav_drawer) {
         nav_drawer.cambiarEstado();
       }
+    },
+    async logout() {
+      await LOGOUT();
     },
   },
 });
