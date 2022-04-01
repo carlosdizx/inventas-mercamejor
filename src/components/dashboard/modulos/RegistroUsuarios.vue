@@ -250,6 +250,7 @@ export default Vue.extend({
       celular: "",
       genero: "",
       estado: "Habilitado",
+      email: "",
     },
     datosAuth: {
       email: "",
@@ -268,13 +269,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarEmail.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.email.length >= 6 &&
         this.datosVerificacion.confirmarEmail.length >= 6 &&
         this.datosAuth.email === this.datosVerificacion.confirmarEmail
-      )
-        return false;
-      return true;
+      );
     },
     validarContra() {
       if (
@@ -282,13 +281,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarPasswd.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.passwd.length >= 6 &&
         this.datosVerificacion.confirmarPasswd.length >= 6 &&
         this.datosAuth.passwd === this.datosVerificacion.confirmarPasswd
-      )
-        return false;
-      return true;
+      );
     },
   },
   methods: {
@@ -303,16 +300,18 @@ export default Vue.extend({
         await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
         this.mostrarConfirmacion = false;
         this.limpiarDatos();
-        this.$refs.observer.reset();
-        await Swal.fire({
-          timer: 2000,
-          title: "Registro exitoso",
-          icon: "success",
-          showConfirmButton: false,
-        });
+        const observer: any = this.$refs.observer;
+        if (observer) {
+          observer.reset();
+          await Swal.fire({
+            timer: 2000,
+            title: "Registro exitoso",
+            icon: "success",
+            showConfirmButton: false,
+          });
+        }
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
-        console.log(e);
       }
     },
     limpiarDatos() {
