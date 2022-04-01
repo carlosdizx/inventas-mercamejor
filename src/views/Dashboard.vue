@@ -9,6 +9,7 @@
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
     <RegistroUsuarios v-if="item === 9" />
+    <ActualizarUsuarios v-if="item === 10" />
     <Sprints v-if="item === 12" />
     <v-btn @click="logout()">Logout</v-btn>
   </div>
@@ -19,14 +20,22 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
-import RegistroUsuarios from "@/components/dashboard/modulos/RegistroUsuarios.vue";
+import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
+import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
+
 import { LOGOUT } from "@/services/auth";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios },
+  components: {
+    Toolbar,
+    NavDrawer,
+    Sprints,
+    RegistroUsuarios,
+    ActualizarUsuarios,
+  },
   data: () => ({
-    item: 9,
+    item: 10,
     navigation: true,
     nombre: "Mercamejor",
     botones: [
