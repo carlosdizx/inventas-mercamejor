@@ -231,10 +231,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
-import { CREAR_CUENTA } from "@/services/auth";
-import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
+import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
 
 import Swal from "sweetalert2";
+import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
@@ -295,20 +295,27 @@ export default Vue.extend({
           this.datosAuth.email,
           this.datosAuth.passwd
         );
-        const uid = respuesta.user.uid;
         this.datosUsuario.email = this.datosAuth.email;
+        const uid = respuesta.user.uid;
         await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
+        const usuario = respuesta.user;
+        const datos = JSON.stringify(this.datosUsuario);
+        await ACTUALIZAR(usuario, datos);
         this.mostrarConfirmacion = false;
+        await Swal.fire({
+          timer: 3000,
+          title: "Registro exitoso",
+          text:
+            "En el correo registrado (" +
+            this.datosAuth.email +
+            ") verifique el correo",
+          icon: "success",
+          showConfirmButton: false,
+        });
         this.limpiarDatos();
         const observer: any = this.$refs.observer;
         if (observer) {
           observer.reset();
-          await Swal.fire({
-            timer: 2000,
-            title: "Registro exitoso",
-            icon: "success",
-            showConfirmButton: false,
-          });
         }
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);

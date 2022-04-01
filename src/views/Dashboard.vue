@@ -28,10 +28,7 @@ export default Vue.extend({
     item: 9,
     navigation: true,
     nombre: "Mercamejor",
-    botones: [
-      { icon: "mdi-airplane", link: "registro" },
-      { icon: "mdi-pipe", link: "/" },
-    ],
+    botones: [],
   }),
   methods: {
     cambiarEstadoNavDrawer() {
