@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <h1>No usar esta tabla solo es de prueba</h1>
     <Tabla
       class="my-2"
       coleccion="usuarios"
