@@ -231,10 +231,10 @@
 <script lang="ts">
 import Vue from "vue";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
-import { CREAR_CUENTA } from "@/services/auth";
-import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
+import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
 
 import Swal from "sweetalert2";
+import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
@@ -250,6 +250,7 @@ export default Vue.extend({
       celular: "",
       genero: "",
       estado: "Habilitado",
+      email: "",
     },
     datosAuth: {
       email: "",
@@ -268,13 +269,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarEmail.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.email.length >= 6 &&
         this.datosVerificacion.confirmarEmail.length >= 6 &&
         this.datosAuth.email === this.datosVerificacion.confirmarEmail
-      )
-        return false;
-      return true;
+      );
     },
     validarContra() {
       if (
@@ -282,13 +281,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarPasswd.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.passwd.length >= 6 &&
         this.datosVerificacion.confirmarPasswd.length >= 6 &&
         this.datosAuth.passwd === this.datosVerificacion.confirmarPasswd
-      )
-        return false;
-      return true;
+      );
     },
   },
   methods: {
@@ -298,21 +295,30 @@ export default Vue.extend({
           this.datosAuth.email,
           this.datosAuth.passwd
         );
-        const uid = respuesta.user.uid;
         this.datosUsuario.email = this.datosAuth.email;
+        const uid = respuesta.user.uid;
         await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
+        const usuario = respuesta.user;
+        const datos = JSON.stringify(this.datosUsuario);
+        await ACTUALIZAR(usuario, datos);
         this.mostrarConfirmacion = false;
-        this.limpiarDatos();
-        this.$refs.observer.reset();
         await Swal.fire({
-          timer: 2000,
+          timer: 3000,
           title: "Registro exitoso",
+          text:
+            "En el correo registrado (" +
+            this.datosAuth.email +
+            ") verifique el correo",
           icon: "success",
           showConfirmButton: false,
         });
+        this.limpiarDatos();
+        const observer: any = this.$refs.observer;
+        if (observer) {
+          observer.reset();
+        }
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
-        console.log(e);
       }
     },
     limpiarDatos() {

@@ -15,6 +15,13 @@ export const NOTIFICAR_ERROR = async (codigo: any) => {
       showConfirmButton: false,
       timer: 1500,
     });
+  } else if (codigo === "auth/wrong-password") {
+    await Swal.fire({
+      title: "Contraseña incorrecta",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   } else if (codigo === "auth/user-not-found") {
     await Swal.fire({
       title: "Correo no registrado",

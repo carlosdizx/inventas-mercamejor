@@ -254,6 +254,7 @@ export default Vue.extend({
       celular: "",
       genero: "",
       estado: "Habilitado",
+      email: "",
     },
     datosAuth: {
       email: "",
@@ -272,13 +273,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarEmail.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.email.length >= 6 &&
         this.datosVerificacion.confirmarEmail.length >= 6 &&
         this.datosAuth.email === this.datosVerificacion.confirmarEmail
-      )
-        return false;
-      return true;
+      );
     },
     validarContra() {
       if (
@@ -286,13 +285,11 @@ export default Vue.extend({
         this.datosVerificacion.confirmarPasswd.length === 0
       )
         return false;
-      if (
+      return !(
         this.datosAuth.passwd.length >= 6 &&
         this.datosVerificacion.confirmarPasswd.length >= 6 &&
         this.datosAuth.passwd === this.datosVerificacion.confirmarPasswd
-      )
-        return false;
-      return true;
+      );
     },
   },
   methods: {
@@ -315,7 +312,6 @@ export default Vue.extend({
         });
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
-        console.log(e);
       }
     },
     limpiarDatos() {
@@ -332,7 +328,6 @@ export default Vue.extend({
     },
     asignarUsuario(user: any) {
       this.datosUsuario = user;
-      console.log(user);
     },
   },
 });

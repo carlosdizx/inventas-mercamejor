@@ -30,9 +30,8 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { INICIAR_SESION } from "@/services/auth";
+import { INICIAR_SESION, BORARR } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
-import userCredentials from "@/components/autenticacion/UserCredentials.vue";
 
 export default Vue.extend({
   name: "Login",
@@ -50,13 +49,16 @@ export default Vue.extend({
       try {
         const userCredential = await INICIAR_SESION(this.email, this.passwd);
         const datos = userCredential.user.providerData[0].displayName;
+        console.log(userCredential.user);
         if (datos) {
           const datosParseados = JSON.parse(datos);
           console.log(datosParseados);
+          await BORARR(userCredential.user);
         } else {
           console.log("Fallo");
         }
       } catch (e) {
+        console.log(e);
         await NOTIFICAR_ERROR(e.code);
       }
     },

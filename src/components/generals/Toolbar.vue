@@ -18,6 +18,9 @@
         <v-icon>{{ btn.icon }}</v-icon>
       </v-btn>
     </router-link>
+    <v-btn v-if="permitirLogout" icon @click="logout()">
+      <v-icon>mdi-logout</v-icon>
+    </v-btn>
   </v-toolbar>
 </template>
 
@@ -25,12 +28,15 @@
 import Vue from "vue";
 import SelectorColor from "@/components/generals/SelectorColor.vue";
 import { mapState } from "vuex";
+import { LOGOUT } from "@/services/auth";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "Toolbar",
   components: { SelectorColor },
   props: {
     permitirNavdrawer: Boolean,
+    permitirLogout: Boolean,
     permitirColor: Boolean,
     titulo: String,
     botones: Array,
@@ -41,6 +47,14 @@ export default Vue.extend({
   methods: {
     cambiarEstadoNavbar() {
       this.$emit("cambiarEstadoNavDrawer");
+    },
+    async logout() {
+      await LOGOUT();
+      await Swal.fire({
+        title: "Sessión cerrada",
+        timer: 1500,
+        icon: "info",
+      });
     },
   },
 });

@@ -8,10 +8,10 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
     <Sprints v-if="item === 12" />
-    <v-btn @click="logout()">Logout</v-btn>
   </div>
 </template>
 
@@ -20,10 +20,9 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
+import Usuarios from "@/components/dashboard/modulos/Usuarios.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
 import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
-
-import { LOGOUT } from "@/services/auth";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -31,11 +30,12 @@ export default Vue.extend({
     Toolbar,
     NavDrawer,
     Sprints,
+    Usuarios,
     RegistroUsuarios,
     ActualizarUsuarios,
   },
   data: () => ({
-    item: 10,
+    item: 0,
     navigation: true,
     nombre: "Mercamejor",
     botones: [
@@ -50,9 +50,6 @@ export default Vue.extend({
       if (nav_drawer) {
         nav_drawer.cambiarEstado();
       }
-    },
-    async logout() {
-      await LOGOUT();
     },
   },
 });
