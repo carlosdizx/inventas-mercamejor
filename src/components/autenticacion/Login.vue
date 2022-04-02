@@ -30,7 +30,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { INICIAR_SESION, BORARR } from "@/services/auth";
+import { INICIAR_SESION } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 
 export default Vue.extend({
@@ -53,7 +53,6 @@ export default Vue.extend({
         if (datos) {
           const datosParseados = JSON.parse(datos);
           console.log(datosParseados);
-          await BORARR(userCredential.user);
         } else {
           console.log("Fallo");
         }

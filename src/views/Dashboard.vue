@@ -1,8 +1,9 @@
 <template>
   <div>
     <Toolbar
-      permitirNavdrawer
-      permitirColor
+      permitir-navdrawer
+      permitir-color
+      permitir-logout
       :titulo="'Inventas - ' + nombre"
       :botones="botones"
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
@@ -38,10 +39,7 @@ export default Vue.extend({
     item: 0,
     navigation: true,
     nombre: "Mercamejor",
-    botones: [
-      { icon: "mdi-airplane", link: "registro" },
-      { icon: "mdi-pipe", link: "/" },
-    ],
+    botones: [],
   }),
   methods: {
     cambiarEstadoNavDrawer() {
