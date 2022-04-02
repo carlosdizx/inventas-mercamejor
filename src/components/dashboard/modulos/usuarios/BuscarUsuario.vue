@@ -1,6 +1,6 @@
 <template>
   <v-row class="mr-5 ml-5">
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-model="dialog" persistent max-width="900px">
       <template v-slot:activator="{ on, attrs }">
         <v-btn height="45" color="primary" dark v-bind="attrs" v-on="on">
           Buscar Usuario
@@ -8,73 +8,46 @@
       </template>
       <v-card>
         <v-card-title>
-          <span class="text-h5">User Profile</span>
+          <span class="text-h5 text-center">Busqueda</span>
         </v-card-title>
         <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Legal first name*" required></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal middle name"
-                  hint="example of helper text only on focus"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field
-                  label="Legal last name*"
-                  hint="example of persistent helper text"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="Email*" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Password*"
-                  type="password"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-autocomplete
-                  :items="[
-                    'Skiing',
-                    'Ice hockey',
-                    'Soccer',
-                    'Basketball',
-                    'Hockey',
-                    'Reading',
-                    'Writing',
-                    'Coding',
-                    'Basejump',
-                  ]"
-                  label="Interests"
-                  multiple
-                ></v-autocomplete>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*indicates required field</small>
+          <v-row>
+            <v-col sm="6" md="3">
+              <v-text-field label="Documento" required></v-text-field>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-text-field label="Nombres"></v-text-field>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-text-field label="Apellidos"></v-text-field>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-text-field label="Acciones" disabled></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text v-for="(user, index) in usuarios" :key="user">
+          <v-row>
+            <v-col sm="6" md="3">
+              <v-label>1082749478</v-label>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-label>1082749478</v-label>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-label>1082749478</v-label>
+            </v-col>
+            <v-col sm="6" md="3">
+              <v-btn @click="devolverUsuario(index)" class="success" text>
+                Seleccionar
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn @click="devolverUsuario()" color="blue darken-1" text>
+          <v-btn x-large @click="dialog = false" color="blue darken-1" text>
             Close
-          </v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">
-            Save
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -83,20 +56,34 @@
 </template>
 
 <script lang="ts">
+import { LISTAR } from "@/services/crud";
 import Vue from "vue";
 export default Vue.extend({
   name: "BuscarUsuario",
   data: () => ({
     dialog: false,
+    usuarios: [],
   }),
   methods: {
-    devolverUsuario() {
+    devolverUsuario(index) {
       const usuario = {
         name: "prueba",
       };
-      this.$emit("devolverUsuario", usuario);
       this.dialog = false;
+      this.$emit("devolverUsuario", {
+        usuario,
+        index,
+      });
     },
+    async traerUsuarios() {
+      (await LISTAR("usuarios")).forEach((item) => {
+        const obj: any = JSON.parse(JSON.stringify(item.data()));
+        console.log(obj);
+      });
+    },
+  },
+  created() {
+    this.traerUsuarios();
   },
 });
 </script>
