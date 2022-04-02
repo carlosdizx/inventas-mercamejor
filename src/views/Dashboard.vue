@@ -9,8 +9,9 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
-    <Sprints v-if="item === 12" />
+    <Sprints v-if="item === 10" />
   </div>
 </template>
 
@@ -20,12 +21,13 @@ import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/RegistroUsuarios.vue";
+import Usuarios from "@/components/dashboard/modulos/Usuarios.vue";
 
 export default Vue.extend({
   name: "Dashboard",
-  components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios },
+  components: { Toolbar, NavDrawer, Sprints, RegistroUsuarios, Usuarios },
   data: () => ({
-    item: 9,
+    item: 0,
     navigation: true,
     nombre: "Mercamejor",
     botones: [],

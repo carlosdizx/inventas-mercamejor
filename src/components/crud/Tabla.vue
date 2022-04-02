@@ -31,7 +31,7 @@
                   :label="'Buscar por \'' + llave + '\''"
                 />
               </v-col>
-              <v-col cols="2">
+              <v-col cols="2" v-if="!noCrear">
                 <FormCreate
                   @registrado="cargarInformacion"
                   :titulo="titulo"
@@ -54,6 +54,7 @@
               <v-icon>mdi-delete</v-icon>
             </v-btn>
             <FormEdit
+              v-if="!NoEditar"
               @actualizado="cargarInformacion"
               :titulo="titulo"
               :campos_form="campos_form"
@@ -61,8 +62,12 @@
               :item="item"
             />
           </template>
-          <template v-slot:item.detalle="{ item }">
-            <FormView :campos_form="campos_form" :item="item" />
+          <template v-if="campos_form" v-slot:item.detalle="{ item }">
+            <FormView
+              :campos_form="campos_form"
+              v-if="campos_form"
+              :item="item"
+            />
           </template>
           <template v-slot:item.calificacion="{ item }">
             <v-tooltip color="primary" bottom>
@@ -166,10 +171,10 @@ export default Vue.extend({
     columnas: Array,
     llave: String,
     elimacion: Boolean,
-    campos_detalle: Array,
-    objeto_form: Object,
     campos_form: Array,
     roles: Array,
+    noCrear: Boolean,
+    NoEditar: Boolean,
   },
   methods: {
     filtrarPorLlave(valor: any, buscado: any): boolean {
