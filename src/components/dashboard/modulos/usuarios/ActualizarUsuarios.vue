@@ -246,6 +246,7 @@ export default Vue.extend({
     rolesDisponibles: ["Empleado"], //"Administrador"],
     generosDisponibles: ["Masculino", "Femenino", "Otro"],
     estadosDisponible: ["Habilitado", "Desabilitado"],
+    ident: "",
     datosUsuario: {
       rol: "Empleado",
       nombres: "",
@@ -326,8 +327,11 @@ export default Vue.extend({
       this.datosVerificacion.confirmarEmail = "";
       this.datosVerificacion.confirmarPasswd = "";
     },
-    asignarUsuario(user: any) {
-      this.datosUsuario = user;
+    asignarUsuario(datosUsuario: any) {
+      this.datosUsuario = datosUsuario.usuario;
+      this.datosAuth.email = datosUsuario.usuario.email;
+      this.datosVerificacion.confirmarEmail = datosUsuario.usuario.email;
+      this.ident = datosUsuario.ident;
     },
   },
 });
