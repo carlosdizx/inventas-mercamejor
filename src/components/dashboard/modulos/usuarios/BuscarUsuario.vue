@@ -65,7 +65,7 @@ export default Vue.extend({
     usuarios: [],
   }),
   methods: {
-    devolverUsuario(index) {
+    devolverUsuario(index: any) {
       const usuario = {
         name: "prueba",
       };
