@@ -26,19 +26,19 @@
             </v-col>
           </v-row>
         </v-card-text>
-        <v-card-text v-for="(user, index) in usuarios" :key="user">
-          <v-row>
+        <v-card-text>
+          <v-row v-for="(user, index) in usuarios" :key="index">
             <v-col sm="6" md="3">
-              <v-label>1082749478</v-label>
+              <v-label>{{ user.documento }}</v-label>
             </v-col>
             <v-col sm="6" md="3">
-              <v-label>1082749478</v-label>
+              <v-label>{{ user.nombres }}</v-label>
             </v-col>
             <v-col sm="6" md="3">
-              <v-label>1082749478</v-label>
+              <v-label>{{ user.apellidos }}</v-label>
             </v-col>
             <v-col sm="6" md="3">
-              <v-btn @click="devolverUsuario(index)" class="success" text>
+              <v-btn @click="devolverUsuario(user, index)" class="success" text>
                 Seleccionar
               </v-btn>
             </v-col>
@@ -62,28 +62,31 @@ export default Vue.extend({
   name: "BuscarUsuario",
   data: () => ({
     dialog: false,
-    usuarios: [],
+    usuarios: [""],
+    idents: [""],
   }),
   methods: {
-    devolverUsuario(index: any) {
-      const usuario = {
-        name: "prueba",
-      };
+    devolverUsuario(usuario: any, index: number) {
       this.dialog = false;
       this.$emit("devolverUsuario", {
         usuario,
-        index,
+        ident: this.idents[index],
       });
     },
-    async traerUsuarios() {
+    async listarUsuarios() {
+      this.usuarios = [];
+      this.idents = [];
       (await LISTAR("usuarios")).forEach((item) => {
         const obj: any = JSON.parse(JSON.stringify(item.data()));
+        this.usuarios.push(obj);
+        this.idents.push(item.id);
         console.log(obj);
+        console.log(item.id);
       });
     },
   },
   created() {
-    this.traerUsuarios();
+    this.listarUsuarios();
   },
 });
 </script>
