@@ -4,11 +4,9 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
   signOut,
-  getAuth,
   deleteUser,
 } from "firebase/auth";
 import { AUTH } from "@/firebase/config";
-import login from "@/components/autenticacion/Login.vue";
 
 export const CREAR_CUENTA = async (correo: string, password: string) => {
   const resuesta = await createUserWithEmailAndPassword(AUTH, correo, password);

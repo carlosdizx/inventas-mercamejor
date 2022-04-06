@@ -328,6 +328,7 @@ export default Vue.extend({
       this.datosUsuario.documento = "";
       this.datosUsuario.celular = "";
       this.datosUsuario.genero = "";
+      this.datosUsuario.estado = "";
       this.datosAuth.email = "";
       this.datosAuth.passwd = "";
       this.datosVerificacion.confirmarEmail = "";

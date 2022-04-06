@@ -31,13 +31,13 @@ export const FUNCIONES: any[] = [
     id: 9,
     tipo: 2,
     icono: "mdi-account-multiple",
-    titulo: "Empleados",
+    titulo: "Registrar empleados",
   },
   {
     id: 10,
     tipo: 2,
     icono: "mdi-account-multiple",
-    titulo: "Actualizar Empleados",
+    titulo: "Actualizar empleados",
   },
   {
     id: 11,

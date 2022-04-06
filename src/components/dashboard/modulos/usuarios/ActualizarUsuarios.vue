@@ -10,6 +10,15 @@
           <v-card-text>
             <v-row class="mr-5 ml-5">
               <v-col>
+                <v-text-field
+                  label="Email de Usuario"
+                  v-model="datosUsuario.email"
+                  disabled
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de usuario"
@@ -82,36 +91,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <v-row class="mr-5 ml-5">
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Correo Electrónico"
-                  rules="required|email"
-                >
-                  <v-text-field
-                    type="email"
-                    v-model="datosAuth.email"
-                    :error-messages="errors"
-                    label="Correo Electrónico"
-                  ></v-text-field>
-                </validation-provider>
-              </v-col>
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Confirmar Correo"
-                  rules="required|email"
-                >
-                  <v-text-field
-                    type="email"
-                    v-model="datosVerificacion.confirmarEmail"
-                    :error-messages="errors"
-                    label="Confirmar Correo"
-                  ></v-text-field>
-                </validation-provider>
-              </v-col>
-            </v-row>
+
             <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
@@ -128,7 +108,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <v-row class="mr-5 ml-5">
+            <!-- <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
@@ -158,7 +138,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-            </v-row>
+            </v-row> -->
             <!-- <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
@@ -176,24 +156,11 @@
               </v-col>
             </v-row> -->
           </v-card-text>
-          <v-card-text>
-            <small>
-              <v-chip dense small v-if="invalid" color="orange lighten-2">
-                Complete todos los campos <v-icon>mdi-alert</v-icon>
-              </v-chip>
-              <v-chip dense small v-if="validarCorreo" color="orange lighten-2">
-                Correo Electronico no coinciden <v-icon>mdi-alert</v-icon>
-              </v-chip>
-              <v-chip dense small v-if="validarContra" color="orange lighten-2">
-                Contraseñas no coinciden <v-icon>mdi-alert</v-icon>
-              </v-chip>
-            </small>
-          </v-card-text>
           <v-card-actions>
             <v-container class="mr-5 ml-5">
               <v-btn
                 @click="mostrarConfirmacion = true"
-                :disabled="invalid || validarCorreo || validarContra"
+                :disabled="invalid"
                 block
                 large
                 class="warning"
@@ -221,7 +188,7 @@
             >
               Cancelar
             </v-btn>
-            <v-btn color="green darken-1" text @click="registrarUsuario()">
+            <v-btn color="green darken-1" text @click="actualizarUsuario()">
               Actualizar Usuario
             </v-btn>
           </v-card-actions>
@@ -233,9 +200,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
-import { CREAR_CUENTA } from "@/services/auth";
-import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
+import { ACTUALIZARDATOSUSUARIO } from "@/services/usurios";
 import Swal from "sweetalert2";
 import BuscarUsuarioVue from "./BuscarUsuario.vue";
 
@@ -248,72 +213,53 @@ export default Vue.extend({
     estadosDisponible: ["Habilitado", "Desabilitado"],
     ident: "",
     datosUsuario: {
-      rol: "Empleado",
+      rol: "",
       nombres: "",
       apellidos: "",
       documento: "",
       celular: "",
       genero: "",
-      estado: "Habilitado",
+      estado: "",
       email: "",
     },
-    datosAuth: {
+    newDatosUsuario: {
+      rol: "",
+      nombres: "",
+      apellidos: "",
+      documento: "",
+      celular: "",
+      genero: "",
+      estado: "",
       email: "",
-      passwd: "",
-    },
-    datosVerificacion: {
-      confirmarEmail: "",
-      confirmarPasswd: "",
     },
     mostrarConfirmacion: false,
   }),
   computed: {
-    validarCorreo() {
-      if (
-        this.datosAuth.email.length === 0 &&
-        this.datosVerificacion.confirmarEmail.length === 0
-      )
-        return false;
-      return !(
-        this.datosAuth.email.length >= 6 &&
-        this.datosVerificacion.confirmarEmail.length >= 6 &&
-        this.datosAuth.email === this.datosVerificacion.confirmarEmail
-      );
-    },
-    validarContra() {
-      if (
-        this.datosAuth.passwd.length === 0 &&
-        this.datosVerificacion.confirmarPasswd.length === 0
-      )
-        return false;
-      return !(
-        this.datosAuth.passwd.length >= 6 &&
-        this.datosVerificacion.confirmarPasswd.length >= 6 &&
-        this.datosAuth.passwd === this.datosVerificacion.confirmarPasswd
-      );
+    detectarCambios() {
+      let iguales = true;
+      Object.keys(this.newDatosUsuario).forEach((value: any) => {
+        if (this.newDatosUsuario[value] != this.datosUsuario[value]) {
+          iguales = false;
+        }
+      });
+      return iguales;
     },
   },
   methods: {
-    async registrarUsuario() {
-      try {
-        const respuesta = await CREAR_CUENTA(
-          this.datosAuth.email,
-          this.datosAuth.passwd
-        );
-        const uid = respuesta.user.uid;
-        this.datosUsuario.email = this.datosAuth.email;
-        await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
-        this.mostrarConfirmacion = false;
-        this.limpiarDatos();
-        await Swal.fire({
-          timer: 2000,
-          title: "Registro exitoso",
-          icon: "success",
-          showConfirmButton: false,
-        });
-      } catch (e) {
-        await NOTIFICAR_ERROR(e.code);
-      }
+    async actualizarUsuario() {
+      await ACTUALIZARDATOSUSUARIO(this.ident, this.newDatosUsuario);
+      this.mostrarConfirmacion = false;
+      await Swal.fire({
+        timer: 3000,
+        title: "Actualizacion exitoso",
+        text:
+          "Datos de usuario" +
+          this.datosUsuario.email +
+          "Actualizado correctamente",
+        icon: "success",
+        showConfirmButton: false,
+      });
+      this.limpiarDatos();
     },
     limpiarDatos() {
       this.datosUsuario.rol = "";
@@ -322,15 +268,20 @@ export default Vue.extend({
       this.datosUsuario.documento = "";
       this.datosUsuario.celular = "";
       this.datosUsuario.genero = "";
-      this.datosAuth.email = "";
-      this.datosAuth.passwd = "";
-      this.datosVerificacion.confirmarEmail = "";
-      this.datosVerificacion.confirmarPasswd = "";
+      this.datosUsuario.estado = "";
+      this.datosUsuario.email = "";
+
+      this.newDatosUsuario.rol = "";
+      this.newDatosUsuario.nombres = "";
+      this.newDatosUsuario.apellidos = "";
+      this.newDatosUsuario.documento = "";
+      this.newDatosUsuario.celular = "";
+      this.newDatosUsuario.genero = "";
+      this.newDatosUsuario.estado = "";
     },
     asignarUsuario(datosUsuario: any) {
       this.datosUsuario = datosUsuario.usuario;
-      this.datosAuth.email = datosUsuario.usuario.email;
-      this.datosVerificacion.confirmarEmail = datosUsuario.usuario.email;
+      this.newDatosUsuario = this.datosUsuario;
       this.ident = datosUsuario.ident;
     },
   },
