@@ -238,7 +238,9 @@ export default Vue.extend({
     detectarCambios() {
       let iguales = true;
       Object.keys(this.newDatosUsuario).forEach((value: any) => {
-        if (this.newDatosUsuario[value] != this.datosUsuario[value]) {
+        const newDatosUsuario: any = this.newDatosUsuario;
+        const datosUsuario: any = this.newDatosUsuario;
+        if (newDatosUsuario[value] != datosUsuario[value]) {
           iguales = false;
         }
       });
