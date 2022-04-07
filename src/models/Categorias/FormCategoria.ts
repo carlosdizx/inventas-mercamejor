@@ -1,3 +1,14 @@
+import { LISTAR_SUBCATEGORIAS } from "@/generals/Funciones";
+
+const subcategorias: any[] = [];
+const listadoCategorias = async () => {
+  (await LISTAR_SUBCATEGORIAS()).forEach((cat) =>
+    subcategorias.push(cat.data())
+  );
+  return subcategorias;
+};
+
+listadoCategorias().then();
 export const CAMPOS = [
   {
     label: "Nombre",
@@ -12,9 +23,9 @@ export const CAMPOS = [
     label: "Subcategorias",
     prepend_icon: "mdi-cube",
     type: 2,
-    items: [{ id: 1, name: "xd" }],
+    items: [],
     name: "subcategorias",
-    llave: "name",
+    llave: "nombre",
     model: "",
     multiple: true,
     rules: "required",
