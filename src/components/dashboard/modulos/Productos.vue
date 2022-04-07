@@ -13,8 +13,7 @@
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import { CAMPOS } from "@/models/Productos/FormProducto";
-import { COLUMNAS } from "@/models/Productos/ColumnasProducto";
+import { COLUMNAS, CAMPOS } from "@/models/Producto";
 
 import Vue from "vue";
 

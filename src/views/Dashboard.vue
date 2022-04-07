@@ -9,6 +9,7 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <Productos v-if="item === 7" />
     <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
@@ -35,6 +36,7 @@ import Cajas from "@/components/dashboard/modulos/usuarios/Cajas.vue";
 import Bodegas from "@/components/dashboard/modulos/Bodegas.vue";
 import Marcas from "@/components/dashboard/modulos/Marcas.vue";
 import Movimientos from "@/components/dashboard/modulos/Movimientos.vue";
+import Productos from "@/components/dashboard/modulos/Productos.vue";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -50,6 +52,7 @@ export default Vue.extend({
     Bodegas,
     Marcas,
     Movimientos,
+    Productos,
   },
   data: () => ({
     item: 0,

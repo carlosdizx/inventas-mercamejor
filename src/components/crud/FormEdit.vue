@@ -65,9 +65,7 @@
                   outlined
                   v-model="item[campo.name]"
                   :error-messages="errors"
-                  @change="
-                    validarCombo(item[campo.name], item[campo.validacion])
-                  "
+                  @change="validarCombo(item[campo.name], item, campo)"
                 />
               </validation-provider>
               <validation-provider
@@ -227,8 +225,10 @@ export default Vue.extend({
     async inicializarForm() {
       this.campos = [...this.campos_form];
     },
-    validarCombo(modelo, validacion) {
-      if (validacion) modelo = VALIDAR_COMBO(modelo);
+    async validarCombo(modelo, item, campo) {
+      if (campo.validacion) {
+        item[campo.name] = await VALIDAR_COMBO(modelo, campo.items);
+      }
     },
     async capturarCampos() {
       this.datos = await CAPTURAR_CAMPOS(this.item, this.campos);
