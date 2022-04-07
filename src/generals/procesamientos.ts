@@ -42,7 +42,7 @@ export async function PROCESAR_FORMULARIO(
       showConfirmButton: false,
       timer: 1000,
     });
-    datosMovimiento.accion = "registró";
+    datosMovimiento.accion = "Registró";
     await GUARDAR("movimientos", datosMovimiento);
   } else {
     await EDITAR(coleccion, item.id, datos);
@@ -53,7 +53,7 @@ export async function PROCESAR_FORMULARIO(
       showConfirmButton: false,
       timer: 1000,
     });
-    datosMovimiento.accion = "editó";
+    datosMovimiento.accion = "Editó";
     await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
