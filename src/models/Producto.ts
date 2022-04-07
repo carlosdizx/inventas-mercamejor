@@ -5,8 +5,8 @@ export const COLUMNAS: any[] = [
   { text: "Detalle", value: "detalle" },
   { text: "Nombre", value: "nombre" },
   { text: "Código de barras", value: "codigo_barras" },
-  { text: "Marca", value: "marca" },
-  { text: "Categoria", value: "categoria" },
+  { text: "Precio de compra", value: "precio_unitario_compra" },
+  { text: "Precio de venta", value: "precio_unitario_venta" },
   { text: "Fecha creación", value: "created_at" },
   { text: "Fecha edición", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
@@ -15,13 +15,19 @@ export const COLUMNAS: any[] = [
 /**
  Sección formulario
  */
-import { LISTAR_CATEGORIAS, LISTAR_MARCAS } from "@/generals/Funciones";
+import {
+  LISTAR_BODEGAS,
+  LISTAR_CATEGORIAS,
+  LISTAR_MARCAS,
+} from "@/generals/Funciones";
 
 const categorias: any[] = [];
 const marcas: any[] = [];
+const bodegas: any[] = [];
 const poblarListados = async () => {
   (await LISTAR_CATEGORIAS()).forEach((catg) => categorias.push(catg.data()));
   (await LISTAR_MARCAS()).forEach((mar) => marcas.push(mar.data()));
+  (await LISTAR_BODEGAS()).forEach((bod) => bodegas.push(bod.data()));
 };
 
 poblarListados().then();
@@ -63,6 +69,45 @@ export const CAMPOS: any[] = [
     type: 2,
     items: marcas,
     name: "marca",
+    llave: "nombre",
+    model: "",
+    multiple: false,
+    validacion: true,
+    rules: "required",
+  },
+  {
+    label: "Precio unitario compra",
+    prepend_icon: "mdi-cash-lock-open",
+    type: 8,
+    format: "number",
+    name: "precio_unitario_compra",
+    model: "",
+    rules: "required|min:2|max:20",
+  },
+  {
+    label: "Precio unitario venta",
+    prepend_icon: "mdi-cash-lock",
+    type: 8,
+    format: "number",
+    name: "precio_unitario_venta",
+    model: "",
+    rules: "required|min:2|max:20",
+  },
+  {
+    label: "Cantidad unidades",
+    prepend_icon: "mdi-cube",
+    type: 1,
+    format: "number",
+    name: "unidades",
+    model: "",
+    rules: "required|min:1|max:30",
+  },
+  {
+    label: "Bodegas",
+    prepend_icon: "mdi-cube",
+    type: 2,
+    items: bodegas,
+    name: "categoria",
     llave: "nombre",
     model: "",
     multiple: false,
