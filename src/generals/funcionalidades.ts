@@ -77,7 +77,7 @@ export const FUNCIONES: any[] = [
     id: 15,
     tipo: 2,
     icono: "mdi-react",
-    titulo: "Solo React",
+    titulo: "Marcas de productos",
   },
   {
     id: 16,

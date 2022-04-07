@@ -6,6 +6,8 @@ export const COLUMNAS: any[] = [
   { text: "Nombre", value: "nombre" },
   { text: "Celular", value: "celular" },
   { text: "Correo", value: "correo" },
+  { text: "Fecha creación", value: "created_at" },
+  { text: "Fecha edición", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
 ];
 
