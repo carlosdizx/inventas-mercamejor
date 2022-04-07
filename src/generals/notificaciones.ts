@@ -43,5 +43,12 @@ export const NOTIFICAR_ERROR = async (codigo: any) => {
       showConfirmButton: false,
       timer: 1500,
     });
+  } else if (codigo === "storage/object-not-found") {
+    await Swal.fire({
+      title: "Imagen no encontrada!",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }
 };
