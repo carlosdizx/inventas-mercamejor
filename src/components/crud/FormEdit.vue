@@ -238,6 +238,7 @@ export default Vue.extend({
       await this.capturarCampos();
       this.dialog_form = !this.dialog_form;
       await this.inicializarForm();
+      this.datos.updated_at = new Date();
       await PROCESAR_FORMULARIO(
         this.coleccion,
         this.datos,

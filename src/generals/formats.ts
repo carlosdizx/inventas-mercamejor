@@ -5,7 +5,7 @@ moment.locale("es");
 // export const toDate = (dat: any) => moment(dat).format("MMMM, DD YYYY");
 
 export const toDateWithDetail = (dat: any) =>
-  moment(dat).format("dddd DD MMMM, YYYY");
+  moment(dat).format("dddd DD MMMM, YYYY h:mm:ss a");
 
 export const toNumber = (dat: any) => new Intl.NumberFormat().format(dat);
 
