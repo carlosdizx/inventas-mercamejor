@@ -16,7 +16,6 @@
     <Cajas v-if="item === 11" />
     <Sprints v-if="item === 12" />
     <Categorias v-if="item === 13" />
-    <Categorias v-if="item === 13" />
   </div>
 </template>
 
