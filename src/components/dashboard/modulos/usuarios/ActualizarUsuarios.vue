@@ -200,7 +200,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ACTUALIZARDATOSUSUARIO } from "@/services/usurios";
+import { ACTUALIZARDATOSUSUARIO } from "@/services/usuarios";
 import Swal from "sweetalert2";
 import BuscarUsuarioVue from "./BuscarUsuario.vue";
 
