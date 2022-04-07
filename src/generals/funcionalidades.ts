@@ -83,7 +83,7 @@ export const FUNCIONES: any[] = [
     id: 16,
     tipo: 2,
     icono: "mdi-bootstrap",
-    titulo: "Gaystrap",
+    titulo: "Movimientos",
   },
   {
     id: 17,
