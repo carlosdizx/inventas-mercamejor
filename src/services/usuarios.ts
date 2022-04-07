@@ -19,7 +19,7 @@ export const LISTAREMPLEADOS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const empleados: any = [];
-    usuarios.forEach((value) => {
+    usuarios.forEach((value: any) => {
       if (!value.caja) {
         empleados.push(value.data());
       }

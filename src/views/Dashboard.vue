@@ -17,6 +17,7 @@
     <Sprints v-if="item === 12" />
     <Categorias v-if="item === 13" />
     <Bodegas v-if="item === 14" />
+    <Marcas v-if="item === 15" />
   </div>
 </template>
 
@@ -31,6 +32,7 @@ import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/Actualiz
 import Categorias from "@/components/dashboard/modulos/Categorias.vue";
 import Cajas from "@/components/dashboard/modulos/usuarios/Cajas.vue";
 import Bodegas from "@/components/dashboard/modulos/Bodegas.vue";
+import Marcas from "@/components/dashboard/modulos/Marcas.vue";
 export default Vue.extend({
   name: "Dashboard",
   components: {
@@ -43,6 +45,7 @@ export default Vue.extend({
     Categorias,
     Cajas,
     Bodegas,
+    Marcas,
   },
   data: () => ({
     item: 0,
