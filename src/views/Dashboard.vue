@@ -12,6 +12,7 @@
     <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
+    <Cajas v-if="item === 11" />
     <Sprints v-if="item === 12" />
   </div>
 </template>
@@ -24,7 +25,7 @@ import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 import Usuarios from "@/components/dashboard/modulos/Usuarios.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
 import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
-
+import Cajas from "@/components/dashboard/modulos/usuarios/Cajas.vue";
 export default Vue.extend({
   name: "Dashboard",
   components: {
@@ -34,6 +35,7 @@ export default Vue.extend({
     Usuarios,
     RegistroUsuarios,
     ActualizarUsuarios,
+    Cajas,
   },
   data: () => ({
     item: 0,

@@ -234,7 +234,7 @@ import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
 
 import Swal from "sweetalert2";
-import { REGISTRARDATOSUSUARIO } from "@/services/usurios";
+import { REGISTRARDATOSUSUARIO } from "@/services/usuarios";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
