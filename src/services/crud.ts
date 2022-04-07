@@ -31,7 +31,7 @@ export const ELIMINAR = async (colection: string, id: string) => {
     responsable: datosUser.nombres,
     documento: datosUser.documento,
   };
-  datosMovimiento.accion = "eliminacion";
+  datosMovimiento.accion = "eliminó";
   await GUARDAR("movimientos", datosMovimiento);
   return eliminacion;
 };
