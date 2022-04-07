@@ -1,5 +1,6 @@
 import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
+import { DATOS_USUARIO } from "@/services/auth";
 
 export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
   const datos = {};
@@ -25,6 +26,13 @@ export async function PROCESAR_FORMULARIO(
   campos: any,
   item: any
 ) {
+  const datosUser = JSON.parse(<string>await DATOS_USUARIO());
+  const datosMovimiento: any = {
+    entidad: coleccion,
+    created_at: new Date(),
+    responsable: datosUser.nombres,
+    documento: datosUser.documento,
+  };
   if (!item) {
     await GUARDAR(coleccion, datos);
     await Swal.fire({
@@ -34,6 +42,8 @@ export async function PROCESAR_FORMULARIO(
       showConfirmButton: false,
       timer: 1000,
     });
+    datosMovimiento.accion = "registró";
+    await GUARDAR("movimientos", datosMovimiento);
   } else {
     await EDITAR(coleccion, item.id, datos);
     await Swal.fire({
@@ -43,6 +53,8 @@ export async function PROCESAR_FORMULARIO(
       showConfirmButton: false,
       timer: 1000,
     });
+    datosMovimiento.accion = "editó";
+    await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
     campo.model = "";

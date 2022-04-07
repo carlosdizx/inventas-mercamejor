@@ -5,6 +5,8 @@ import {
   updateProfile,
   signOut,
   deleteUser,
+  getIdToken,
+  getAuth,
 } from "firebase/auth";
 import { AUTH } from "@/firebase/config";
 
@@ -39,3 +41,5 @@ export const ACTUALIZAR = async (user: any, datos: any) =>
 export const LOGOUT = async () => signOut(AUTH);
 
 export const BORARR = async (user: any) => await deleteUser(user);
+
+export const DATOS_USUARIO = async () => AUTH.currentUser?.displayName;

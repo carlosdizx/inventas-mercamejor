@@ -27,7 +27,6 @@ export const CAMPOS: any[] = [
   {
     label: "¿Es marca regional?",
     type: 4,
-    rules: "required",
     model: false,
     name: "regional",
   },
