@@ -7,19 +7,19 @@
       :columnas="columnas"
       llave="nombre"
       :campos_form="campos_form"
+      elimacion
     />
   </v-container>
 </template>
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import { CAMPOS } from "@/models/Proveedores/FormProveedores";
-import { COLUMNAS } from "@/models/Proveedores/ColumnasProveedores";
+import { CAMPOS, COLUMNAS } from "@/models/Proveedor";
 
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "Productos",
+  name: "Proveedores",
   components: { Tabla },
   data: () => ({
     columnas: COLUMNAS,
