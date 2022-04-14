@@ -11,10 +11,8 @@
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
     <Proveedores v-if="item === 2" />
     <Productos v-if="item === 7" />
-    <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
-    <Cajas v-if="item === 11" />
     <Cajas v-if="item === 11" />
     <Sprints v-if="item === 12" />
     <Categorias v-if="item === 13" />
@@ -46,7 +44,6 @@ export default Vue.extend({
     Toolbar,
     NavDrawer,
     Sprints,
-    Usuarios,
     RegistroUsuarios,
     ActualizarUsuarios,
     Categorias,
