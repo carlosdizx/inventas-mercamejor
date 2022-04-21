@@ -48,7 +48,7 @@
               dark
               small
               outlined
-              @click="eliminar(item.id)"
+              @click="eliminar(item)"
               v-if="elimacion"
             >
               <v-icon>mdi-delete</v-icon>
@@ -205,7 +205,7 @@ export default Vue.extend({
         this.filas.push(obj);
       });
     },
-    async eliminar(id: string) {
+    async eliminar(objeto: any) {
       Swal.fire({
         title: "¿Desea eliminar el registro?",
         showDenyButton: true,
@@ -214,7 +214,7 @@ export default Vue.extend({
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await ELIMINAR(this.coleccion, id);
+          await ELIMINAR(this.coleccion, objeto);
           this.filas = [];
           await this.cargarInformacion();
           await Swal.fire({

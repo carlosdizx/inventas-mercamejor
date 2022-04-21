@@ -22,14 +22,15 @@ export const GUARDAR = async (colection: string, datos: any) =>
 export const BUSCAR = async (colection: string, id: string) =>
   await (await getDoc(doc(FIRESTORE, colection, id))).data();
 
-export const ELIMINAR = async (colection: string, id: string) => {
-  const eliminacion = await deleteDoc(doc(FIRESTORE, colection, id));
+export const ELIMINAR = async (colection: string, objeto: any) => {
+  const eliminacion = await deleteDoc(doc(FIRESTORE, colection, objeto.id));
   const datosUser = JSON.parse(<string>await DATOS_USUARIO());
   const datosMovimiento: any = {
     entidad: colection,
     created_at: new Date(),
     responsable: datosUser.nombres,
     documento: datosUser.documento,
+    objeto: JSON.stringify(objeto),
   };
   datosMovimiento.accion = "Eliminó";
   await GUARDAR("movimientos", datosMovimiento);

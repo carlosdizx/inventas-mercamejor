@@ -7,6 +7,7 @@
       :columnas="columnas"
       llave="nombre"
       :campos_form="campos_form"
+      elimacion
     />
   </v-container>
 </template>
