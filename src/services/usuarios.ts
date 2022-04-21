@@ -20,12 +20,29 @@ export const LISTAREMPLEADOS = async () => {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const empleados: any = [];
     usuarios.forEach((value: any) => {
-      if (!value.caja) {
+      const empleado = value.data();
+      if (!empleado.caja) {
         empleados.push(value.data());
       }
     });
     return empleados;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const REGISTRARCAJA = async (email: string, caja: string) => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    console.log(usuarios);
+    usuarios.forEach(async (value: any) => {
+      const empleado = value.data();
+      const id = value.id;
+      if (empleado.email === email) {
+        await setDoc(doc(FIRESTORE, "usuarios", id), { ...empleado, caja });
+      }
+    });
+  } catch (e) {
+    console.log(e);
   }
 };

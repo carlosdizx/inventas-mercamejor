@@ -4,7 +4,11 @@
       <h3>Registro cajas</h3>
       <v-row>
         <v-col sm="6" md="6">
-          <v-text-field label="Nombre de Caja" required></v-text-field>
+          <v-text-field
+            v-model="caja"
+            label="Nombre de Caja"
+            required
+          ></v-text-field>
         </v-col>
         <v-col sm="6" md="5">
           <v-select
@@ -18,7 +22,9 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn>Registrar Caja</v-btn>
+          <v-btn :disabled="!caja || !emailEmpleado" @click="registrarCaja()"
+            >Registrar Caja</v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -28,13 +34,14 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { LISTAREMPLEADOS } from "@/services/usuarios";
+import { LISTAREMPLEADOS, REGISTRARCAJA } from "@/services/usuarios";
 
 export default Vue.extend({
   name: "RegistroCajas",
   data: () => ({
     empleados: [],
     emailEmpleado: "",
+    caja: "",
   }),
   methods: {
     async traerEmpleados() {
@@ -46,6 +53,15 @@ export default Vue.extend({
     },
     obtenerdatosEmpleado(item: any) {
       return item.nombres + " " + item.apellidos;
+    },
+    async registrarCaja() {
+      await REGISTRARCAJA(this.emailEmpleado, this.caja);
+      this.traerEmpleados();
+      this.limpiarDatos();
+    },
+    limpiarDatos() {
+      this.emailEmpleado = "";
+      this.caja = "";
     },
   },
   created() {

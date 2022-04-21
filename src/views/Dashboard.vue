@@ -9,11 +9,10 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
+    <Proveedores v-if="item === 2" />
     <Productos v-if="item === 7" />
-    <Usuarios v-if="item === 9" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
-    <Cajas v-if="item === 11" />
     <Cajas v-if="item === 11" />
     <Sprints v-if="item === 12" />
     <Categorias v-if="item === 13" />
@@ -28,7 +27,6 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
-import Usuarios from "@/components/dashboard/modulos/Usuarios.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
 import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
 import Categorias from "@/components/dashboard/modulos/Categorias.vue";
@@ -37,6 +35,7 @@ import Bodegas from "@/components/dashboard/modulos/Bodegas.vue";
 import Marcas from "@/components/dashboard/modulos/Marcas.vue";
 import Movimientos from "@/components/dashboard/modulos/Movimientos.vue";
 import Productos from "@/components/dashboard/modulos/Productos.vue";
+import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -44,7 +43,6 @@ export default Vue.extend({
     Toolbar,
     NavDrawer,
     Sprints,
-    Usuarios,
     RegistroUsuarios,
     ActualizarUsuarios,
     Categorias,
@@ -53,6 +51,7 @@ export default Vue.extend({
     Marcas,
     Movimientos,
     Productos,
+    Proveedores,
   },
   data: () => ({
     item: 0,

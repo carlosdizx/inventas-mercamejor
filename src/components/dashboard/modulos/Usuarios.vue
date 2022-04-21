@@ -1,6 +1,14 @@
 <template>
   <v-container>
-    <h1>No usar esta tabla solo es de prueba</h1>
+    <v-alert color="red" dark>
+      <v-icon>mdi-alert-circle</v-icon>
+      <v-icon class="float-end" dark>mdi-alert-circle</v-icon>
+      <v-alert color="red" dark dense class="text-center">
+        No usar esta tabla, solo es de prueba
+      </v-alert>
+      <v-icon>mdi-alert-circle</v-icon>
+      <v-icon class="float-end" dark>mdi-alert-circle</v-icon>
+    </v-alert>
     <Tabla
       class="my-2"
       coleccion="usuarios"
@@ -15,8 +23,7 @@
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import { COLUMNAS } from "@/models/Usuarios/ColumnasUsuario";
-import { CAMPOS } from "@/models/Usuarios/FormUsuarioEmpresa";
+import { COLUMNAS, CAMPOS } from "@/models/Usuario";
 
 import Vue from "vue";
 

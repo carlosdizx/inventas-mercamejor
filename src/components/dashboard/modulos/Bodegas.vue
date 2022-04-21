@@ -14,8 +14,8 @@
 <script lang="ts">
 import Vue from "vue";
 import Tabla from "@/components/crud/Tabla.vue";
-import { COLUMNAS } from "@/models/Bodegas/ColumnasBodega";
-import { CAMPOS } from "@/models/Bodegas/FormBodega";
+import { COLUMNAS } from "@/models/Bodega";
+import { CAMPOS } from "@/models/Bodega";
 
 export default Vue.extend({
   name: "Bodegas",

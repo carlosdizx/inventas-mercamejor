@@ -12,11 +12,9 @@
 </template>
 
 <script lang="ts">
-import Tabla from "@/components/crud/Tabla.vue";
-import { CAMPOS } from "@/models/Sprints/FormSprint";
-
 import Vue from "vue";
-import { COLUMNAS } from "@/models/Sprints/ColumnasUsuario";
+import Tabla from "@/components/crud/Tabla.vue";
+import { CAMPOS, COLUMNAS } from "@/models/Sprint";
 
 export default Vue.extend({
   name: "Sprints",

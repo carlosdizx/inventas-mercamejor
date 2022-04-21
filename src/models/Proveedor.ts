@@ -1,3 +1,16 @@
+/**
+ Sección tabla
+ */
+export const COLUMNAS = [
+  { text: "Detalle", value: "detalle" },
+  { text: "Nombre", value: "nombre" },
+  { text: "Documento", value: "documento" },
+  { text: "Acciones", value: "acciones" },
+];
+
+/**
+ Sección formulario
+ */
 import { LISTAR_PRODUCTOS } from "@/generals/Funciones";
 
 const productos: any[] = [];

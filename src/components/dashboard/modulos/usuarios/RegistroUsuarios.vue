@@ -83,6 +83,22 @@
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
+                  name="Genero"
+                  rules="required"
+                >
+                  <v-select
+                    v-model="datosUsuario.genero"
+                    label="Genero"
+                    :items="generosDisponibles"
+                    :error-messages="errors"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
                   name="Correo Electrónico"
                   rules="required|email"
                 >
@@ -109,22 +125,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <v-row class="mr-5 ml-5">
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Sexo"
-                  rules="required"
-                >
-                  <v-select
-                    v-model="datosUsuario.genero"
-                    label="Sexo"
-                    :items="generosDisponibles"
-                    :error-messages="errors"
-                  ></v-select>
-                </validation-provider>
-              </v-col>
-            </v-row>
+
             <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
