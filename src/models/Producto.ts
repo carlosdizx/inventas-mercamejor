@@ -103,11 +103,11 @@ export const CAMPOS: any[] = [
     rules: "required|min:1|max:30",
   },
   {
-    label: "Bodegas",
+    label: "Bodega",
     prepend_icon: "mdi-cube",
     type: 2,
     items: bodegas,
-    name: "categoria",
+    name: "bodega",
     llave: "nombre",
     model: "",
     multiple: false,

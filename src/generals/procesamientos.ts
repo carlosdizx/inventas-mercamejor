@@ -43,6 +43,7 @@ export async function PROCESAR_FORMULARIO(
       timer: 1000,
     });
     datosMovimiento.accion = "Registró";
+    datosMovimiento.objeto = JSON.stringify(datos);
     await GUARDAR("movimientos", datosMovimiento);
   } else {
     await EDITAR(coleccion, item.id, datos);
@@ -54,6 +55,7 @@ export async function PROCESAR_FORMULARIO(
       timer: 1000,
     });
     datosMovimiento.accion = "Editó";
+    datosMovimiento.objeto = JSON.stringify(item);
     await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
