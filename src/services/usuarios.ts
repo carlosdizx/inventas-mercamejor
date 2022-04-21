@@ -4,6 +4,7 @@ import {
   updateDoc,
   getDocs,
   collection,
+  addDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 
@@ -11,8 +12,7 @@ export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, "usuarios", id), datos);
 
 export const ACTUALIZARDATOSUSUARIO = async (id: string, datos: any) => {
-  const instDatos = doc(FIRESTORE, "usuarios", id);
-  return await updateDoc(instDatos, datos);
+  return await updateDoc(doc(FIRESTORE, "usuarios", id), datos);
 };
 
 export const LISTAREMPLEADOS = async () => {
@@ -31,7 +31,23 @@ export const LISTAREMPLEADOS = async () => {
   }
 };
 
-export const REGISTRARCAJA = async (email: string, caja: string) => {
+export const LISTARTODASLASCAJAS = async () => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    const cajas: any = [];
+    usuarios.forEach((value: any) => {
+      const empleado = value.data();
+      if (empleado.caja) {
+        cajas.push(value.data().caja);
+      }
+    });
+    return cajas;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const REGISTRARCAJA = async (email: string, caja: any) => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     console.log(usuarios);

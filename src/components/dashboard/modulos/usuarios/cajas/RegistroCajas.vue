@@ -22,7 +22,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn :disabled="!caja || !emailEmpleado" @click="registrarCaja()"
+          <v-btn :disabled="validarRegistro" @click="registrarCaja()"
             >Registrar Caja</v-btn
           >
         </v-col>
@@ -34,7 +34,13 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { LISTAREMPLEADOS, REGISTRARCAJA } from "@/services/usuarios";
+import Swal from "sweetalert2";
+
+import {
+  LISTAREMPLEADOS,
+  REGISTRARCAJA,
+  LISTARTODASLASCAJAS,
+} from "@/services/usuarios";
 
 export default Vue.extend({
   name: "RegistroCajas",
@@ -42,7 +48,25 @@ export default Vue.extend({
     empleados: [],
     emailEmpleado: "",
     caja: "",
+    todasCajas: [],
   }),
+  computed: {
+    validarRegistro() {
+      let value = false;
+      if (!this.emailEmpleado || !this.caja) {
+        value = true;
+      }
+      if (this.caja.length < 3) {
+        value = true;
+      }
+      this.todasCajas.forEach((val: any) => {
+        if (val.caja === this.caja) {
+          value = true;
+        }
+      });
+      return value;
+    },
+  },
   methods: {
     async traerEmpleados() {
       try {
@@ -51,13 +75,28 @@ export default Vue.extend({
         console.log(error);
       }
     },
+    async listarCajas() {
+      //console.log(await LISTARTODASLASCAJAS());
+      this.todasCajas = await LISTARTODASLASCAJAS();
+    },
     obtenerdatosEmpleado(item: any) {
       return item.nombres + " " + item.apellidos;
     },
     async registrarCaja() {
-      await REGISTRARCAJA(this.emailEmpleado, this.caja);
+      const caja = {
+        caja: this.caja,
+        fechaCreacion: new Date().getTime(),
+      };
+      await REGISTRARCAJA(this.emailEmpleado, caja);
       this.traerEmpleados();
       this.limpiarDatos();
+      await Swal.fire({
+        timer: 3000,
+        title: "Registro de caja exitos",
+        text: "Exito de registro",
+        icon: "success",
+        showConfirmButton: false,
+      });
     },
     limpiarDatos() {
       this.emailEmpleado = "";
@@ -66,6 +105,7 @@ export default Vue.extend({
   },
   created() {
     this.traerEmpleados();
+    this.listarCajas();
   },
 });
 </script>
