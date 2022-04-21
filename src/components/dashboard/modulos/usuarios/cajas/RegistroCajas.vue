@@ -22,10 +22,39 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn :disabled="validarRegistro" @click="registrarCaja()"
+          <v-btn
+            class="success"
+            :disabled="validarRegistro"
+            @click="mostrarConfirmacion = true"
             >Registrar Caja</v-btn
           >
         </v-col>
+      </v-row>
+
+      <v-row justify="center">
+        <v-dialog v-model="mostrarConfirmacion" persistent max-width="600">
+          <v-card>
+            <v-card-title class="text-h5">
+              Confirmar Registro y asignacion de Caja
+            </v-card-title>
+            <v-card-text
+              >Esta seguro de Registrar esta caja con este usuario</v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red darken-1"
+                text
+                @click="mostrarConfirmacion = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn color="green darken-1" text @click="registrarCaja()">
+                Registrar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-row>
     </v-container>
   </v-card-title>
@@ -49,6 +78,7 @@ export default Vue.extend({
     emailEmpleado: "",
     caja: "",
     todasCajas: [],
+    mostrarConfirmacion: false,
   }),
   computed: {
     validarRegistro() {
@@ -76,18 +106,17 @@ export default Vue.extend({
       }
     },
     async listarCajas() {
-      //console.log(await LISTARTODASLASCAJAS());
-      this.todasCajas = await LISTARTODASLASCAJAS();
+      try {
+        this.todasCajas = await LISTARTODASLASCAJAS();
+      } catch (error) {
+        console.log(error);
+      }
     },
     obtenerdatosEmpleado(item: any) {
       return item.nombres + " " + item.apellidos;
     },
     async registrarCaja() {
-      const caja = {
-        caja: this.caja,
-        fechaCreacion: new Date().getTime(),
-      };
-      await REGISTRARCAJA(this.emailEmpleado, caja);
+      await REGISTRARCAJA(this.emailEmpleado, this.caja);
       this.traerEmpleados();
       this.limpiarDatos();
       await Swal.fire({
@@ -101,6 +130,7 @@ export default Vue.extend({
     limpiarDatos() {
       this.emailEmpleado = "";
       this.caja = "";
+      this.mostrarConfirmacion = false;
     },
   },
   created() {

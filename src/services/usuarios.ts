@@ -15,6 +15,19 @@ export const ACTUALIZARDATOSUSUARIO = async (id: string, datos: any) => {
   return await updateDoc(doc(FIRESTORE, "usuarios", id), datos);
 };
 
+export const LISTARTODOSLOSEMPLEADOS = async () => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    const empleados: any = [];
+    usuarios.forEach((value: any) => {
+      empleados.push(value.data());
+    });
+    return empleados;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const LISTAREMPLEADOS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
@@ -47,10 +60,13 @@ export const LISTARTODASLASCAJAS = async () => {
   }
 };
 
-export const REGISTRARCAJA = async (email: string, caja: any) => {
+export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
   try {
+    const caja = {
+      caja: cajaNombre,
+      fechaCreacion: new Date().getTime(),
+    };
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
-    console.log(usuarios);
     usuarios.forEach(async (value: any) => {
       const empleado = value.data();
       const id = value.id;
@@ -60,5 +76,34 @@ export const REGISTRARCAJA = async (email: string, caja: any) => {
     });
   } catch (e) {
     console.log(e);
+  }
+};
+
+export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    usuarios.forEach(async (value: any) => {
+      const empleado = value.data();
+      const id = value.id;
+      if (empleado.caja) {
+        if (empleado.caja.caja === cajaNombre) {
+          delete empleado.caja;
+          await setDoc(doc(FIRESTORE, "usuarios", id), empleado);
+        }
+      }
+    });
+    const caja = {
+      caja: cajaNombre,
+      fechaCreacion: new Date().getTime(),
+    };
+    usuarios.forEach(async (value: any) => {
+      const empleado = value.data();
+      const id = value.id;
+      if (empleado.email === email) {
+        await setDoc(doc(FIRESTORE, "usuarios", id), { ...empleado, caja });
+      }
+    });
+  } catch (error) {
+    console.log(error);
   }
 };
