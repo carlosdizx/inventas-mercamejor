@@ -80,8 +80,6 @@ export default Vue.extend({
         const obj: any = JSON.parse(JSON.stringify(item.data()));
         this.usuarios.push(obj);
         this.idents.push(item.id);
-        console.log(obj);
-        console.log(item.id);
       });
     },
   },

@@ -4,6 +4,7 @@ import {
   updateDoc,
   getDocs,
   collection,
+  addDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 
@@ -11,8 +12,20 @@ export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, "usuarios", id), datos);
 
 export const ACTUALIZARDATOSUSUARIO = async (id: string, datos: any) => {
-  const instDatos = doc(FIRESTORE, "usuarios", id);
-  return await updateDoc(instDatos, datos);
+  return await updateDoc(doc(FIRESTORE, "usuarios", id), datos);
+};
+
+export const LISTARTODOSLOSEMPLEADOS = async () => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    const empleados: any = [];
+    usuarios.forEach((value: any) => {
+      empleados.push(value.data());
+    });
+    return empleados;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const LISTAREMPLEADOS = async () => {
@@ -31,10 +44,29 @@ export const LISTAREMPLEADOS = async () => {
   }
 };
 
-export const REGISTRARCAJA = async (email: string, caja: string) => {
+export const LISTARTODASLASCAJAS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
-    console.log(usuarios);
+    const cajas: any = [];
+    usuarios.forEach((value: any) => {
+      const empleado = value.data();
+      if (empleado.caja) {
+        cajas.push(value.data().caja);
+      }
+    });
+    return cajas;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
+  try {
+    const caja = {
+      caja: cajaNombre,
+      fechaCreacion: new Date().getTime(),
+    };
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     usuarios.forEach(async (value: any) => {
       const empleado = value.data();
       const id = value.id;
@@ -44,5 +76,34 @@ export const REGISTRARCAJA = async (email: string, caja: string) => {
     });
   } catch (e) {
     console.log(e);
+  }
+};
+
+export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
+  try {
+    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    usuarios.forEach(async (value: any) => {
+      const empleado = value.data();
+      const id = value.id;
+      if (empleado.caja) {
+        if (empleado.caja.caja === cajaNombre) {
+          delete empleado.caja;
+          await setDoc(doc(FIRESTORE, "usuarios", id), empleado);
+        }
+      }
+    });
+    const caja = {
+      caja: cajaNombre,
+      fechaCreacion: new Date().getTime(),
+    };
+    usuarios.forEach(async (value: any) => {
+      const empleado = value.data();
+      const id = value.id;
+      if (empleado.email === email) {
+        await setDoc(doc(FIRESTORE, "usuarios", id), { ...empleado, caja });
+      }
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

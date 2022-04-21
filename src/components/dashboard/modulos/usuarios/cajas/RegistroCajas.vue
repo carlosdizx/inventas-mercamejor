@@ -22,10 +22,39 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-btn :disabled="!caja || !emailEmpleado" @click="registrarCaja()"
+          <v-btn
+            class="success"
+            :disabled="validarRegistro"
+            @click="mostrarConfirmacion = true"
             >Registrar Caja</v-btn
           >
         </v-col>
+      </v-row>
+
+      <v-row justify="center">
+        <v-dialog v-model="mostrarConfirmacion" persistent max-width="600">
+          <v-card>
+            <v-card-title class="text-h5">
+              Confirmar Registro y asignacion de Caja
+            </v-card-title>
+            <v-card-text
+              >Esta seguro de Registrar esta caja con este usuario</v-card-text
+            >
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red darken-1"
+                text
+                @click="mostrarConfirmacion = false"
+              >
+                Cancelar
+              </v-btn>
+              <v-btn color="green darken-1" text @click="registrarCaja()">
+                Registrar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-row>
     </v-container>
   </v-card-title>
@@ -34,7 +63,13 @@
 <script lang="ts">
 import Vue from "vue";
 
-import { LISTAREMPLEADOS, REGISTRARCAJA } from "@/services/usuarios";
+import Swal from "sweetalert2";
+
+import {
+  LISTAREMPLEADOS,
+  REGISTRARCAJA,
+  LISTARTODASLASCAJAS,
+} from "@/services/usuarios";
 
 export default Vue.extend({
   name: "RegistroCajas",
@@ -42,11 +77,37 @@ export default Vue.extend({
     empleados: [],
     emailEmpleado: "",
     caja: "",
+    todasCajas: [],
+    mostrarConfirmacion: false,
   }),
+  computed: {
+    validarRegistro() {
+      let value = false;
+      if (!this.emailEmpleado || !this.caja) {
+        value = true;
+      }
+      if (this.caja.length < 3) {
+        value = true;
+      }
+      this.todasCajas.forEach((val: any) => {
+        if (val.caja === this.caja) {
+          value = true;
+        }
+      });
+      return value;
+    },
+  },
   methods: {
     async traerEmpleados() {
       try {
         this.empleados = await LISTAREMPLEADOS();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async listarCajas() {
+      try {
+        this.todasCajas = await LISTARTODASLASCAJAS();
       } catch (error) {
         console.log(error);
       }
@@ -58,14 +119,23 @@ export default Vue.extend({
       await REGISTRARCAJA(this.emailEmpleado, this.caja);
       this.traerEmpleados();
       this.limpiarDatos();
+      await Swal.fire({
+        timer: 3000,
+        title: "Registro de caja exitos",
+        text: "Exito de registro",
+        icon: "success",
+        showConfirmButton: false,
+      });
     },
     limpiarDatos() {
       this.emailEmpleado = "";
       this.caja = "";
+      this.mostrarConfirmacion = false;
     },
   },
   created() {
     this.traerEmpleados();
+    this.listarCajas();
   },
 });
 </script>
