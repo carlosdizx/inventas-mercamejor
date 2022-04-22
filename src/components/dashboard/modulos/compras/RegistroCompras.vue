@@ -1,5 +1,137 @@
 <template>
-  <v-card> registrar compra </v-card>
+  <v-container>
+    <v-card>
+      <v-card-title class="mr-5 ml-5">Registrar compra</v-card-title>
+      <ValidationObserver ref="observer" v-slot="{ invalid }">
+        <v-form @submit.prevent="crearCuenta">
+          <v-card-text>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Nombre del proveedor"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Nombre del proveedor"
+                    v-model="cabFactura.nombreProveedor"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="NIT/Cédula"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="NIT/Cédula"
+                    v-model="cabFactura.nit"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Fecha de Documento"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Fecha de Documento"
+                    v-model="cabFactura.fechaDocumento"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Letra de Documento"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Letra de Documento"
+                    v-model="cabFactura.nDocumento"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Tipo de Compra"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Tipo de Compra"
+                    v-model="cabFactura.tipoCompra"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Fecha de pago"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Fecha de pago"
+                    type="date"
+                    v-model="cabFactura.fechaPago"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Fecha de llegada del producto"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Fecha de llegada del producto"
+                    type="date"
+                    v-model="cabFactura.fechaLlegadaProducto"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Bodega"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Bodega"
+                    v-model="cabFactura.bodega"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider name="Bodega" rules="required">
+                  <v-btn>Seleccionar</v-btn>
+                </validation-provider>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+        <v-col v-if="!invalid">algo</v-col>
+      </ValidationObserver>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -7,7 +139,27 @@ import Vue from "vue";
 
 export default Vue.extend({
   data: () => ({
-    nombre: "",
+    cabFactura: {
+      nombreProveedor: "",
+      nit: "",
+      fechaDocumento: "",
+      nDocumento: "",
+      tipoCompra: "",
+      fechaPago: "",
+      bodega: "",
+      estado: "Pagado",
+      fechaLlegadaProducto: "",
+      subtotal: 0,
+      descuento: 0,
+      impuesto: 0,
+      total: 0,
+    },
   }),
 });
 </script>
+
+<style scoped>
+.v-row {
+  margin: 0px 0px 0px;
+}
+</style>
