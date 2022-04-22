@@ -13,8 +13,11 @@ import {
 import { FIRESTORE } from "@/firebase/config";
 import { DATOS_USUARIO } from "@/services/auth";
 
-export const LISTAR = async (colection: string) =>
-  getDocs(collection(FIRESTORE, colection));
+export const LISTAR = async (colection: string) => {
+  const coleccion = collection(FIRESTORE, colection);
+  const consulta = query(coleccion, orderBy("created_at"));
+  return await getDocs(consulta);
+};
 
 export const GUARDAR = async (colection: string, datos: any) =>
   addDoc(collection(FIRESTORE, colection), datos);

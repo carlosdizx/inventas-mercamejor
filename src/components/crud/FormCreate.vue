@@ -122,6 +122,7 @@
                   :label="campo.label"
                   :multiple="campo.multiple"
                   :solo="campo.solo"
+                  :item-text="campo.llave"
                   counter
                   outlined
                   dense
@@ -162,6 +163,39 @@
                   outlined
                   counter
                   v-model="campo.model"
+                  :error-messages="errors"
+                />
+              </validation-provider>
+              <!-- Lista anidada -->
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 9"
+              >
+                <h2>Validame!</h2>
+                <v-combobox
+                  :label="campo.label"
+                  prepend-icon="mdi-format-list-bulleted"
+                  :items="campo.items"
+                  :item-text="campo.llave"
+                  :multiple="campo.multiple"
+                  hide-selected
+                  small-chips
+                  dense
+                  outlined
+                  v-model="campo.model"
+                  :error-messages="errors"
+                  @change="validarCombo(campo)"
+                />
+                <v-select
+                  :label="campo.label2"
+                  prepend-icon="mdi-format-list-bulleted"
+                  :items="campo.items2"
+                  dense
+                  outlined
+                  small-chips
+                  v-model="campo.model2"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -210,6 +244,10 @@ export default Vue.extend({
     async validarCombo(campo) {
       if (campo.validacion) {
         campo.model = await VALIDAR_COMBO(campo.model, campo.items);
+        if (campo.type === 9) {
+          campo.items2 = campo.model[campo.llave2];
+          console.log(JSON.parse(JSON.stringify(campo)));
+        }
       }
     },
     async capturarCampos() {
