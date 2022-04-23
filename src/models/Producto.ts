@@ -125,6 +125,7 @@ export const CAMPOS: any[] = [
     items: categorias,
     items2: [],
     name: "categoria",
+    name2: "subcategoria",
     model: "",
     model2: "",
     rules: "required",

@@ -246,7 +246,6 @@ export default Vue.extend({
         campo.model = await VALIDAR_COMBO(campo.model, campo.items);
         if (campo.type === 9) {
           campo.items2 = campo.model[campo.llave2];
-          console.log(JSON.parse(JSON.stringify(campo)));
         }
       }
     },
