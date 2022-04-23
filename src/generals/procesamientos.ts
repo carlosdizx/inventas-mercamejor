@@ -21,7 +21,6 @@ export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         datos[campo.name2] = campo.model2;
-        console.log("Entro");
       }
     });
   }

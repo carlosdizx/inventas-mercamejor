@@ -182,6 +182,37 @@
                   v-model="item[campo.name]"
                 />
               </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 9"
+              >
+                <v-combobox
+                  :label="campo.label"
+                  prepend-icon="mdi-format-list-bulleted"
+                  :items="campo.items"
+                  :item-text="campo.llave"
+                  :multiple="campo.multiple"
+                  hide-selected
+                  small-chips
+                  dense
+                  outlined
+                  v-model="item[campo.name]"
+                  :error-messages="errors"
+                  @change="validarCombo(item[campo.name], item, campo)"
+                />
+                <v-select
+                  :label="campo.label2"
+                  prepend-icon="mdi-format-list-bulleted"
+                  :items="campo.items2"
+                  dense
+                  outlined
+                  small-chips
+                  v-model="item[campo.name2]"
+                  :error-messages="errors"
+                />
+              </validation-provider>
             </div>
             <v-btn
               block
@@ -224,10 +255,18 @@ export default Vue.extend({
   methods: {
     async inicializarForm() {
       this.campos = [...this.campos_form];
+      this.campos.forEach((campo) => {
+        if (campo.type === 9) {
+          campo.items2 = this.item[campo.name][campo.llave2];
+        }
+      });
     },
     async validarCombo(modelo, item, campo) {
       if (campo.validacion) {
         item[campo.name] = await VALIDAR_COMBO(modelo, campo.items);
+        if (campo.type === 9) {
+          campo.items2 = item[campo.name][campo.llave2];
+        }
       }
     },
     async capturarCampos() {

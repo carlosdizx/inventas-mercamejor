@@ -173,7 +173,6 @@
                 :rules="campo.rules"
                 v-if="campo.type === 9"
               >
-                <h2>Validame!</h2>
                 <v-combobox
                   :label="campo.label"
                   prepend-icon="mdi-format-list-bulleted"
