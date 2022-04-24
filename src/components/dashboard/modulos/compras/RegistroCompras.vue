@@ -34,27 +34,43 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="6">
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Fecha de Documento"
+                  name="Fecha de Compra"
                   rules="required"
                 >
                   <v-text-field
-                    label="Fecha de Documento"
+                    label="Fecha de Compra"
                     v-model="cabFactura.fechaDocumento"
                     :error-messages="errors"
+                    type="date"
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="3">
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Letra de Documento"
+                  name="Tipo de Compra"
+                  rules="required"
+                >
+                  <v-select
+                    label="Tipo de Compra"
+                    v-model="cabFactura.tipoCompra"
+                    :error-messages="errors"
+                    :items="tiposDocumento"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+              <v-col cols="3">
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Número de Documento"
                   rules="required"
                 >
                   <v-text-field
-                    label="Letra de Documento"
+                    type="number"
+                    label="Número de Documento"
                     v-model="cabFactura.nDocumento"
                     :error-messages="errors"
                   ></v-text-field>
@@ -62,19 +78,6 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Tipo de Compra"
-                  rules="required"
-                >
-                  <v-text-field
-                    label="Tipo de Compra"
-                    v-model="cabFactura.tipoCompra"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </validation-provider>
-              </v-col>
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
@@ -154,7 +157,15 @@ export default Vue.extend({
       impuesto: 0,
       total: 0,
     },
+    tiposDocumento: ["Compra", "Pedido"],
   }),
+  computed: {
+    numeroDocumento() {
+      return this.cabFactura.tipoCompra === "Compra"
+        ? `C-${this.cabFactura.nDocumento}`
+        : `P-${this.cabFactura.nDocumento}`;
+    },
+  },
 });
 </script>
 
