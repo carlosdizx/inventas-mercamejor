@@ -74,6 +74,7 @@
                     v-model="cabFactura.nDocumento"
                     :error-messages="errors"
                   ></v-text-field>
+                  {{ numeroDocumento }}
                 </validation-provider>
               </v-col>
             </v-row>
@@ -122,6 +123,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
+            <TablaCompras />
             <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider name="Bodega" rules="required">
@@ -140,14 +142,19 @@
 <script lang="ts">
 import Vue from "vue";
 
+import TablaCompras from "@/components/dashboard/modulos/compras/TablaCompras.vue";
+
 export default Vue.extend({
+  components: {
+    TablaCompras,
+  },
   data: () => ({
     cabFactura: {
       nombreProveedor: "",
       nit: "",
       fechaDocumento: "",
       nDocumento: "",
-      tipoCompra: "",
+      tipoCompra: "Compra",
       fechaPago: "",
       bodega: "",
       estado: "Pagado",
@@ -161,9 +168,7 @@ export default Vue.extend({
   }),
   computed: {
     numeroDocumento() {
-      return this.cabFactura.tipoCompra === "Compra"
-        ? `C-${this.cabFactura.nDocumento}`
-        : `P-${this.cabFactura.nDocumento}`;
+      return `${this.cabFactura.tipoCompra[0]}-${this.cabFactura.nDocumento}`;
     },
   },
 });
