@@ -124,11 +124,74 @@
               </v-col>
             </v-row>
             <TablaCompras />
-            <v-row class="mr-5 ml-5">
+            <!-- <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider name="Bodega" rules="required">
                   <v-btn>Seleccionar</v-btn>
                 </validation-provider>
+              </v-col>
+            </v-row> -->
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Subtotal"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Subtotal"
+                    v-model="cabFactura.subtotal"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Descuento"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Descuento"
+                    v-model="cabFactura.descuento"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Impuesto"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Impuesto"
+                    v-model="cabFactura.impuesto"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Total"
+                  rules="required"
+                >
+                  <v-text-field
+                    label="Total"
+                    v-model="cabFactura.total"
+                    :error-messages="errors"
+                  ></v-text-field>
+                </validation-provider>
+              </v-col>
+            </v-row>
+            <v-row class="mr-5 ml-5">
+              <v-col>
+                <v-btn x-large class="success mb-3" block>Registrar</v-btn>
               </v-col>
             </v-row>
           </v-card-text>
