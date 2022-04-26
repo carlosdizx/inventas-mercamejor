@@ -12,6 +12,8 @@
       >
     </v-card>
     <RegistroCompras v-if="opcion == 1" />
+    <ConsultarCompras v-if="opcion == 2" />
+    <ActualizarCompras v-if="opcion == 3" />
   </v-container>
 </template>
 
@@ -19,10 +21,12 @@
 import Vue from "vue";
 
 import RegistroCompras from "@/components/dashboard/modulos/compras/comprar/RegistroCompras.vue";
+import ConsultarCompras from "@/components/dashboard/modulos/compras/comprar/ConsultarCompras.vue";
+import ActualizarCompras from "@/components/dashboard/modulos/compras/comprar/ActualizarCompras.vue";
 
 export default Vue.extend({
   name: "Cajas",
-  components: { RegistroCompras },
+  components: { RegistroCompras, ConsultarCompras, ActualizarCompras },
   data: () => ({
     opcion: 1,
     registro: true,
