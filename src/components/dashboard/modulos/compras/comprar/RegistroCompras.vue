@@ -79,6 +79,20 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
+              <v-col cols="3">
+                <validation-provider
+                  v-slot="{ errors }"
+                  name="Tipo de Pago"
+                  rules="required"
+                >
+                  <v-select
+                    label="Tipo de Pago"
+                    v-model="cabFactura.tipoPago"
+                    :error-messages="errors"
+                    :items="tiposPagos"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
@@ -218,6 +232,7 @@ export default Vue.extend({
       fechaDocumento: "",
       nDocumento: "",
       tipoCompra: "Compra",
+      tipoPago: "Contado",
       fechaPago: "",
       bodega: "",
       estado: "Pagado",
@@ -228,6 +243,7 @@ export default Vue.extend({
       total: 0,
     },
     tiposDocumento: ["Compra", "Pedido"],
+    tiposPagos: ["Contado", "Credito"],
   }),
   computed: {
     numeroDocumento() {
