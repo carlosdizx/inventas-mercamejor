@@ -1,13 +1,10 @@
 <template>
-  <v-card> registrar compra </v-card>
+  <h1>Proveedores</h1>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-
 export default Vue.extend({
-  data: () => ({
-    nombre: "",
-  }),
+  name: "Proveedores",
 });
 </script>
