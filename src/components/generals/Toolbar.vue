@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dark :color="color">
+  <v-toolbar dark color="color_a">
     <v-app-bar-nav-icon
       v-if="permitirNavdrawer"
       @click="cambiarEstadoNavbar"

@@ -5,6 +5,7 @@ export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
   { text: "Nombre", value: "nombre" },
   { text: "Dirección", value: "direccion" },
+  { text: "Fecha de creación", value: "created_at" },
   { text: "Acciones", value: "acciones" },
 ];
 

@@ -2,7 +2,7 @@ export const FUNCIONES: any[] = [
   {
     tipo: 1,
     titulo: "Modulo de compras",
-    color: "success darken-1",
+    color: "color_c",
   },
   { id: 1, tipo: 2, icono: "mdi-cart-plus", titulo: "Comprar" },
   { id: 2, tipo: 2, icono: "mdi-account-group", titulo: "Proveedores" },
@@ -10,7 +10,7 @@ export const FUNCIONES: any[] = [
   {
     tipo: 1,
     titulo: "Modulo de ventas",
-    color: "amber darken-1",
+    color: "color_c",
   },
   { id: 4, tipo: 2, icono: "mdi-cash-plus", titulo: "Vender" },
   { id: 5, tipo: 2, icono: "mdi-account-group", titulo: "Clientes" },
@@ -18,14 +18,14 @@ export const FUNCIONES: any[] = [
   {
     tipo: 1,
     titulo: "Modulo de inventario",
-    color: "red darken-1",
+    color: "color_c",
   },
   { id: 7, tipo: 2, icono: "mdi-shape-plus", titulo: "Productos" },
   { id: 8, tipo: 2, icono: "mdi-warehouse", titulo: "Bodegas" },
   {
     tipo: 1,
     titulo: "Modulo de usuarios",
-    color: "indigo darken-1",
+    color: "color_c",
   },
   {
     id: 9,
@@ -48,7 +48,7 @@ export const FUNCIONES: any[] = [
   {
     tipo: 1,
     titulo: "Modulo de Desarrolladores",
-    color: "purple darken-1",
+    color: "color_c",
   },
   {
     id: 12,
@@ -59,7 +59,7 @@ export const FUNCIONES: any[] = [
   {
     tipo: 1,
     titulo: "Modulo de pruebas",
-    color: "purple darken-1",
+    color: "color_c",
   },
   {
     id: 13,
