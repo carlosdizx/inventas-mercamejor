@@ -9,12 +9,12 @@
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Nombre del proveedor"
+                  name="NIT/Cédula"
                   rules="required"
                 >
                   <v-text-field
-                    label="Nombre del proveedor"
-                    v-model="cabFactura.nombreProveedor"
+                    label="NIT/Cédula"
+                    v-model="cabFactura.nit"
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -22,12 +22,12 @@
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
-                  name="NIT/Cédula"
+                  name="Nombre del proveedor"
                   rules="required"
                 >
                   <v-text-field
-                    label="NIT/Cédula"
-                    v-model="cabFactura.nit"
+                    label="Nombre del proveedor"
+                    v-model="cabFactura.nombreProveedor"
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -205,7 +205,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import TablaCompras from "@/components/dashboard/modulos/compras/TablaCompras.vue";
+import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 
 export default Vue.extend({
   components: {

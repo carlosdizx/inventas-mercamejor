@@ -3,9 +3,13 @@
  */
 export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
-  { text: "Nombre", value: "nombre" },
-  { text: "Documento", value: "documento" },
-  { text: "Acciones", value: "acciones" },
+  { text: "Nombres", value: "nombre" },
+  { text: "Apellidos", value: "apellidos" },
+  { text: "Nit/Cedula", value: "documento" },
+  { text: "Celular", value: "celular" },
+  { text: "Correo", value: "correo" },
+  { text: "Direccion", value: "direccion" },
+  { text: "Genero", value: "genero" },
 ];
 
 /**
@@ -23,7 +27,7 @@ listadoProductos().then();
 
 export const CAMPOS = [
   {
-    label: "Nombre",
+    label: "Nombres",
     prepend_icon: "mdi-cube",
     type: 1,
     format: "text",
@@ -32,7 +36,16 @@ export const CAMPOS = [
     rules: "required|min:1|max:50",
   },
   {
-    label: "Documento",
+    label: "Apellidos",
+    prepend_icon: "mdi-cube",
+    type: 1,
+    format: "text",
+    name: "nombre",
+    model: "",
+    rules: "required|min:1|max:50",
+  },
+  {
+    label: "Nit/Cedula",
     prepend_icon: "mdi-cube",
     type: 1,
     format: "number",
@@ -41,14 +54,43 @@ export const CAMPOS = [
     rules: "required|min:2|max:20|numeric",
   },
   {
-    label: "Productos",
-    prepend_icon: "mdi-account-group",
-    type: 2,
-    items: productos,
-    name: "productos",
-    llave: "nombre",
+    label: "Celular",
+    prepend_icon: "mdi-cube",
+    type: 1,
+    format: "number",
+    name: "celular",
     model: "",
-    multiple: true,
-    rules: "required",
+    rules: "required|min:2|max:20|numeric",
+  },
+  {
+    label: "Correo",
+    prepend_icon: "mdi-cube",
+    type: 1,
+    format: "email",
+    name: "correo",
+    model: "",
+    rules: "required|email",
+  },
+  {
+    label: "Direccion",
+    prepend_icon: "mdi-cube",
+    type: 1,
+    format: "text",
+    name: "direccion",
+    model: "",
+    rules: "required|min:1|max:50",
+  },
+  {
+    label: "Genero",
+    prepend_icon: "mdi-cube",
+    type: 6,
+    multiple: false,
+    solo: true,
+    items: ["Masculino", "Femenino", "Otro"],
+
+    format: "text",
+    name: "genero",
+    model: "",
+    rules: "required|min:1|max:50",
   },
 ];

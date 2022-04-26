@@ -9,15 +9,15 @@
       @cambiarEstadoNavDrawer="cambiarEstadoNavDrawer"
     />
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
-    <RegistroCompras v-if="item === 1" />
+    <Comprar v-if="item === 1" />
     <Proveedores v-if="item === 2" />
     <Productos v-if="item === 7" />
+    <Bodegas v-if="item === 8" />
     <RegistroUsuarios v-if="item === 9" />
     <ActualizarUsuarios v-if="item === 10" />
     <Cajas v-if="item === 11" />
     <Sprints v-if="item === 12" />
     <Categorias v-if="item === 13" />
-    <Bodegas v-if="item === 14" />
     <Marcas v-if="item === 15" />
     <Movimientos v-if="item === 16" />
   </div>
@@ -27,7 +27,7 @@
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
-import RegistroCompras from "@/components/dashboard/modulos/compras/RegistroCompras.vue";
+import Comprar from "@/components/dashboard/modulos/compras/comprar/Comprar.vue";
 import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
 import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
@@ -54,7 +54,7 @@ export default Vue.extend({
     Movimientos,
     Productos,
     Proveedores,
-    RegistroCompras,
+    Comprar,
   },
   data: () => ({
     item: 0,
