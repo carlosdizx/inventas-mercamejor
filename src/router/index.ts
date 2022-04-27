@@ -1,8 +1,12 @@
+import { LOGOUT } from "./../services/auth";
+import { GETESTADO } from "./../services/usuarios";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { AUTH } from "@/firebase/config";
+
+import Swal from "sweetalert2";
 
 Vue.use(VueRouter);
 
@@ -45,12 +49,23 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   const esRequerida = to.matched.some((ruta) => ruta.meta.requiereAuth);
-  onAuthStateChanged(AUTH, (user) => {
+  onAuthStateChanged(AUTH, async (user) => {
+    const estado = await GETESTADO();
     if (esRequerida && !user) {
       next("inicioSesion");
     } else if (!esRequerida && user) {
       next("/");
-    } else next();
+    } else if (estado === "Desabilitado") {
+      await Swal.fire({
+        title: "No tiene acceso",
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
+      });
+      await LOGOUT();
+      next("inicioSesion");
+    }
+    next();
   });
 });
 

@@ -119,3 +119,16 @@ export const GETROL = async () => {
     console.log(error);
   }
 };
+
+export const GETESTADO = async () => {
+  try {
+    if (AUTH.currentUser) {
+      const docSnap: any = await getDoc(
+        doc(FIRESTORE, `usuarios/${AUTH.currentUser?.uid}`)
+      );
+      return docSnap.data().estado;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
