@@ -17,14 +17,33 @@
 <script lang="ts">
 import Vue from "vue";
 import { FUNCIONES } from "@/generals/funcionalidades";
-
+import { PERMISOS } from "@/generals/permisos";
 export default Vue.extend({
   name: "ListadoFunciones",
   data: () => ({
     lista: [{}],
+    rol: "Empleado",
   }),
   created() {
-    this.lista = FUNCIONES;
+    const listasDispo = [{}];
+    const listas = FUNCIONES;
+    const permisos = PERMISOS;
+    permisos.forEach((permiso, index) => {
+      if (permiso.tipo === this.rol) {
+        listas.forEach((lista) => {
+          if (lista.id) {
+            permisos[index].idDisponibles.forEach((id: number) => {
+              if (lista.id === id) {
+                listasDispo.push(lista);
+              }
+            });
+          } else {
+            listasDispo.push(lista);
+          }
+        });
+      }
+    });
+    this.lista = listasDispo;
   },
   methods: {
     enviarId(id: number) {
