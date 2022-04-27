@@ -168,6 +168,36 @@
                         v-model="item[campo.name]"
                       />
                     </validation-provider>
+                    <validation-provider
+                      v-slot="{ errors }"
+                      :name="campo.label"
+                      :rules="campo.rules"
+                      v-if="campo.type === 9"
+                    >
+                      <v-combobox
+                        :label="campo.label"
+                        prepend-icon="mdi-format-list-bulleted"
+                        :items="campo.items"
+                        :item-text="campo.llave"
+                        :multiple="campo.multiple"
+                        hide-selected
+                        small-chips
+                        dense
+                        outlined
+                        v-model="item[campo.name]"
+                        :error-messages="errors"
+                      />
+                      <v-select
+                        :label="campo.label2"
+                        prepend-icon="mdi-format-list-bulleted"
+                        :items="campo.items2"
+                        dense
+                        outlined
+                        small-chips
+                        v-model="item[campo.name2]"
+                        :error-messages="errors"
+                      />
+                    </validation-provider>
                   </div>
                 </v-form>
               </ValidationObserver>

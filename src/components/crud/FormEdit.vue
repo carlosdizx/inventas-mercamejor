@@ -208,6 +208,17 @@
                   :items="campo.items2"
                   dense
                   outlined
+                  persistent-hint
+                  :hint="
+                    'Actualmente seleccionado ' +
+                    '\'' +
+                    item[campo.name][campo.llave] +
+                    '\'' +
+                    'con ' +
+                    '\'' +
+                    item[campo.name2] +
+                    '\''
+                  "
                   small-chips
                   v-model="item[campo.name2]"
                   :error-messages="errors"
@@ -255,11 +266,11 @@ export default Vue.extend({
   methods: {
     async inicializarForm() {
       this.campos = [...this.campos_form];
-      this.campos.forEach((campo) => {
+      for (const campo of this.campos) {
         if (campo.type === 9) {
           campo.items2 = this.item[campo.name][campo.llave2];
         }
-      });
+      }
     },
     async validarCombo(modelo, item, campo) {
       if (campo.validacion) {
