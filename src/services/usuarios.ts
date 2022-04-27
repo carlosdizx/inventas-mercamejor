@@ -4,9 +4,10 @@ import {
   updateDoc,
   getDocs,
   collection,
-  addDoc,
+  getDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
+import { AUTH } from "./../firebase/config";
 
 export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, "usuarios", id), datos);
@@ -103,6 +104,17 @@ export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
         await setDoc(doc(FIRESTORE, "usuarios", id), { ...empleado, caja });
       }
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GETROL = async () => {
+  try {
+    const docSnap: any = await getDoc(
+      doc(FIRESTORE, `usuarios/${AUTH.currentUser?.uid}`)
+    );
+    return docSnap.data().rol;
   } catch (error) {
     console.log(error);
   }
