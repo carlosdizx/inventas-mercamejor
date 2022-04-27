@@ -20,10 +20,12 @@ export const LISTARTODOSLOSEMPLEADOS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const empleados: any = [];
+    const ids: any = [];
     usuarios.forEach((value: any) => {
       empleados.push(value.data());
+      ids.push(value.id);
     });
-    return empleados;
+    return { ids, empleados };
   } catch (error) {
     console.log(error);
   }

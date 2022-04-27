@@ -12,7 +12,7 @@
               <v-col>
                 <v-text-field
                   label="Email de Usuario"
-                  v-model="datosUsuario.email"
+                  v-model="newDatosUsuario.email"
                   disabled
                 ></v-text-field>
               </v-col>
@@ -27,7 +27,7 @@
                   <v-select
                     label="Tipo de usuario"
                     :items="rolesDisponibles"
-                    v-model="datosUsuario.rol"
+                    v-model="newDatosUsuario.rol"
                     :error-messages="errors"
                   ></v-select>
                 </validation-provider>
@@ -41,7 +41,7 @@
                   rules="required|min:3|max:50"
                 >
                   <v-text-field
-                    v-model="datosUsuario.nombres"
+                    v-model="newDatosUsuario.nombres"
                     label="Nombres"
                     :error-messages="errors"
                   ></v-text-field>
@@ -54,7 +54,7 @@
                   rules="required|min:3|max:50"
                 >
                   <v-text-field
-                    v-model="datosUsuario.apellidos"
+                    v-model="newDatosUsuario.apellidos"
                     label="Apellidos"
                     :error-messages="errors"
                   ></v-text-field>
@@ -69,7 +69,7 @@
                   rules="required|min:5|max:50"
                 >
                   <v-text-field
-                    v-model="datosUsuario.documento"
+                    v-model="newDatosUsuario.documento"
                     label="Número de Documento"
                     :error-messages="errors"
                     type="number"
@@ -84,7 +84,7 @@
                 >
                   <v-text-field
                     type="number"
-                    v-model="datosUsuario.celular"
+                    v-model="newDatosUsuario.celular"
                     :error-messages="errors"
                     label="Celular"
                   ></v-text-field>
@@ -100,7 +100,7 @@
                   rules="required"
                 >
                   <v-select
-                    v-model="datosUsuario.genero"
+                    v-model="newDatosUsuario.genero"
                     label="Sexo"
                     :items="generosDisponibles"
                     :error-messages="errors"
@@ -108,59 +108,28 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <!-- <v-row class="mr-5 ml-5">
+            <v-row class="mr-5 ml-5">
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
-                  name="Contraseña"
-                  rules="required|min:6|max:32"
-                >
-                  <v-text-field
-                    type="password"
-                    v-model="datosAuth.passwd"
-                    label="Contraseña"
-                    :items="generosDisponibles"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </validation-provider>
-              </v-col>
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Confirmar contraseña"
-                  rules="required|min:6|max:32"
-                >
-                  <v-text-field
-                    v-model="datosVerificacion.confirmarPasswd"
-                    type="password"
-                    label="Confirmar contraseña"
-                    :error-messages="errors"
-                  ></v-text-field>
-                </validation-provider>
-              </v-col>
-            </v-row> -->
-            <!-- <v-row class="mr-5 ml-5">
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Estado del Usuario"
+                  name="Estado"
                   rules="required"
                 >
                   <v-select
-                    v-model="datosUsuario.estado"
-                    label="Estado del Usuario"
+                    v-model="newDatosUsuario.estado"
+                    label="Estado"
                     :items="estadosDisponible"
                     :error-messages="errors"
                   ></v-select>
                 </validation-provider>
               </v-col>
-            </v-row> -->
+            </v-row>
           </v-card-text>
           <v-card-actions>
             <v-container class="mr-5 ml-5">
               <v-btn
                 @click="mostrarConfirmacion = true"
-                :disabled="invalid"
+                :disabled="invalid || detectarCambios"
                 block
                 large
                 class="warning"
@@ -238,9 +207,9 @@ export default Vue.extend({
     detectarCambios() {
       let iguales = true;
       Object.keys(this.newDatosUsuario).forEach((value: any) => {
-        const newDatosUsuario: any = this.newDatosUsuario;
-        const datosUsuario: any = this.newDatosUsuario;
-        if (newDatosUsuario[value] != datosUsuario[value]) {
+        const newDatosUsuario: any = { ...this.newDatosUsuario };
+        const datosUsuario: any = { ...this.datosUsuario };
+        if (newDatosUsuario[value] !== datosUsuario[value]) {
           iguales = false;
         }
       });
@@ -283,7 +252,7 @@ export default Vue.extend({
     },
     asignarUsuario(datosUsuario: any) {
       this.datosUsuario = datosUsuario.usuario;
-      this.newDatosUsuario = this.datosUsuario;
+      this.newDatosUsuario = { ...this.datosUsuario };
       this.ident = datosUsuario.ident;
     },
   },

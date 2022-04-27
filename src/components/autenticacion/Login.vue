@@ -52,6 +52,7 @@ export default Vue.extend({
 
         // if (datos) {
         //   const datosParseados = JSON.parse(datos);
+        //   console.log(datosParseados);
         // } else {
         //   console.log("Fallo");
         // }

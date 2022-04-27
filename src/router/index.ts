@@ -64,8 +64,7 @@ router.beforeEach(async (to, from, next) => {
       });
       await LOGOUT();
       next("inicioSesion");
-    }
-    next();
+    } else next();
   });
 });
 
