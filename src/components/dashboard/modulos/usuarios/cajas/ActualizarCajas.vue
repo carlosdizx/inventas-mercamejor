@@ -93,7 +93,8 @@ export default Vue.extend({
   methods: {
     async traerEmpleados() {
       try {
-        this.empleados = await LISTARTODOSLOSEMPLEADOS();
+        const res = await LISTARTODOSLOSEMPLEADOS();
+        this.empleados = res?.empleados;
       } catch (error) {
         console.log(error);
       }

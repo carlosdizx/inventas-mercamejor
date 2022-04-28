@@ -78,3 +78,23 @@ export async function PROCESAR_FORMULARIO(
     campo.model = "";
   });
 }
+
+export const ASIGNARPERMISOS = (rol: string, listas: any, permisos: any) => {
+  const listasDispo = [{}];
+  permisos.forEach((permiso: any, index: number) => {
+    if (permiso.tipo === rol) {
+      listas.forEach((lista: any) => {
+        if (lista.id) {
+          permisos[index].idDisponibles.forEach((id: number) => {
+            if (lista.id === id) {
+              listasDispo.push(lista);
+            }
+          });
+        } else {
+          listasDispo.push(lista);
+        }
+      });
+    }
+  });
+  return listasDispo;
+};

@@ -4,9 +4,10 @@ import {
   updateDoc,
   getDocs,
   collection,
-  addDoc,
+  getDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
+import { AUTH } from "./../firebase/config";
 
 export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, "usuarios", id), datos);
@@ -19,10 +20,12 @@ export const LISTARTODOSLOSEMPLEADOS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const empleados: any = [];
+    const ids: any = [];
     usuarios.forEach((value: any) => {
       empleados.push(value.data());
+      ids.push(value.id);
     });
-    return empleados;
+    return { ids, empleados };
   } catch (error) {
     console.log(error);
   }
@@ -103,6 +106,30 @@ export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
         await setDoc(doc(FIRESTORE, "usuarios", id), { ...empleado, caja });
       }
     });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GETROL = async () => {
+  try {
+    const docSnap: any = await getDoc(
+      doc(FIRESTORE, `usuarios/${AUTH.currentUser?.uid}`)
+    );
+    return docSnap.data().rol;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const GETESTADO = async () => {
+  try {
+    if (AUTH.currentUser) {
+      const docSnap: any = await getDoc(
+        doc(FIRESTORE, `usuarios/${AUTH.currentUser?.uid}`)
+      );
+      return docSnap.data().estado;
+    }
   } catch (error) {
     console.log(error);
   }

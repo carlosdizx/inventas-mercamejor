@@ -17,14 +17,20 @@
 <script lang="ts">
 import Vue from "vue";
 import { FUNCIONES } from "@/generals/funcionalidades";
+import { PERMISOS } from "@/generals/permisos";
+import { ASIGNARPERMISOS } from "@/generals/procesamientos";
+import { GETROL } from "@/services/usuarios";
 
 export default Vue.extend({
   name: "ListadoFunciones",
   data: () => ({
     lista: [{}],
   }),
-  created() {
-    this.lista = FUNCIONES;
+  async created() {
+    const listas = FUNCIONES;
+    const permisos = PERMISOS;
+    const rol = await GETROL();
+    this.lista = ASIGNARPERMISOS(rol, listas, permisos);
   },
   methods: {
     enviarId(id: number) {
