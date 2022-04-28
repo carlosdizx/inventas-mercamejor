@@ -73,6 +73,7 @@ export async function PROCESAR_FORMULARIO(
   }
   campos.forEach((campo: any) => {
     campo.model = "";
+    campo.model2 = "";
   });
 }
 

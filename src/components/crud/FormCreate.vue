@@ -261,6 +261,10 @@ export default Vue.extend({
       await PROCESAR_FORMULARIO(this.coleccion, this.datos, this.campos, null);
       await this.$emit("registrado", true);
       this.datos = {};
+      const observer = this.$refs.observer;
+      if (observer) {
+        observer.reset();
+      }
       this.cargando = !this.cargando;
     },
   },
