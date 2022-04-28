@@ -7,6 +7,7 @@ export const COLUMNAS: any[] = [
   { text: "Responsable", value: "responsable" },
   { text: "Documento", value: "documento" },
   { text: "Entidad", value: "entidad" },
+  { text: "Correo", value: "email" },
   { text: "Fecha creación", value: "created_at" },
 ];
 
@@ -51,6 +52,13 @@ export const CAMPOS: any[] = [
     prepend_icon: "mdi-cash-lock-open",
     type: 3,
     name: "objeto",
+    model: "",
+  },
+  {
+    label: "Objeto actual",
+    prepend_icon: "mdi-cash-lock-open",
+    type: 3,
+    name: "objeto_edit",
     model: "",
   },
 ];

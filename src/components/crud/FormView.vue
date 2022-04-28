@@ -28,12 +28,13 @@
                         :label="campo.label"
                         :prepend-icon="campo.prepend_icon"
                         :type="campo.format"
+                        :hint="campo.readOnly ? '**No editable**' : ''"
                         persistent-hint
+                        readonly
                         dense
                         outlined
                         counter
-                        readonly
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -49,12 +50,12 @@
                         :items="campo.items"
                         :item-text="campo.llave"
                         :multiple="campo.multiple"
+                        readonly
                         hide-selected
                         small-chips
                         dense
                         outlined
-                        readonly
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -68,10 +69,10 @@
                         outlined
                         :label="campo.label"
                         :prepend-icon="campo.prepend_icon"
+                        readonly
                         dense
                         counter
-                        readonly
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -85,8 +86,8 @@
                         color="deep-purple"
                         inset
                         :label="campo.label"
+                        v-model="datos[campo.name]"
                         readonly
-                        v-model="item[campo.name]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -99,7 +100,7 @@
                       <v-radio-group
                         :label="campo.label"
                         row
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                         readonly
                       >
@@ -124,11 +125,11 @@
                         :label="campo.label"
                         :multiple="campo.multiple"
                         :solo="campo.solo"
-                        counter
                         readonly
+                        counter
                         outlined
                         dense
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -141,13 +142,13 @@
                       <v-slider
                         :label="campo.label"
                         :step="campo.step"
+                        readonly
                         :min="campo.min"
                         :max="campo.max"
                         thumb-label
-                        readonly
                         ticks
                         :error-messages="errors"
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                       />
                     </validation-provider>
                     <validation-provider
@@ -163,9 +164,8 @@
                         dense
                         outlined
                         counter
-                        :readonly="true"
                         :error-messages="errors"
-                        v-model="item[campo.name]"
+                        v-model="datos[campo.name]"
                       />
                     </validation-provider>
                     <validation-provider
@@ -184,17 +184,19 @@
                         small-chips
                         dense
                         outlined
-                        v-model="item[campo.name]"
+                        readonly
+                        v-model="datos[campo.name]"
                         :error-messages="errors"
                       />
                       <v-select
                         :label="campo.label2"
                         prepend-icon="mdi-format-list-bulleted"
-                        :items="campo.items2"
+                        :items="datos['items2']"
                         dense
                         outlined
                         small-chips
-                        v-model="item[campo.name2]"
+                        readonly
+                        v-model="datos[campo.name2]"
                         :error-messages="errors"
                       />
                     </validation-provider>
@@ -228,6 +230,15 @@ export default Vue.extend({
   methods: {
     async inicializarForm() {
       this.campos = [...this.campos_form];
+      this.campos.map((campo) => {
+        if (campo.type === 9) {
+          this.datos[campo.name] = this.item[campo.name];
+          this.datos[campo.name2] = this.item[campo.name2];
+          this.datos["items2"] = this.datos[campo.name][campo.llave2];
+        } else {
+          this.datos[campo.name] = this.item[campo.name];
+        }
+      });
     },
   },
   async created() {
