@@ -4,13 +4,13 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBFzkqsaf-5MDzXHlO-hOFSUI5fd-4iZLw",
-  authDomain: "inventas-app.firebaseapp.com",
-  projectId: "inventas-app",
-  storageBucket: "inventas-app.appspot.com",
-  messagingSenderId: "533111161621",
-  appId: "1:533111161621:web:33225404310a005e489f1c",
-  measurementId: "G-NK2YTKY68M",
+  apiKey: "AIzaSyD7pWRCmb4OctEOsceK-vA1QDG93evlyX4",
+  authDomain: "inventas-mercamejor-test.firebaseapp.com",
+  projectId: "inventas-mercamejor-test",
+  storageBucket: "inventas-mercamejor-test.appspot.com",
+  messagingSenderId: "162484730842",
+  appId: "1:162484730842:web:6beebd91f8d295c554dee3",
+  measurementId: "G-4GC3M3RH0R",
 };
 
 // Initialize Firebase
