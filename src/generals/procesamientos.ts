@@ -54,9 +54,6 @@ export async function PROCESAR_FORMULARIO(
     datosMovimiento.objeto = JSON.stringify(datos);
     await GUARDAR("movimientos", datosMovimiento);
   } else {
-    console.log("coleccion", coleccion);
-    console.log("datos", datos);
-    console.log("item.id", item.id);
     await EDITAR(coleccion, item.id, datos);
     await Swal.fire({
       title: "Actualización exitosa",

@@ -254,6 +254,7 @@ export default Vue.extend({
     async inicializarForm() {
       this.campos = [...this.campos_form];
       this.campos.map((campo) => {
+        this.datos["created_at"] = this.item["created_at"];
         if (campo.type === 9) {
           this.datos[campo.name] = this.item[campo.name];
           this.datos[campo.name2] = this.item[campo.name2];
@@ -273,7 +274,6 @@ export default Vue.extend({
     },
     async actulizarDatos() {
       this.cargando = !this.cargando;
-      this.dialog_form = !this.dialog_form;
       this.datos.updated_at = new Date();
       await PROCESAR_FORMULARIO(
         this.coleccion,
@@ -281,10 +281,9 @@ export default Vue.extend({
         this.campos,
         this.item
       );
-      await this.inicializarForm();
       await this.$emit("actualizado", true);
-      this.datos = {};
       this.cargando = !this.cargando;
+      this.dialog_form = !this.dialog_form;
     },
   },
   async created() {
