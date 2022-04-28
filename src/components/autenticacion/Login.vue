@@ -1,10 +1,7 @@
 <template>
   <v-card max-width="600" class="mx-auto">
     <v-card-title>
-      <v-img
-        class="mx-auto"
-        src="https://cdn.pixabay.com/photo/2017/02/26/11/57/mountaineer-2100050_960_720.jpg"
-      />
+      <v-img alt="Inventas" class="mx-auto login" src="@/assets/login.jpg" />
     </v-card-title>
     <v-card-text>
       <v-form
@@ -13,8 +10,13 @@
         lazy-validation
         @submit.prevent="loginUser"
       >
-        <v-text-field prepend-icon="mdi-account" v-model="email" />
         <v-text-field
+          placeholder="Email"
+          prepend-icon="mdi-account"
+          v-model="email"
+        />
+        <v-text-field
+          placeholder="Constraseña"
           prepend-icon="mdi-lock"
           :type="showPass ? 'text' : 'password'"
           @click:append="mostrarPassword"
@@ -65,4 +67,8 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.login {
+  border-radius: 50%;
+}
+</style>
