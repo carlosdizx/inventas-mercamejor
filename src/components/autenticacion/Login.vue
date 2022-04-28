@@ -1,7 +1,12 @@
 <template>
   <v-card max-width="600" class="mx-auto">
     <v-card-title>
-      <v-img alt="Inventas" class="mx-auto login" src="@/assets/login.jpg" />
+      <v-img
+        max-width="400"
+        alt="Inventas"
+        class="mx-auto login"
+        src="@/assets/login.jpg"
+      />
     </v-card-title>
     <v-card-text>
       <v-form
@@ -70,5 +75,7 @@ export default Vue.extend({
 <style scoped>
 .login {
   border-radius: 50%;
+  width: 30%;
+  height: 30%;
 }
 </style>
