@@ -1,8 +1,8 @@
 <template>
-  <v-card max-width="600" class="mx-auto">
+  <v-card max-width="600" class="mx-auto mt-12">
     <v-card-title>
       <v-img
-        max-width="400"
+        max-width="300"
         alt="Inventas"
         class="mx-auto login"
         src="@/assets/login.jpg"
