@@ -1,19 +1,19 @@
 <template>
   <v-container>
     <v-card>
-      <v-btn @click="opcion = 1" :class="opcion == 1 ? `success` : ''"
-        >Compras</v-btn
-      >
-      <v-btn @click="opcion = 2" :class="opcion == 2 ? `success` : ''"
-        >Consultar Compras</v-btn
-      >
-      <v-btn @click="opcion = 3" :class="opcion == 3 ? `success` : ''"
-        >Actualizar Compras</v-btn
-      >
+      <v-btn @click="opcion = 1" :class="opcion === 1 ? `success` : ''">
+        Compras
+      </v-btn>
+      <v-btn @click="opcion = 2" :class="opcion === 2 ? `success` : ''">
+        Consultar Compras
+      </v-btn>
+      <v-btn @click="opcion = 3" :class="opcion === 3 ? `success` : ''">
+        Actualizar Compras
+      </v-btn>
     </v-card>
-    <RegistroCompras v-if="opcion == 1" />
-    <ConsultarCompras v-if="opcion == 2" />
-    <ActualizarCompras v-if="opcion == 3" />
+    <RegistroCompras v-if="opcion === 1" />
+    <ConsultarCompras v-if="opcion === 2" />
+    <ActualizarCompras v-if="opcion === 3" />
   </v-container>
 </template>
 

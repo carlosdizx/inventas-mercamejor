@@ -206,7 +206,7 @@
               type="submit"
               :loading="cargando"
             >
-              Registrarme <v-icon>mdi-account-plus</v-icon>
+              Registrarme <v-icon>mdi-database-plus</v-icon>
             </v-btn>
           </v-form>
         </ValidationObserver>
@@ -261,6 +261,10 @@ export default Vue.extend({
       await PROCESAR_FORMULARIO(this.coleccion, this.datos, this.campos, null);
       await this.$emit("registrado", true);
       this.datos = {};
+      const observer = this.$refs.observer;
+      if (observer) {
+        observer.reset();
+      }
       this.cargando = !this.cargando;
     },
   },

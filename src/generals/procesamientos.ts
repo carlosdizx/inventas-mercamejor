@@ -39,6 +39,7 @@ export async function PROCESAR_FORMULARIO(
     created_at: new Date(),
     responsable: datosUser.nombres,
     documento: datosUser.documento,
+    email: datosUser.email,
   };
   if (!item) {
     await GUARDAR(coleccion, datos);
@@ -62,11 +63,17 @@ export async function PROCESAR_FORMULARIO(
       timer: 1000,
     });
     datosMovimiento.accion = "Editó";
+    item.created_at = null;
+    datos.created_at = null;
+    item.updated_at = null;
+    datos.updated_at = null;
     datosMovimiento.objeto = JSON.stringify(item);
+    datosMovimiento.objeto_edit = JSON.stringify(datos);
     await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
     campo.model = "";
+    campo.model2 = "";
   });
 }
 

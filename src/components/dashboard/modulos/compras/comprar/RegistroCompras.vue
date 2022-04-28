@@ -205,7 +205,7 @@
             </v-row>
             <v-row class="mr-5 ml-5">
               <v-col>
-                <v-btn x-large class="success mb-3" block>Registrar</v-btn>
+                <v-btn x-large dark class="color_a mb-3" block>Registrar</v-btn>
               </v-col>
             </v-row>
           </v-card-text>

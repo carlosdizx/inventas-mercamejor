@@ -13,9 +13,7 @@
         <h1 class="text-center my-3">
           Formulario de edición para {{ titulo }}
         </h1>
-        <h3 class="text-center my-3" v-if="item">
-          Código de seguridad: {{ item.id }}
-        </h3>
+        <h3 class="text-center my-3">Código de seguridad: {{ item.id }}</h3>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-form
             class="my-2"
@@ -41,7 +39,7 @@
                   dense
                   outlined
                   counter
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -63,9 +61,9 @@
                   small-chips
                   dense
                   outlined
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
-                  @change="validarCombo(item[campo.name], item, campo)"
+                  @change="validarCombo(datos[campo.name], item, campo)"
                 />
               </validation-provider>
               <validation-provider
@@ -82,7 +80,7 @@
                   :disabled="campo.readOnly"
                   dense
                   counter
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -96,7 +94,7 @@
                   color="deep-purple"
                   inset
                   :label="campo.label"
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :readonly="campo.readOnly"
                   :disabled="campo.readOnly"
                   :error-messages="errors"
@@ -111,7 +109,7 @@
                 <v-radio-group
                   :label="campo.label"
                   row
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
                   :readonly="campo.readOnly"
                   :disabled="campo.readOnly"
@@ -142,7 +140,7 @@
                   counter
                   outlined
                   dense
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -162,7 +160,7 @@
                   thumb-label
                   ticks
                   :error-messages="errors"
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                 />
               </validation-provider>
               <validation-provider
@@ -179,7 +177,7 @@
                   outlined
                   counter
                   :error-messages="errors"
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                 />
               </validation-provider>
               <validation-provider
@@ -198,18 +196,18 @@
                   small-chips
                   dense
                   outlined
-                  v-model="item[campo.name]"
+                  v-model="datos[campo.name]"
                   :error-messages="errors"
-                  @change="validarCombo(item[campo.name], item, campo)"
+                  @change="validarCombo(datos[campo.name], item, campo)"
                 />
                 <v-select
                   :label="campo.label2"
                   prepend-icon="mdi-format-list-bulleted"
-                  :items="campo.items2"
+                  :items="datos['items2']"
                   dense
                   outlined
                   small-chips
-                  v-model="item[campo.name2]"
+                  v-model="datos[campo.name2]"
                   :error-messages="errors"
                 />
               </validation-provider>
@@ -255,9 +253,14 @@ export default Vue.extend({
   methods: {
     async inicializarForm() {
       this.campos = [...this.campos_form];
-      this.campos.forEach((campo) => {
+      this.campos.map((campo) => {
+        this.datos["created_at"] = this.item["created_at"];
         if (campo.type === 9) {
-          campo.items2 = this.item[campo.name][campo.llave2];
+          this.datos[campo.name] = this.item[campo.name];
+          this.datos[campo.name2] = this.item[campo.name2];
+          this.datos["items2"] = this.datos[campo.name][campo.llave2];
+        } else {
+          this.datos[campo.name] = this.item[campo.name];
         }
       });
     },
@@ -269,14 +272,8 @@ export default Vue.extend({
         }
       }
     },
-    async capturarCampos() {
-      this.datos = await CAPTURAR_CAMPOS(this.item, this.campos);
-    },
     async actulizarDatos() {
       this.cargando = !this.cargando;
-      await this.capturarCampos();
-      this.dialog_form = !this.dialog_form;
-      await this.inicializarForm();
       this.datos.updated_at = new Date();
       await PROCESAR_FORMULARIO(
         this.coleccion,
@@ -285,8 +282,8 @@ export default Vue.extend({
         this.item
       );
       await this.$emit("actualizado", true);
-      this.datos = {};
       this.cargando = !this.cargando;
+      this.dialog_form = !this.dialog_form;
     },
   },
   async created() {
