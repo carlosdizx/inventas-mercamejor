@@ -232,7 +232,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
-import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
+import { REGISTRO_USUARIO } from "@/services/auth";
 
 import Swal from "sweetalert2";
 import { REGISTRARDATOSUSUARIO } from "@/services/usuarios";
@@ -292,16 +292,13 @@ export default Vue.extend({
   methods: {
     async registrarUsuario() {
       try {
-        const respuesta = await CREAR_CUENTA(
+        const respuesta: any = await REGISTRO_USUARIO(
           this.datosAuth.email,
           this.datosAuth.passwd
         );
+        const id = respuesta.localId;
         this.datosUsuario.email = this.datosAuth.email;
-        const uid = respuesta.user.uid;
-        await REGISTRARDATOSUSUARIO(uid, this.datosUsuario);
-        const usuario = respuesta.user;
-        const datos = JSON.stringify(this.datosUsuario);
-        await ACTUALIZAR(usuario, datos);
+        await REGISTRARDATOSUSUARIO(id, this.datosUsuario);
         this.mostrarConfirmacion = false;
         await Swal.fire({
           timer: 3000,
