@@ -8,6 +8,21 @@ import {
 } from "firebase/auth";
 import { AUTH } from "@/firebase/config";
 
+const API_KEY = "AIzaSyBFzkqsaf-5MDzXHlO-hOFSUI5fd-4iZLw";
+const URL_SING_UP = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
+
+export const REGISTRO_USUARIO = async (email: string, password: string) => {
+  return await (
+    await fetch(URL_SING_UP, {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        returnSecureToken: true,
+      }),
+    })
+  ).json();
+};
 export const CREAR_CUENTA = async (correo: string, password: string) => {
   const resuesta = await createUserWithEmailAndPassword(AUTH, correo, password);
   if (resuesta.user) {
