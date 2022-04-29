@@ -22,8 +22,10 @@ export const LISTARTODOSLOSEMPLEADOS = async () => {
     const empleados: any = [];
     const ids: any = [];
     usuarios.forEach((value: any) => {
-      empleados.push(value.data());
-      ids.push(value.id);
+      if (value.data().rol === "Empleado") {
+        empleados.push(value.data());
+        ids.push(value.id);
+      }
     });
     return { ids, empleados };
   } catch (error) {
