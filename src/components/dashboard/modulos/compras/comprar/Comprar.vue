@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-card>
       <v-btn @click="opcion = 1" :class="opcion === 1 ? `success` : ''">
         Compras
@@ -14,7 +14,7 @@
     <RegistroCompras v-if="opcion === 1" />
     <ConsultarCompras v-if="opcion === 2" />
     <ActualizarCompras v-if="opcion === 3" />
-  </v-container>
+  </div>
 </template>
 
 <script lang="ts">
