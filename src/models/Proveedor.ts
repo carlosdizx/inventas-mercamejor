@@ -3,7 +3,7 @@
  */
 export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
-  { text: "Nombres", value: "nombre" },
+  { text: "Nombres", value: "nombres" },
   { text: "Apellidos", value: "apellidos" },
   { text: "Nit/Cedula", value: "documento" },
   { text: "Celular", value: "celular" },
@@ -31,7 +31,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-cube",
     type: 1,
     format: "text",
-    name: "nombre",
+    name: "nombres",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -40,7 +40,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-cube",
     type: 1,
     format: "text",
-    name: "nombre",
+    name: "apellidos",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -51,7 +51,7 @@ export const CAMPOS = [
     format: "number",
     name: "documento",
     model: "",
-    rules: "required|min:2|max:20|numeric",
+    rules: "required|min:6|max:20|numeric",
   },
   {
     label: "Celular",

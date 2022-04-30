@@ -65,8 +65,16 @@
                 {{ productoNuevo.cantidad * productoNuevo.precioCompra }}
               </td>
               <td>
-                <v-btn @click="agregarProducto" icon class="warning ml-1">
+                <v-btn
+                  color="white"
+                  @click="agregarProducto"
+                  icon
+                  class="warning ml-1"
+                >
                   +
+                </v-btn>
+                <v-btn icon color="white" class="warning ml-1">
+                  <v-icon>mdi-magnify</v-icon>
                 </v-btn>
               </td>
             </tr>
@@ -84,13 +92,13 @@
               <td>{{ item.descuento }}</td>
               <td>{{ item.subTotal }}</td>
               <td>
-                <v-btn icon class="success">
-                  <v-icon>mdi-lead-pencil</v-icon>
+                <v-btn color="white" icon class="success">
+                  <v-icon color="white">mdi-lead-pencil</v-icon>
                 </v-btn>
-                <v-btn icon class="error ml-1">
+                <v-btn color="white" icon class="error ml-1">
                   <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
-                <v-btn icon class="warning ml-1">
+                <v-btn color="white" icon class="warning ml-1">
                   <v-icon>mdi-magnify</v-icon>
                 </v-btn>
               </td>
@@ -163,12 +171,11 @@ export default Vue.extend({
       res.forEach((prod: any) => this.productos.push(prod.data()));
     },
     agregarProducto() {
-      this.desserts.push(this.productoNuevo);
+      this.desserts.unshift(this.productoNuevo);
     },
     buscarProducto() {
       this.productos.forEach((prod: any) => {
         if (prod.codigo_barras === this.productoNuevo.codigo) {
-          console.log("yes");
           this.productoNuevo.descripcion = prod.nombre;
         }
       });
