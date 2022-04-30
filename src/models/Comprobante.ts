@@ -5,7 +5,7 @@ export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
   { text: "Tipo", value: "tipo" },
   { text: "Referencia", value: "referencia" },
-  { text: "Archivo", value: "documento" },
+  { text: "Archivo", value: "documento_ref" },
   { text: "Fecha de creación", value: "created_at" },
 ];
 
@@ -37,7 +37,7 @@ export const CAMPOS = [
     label: "Imagen o documento del comprobante",
     prepend_icon: "mdi-paperclip",
     type: 10,
-    name: "documento",
+    name: "documento_ref",
     model: null,
     rules: "required",
   },

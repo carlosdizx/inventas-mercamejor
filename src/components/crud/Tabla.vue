@@ -69,6 +69,18 @@
               :item="item"
             />
           </template>
+          <template v-slot:item.documento_ref="{ item }">
+            <v-btn
+              color="blue darken-4"
+              dark
+              icon
+              outlined
+              :href="item.documento_ref"
+              target="_blank"
+            >
+              <v-icon>mdi-file-export</v-icon>
+            </v-btn>
+          </template>
           <template v-slot:item.calificacion="{ item }">
             <v-tooltip color="primary" bottom>
               <template v-slot:activator="{ on, attrs }">
