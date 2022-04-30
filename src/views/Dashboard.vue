@@ -20,6 +20,7 @@
     <Categorias v-if="item === 13" />
     <Marcas v-if="item === 15" />
     <Movimientos v-if="item === 16" />
+    <Comprobantes v-if="item === 17" />
   </div>
 </template>
 
@@ -38,6 +39,7 @@ import Marcas from "@/components/dashboard/modulos/Marcas.vue";
 import Movimientos from "@/components/dashboard/modulos/Movimientos.vue";
 import Productos from "@/components/dashboard/modulos/Productos.vue";
 import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
+import Comprobantes from "@/components/dashboard/modulos/Comprobantes.vue";
 
 export default Vue.extend({
   name: "Dashboard",
@@ -55,6 +57,7 @@ export default Vue.extend({
     Productos,
     Proveedores,
     Comprar,
+    Comprobantes,
   },
   data: () => ({
     item: 0,

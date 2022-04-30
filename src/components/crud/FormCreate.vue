@@ -198,6 +198,23 @@
                   :error-messages="errors"
                 />
               </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 10"
+              >
+                <v-file-input
+                  :label="campo.label"
+                  :prepend-icon="campo.prepend_icon"
+                  dense
+                  outlined
+                  counter
+                  show-size
+                  v-model="campo.model"
+                  :error-messages="errors"
+                />
+              </validation-provider>
             </div>
             <v-btn
               block

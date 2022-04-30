@@ -87,7 +87,6 @@ export const CAMPOS = [
     multiple: false,
     solo: true,
     items: ["Masculino", "Femenino", "Otro"],
-
     format: "text",
     name: "genero",
     model: "",
