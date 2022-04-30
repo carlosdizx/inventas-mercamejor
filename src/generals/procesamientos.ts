@@ -96,3 +96,13 @@ export const ASIGNARPERMISOS = (rol: string, listas: any, permisos: any) => {
   });
   return listasDispo;
 };
+
+export const VALIDARCAMPOSNULOS = (obj: any) => {
+  let value = true;
+  Object.keys(obj).forEach((key) => {
+    if (!obj[key]) {
+      value = false;
+    }
+  });
+  return value;
+};
