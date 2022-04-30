@@ -211,6 +211,7 @@
                   outlined
                   counter
                   show-size
+                  accept="image/*,.pdf"
                   v-model="campo.model"
                   :error-messages="errors"
                 />

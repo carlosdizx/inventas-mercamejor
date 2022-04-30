@@ -1,6 +1,7 @@
 import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import { DATOS_USUARIO } from "@/services/auth";
+import { SUBIR_ARCHIVO } from "@/services/almacenamiento";
 
 export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
   const datos = {};
@@ -11,18 +12,24 @@ export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
       datos[Object.keys(item)[index]] = value;
     });
   } else {
-    campos.forEach((campo: any) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      datos[campo.name] = campo.model;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (campo.name2) {
+    for (const campo of campos) {
+      if (campo.type === 10) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        datos[campo.name2] = campo.model2;
+        datos[campo.name] = await SUBIR_ARCHIVO(campo.model, "comprobantes");
+      } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        datos[campo.name] = campo.model;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (campo.name2) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          datos[campo.name2] = campo.model2;
+        }
       }
-    });
+    }
   }
   return datos;
 };
@@ -72,8 +79,12 @@ export async function PROCESAR_FORMULARIO(
     await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
-    campo.model = "";
-    campo.model2 = "";
+    if (campo.type === 10) {
+      campo.model = null;
+    } else {
+      campo.model = "";
+      campo.model2 = "";
+    }
   });
 }
 

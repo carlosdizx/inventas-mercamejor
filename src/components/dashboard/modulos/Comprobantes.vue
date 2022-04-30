@@ -6,7 +6,7 @@
       titulo="comprobantes"
       :columnas="columnas"
       :campos_form="campos_form"
-      elimacion
+      no-editar
     />
   </v-container>
 </template>
