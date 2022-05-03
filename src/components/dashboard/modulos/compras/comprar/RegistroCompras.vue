@@ -6,30 +6,18 @@
         <v-card-text>
           <v-row class="mr-5 ml-5">
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="NIT/Cédula"
-                rules="required"
-              >
-                <v-text-field
-                  label="NIT/Cédula"
-                  v-model="cabFactura.nit"
-                  :error-messages="errors"
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="NIT/Cédula"
+                v-model="cabFactura.nit"
+                @input="buscarProveedor()"
+              ></v-text-field>
             </v-col>
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Nombre del proveedor"
-                rules="required"
-              >
-                <v-text-field
-                  label="Nombre del proveedor"
-                  v-model="cabFactura.nombreProveedor"
-                  :error-messages="errors"
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Nombre del proveedor"
+                v-model="cabFactura.nombreProveedor"
+                readonly
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
@@ -73,7 +61,6 @@
                   v-model="cabFactura.nDocumento"
                   :error-messages="errors"
                 ></v-text-field>
-                {{ numeroDocumento }}
               </validation-provider>
             </v-col>
           </v-row>
@@ -198,6 +185,7 @@
 import Vue from "vue";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
+import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
 export default Vue.extend({
   components: {
@@ -205,8 +193,8 @@ export default Vue.extend({
   },
   data: () => ({
     cabFactura: {
-      nombreProveedor: "",
       nit: "",
+      nombreProveedor: "Proveedores varios",
       fechaDocumento: "",
       nDocumento: "",
       tipoCompra: "Compra",
@@ -219,9 +207,9 @@ export default Vue.extend({
       impuesto: 0,
       total: 0,
     },
-
     tiposDocumento: ["Compra", "Pedido"],
     tiposPagos: ["Contado", "Credito"],
+    proveedores: [""],
   }),
   computed: {
     numeroDocumento() {
@@ -229,8 +217,22 @@ export default Vue.extend({
     },
   },
   methods: {
+    async listarProveedores() {
+      this.proveedores = [];
+      const res: any = await LISTAR_PROVEDOORES();
+      res.forEach((prov: any) => this.proveedores.push(prov.data()));
+    },
+    buscarProveedor() {
+      let result = "Proveedores varios";
+      this.proveedores.forEach((prov: any) => {
+        if (this.cabFactura.nit === prov.documento) {
+          result = `${prov.nombres} ${prov.apellidos}`;
+        }
+      });
+      this.cabFactura.nombreProveedor = result;
+    },
     resetCampos() {
-      this.cabFactura.nombreProveedor = "";
+      this.cabFactura.nombreProveedor = "Proveedores varios";
       this.cabFactura.nit = "";
       this.cabFactura.fechaDocumento = "";
       this.cabFactura.nDocumento = "";
@@ -244,6 +246,9 @@ export default Vue.extend({
       this.cabFactura.impuesto = 0;
       this.cabFactura.total = 0;
     },
+  },
+  created() {
+    this.listarProveedores();
   },
 });
 </script>

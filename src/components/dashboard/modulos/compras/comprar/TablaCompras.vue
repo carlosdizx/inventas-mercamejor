@@ -38,21 +38,25 @@
                 ></v-select>
               </td>
               <td>
-                <v-text-field v-model="productoNuevo.cantidad"></v-text-field>
+                <v-text-field
+                  @input="calcularSubtotal()"
+                  v-model="productoNuevo.cantidad"
+                ></v-text-field>
               </td>
               <td>
                 <v-text-field
+                  @input="calcularSubtotal()"
                   v-model="productoNuevo.precioCompra"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  v-model="productoNuevo.precioVenta"
+                  v-model="productoNuevo.porGanancia"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  v-model="productoNuevo.porGanancia"
+                  v-model="productoNuevo.precioVenta"
                 ></v-text-field>
               </td>
               <td>
@@ -62,11 +66,20 @@
                 <v-text-field v-model="productoNuevo.descuento"></v-text-field>
               </td>
               <td>
-                {{ productoNuevo.cantidad * productoNuevo.precioCompra }}
+                {{ productoNuevo.subTotal }}
               </td>
               <td>
-                <v-btn @click="agregarProducto" icon class="warning ml-1">
-                  +
+                <v-btn
+                  color="white"
+                  @click="agregarProducto"
+                  :disabled="!validarNuevoProducto"
+                  icon
+                  class="warning ml-1"
+                >
+                  Add
+                </v-btn>
+                <v-btn icon color="white" class="warning ml-1">
+                  <v-icon>mdi-magnify</v-icon>
                 </v-btn>
               </td>
             </tr>
@@ -84,14 +97,11 @@
               <td>{{ item.descuento }}</td>
               <td>{{ item.subTotal }}</td>
               <td>
-                <v-btn icon class="success">
-                  <v-icon>mdi-lead-pencil</v-icon>
+                <v-btn color="white" icon class="success">
+                  <v-icon color="white">mdi-lead-pencil</v-icon>
                 </v-btn>
-                <v-btn icon class="error ml-1">
+                <v-btn color="white" icon class="error ml-1">
                   <v-icon>mdi-trash-can-outline</v-icon>
-                </v-btn>
-                <v-btn icon class="warning ml-1">
-                  <v-icon>mdi-magnify</v-icon>
                 </v-btn>
               </td>
             </tr>
@@ -106,6 +116,7 @@
 import Vue from "vue";
 
 import { LISTAR_BODEGAS, LISTAR_PRODUCTOS } from "@/generals/Funciones";
+import { VALIDARCAMPOSNULOS } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -146,16 +157,22 @@ export default Vue.extend({
       porGanancia: 12,
       impuesto: 0,
       descuento: 0,
-      subTotal: 0,
+      subTotal: 10,
     },
     bodegas: [""],
     productos: [""],
   }),
+  computed: {
+    validarNuevoProducto() {
+      return VALIDARCAMPOSNULOS(this.productoNuevo);
+    },
+  },
   methods: {
     async listarBodegas() {
       this.bodegas = [];
       const res: any = await LISTAR_BODEGAS();
       res.forEach((bod: any) => this.bodegas.push(bod.data()));
+      this.productoNuevo.bodega = this.bodegas[1];
     },
     async listarProductos() {
       this.productos = [];
@@ -163,15 +180,30 @@ export default Vue.extend({
       res.forEach((prod: any) => this.productos.push(prod.data()));
     },
     agregarProducto() {
-      this.desserts.push(this.productoNuevo);
+      this.desserts.unshift(this.productoNuevo);
+      this.resetNuevoProducto();
+    },
+    resetNuevoProducto() {
+      this.productoNuevo.codigo = "";
+      this.productoNuevo.descripcion = "";
+      this.productoNuevo.cantidad = 1;
+      this.productoNuevo.precioCompra = 0;
+      this.productoNuevo.precioVenta = 0;
+      this.productoNuevo.porGanancia = 12;
+      this.productoNuevo.impuesto = 0;
+      this.productoNuevo.descuento = 0;
+      this.productoNuevo.subTotal = 10;
     },
     buscarProducto() {
       this.productos.forEach((prod: any) => {
         if (prod.codigo_barras === this.productoNuevo.codigo) {
-          console.log("yes");
           this.productoNuevo.descripcion = prod.nombre;
         }
       });
+    },
+    calcularSubtotal() {
+      this.productoNuevo.subTotal =
+        this.productoNuevo.cantidad * this.productoNuevo.precioCompra;
     },
   },
   created() {
