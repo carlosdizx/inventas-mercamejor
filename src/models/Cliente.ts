@@ -8,6 +8,8 @@ export const COLUMNAS = [
   { text: "Género", value: "documento" },
   { text: "Documento de identidad", value: "documento" },
   { text: "Correo", value: "correo" },
+  { text: "Fecha de creación", value: "created_at" },
+  { text: "Fecha de edición", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
 ];
 

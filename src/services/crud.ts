@@ -15,7 +15,7 @@ import { DATOS_USUARIO } from "@/services/auth";
 
 export const LISTAR = async (colection: string) => {
   const coleccion = collection(FIRESTORE, colection);
-  const consulta = query(coleccion, orderBy("created_at"));
+  const consulta = query(coleccion, orderBy("created_at", "desc"));
   return await getDocs(consulta);
 };
 
