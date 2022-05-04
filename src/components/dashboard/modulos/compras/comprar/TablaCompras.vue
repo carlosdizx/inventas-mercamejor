@@ -191,9 +191,11 @@ export default Vue.extend({
       const product: any = { ...this.productoNuevo };
       this.desserts.unshift(product);
       this.resetNuevoProducto();
+      this.$emit("enviarProductos", this.desserts);
     },
     eliminarItem(index: number) {
       this.desserts.splice(index, 1);
+      this.$emit("enviarProductos", this.desserts);
     },
     resetNuevoProducto() {
       this.productoNuevo.codigo = "";

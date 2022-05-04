@@ -109,21 +109,15 @@
             </v-col>
           </v-row>
 
-          <TablaCompras />
+          <TablaCompras @enviarProductos="actualizarProductos" />
 
           <v-row class="mr-5 ml-5">
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Subtotal"
-                rules="required"
-              >
-                <v-text-field
-                  label="Subtotal"
-                  v-model="cabFactura.subtotal"
-                  :error-messages="errors"
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Subtotal"
+                readonly
+                v-model="cabFactura.subtotal"
+              ></v-text-field>
             </v-col>
 
             <v-col>
@@ -245,6 +239,19 @@ export default Vue.extend({
       this.cabFactura.descuento = 0;
       this.cabFactura.impuesto = 0;
       this.cabFactura.total = 0;
+    },
+    actualizarProductos(productos: any) {
+      console.log(productos);
+      this.cabFactura.compras = productos;
+      this.calcularSubototal();
+    },
+    calcularSubototal() {
+      let subtototal = 0;
+      this.cabFactura.compras.forEach((com: any) => {
+        console.log(com);
+        subtototal += com.subTotal;
+      });
+      this.cabFactura.subtotal = subtototal;
     },
   },
   created() {
