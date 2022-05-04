@@ -28,7 +28,9 @@
               <v-col cols="9">
                 <v-text-field
                   v-model="buscado"
-                  label="'Buscar por cualquier campo"
+                  outlined
+                  dense
+                  label="Buscar por cualquier campo"
                 />
               </v-col>
               <v-col cols="2" v-if="!noCrear">
