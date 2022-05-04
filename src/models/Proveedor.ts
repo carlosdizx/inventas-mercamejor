@@ -1,3 +1,5 @@
+import { GENEROS, TIPOS_DOCUMENTO } from "@/generals/Constantes";
+
 /**
  Sección tabla
  */
@@ -10,25 +12,17 @@ export const COLUMNAS = [
   { text: "Correo", value: "correo" },
   { text: "Direccion", value: "direccion" },
   { text: "Genero", value: "genero" },
+  { text: "Acciones", value: "acciones" },
 ];
 
 /**
  Sección formulario
  */
-import { LISTAR_PRODUCTOS } from "@/generals/Funciones";
-
-const productos: any[] = [];
-const listadoProductos = async () => {
-  (await LISTAR_PRODUCTOS()).forEach((prod) => productos.push(prod.data()));
-  return productos;
-};
-
-listadoProductos().then();
 
 export const CAMPOS = [
   {
     label: "Nombres",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-account",
     type: 1,
     format: "text",
     name: "nombres",
@@ -37,7 +31,7 @@ export const CAMPOS = [
   },
   {
     label: "Apellidos",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-account",
     type: 1,
     format: "text",
     name: "apellidos",
@@ -45,8 +39,20 @@ export const CAMPOS = [
     rules: "required|min:1|max:50",
   },
   {
-    label: "Nit/Cedula",
-    prepend_icon: "mdi-cube",
+    label: "Tipo de documento",
+    prepend_icon: "mdi-card-account-details",
+    type: 6,
+    multiple: false,
+    solo: true,
+    items: TIPOS_DOCUMENTO,
+    format: "text",
+    name: "tipo_documento",
+    model: "",
+    rules: "required",
+  },
+  {
+    label: "documento de identidad",
+    prepend_icon: "mdi-card-account-details",
     type: 1,
     format: "number",
     name: "documento",
@@ -55,7 +61,7 @@ export const CAMPOS = [
   },
   {
     label: "Celular",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-phone",
     type: 1,
     format: "number",
     name: "celular",
@@ -64,7 +70,7 @@ export const CAMPOS = [
   },
   {
     label: "Correo",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-email",
     type: 1,
     format: "email",
     name: "correo",
@@ -73,7 +79,7 @@ export const CAMPOS = [
   },
   {
     label: "Direccion",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-home",
     type: 1,
     format: "text",
     name: "direccion",
@@ -82,14 +88,14 @@ export const CAMPOS = [
   },
   {
     label: "Genero",
-    prepend_icon: "mdi-cube",
+    prepend_icon: "mdi-gender-transgender",
     type: 6,
     multiple: false,
     solo: true,
-    items: ["Masculino", "Femenino", "Otro"],
+    items: GENEROS,
     format: "text",
     name: "genero",
     model: "",
-    rules: "required|min:1|max:50",
+    rules: "required",
   },
 ];
