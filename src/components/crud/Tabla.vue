@@ -6,8 +6,8 @@
         <v-data-table
           :headers="columnas"
           :items="filas"
-          class="elevation-2"
           :search="buscado"
+          class="elevation-2"
           :custom-filter="filtrarPorLlave"
           fixed-header
         >
@@ -28,7 +28,7 @@
               <v-col cols="9">
                 <v-text-field
                   v-model="buscado"
-                  :label="'Buscar por \'' + llave + '\''"
+                  label="'Buscar por cualquier campo"
                 />
               </v-col>
               <v-col cols="2" v-if="!noCrear">
