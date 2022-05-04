@@ -88,7 +88,7 @@
                   icon
                   class="warning ml-1"
                 >
-                  Add
+                  <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <v-btn icon color="white" class="warning ml-1">
                   <v-icon>mdi-magnify</v-icon>
@@ -96,7 +96,6 @@
               </td>
             </tr>
           </tbody>
-          {{ typeof productoNuevo.precioCompra }}
           <tbody class="pt-3">
             <tr v-for="(item, index) in desserts" :key="index">
               <td>{{ item.codigo }}</td>
@@ -245,7 +244,6 @@ export default Vue.extend({
   created() {
     this.listarBodegas();
     this.listarProductos();
-    console.log(this.productoNuevo.impuesto > 0);
   },
   mounted() {
     this.desserts = [];
