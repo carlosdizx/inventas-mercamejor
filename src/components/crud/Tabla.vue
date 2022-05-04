@@ -207,9 +207,9 @@ export default Vue.extend({
       (await LISTAR(this.coleccion)).forEach((item) => {
         const obj: any = JSON.parse(JSON.stringify(item.data()));
         obj.id = item.id;
-        Object.values(obj).map((value: any, index: number) => {
+        Object.values(obj).map(async (value: any, index: number) => {
           if (typeof value === "object" && value) {
-            value = tipo_dato(value);
+            value = await tipo_dato(value);
             const key: string = Object.keys(obj)[index].toString();
             obj[key] = value;
           }

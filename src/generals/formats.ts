@@ -6,15 +6,17 @@ moment.locale("es");
 
 export const toDateWithDetail = (dat: any) =>
   moment(dat).format("dddd DD MMMM, YYYY h:mm:ss a");
-
 export const toNumber = (dat: any) => new Intl.NumberFormat().format(dat);
 
-export const tipo_dato = (valor: any) => {
+export const tipo_dato = async (valor: any) => {
   let aux = null;
   Object.keys(valor).forEach((key, index) => {
     const dato: any = Object.values(valor)[index];
     if (key === "seconds" || key === "nanoseconds") {
-      aux = toDateWithDetail(dato.seconds);
+      const fecha: Date = new Date(
+        valor.seconds * 1000 + valor.nanoseconds / 1000000
+      );
+      aux = toDateWithDetail(fecha);
     } else if (key === "numero") {
       aux = toNumber(dato);
     } else if (key === "moneda") {
