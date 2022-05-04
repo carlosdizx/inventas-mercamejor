@@ -111,9 +111,14 @@ export const ASIGNARPERMISOS = (rol: string, listas: any, permisos: any) => {
 export const VALIDARCAMPOSNULOS = (obj: any) => {
   let value = true;
   Object.keys(obj).forEach((key) => {
-    if (!obj[key]) {
+    if (!obj[key] || obj[key] < 0) {
       value = false;
     }
   });
   return value;
+};
+
+export const REDONDEAR = (num: number, exp: number) => {
+  const pow = Math.pow(10, Math.abs(exp));
+  return exp > 0 ? Math.round(num * pow) / pow : Math.round(num / pow) * pow;
 };

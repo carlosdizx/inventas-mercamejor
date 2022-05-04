@@ -109,21 +109,15 @@
             </v-col>
           </v-row>
 
-          <TablaCompras />
+          <TablaCompras @enviarProductos="actualizarProductos" />
 
           <v-row class="mr-5 ml-5">
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Subtotal"
-                rules="required"
-              >
-                <v-text-field
-                  label="Subtotal"
-                  v-model="cabFactura.subtotal"
-                  :error-messages="errors"
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Subtotal"
+                readonly
+                v-model="cabFactura.subtotal"
+              ></v-text-field>
             </v-col>
 
             <v-col>
@@ -133,6 +127,7 @@
                 rules="required"
               >
                 <v-text-field
+                  @input="calcularTotal()"
                   label="Descuento"
                   v-model="cabFactura.descuento"
                   :error-messages="errors"
@@ -148,6 +143,7 @@
               >
                 <v-text-field
                   label="Impuesto"
+                  @input="calcularTotal()"
                   v-model="cabFactura.impuesto"
                   :error-messages="errors"
                 ></v-text-field>
@@ -155,28 +151,25 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Total"
-                rules="required"
-              >
-                <v-text-field
-                  label="Total"
-                  v-model="cabFactura.total"
-                  :error-messages="errors"
-                ></v-text-field>
-              </validation-provider>
+            <v-col class="text-center">
+              <h2 class="text-gray">Total: ${{ cabFactura.total }}</h2>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
             <v-col>
-              <v-btn x-large dark class="color_a mb-3" block>Registrar</v-btn>
+              <v-btn
+                @click="registrarCompra()"
+                x-large
+                dark
+                class="color_a mb-3"
+                block
+                >Registrar</v-btn
+              >
             </v-col>
           </v-row>
         </v-card-text>
       </v-form>
-      <v-col v-if="!invalid">algo</v-col>
+      <v-col v-if="!invalid">.</v-col>
     </ValidationObserver>
   </v-card>
 </template>
@@ -186,6 +179,7 @@ import Vue from "vue";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
+import { GUARDAR } from "@/services/crud";
 
 export default Vue.extend({
   components: {
@@ -214,6 +208,17 @@ export default Vue.extend({
   computed: {
     numeroDocumento() {
       return `${this.cabFactura.tipoCompra[0]}-${this.cabFactura.nDocumento}`;
+    },
+    validarRegistro() {
+      let val = false;
+      if (
+        this.cabFactura.total < 1 ||
+        this.cabFactura.descuento < this.cabFactura.total ||
+        this.cabFactura.compras.length === 0
+      ) {
+        val = true;
+      }
+      return val;
     },
   },
   methods: {
@@ -245,6 +250,28 @@ export default Vue.extend({
       this.cabFactura.descuento = 0;
       this.cabFactura.impuesto = 0;
       this.cabFactura.total = 0;
+    },
+    actualizarProductos(productos: any) {
+      this.cabFactura.compras = productos;
+      this.calcularSubtotal();
+      this.calcularTotal();
+    },
+    calcularSubtotal() {
+      let subtototal = 0;
+      this.cabFactura.compras.forEach((com: any) => {
+        subtototal += com.subTotal;
+      });
+      this.cabFactura.subtotal = subtototal;
+    },
+    calcularTotal() {
+      this.cabFactura.total =
+        Number(this.cabFactura.subtotal) -
+        Number(this.cabFactura.descuento) +
+        Number(this.cabFactura.impuesto);
+    },
+    async registrarCompra() {
+      await GUARDAR("compras", this.cabFactura);
+      this.resetCampos();
     },
   },
   created() {
