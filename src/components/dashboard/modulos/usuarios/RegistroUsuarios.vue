@@ -14,6 +14,8 @@
                 >
                   <v-select
                     label="Tipo de usuario"
+                    outlined
+                    dense
                     :items="rolesDisponibles"
                     v-model="datosUsuario.rol"
                     :error-messages="errors"
@@ -31,6 +33,8 @@
                   <v-text-field
                     v-model="datosUsuario.nombres"
                     label="Nombres"
+                    outlined
+                    dense
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -44,6 +48,8 @@
                   <v-text-field
                     v-model="datosUsuario.apellidos"
                     label="Apellidos"
+                    outlined
+                    dense
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -54,11 +60,15 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="Número de Documento"
+                  outlined
+                  dense
                   rules="required|min:5|max:50"
                 >
                   <v-text-field
                     v-model="datosUsuario.documento"
                     label="Número de Documento"
+                    outlined
+                    dense
                     :error-messages="errors"
                     type="number"
                   ></v-text-field>
@@ -73,6 +83,8 @@
                   <v-text-field
                     type="number"
                     v-model="datosUsuario.celular"
+                    outlined
+                    dense
                     :error-messages="errors"
                     label="Celular"
                   ></v-text-field>
@@ -89,6 +101,8 @@
                   <v-select
                     v-model="datosUsuario.genero"
                     label="Genero"
+                    outlined
+                    dense
                     :items="generosDisponibles"
                     :error-messages="errors"
                   ></v-select>
@@ -106,6 +120,8 @@
                     type="email"
                     v-model="datosAuth.email"
                     :error-messages="errors"
+                    outlined
+                    dense
                     label="Correo Electrónico"
                   ></v-text-field>
                 </validation-provider>
@@ -120,6 +136,8 @@
                     type="email"
                     v-model="datosVerificacion.confirmarEmail"
                     :error-messages="errors"
+                    outlined
+                    dense
                     label="Confirmar Correo"
                   ></v-text-field>
                 </validation-provider>
@@ -138,6 +156,8 @@
                     v-model="datosAuth.passwd"
                     label="Contraseña"
                     :items="generosDisponibles"
+                    outlined
+                    dense
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -152,6 +172,8 @@
                     v-model="datosVerificacion.confirmarPasswd"
                     type="password"
                     label="Confirmar contraseña"
+                    outlined
+                    dense
                     :error-messages="errors"
                   ></v-text-field>
                 </validation-provider>
@@ -236,13 +258,14 @@ import { REGISTRO_USUARIO } from "@/services/auth";
 
 import Swal from "sweetalert2";
 import { REGISTRARDATOSUSUARIO } from "@/services/usuarios";
+import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
   data: () => ({
-    rolesDisponibles: ["Empleado"], //"Administrador"],
-    generosDisponibles: ["Masculino", "Femenino", "Otro"],
-    estadosDisponible: ["Habilitado", "Desabilitado"],
+    rolesDisponibles: ROLES,
+    generosDisponibles: GENEROS,
+    estadosDisponible: ESTADOS_USUARIO,
     datosUsuario: {
       rol: "Empleado",
       nombres: "",

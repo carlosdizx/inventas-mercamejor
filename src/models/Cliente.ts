@@ -1,3 +1,5 @@
+import { GENEROS, TIPOS_DOCUMENTO } from "@/generals/Constantes";
+
 /**
  Sección tabla
  */
@@ -23,20 +25,14 @@ export const CAMPOS = [
     type: 6,
     multiple: false,
     solo: true,
-    items: [
-      "Cédula de ciudadania",
-      "Tarjeta de identidad",
-      "Cédula de extrangería",
-      "Pasaporte",
-      "Otro",
-    ],
+    items: TIPOS_DOCUMENTO,
     name: "tipo_documento",
     model: "",
     rules: "required",
   },
   {
     label: "Documento de identidad",
-    prepend_icon: "mdi-card-account",
+    prepend_icon: "mdi-card-account-details",
     type: 1,
     name: "documento",
     model: "",
@@ -63,7 +59,7 @@ export const CAMPOS = [
   },
   {
     label: "Fecha de nacimiento",
-    prepend_icon: "mdi-date",
+    prepend_icon: "mdi-cake",
     type: 1,
     format: "date",
     name: "fechaNacimiento",
@@ -72,11 +68,11 @@ export const CAMPOS = [
   },
   {
     label: "Género",
-    prepend_icon: "mdi-home",
+    prepend_icon: "mdi-gender-transgender",
     type: 6,
     multiple: false,
     solo: true,
-    items: ["Masculino", "Femenino", "Otro"],
+    items: GENEROS,
     name: "genero",
     model: "",
     rules: "required",

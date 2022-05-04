@@ -11,8 +11,10 @@
             <v-row class="mr-5 ml-5">
               <v-col>
                 <v-text-field
-                  label="Email de Usuario"
+                  label="Correo de Usuario"
                   v-model="newDatosUsuario.email"
+                  dense
+                  outlined
                   disabled
                 ></v-text-field>
               </v-col>
@@ -29,6 +31,8 @@
                     :items="rolesDisponibles"
                     v-model="newDatosUsuario.rol"
                     :error-messages="errors"
+                    dense
+                    outlined
                   ></v-select>
                 </validation-provider>
               </v-col>
@@ -44,6 +48,8 @@
                     v-model="newDatosUsuario.nombres"
                     label="Nombres"
                     :error-messages="errors"
+                    dense
+                    outlined
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -57,6 +63,8 @@
                     v-model="newDatosUsuario.apellidos"
                     label="Apellidos"
                     :error-messages="errors"
+                    dense
+                    outlined
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -73,6 +81,8 @@
                     label="Número de Documento"
                     :error-messages="errors"
                     type="number"
+                    dense
+                    outlined
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -87,6 +97,8 @@
                     v-model="newDatosUsuario.celular"
                     :error-messages="errors"
                     label="Celular"
+                    dense
+                    outlined
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -104,6 +116,8 @@
                     label="Sexo"
                     :items="generosDisponibles"
                     :error-messages="errors"
+                    dense
+                    outlined
                   ></v-select>
                 </validation-provider>
               </v-col>
@@ -120,6 +134,8 @@
                     label="Estado"
                     :items="estadosDisponible"
                     :error-messages="errors"
+                    dense
+                    outlined
                   ></v-select>
                 </validation-provider>
               </v-col>
@@ -172,14 +188,15 @@ import Vue from "vue";
 import { ACTUALIZARDATOSUSUARIO } from "@/services/usuarios";
 import Swal from "sweetalert2";
 import BuscarUsuarioVue from "./BuscarUsuario.vue";
+import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "ActualizarUsuarios",
   components: { BuscarUsuarioVue },
   data: () => ({
-    rolesDisponibles: ["Empleado"], //"Administrador"],
-    generosDisponibles: ["Masculino", "Femenino", "Otro"],
-    estadosDisponible: ["Habilitado", "Desabilitado"],
+    rolesDisponibles: ROLES,
+    generosDisponibles: GENEROS,
+    estadosDisponible: ESTADOS_USUARIO,
     ident: "",
     datosUsuario: {
       rol: "",
