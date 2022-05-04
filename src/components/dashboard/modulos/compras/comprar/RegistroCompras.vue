@@ -178,10 +178,12 @@
 import Vue from "vue";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
+
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 import { GUARDAR } from "@/services/crud";
 
 export default Vue.extend({
+  name: "RegistroCompras",
   components: {
     TablaCompras,
   },

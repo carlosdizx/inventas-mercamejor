@@ -32,7 +32,7 @@
               <td>
                 <v-select
                   v-model="productoNuevo.bodega"
-                  :items="bodegas"
+                  :items="bodegasDisponibles"
                   item-text="nombre"
                   item-value="nombre"
                 ></v-select>
@@ -90,14 +90,12 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <v-btn icon color="white" class="warning ml-1">
-                  <v-icon>mdi-magnify</v-icon>
-                </v-btn>
+                <BuscarProductos />
               </td>
             </tr>
           </tbody>
           <tbody class="pt-3">
-            <tr v-for="(item, index) in desserts" :key="index">
+            <tr v-for="(item, index) in productos" :key="index">
               <td>{{ item.codigo }}</td>
               <td>{{ item.descripcion }}</td>
               <td>{{ item.bodega }}</td>
@@ -132,13 +130,18 @@
 <script lang="ts">
 import Vue from "vue";
 
+import BuscarProductos from "@/components/dashboard/modulos/compras/comprar/BuscarProductos.vue";
+
 import { LISTAR_BODEGAS, LISTAR_PRODUCTOS } from "@/generals/Funciones";
-import { REDONDEAR, VALIDARCAMPOSNULOS } from "@/generals/procesamientos";
+import { REDONDEAR } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "TablaCompras",
+  components: {
+    BuscarProductos,
+  },
   data: () => ({
-    desserts: [""],
+    productos: [""],
     productoNuevo: {
       codigo: "",
       descripcion: "",
@@ -151,13 +154,10 @@ export default Vue.extend({
       descuento: 0,
       subTotal: 0,
     },
-    bodegas: [""],
-    productos: [""],
+    bodegasDisponibles: [""],
+    productosDisponibles: [""],
   }),
   computed: {
-    validarNuevoProducto() {
-      return VALIDARCAMPOSNULOS(this.productoNuevo);
-    },
     validarProd() {
       if (
         !this.productoNuevo.codigo ||
@@ -177,26 +177,26 @@ export default Vue.extend({
   },
   methods: {
     async listarBodegas() {
-      this.bodegas = [];
+      this.bodegasDisponibles = [];
       const res: any = await LISTAR_BODEGAS();
-      res.forEach((bod: any) => this.bodegas.unshift(bod.data()));
+      res.forEach((bod: any) => this.bodegasDisponibles.unshift(bod.data()));
     },
     async listarProductos() {
-      this.productos = [];
+      this.productosDisponibles = [];
       const res = await LISTAR_PRODUCTOS();
-      res.forEach((prod: any) => this.productos.push(prod.data()));
+      res.forEach((prod: any) => this.productosDisponibles.push(prod.data()));
     },
     agregarProducto() {
       const product: any = { ...this.productoNuevo };
-      this.desserts.unshift(product);
+      this.productos.unshift(product);
       this.resetNuevoProducto();
-      this.$emit("enviarProductos", this.desserts);
+      this.$emit("enviarProductos", this.productos);
     },
     eliminarItem(index: number) {
-      this.desserts.splice(index, 1);
-      this.$emit("enviarProductos", this.desserts);
+      this.productos.splice(index, 1);
+      this.$emit("enviarProductos", this.productos);
     },
-    resetNuevoProducto() {
+    resetNuevoProducto(): void {
       this.productoNuevo.codigo = "";
       this.productoNuevo.descripcion = "";
       this.productoNuevo.cantidad = 1;
@@ -208,7 +208,7 @@ export default Vue.extend({
     },
     buscarProducto() {
       let producto = "";
-      this.productos.forEach((prod: any) => {
+      this.productosDisponibles.forEach((prod: any) => {
         if (prod.codigo_barras === this.productoNuevo.codigo) {
           producto = prod.nombre;
         }
@@ -244,9 +244,7 @@ export default Vue.extend({
   created() {
     this.listarBodegas();
     this.listarProductos();
-  },
-  mounted() {
-    this.desserts = [];
+    this.productos = [];
   },
 });
 </script>
