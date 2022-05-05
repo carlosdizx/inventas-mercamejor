@@ -48,6 +48,7 @@
                     v-model="newDatosUsuario.nombres"
                     label="Nombres"
                     :error-messages="errors"
+                    disabled
                     dense
                     outlined
                   ></v-text-field>
@@ -63,6 +64,7 @@
                     v-model="newDatosUsuario.apellidos"
                     label="Apellidos"
                     :error-messages="errors"
+                    disabled
                     dense
                     outlined
                   ></v-text-field>
@@ -80,7 +82,7 @@
                     v-model="newDatosUsuario.documento"
                     label="Número de Documento"
                     :error-messages="errors"
-                    type="number"
+                    disabled
                     dense
                     outlined
                   ></v-text-field>

@@ -7,6 +7,6 @@ export const TIPOS_DOCUMENTO = [
 
 export const GENEROS = ["Masculino", "Femenino", "Otro"];
 
-export const ROLES = ["Empleado", "Administrador"]; //"Administrador"],
+export const ROLES = ["Empleado", "Admin"]; //"Admin"],
 
 export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];

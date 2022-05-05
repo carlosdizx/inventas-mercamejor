@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { LISTARTODOSLOSEMPLEADOS } from "@/services/usuarios";
+import { LISTAR_EMPLEADOS } from "@/services/usuarios";
 import Vue from "vue";
 export default Vue.extend({
   name: "BuscarUsuario",
@@ -80,7 +80,7 @@ export default Vue.extend({
       });
     },
     async listarUsuarios() {
-      const res = await LISTARTODOSLOSEMPLEADOS();
+      const res = await LISTAR_EMPLEADOS();
       this.idents = res?.ids;
       this.usuarios = res?.empleados;
     },

@@ -67,7 +67,7 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 
 import {
-  LISTARTODOSLOSEMPLEADOS,
+  LISTAR_EMPLEADOS,
   LISTARTODASLASCAJAS,
   ACTUALIZARCAJA,
 } from "@/services/usuarios";
@@ -93,7 +93,7 @@ export default Vue.extend({
   methods: {
     async traerEmpleados() {
       try {
-        const res = await LISTARTODOSLOSEMPLEADOS();
+        const res = await LISTAR_EMPLEADOS();
         this.empleados = res?.empleados;
       } catch (error) {
         console.log(error);

@@ -7,22 +7,27 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
-import { AUTH } from "./../firebase/config";
+import { AUTH } from "@/firebase/config";
+import { EDITAR, LISTAR } from "@/services/crud";
+
+const coleccion = "usuarios";
 
 export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
-  await setDoc(doc(FIRESTORE, "usuarios", id), datos);
+  await EDITAR(coleccion, id, datos);
 
 export const ACTUALIZARDATOSUSUARIO = async (id: string, datos: any) => {
   return await updateDoc(doc(FIRESTORE, "usuarios", id), datos);
 };
 
-export const LISTARTODOSLOSEMPLEADOS = async () => {
+export const LISTAR_EMPLEADOS = async () => {
   try {
-    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
+    const usuarios = await LISTAR("usuarios");
     const empleados: any = [];
     const ids: any = [];
-    usuarios.forEach((value: any) => {
-      if (value.data().rol === "Empleado") {
+    console.log(usuarios);
+    usuarios.forEach((value) => {
+      console.log(value.data());
+      if (value.data().rol) {
         empleados.push(value.data());
         ids.push(value.id);
       }
@@ -71,8 +76,8 @@ export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
       caja: cajaNombre,
       fechaCreacion: new Date().getTime(),
     };
-    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
-    usuarios.forEach(async (value: any) => {
+    const usuarios: any = await getDocs(collection(FIRESTORE, "usuarios"));
+    usuarios.map(async (value: any) => {
       const empleado = value.data();
       const id = value.id;
       if (empleado.email === email) {
@@ -86,8 +91,8 @@ export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
 
 export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
   try {
-    const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
-    usuarios.forEach(async (value: any) => {
+    const usuarios: any = await getDocs(collection(FIRESTORE, "usuarios"));
+    usuarios.map(async (value: any) => {
       const empleado = value.data();
       const id = value.id;
       if (empleado.caja) {
@@ -101,7 +106,7 @@ export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
       caja: cajaNombre,
       fechaCreacion: new Date().getTime(),
     };
-    usuarios.forEach(async (value: any) => {
+    usuarios.map(async (value: any) => {
       const empleado = value.data();
       const id = value.id;
       if (empleado.email === email) {

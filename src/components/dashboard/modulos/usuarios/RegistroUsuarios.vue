@@ -70,7 +70,7 @@
                     outlined
                     dense
                     :error-messages="errors"
-                    type="number"
+                    type="text"
                   ></v-text-field>
                 </validation-provider>
               </v-col>
@@ -275,6 +275,7 @@ export default Vue.extend({
       genero: "",
       estado: "Habilitado",
       email: "",
+      created_at: new Date(),
     },
     datosAuth: {
       email: "",
@@ -321,6 +322,7 @@ export default Vue.extend({
         );
         const id = respuesta.localId;
         this.datosUsuario.email = this.datosAuth.email;
+        this.datosUsuario.created_at = new Date();
         await REGISTRARDATOSUSUARIO(id, this.datosUsuario);
         this.mostrarConfirmacion = false;
         await Swal.fire({
