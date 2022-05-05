@@ -90,7 +90,10 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <BuscarProductos />
+                <BuscarProductos
+                  @devolverUsuario="selecionarUsuario"
+                  :proveedores="productosDisponibles"
+                />
               </td>
             </tr>
           </tbody>
@@ -243,6 +246,10 @@ export default Vue.extend({
       } else {
         this.productoNuevo.porGanancia = 0;
       }
+    },
+    selecionarUsuario(product: any) {
+      this.productoNuevo.codigo = product.usuario.codigo_barras;
+      this.productoNuevo.descripcion = product.usuario.nombre;
     },
   },
   created() {
