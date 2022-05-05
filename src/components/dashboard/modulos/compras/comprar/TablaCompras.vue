@@ -230,10 +230,14 @@ export default Vue.extend({
       }
     },
     ingresarVenta() {
-      if (this.productoNuevo.precioVenta >= this.productoNuevo.precioCompra) {
+      if (
+        Number(this.productoNuevo.precioVenta) >=
+        Number(this.productoNuevo.precioCompra)
+      ) {
         const porGanancia: number =
-          ((this.productoNuevo.precioVenta - this.productoNuevo.precioCompra) /
-            this.productoNuevo.precioCompra) *
+          ((Number(this.productoNuevo.precioVenta) -
+            Number(this.productoNuevo.precioCompra)) /
+            Number(this.productoNuevo.precioCompra)) *
           100;
         this.productoNuevo.porGanancia = Math.trunc(porGanancia);
       } else {
