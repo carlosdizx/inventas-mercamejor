@@ -24,9 +24,7 @@ export const LISTAR_EMPLEADOS = async () => {
     const usuarios = await LISTAR("usuarios");
     const empleados: any = [];
     const ids: any = [];
-    console.log(usuarios);
     usuarios.forEach((value) => {
-      console.log(value.data());
       if (value.data().rol) {
         empleados.push(value.data());
         ids.push(value.id);
