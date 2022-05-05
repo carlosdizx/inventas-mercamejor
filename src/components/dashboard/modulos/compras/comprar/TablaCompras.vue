@@ -90,7 +90,10 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <BuscarProductos />
+                <BuscarProductos
+                  @devolverUsuario="selecionarUsuario"
+                  :proveedores="productosDisponibles"
+                />
               </td>
             </tr>
           </tbody>
@@ -230,15 +233,23 @@ export default Vue.extend({
       }
     },
     ingresarVenta() {
-      if (this.productoNuevo.precioVenta >= this.productoNuevo.precioCompra) {
+      if (
+        Number(this.productoNuevo.precioVenta) >=
+        Number(this.productoNuevo.precioCompra)
+      ) {
         const porGanancia: number =
-          ((this.productoNuevo.precioVenta - this.productoNuevo.precioCompra) /
-            this.productoNuevo.precioCompra) *
+          ((Number(this.productoNuevo.precioVenta) -
+            Number(this.productoNuevo.precioCompra)) /
+            Number(this.productoNuevo.precioCompra)) *
           100;
         this.productoNuevo.porGanancia = Math.trunc(porGanancia);
       } else {
         this.productoNuevo.porGanancia = 0;
       }
+    },
+    selecionarUsuario(product: any) {
+      this.productoNuevo.codigo = product.usuario.codigo_barras;
+      this.productoNuevo.descripcion = product.usuario.nombre;
     },
   },
   created() {
