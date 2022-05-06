@@ -37,13 +37,8 @@ export const ENVIAR_CORREO_VERIFICACION = async (user: any) =>
 export const INICIAR_SESION = async (correo: string, password: string) =>
   await signInWithEmailAndPassword(AUTH, correo, password);
 
-export const ACTUALIZAR = async (user: any, datos: any) =>
-  await updateProfile(user, {
-    displayName: datos,
-  });
-
 export const LOGOUT = async () => signOut(AUTH);
 
 export const BORARR = async (user: any) => await deleteUser(user);
 
-export const DATOS_USUARIO = async () => AUTH.currentUser?.displayName;
+export const OBTENER_CORREO_CUENTA_ACTUAL = () => AUTH.currentUser?.email;

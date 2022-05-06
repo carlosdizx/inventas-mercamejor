@@ -8,16 +8,16 @@ import {
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 import { AUTH } from "@/firebase/config";
-import { EDITAR, LISTAR } from "@/services/crud";
+import { BUSCAR, EDITAR, LISTAR } from "@/services/crud";
+import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
 
 const coleccion = "usuarios";
 
-export const REGISTRARDATOSUSUARIO = async (id: string, datos: any) =>
+export const REGISTRAR_DATOS_USUARIO = async (id: string, datos: any) =>
   await EDITAR(coleccion, id, datos);
 
-export const ACTUALIZARDATOSUSUARIO = async (id: string, datos: any) => {
-  return await updateDoc(doc(FIRESTORE, "usuarios", id), datos);
-};
+export const ACTUALIZAR_USUARIO = async (id: string, datos: any) =>
+  EDITAR(coleccion, id, datos);
 
 export const LISTAR_EMPLEADOS = async () => {
   try {
@@ -25,7 +25,7 @@ export const LISTAR_EMPLEADOS = async () => {
     const empleados: any = [];
     const ids: any = [];
     usuarios.forEach((value) => {
-      if (value.data().rol) {
+      if (value.data().rol === "Empleado") {
         empleados.push(value.data());
         ids.push(value.id);
       }
@@ -36,11 +36,11 @@ export const LISTAR_EMPLEADOS = async () => {
   }
 };
 
-export const LISTAREMPLEADOS = async () => {
+export const LISTAR_EMPLEADOS_SIN_CAJA_ASIGNADA = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const empleados: any = [];
-    usuarios.forEach((value: any) => {
+    usuarios.forEach((value) => {
       const empleado = value.data();
       if (!empleado.caja) {
         empleados.push(value.data());
@@ -52,7 +52,7 @@ export const LISTAREMPLEADOS = async () => {
   }
 };
 
-export const LISTARTODASLASCAJAS = async () => {
+export const LISTAR_CAJAS = async () => {
   try {
     const usuarios = await getDocs(collection(FIRESTORE, "usuarios"));
     const cajas: any = [];
@@ -68,7 +68,7 @@ export const LISTARTODASLASCAJAS = async () => {
   }
 };
 
-export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
+export const REGISTRAR_CAJA = async (email: string, cajaNombre: string) => {
   try {
     const caja = {
       caja: cajaNombre,
@@ -87,7 +87,7 @@ export const REGISTRARCAJA = async (email: string, cajaNombre: string) => {
   }
 };
 
-export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
+export const ACTUALIZAR_CAJA = async (email: string, cajaNombre: string) => {
   try {
     const usuarios: any = await getDocs(collection(FIRESTORE, "usuarios"));
     usuarios.map(async (value: any) => {
@@ -116,7 +116,7 @@ export const ACTUALIZARCAJA = async (email: string, cajaNombre: string) => {
   }
 };
 
-export const GETROL = async () => {
+export const OBTENER_ROL = async () => {
   try {
     const docSnap: any = await getDoc(
       doc(FIRESTORE, `usuarios/${AUTH.currentUser?.uid}`)
@@ -127,7 +127,7 @@ export const GETROL = async () => {
   }
 };
 
-export const GETESTADO = async () => {
+export const OBTENER_ESTADO = async () => {
   try {
     if (AUTH.currentUser) {
       const docSnap: any = await getDoc(
@@ -138,4 +138,19 @@ export const GETESTADO = async () => {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const BUSCAR_USUARIO_ACTUAL = async () => {
+  const correo: any = OBTENER_CORREO_CUENTA_ACTUAL();
+  const empleadoAdecuados: any[] = [];
+  const empleados = await LISTAR("usuarios");
+  empleados.forEach((empleado) => {
+    if (correo === empleado.data().email) {
+      empleadoAdecuados.push(empleado.data());
+    }
+  });
+  if (empleadoAdecuados.length > 0) {
+    return empleadoAdecuados[0];
+  }
+  return null;
 };

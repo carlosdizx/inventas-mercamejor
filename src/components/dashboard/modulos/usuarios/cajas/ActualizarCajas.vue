@@ -68,8 +68,8 @@ import Swal from "sweetalert2";
 
 import {
   LISTAR_EMPLEADOS,
-  LISTARTODASLASCAJAS,
-  ACTUALIZARCAJA,
+  LISTAR_CAJAS,
+  ACTUALIZAR_CAJA,
 } from "@/services/usuarios";
 
 export default Vue.extend({
@@ -101,14 +101,14 @@ export default Vue.extend({
     },
     async listarCajas() {
       try {
-        this.todasCajas = await LISTARTODASLASCAJAS();
+        this.todasCajas = await LISTAR_CAJAS();
       } catch (error) {
         console.log(error);
       }
     },
     async actualizarCaja() {
       try {
-        await ACTUALIZARCAJA(this.emailEmpleado, this.caja);
+        await ACTUALIZAR_CAJA(this.emailEmpleado, this.caja);
         await Swal.fire({
           timer: 3000,
           title: "Actualizacion de caja exitoso",

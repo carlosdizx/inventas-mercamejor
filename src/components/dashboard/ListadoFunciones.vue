@@ -18,8 +18,8 @@
 import Vue from "vue";
 import { FUNCIONES } from "@/generals/funcionalidades";
 import { PERMISOS } from "@/generals/permisos";
-import { ASIGNARPERMISOS } from "@/generals/procesamientos";
-import { GETROL } from "@/services/usuarios";
+import { ASIGNAR_PERMISOS } from "@/generals/procesamientos";
+import { OBTENER_ROL } from "@/services/usuarios";
 
 export default Vue.extend({
   name: "ListadoFunciones",
@@ -29,8 +29,8 @@ export default Vue.extend({
   async created() {
     const listas = FUNCIONES;
     const permisos = PERMISOS;
-    const rol = await GETROL();
-    this.lista = ASIGNARPERMISOS(rol, listas, permisos);
+    const rol = await OBTENER_ROL();
+    this.lista = ASIGNAR_PERMISOS(rol, listas, permisos);
   },
   methods: {
     enviarId(id: number) {
