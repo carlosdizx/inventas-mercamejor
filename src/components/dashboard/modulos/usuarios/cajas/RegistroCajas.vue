@@ -66,9 +66,9 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 
 import {
-  LISTAREMPLEADOS,
-  REGISTRARCAJA,
-  LISTARTODASLASCAJAS,
+  LISTAR_EMPLEADOS_SIN_CAJA_ASIGNADA,
+  REGISTRAR_CAJA,
+  LISTAR_CAJAS,
 } from "@/services/usuarios";
 
 export default Vue.extend({
@@ -100,14 +100,14 @@ export default Vue.extend({
   methods: {
     async traerEmpleados() {
       try {
-        this.empleados = await LISTAREMPLEADOS();
+        this.empleados = await LISTAR_EMPLEADOS_SIN_CAJA_ASIGNADA();
       } catch (error) {
         console.log(error);
       }
     },
     async listarCajas() {
       try {
-        this.todasCajas = await LISTARTODASLASCAJAS();
+        this.todasCajas = await LISTAR_CAJAS();
       } catch (error) {
         console.log(error);
       }
@@ -116,7 +116,7 @@ export default Vue.extend({
       return item.nombres + " " + item.apellidos;
     },
     async registrarCaja() {
-      await REGISTRARCAJA(this.emailEmpleado, this.caja);
+      await REGISTRAR_CAJA(this.emailEmpleado, this.caja);
       this.traerEmpleados();
       this.limpiarDatos();
       await Swal.fire({

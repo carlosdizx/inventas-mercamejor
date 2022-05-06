@@ -257,7 +257,7 @@ import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import { REGISTRO_USUARIO } from "@/services/auth";
 
 import Swal from "sweetalert2";
-import { REGISTRARDATOSUSUARIO } from "@/services/usuarios";
+import { REGISTRAR_DATOS_USUARIO } from "@/services/usuarios";
 import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
 
 export default Vue.extend({
@@ -324,8 +324,7 @@ export default Vue.extend({
         const id = respuesta.localId;
         this.datosUsuario.email = this.datosAuth.email;
         this.datosUsuario.created_at = new Date();
-        this.datosUsuario.updated_at = new Date();
-        await REGISTRARDATOSUSUARIO(id, this.datosUsuario);
+        await REGISTRAR_DATOS_USUARIO(id, this.datosUsuario);
         this.mostrarConfirmacion = false;
         await Swal.fire({
           timer: 3000,

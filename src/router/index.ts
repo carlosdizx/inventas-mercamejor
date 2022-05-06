@@ -1,5 +1,5 @@
 import { LOGOUT } from "./../services/auth";
-import { GETESTADO } from "./../services/usuarios";
+import { OBTENER_ESTADO } from "./../services/usuarios";
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
@@ -50,7 +50,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const esRequerida = to.matched.some((ruta) => ruta.meta.requiereAuth);
   onAuthStateChanged(AUTH, async (user) => {
-    const estado = await GETESTADO();
+    const estado = await OBTENER_ESTADO();
     if (esRequerida && !user) {
       next("inicioSesion");
     } else if (!esRequerida && user) {

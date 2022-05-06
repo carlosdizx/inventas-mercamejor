@@ -57,7 +57,7 @@
 <script lang="ts">
 import UserPersonalDetails from "@/components/autenticacion/UserPersonalDetails.vue";
 import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
-import { ACTUALIZAR, CREAR_CUENTA } from "@/services/auth";
+import { CREAR_CUENTA } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import Swal from "sweetalert2";
 import Vue from "vue";
@@ -76,13 +76,10 @@ export default Vue.extend({
   methods: {
     async registrarUsuario() {
       try {
-        const respuesta = await CREAR_CUENTA(
+        await CREAR_CUENTA(
           this.credenciales.correo,
           this.credenciales.password
         );
-        const usuario = respuesta.user;
-        const datos = JSON.stringify(this.datos);
-        await ACTUALIZAR(usuario, datos);
         await Swal.fire({
           timer: 2000,
           title: "Registro exitoso",

@@ -1,7 +1,7 @@
 import { EDITAR, GUARDAR } from "@/services/crud";
 import Swal from "sweetalert2";
-import { DATOS_USUARIO } from "@/services/auth";
 import { SUBIR_ARCHIVO } from "@/services/almacenamiento";
+import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 
 export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
   const datos = {};
@@ -40,11 +40,11 @@ export async function PROCESAR_FORMULARIO(
   campos: any,
   item: any
 ) {
-  const datosUser = JSON.parse(<string>await DATOS_USUARIO());
+  const datosUser: any = await BUSCAR_USUARIO_ACTUAL();
   const datosMovimiento: any = {
     entidad: coleccion,
     created_at: new Date(),
-    responsable: datosUser.nombres,
+    responsable: datosUser.nombres + " " + datosUser.apellidos,
     documento: datosUser.documento,
     email: datosUser.email,
   };
@@ -88,7 +88,7 @@ export async function PROCESAR_FORMULARIO(
   });
 }
 
-export const ASIGNARPERMISOS = (rol: string, listas: any, permisos: any) => {
+export const ASIGNAR_PERMISOS = (rol: string, listas: any, permisos: any) => {
   const listasDispo = [{}];
   permisos.forEach((permiso: any, index: number) => {
     if (permiso.tipo === rol) {
@@ -108,7 +108,7 @@ export const ASIGNARPERMISOS = (rol: string, listas: any, permisos: any) => {
   return listasDispo;
 };
 
-export const VALIDARCAMPOSNULOS = (obj: any) => {
+export const VALIDAR_CAMPOSNULOS = (obj: any) => {
   let value = true;
   Object.keys(obj).forEach((key) => {
     if (!obj[key] || obj[key] < 0) {
