@@ -24,7 +24,7 @@ export const FUNCIONES: any[] = [
   { id: 8, tipo: 2, icono: "mdi-barcode", titulo: "Registro Productos" },
   { id: 9, tipo: 2, icono: "mdi-text-subject", titulo: "Categorias" },
   { id: 10, tipo: 2, icono: "mdi-text-short", titulo: "Marcas" },
-  { id: 11, tipo: 2, icono: "mdi-contain", titulo: "Bodegas" },
+  { id: 11, tipo: 2, icono: "mdi-warehouse", titulo: "Bodegas" },
   { id: 12, tipo: 2, icono: "mdi-share-all-outline", titulo: "Movimientos" },
   {
     tipo: 1,
@@ -46,7 +46,7 @@ export const FUNCIONES: any[] = [
   {
     id: 15,
     tipo: 2,
-    icono: "mdi-cellphone-link",
+    icono: "mdi-cash-register",
     titulo: "Cajas",
   },
   {

@@ -202,6 +202,8 @@ export default Vue.extend({
       descuento: 0,
       impuesto: 0,
       total: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
     },
     tiposDocumento: ["Compra", "Pedido"],
     tiposPagos: ["Contado", "Credito"],
@@ -272,6 +274,8 @@ export default Vue.extend({
         Number(this.cabFactura.impuesto);
     },
     async registrarCompra() {
+      this.cabFactura.created_at = new Date();
+      this.cabFactura.updated_at = new Date();
       await GUARDAR("compras", this.cabFactura);
       this.resetCampos();
     },

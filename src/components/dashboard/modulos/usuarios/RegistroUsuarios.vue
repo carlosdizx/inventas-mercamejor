@@ -276,6 +276,7 @@ export default Vue.extend({
       estado: "Habilitado",
       email: "",
       created_at: new Date(),
+      updated_at: new Date(),
     },
     datosAuth: {
       email: "",
@@ -323,6 +324,7 @@ export default Vue.extend({
         const id = respuesta.localId;
         this.datosUsuario.email = this.datosAuth.email;
         this.datosUsuario.created_at = new Date();
+        this.datosUsuario.updated_at = new Date();
         await REGISTRARDATOSUSUARIO(id, this.datosUsuario);
         this.mostrarConfirmacion = false;
         await Swal.fire({
