@@ -5,18 +5,25 @@
       <v-form @submit.prevent="crearCuenta">
         <v-card-text>
           <v-row class="mr-5 ml-5">
-            <v-col>
+            <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula"
                 v-model="cabFactura.nit"
                 @input="buscarProveedor()"
+                outlined
               ></v-text-field>
             </v-col>
-            <v-col>
+            <v-col cols="1" class="mt-2">
+              <v-btn icon class="error ml-1">
+                <v-icon>mdi-lead-pencil</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="6">
               <v-text-field
                 label="Nombre del proveedor"
                 v-model="cabFactura.nombreProveedor"
                 readonly
+                outlined
               ></v-text-field>
             </v-col>
           </v-row>
@@ -32,6 +39,7 @@
                   v-model="cabFactura.fechaDocumento"
                   :error-messages="errors"
                   type="date"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -46,6 +54,7 @@
                   v-model="cabFactura.tipoCompra"
                   :error-messages="errors"
                   :items="tiposDocumento"
+                  outlined
                 ></v-select>
               </validation-provider>
             </v-col>
@@ -60,6 +69,7 @@
                   label="Número de Documento"
                   v-model="cabFactura.nDocumento"
                   :error-messages="errors"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -76,6 +86,7 @@
                   v-model="cabFactura.tipoPago"
                   :error-messages="errors"
                   :items="tiposPagos"
+                  outlined
                 ></v-select>
               </validation-provider>
             </v-col>
@@ -90,6 +101,7 @@
                   type="date"
                   v-model="cabFactura.fechaPago"
                   :error-messages="errors"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -104,6 +116,7 @@
                   type="date"
                   v-model="cabFactura.fechaLlegadaProducto"
                   :error-messages="errors"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -117,6 +130,7 @@
                 label="Subtotal"
                 readonly
                 v-model="cabFactura.subtotal"
+                outlined
               ></v-text-field>
             </v-col>
 
@@ -131,6 +145,7 @@
                   label="Descuento"
                   v-model="cabFactura.descuento"
                   :error-messages="errors"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -146,6 +161,7 @@
                   @input="calcularTotal()"
                   v-model="cabFactura.impuesto"
                   :error-messages="errors"
+                  outlined
                 ></v-text-field>
               </validation-provider>
             </v-col>

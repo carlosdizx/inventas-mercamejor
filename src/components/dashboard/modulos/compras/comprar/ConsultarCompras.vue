@@ -38,16 +38,11 @@
                 </validation-provider>
               </v-col>
               <v-col>
-                <validation-provider
-                  typ="date"
-                  v-slot="{ errors }"
-                  name="Tipo de Compra"
-                >
+                <validation-provider type="date" name="Fecha de Compra">
                   <v-text-field
-                    label="Documento Final de proveedores"
+                    label="Documento Inicial de proveedores"
                     v-model="rangoProveedorFinal"
                     type="date"
-                    :error-messages="errors"
                     outlined
                     dense
                   ></v-text-field>
