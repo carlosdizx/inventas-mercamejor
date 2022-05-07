@@ -5,6 +5,6 @@ export const PERMISOS: any[] = [
   },
   {
     tipo: "Empleado",
-    idDisponibles: [1, 2, 3, 4, 5, 6, 7, 8, 17],
+    idDisponibles: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
 ];

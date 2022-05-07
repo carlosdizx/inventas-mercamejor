@@ -72,7 +72,8 @@ export const REGISTRAR_CAJA = async (email: string, cajaNombre: string) => {
   try {
     const caja = {
       caja: cajaNombre,
-      fechaCreacion: new Date().getTime(),
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const usuarios: any = await getDocs(collection(FIRESTORE, "usuarios"));
     usuarios.map(async (value: any) => {

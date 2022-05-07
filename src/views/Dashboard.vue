@@ -12,14 +12,14 @@
     <Comprar v-if="item === 1" />
     <Proveedores v-if="item === 2" />
     <Clientes v-if="item === 5" />
-    <Productos v-if="item === 7" />
-    <Bodegas v-if="item === 8" />
-    <RegistroUsuarios v-if="item === 9" />
-    <ActualizarUsuarios v-if="item === 10" />
-    <Cajas v-if="item === 11" />
-    <Sprints v-if="item === 12" />
-    <Categorias v-if="item === 13" />
-    <Marcas v-if="item === 15" />
+    <Productos v-if="item === 8" />
+    <Categorias v-if="item === 9" />
+    <Marcas v-if="item === 10" />
+    <Bodegas v-if="item === 11" />
+    <RegistroUsuarios v-if="item === 13" />
+    <ActualizarUsuarios v-if="item === 14" />
+    <Cajas v-if="item === 15" />
+    <Sprints v-if="item === 18" />
     <Movimientos v-if="item === 16" />
     <Comprobantes v-if="item === 17" />
   </div>

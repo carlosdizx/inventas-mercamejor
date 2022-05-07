@@ -1,64 +1,71 @@
 <template>
-  <v-card-title>
-    <v-container>
-      <h3>Actualizar cajas</h3>
-      <v-row>
-        <v-col sm="6" md="6">
-          <v-select
-            :item-text="obtenerCaja"
-            :items="todasCajas"
-            v-model="caja"
-            label="Seleccione Caja"
-          ></v-select>
-        </v-col>
-        <v-col sm="6" md="5">
-          <v-select
-            :item-text="obtenerdatosEmpleado"
-            item-value="email"
-            v-model="emailEmpleado"
-            label="Selecciona empleado"
-            :items="empleados"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-btn
-            class="warning"
-            :disabled="validar"
-            @click="mostrarConfirmacion = true"
-            >Actualizar Caja</v-btn
-          >
-        </v-col>
-      </v-row>
-
-      <v-row justify="center">
-        <v-dialog v-model="mostrarConfirmacion" persistent max-width="600">
-          <v-card>
-            <v-card-title class="text-h5">
-              Confirmar Actualizacion de caja
-            </v-card-title>
-            <v-card-text
-              >Esta seguro de Registrar esta caja con este usuario</v-card-text
+  <v-container>
+    <v-card class="ml-4 mr-4">
+      <v-card-title>
+        <h3>Actualizar cajas</h3>
+      </v-card-title>
+      <v-card-text class="ml-3 mr-3">
+        <v-row>
+          <v-col sm="6" md="6">
+            <v-select
+              :item-text="obtenerCaja"
+              :items="todasCajas"
+              v-model="caja"
+              label="Seleccione Caja"
+              outlined
+            ></v-select>
+          </v-col>
+          <v-col sm="6" md="5">
+            <v-select
+              :item-text="obtenerdatosEmpleado"
+              item-value="email"
+              v-model="emailEmpleado"
+              label="Selecciona empleado"
+              :items="empleados"
+              outlined
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn
+              class="warning"
+              :disabled="validar"
+              @click="mostrarConfirmacion = true"
+              >Actualizar Caja</v-btn
             >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="red darken-1"
-                text
-                @click="mostrarConfirmacion = false"
+          </v-col>
+        </v-row>
+
+        <v-row justify="center">
+          <v-dialog v-model="mostrarConfirmacion" persistent max-width="600">
+            <v-card>
+              <v-card-title class="text-h5">
+                Confirmar Actualizacion de caja
+              </v-card-title>
+              <v-card-text
+                >Esta seguro de Registrar esta caja con este
+                usuario</v-card-text
               >
-                Cancelar
-              </v-btn>
-              <v-btn color="green darken-1" text @click="actualizarCaja()">
-                Actualizar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </v-container>
-  </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red darken-1"
+                  text
+                  @click="mostrarConfirmacion = false"
+                >
+                  Cancelar
+                </v-btn>
+                <v-btn color="green darken-1" text @click="actualizarCaja()">
+                  Actualizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">

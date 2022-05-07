@@ -1,19 +1,28 @@
 <template>
   <div>
-    <v-card>
-      <v-btn @click="opcion = 1" :class="opcion === 1 ? `success` : ''">
+    <div class="mt-1 mb-1">
+      <v-btn
+        @click="opcion = 1"
+        :class="opcion === 1 ? `success ml-1` : 'ml-1'"
+      >
         Compras
       </v-btn>
-      <v-btn @click="opcion = 2" :class="opcion === 2 ? `success` : ''">
+      <v-btn
+        @click="opcion = 2"
+        :class="opcion === 2 ? `success ml-1` : 'ml-1'"
+      >
         Consultar Compras
       </v-btn>
-      <v-btn @click="opcion = 3" :class="opcion === 3 ? `success` : ''">
+      <v-btn
+        @click="opcion = 3"
+        :class="opcion === 3 ? `success ml-1` : 'ml-1'"
+      >
         Actualizar Compras
       </v-btn>
-    </v-card>
+    </div>
     <RegistroCompras v-if="opcion === 1" />
     <ConsultarCompras v-if="opcion === 2" />
-    <ActualizarCompras v-if="opcion === 3" />
+    <ActualizarCompras class="ml-1" v-if="opcion === 3" />
   </div>
 </template>
 

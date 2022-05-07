@@ -276,6 +276,7 @@ export default Vue.extend({
       estado: "Habilitado",
       email: "",
       created_at: new Date(),
+      updated_at: new Date(),
     },
     datosAuth: {
       email: "",

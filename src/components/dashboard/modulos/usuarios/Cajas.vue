@@ -1,25 +1,23 @@
 <template>
   <v-container>
-    <v-card>
-      <v-btn
-        @click="
-          registro = true;
-          actualizar = false;
-        "
-        :class="registro ? 'success' : ''"
-        >Registro</v-btn
-      >
-      <v-btn
-        @click="
-          registro = false;
-          actualizar = true;
-        "
-        :class="actualizar ? 'success' : ''"
-        >Actualizar</v-btn
-      >
-      <RegistroCajas v-if="registro" />
-      <ActualizarCajas v-if="actualizar" />
-    </v-card>
+    <v-btn
+      @click="
+        registro = true;
+        actualizar = false;
+      "
+      :class="registro ? 'success' : ''"
+      >Registro</v-btn
+    >
+    <v-btn
+      @click="
+        registro = false;
+        actualizar = true;
+      "
+      :class="actualizar ? 'success' : ''"
+      >Actualizar</v-btn
+    >
+    <RegistroCajas v-if="registro" />
+    <ActualizarCajas v-if="actualizar" />
   </v-container>
 </template>
 
