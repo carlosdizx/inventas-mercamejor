@@ -19,9 +19,9 @@
     <RegistroUsuarios v-if="item === 13" />
     <ActualizarUsuarios v-if="item === 14" />
     <Cajas v-if="item === 15" />
-    <Sprints v-if="item === 16" />
-    <Movimientos v-if="item === 17" />
-    <Comprobantes v-if="item === 18" />
+    <Sprints v-if="item === 18" />
+    <Movimientos v-if="item === 16" />
+    <Comprobantes v-if="item === 17" />
   </div>
 </template>
 

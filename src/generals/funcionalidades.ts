@@ -51,28 +51,17 @@ export const FUNCIONES: any[] = [
   },
   {
     tipo: 1,
-    titulo: "Modulo de Desarrolladores",
+    titulo: "Modulo de pruebas",
     color: "color_c",
   },
   {
     id: 16,
     tipo: 2,
-    icono: "mdi-calendar-account",
-    titulo: "Sprints",
-  },
-  {
-    tipo: 1,
-    titulo: "Modulo de pruebas",
-    color: "color_c",
-  },
-  {
-    id: 17,
-    tipo: 2,
     icono: "mdi-bootstrap",
     titulo: "Movimientos",
   },
   {
-    id: 18,
+    id: 17,
     tipo: 2,
     icono: "mdi-ticket-confirmation",
     titulo: "Comrpobantes",
