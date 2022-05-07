@@ -23,7 +23,10 @@
 import Vue from "vue";
 import { FUNCIONES_DASHBOARD } from "@/generals/funcionalidades_dashboard";
 import { PERMISOS } from "@/generals/permisos";
-import { ASIGNAR_PERMISOS } from "@/generals/procesamientos";
+import {
+  ASIGNAR_ITEMS_DASHBOARD,
+  ASIGNAR_PERMISOS,
+} from "@/generals/procesamientos";
 import { OBTENER_ROL } from "@/services/usuarios";
 
 export default Vue.extend({
@@ -32,12 +35,8 @@ export default Vue.extend({
     lista: [{}],
   }),
   async created() {
-    this.lista = FUNCIONES_DASHBOARD;
-    /**
-    const permisos = PERMISOS;
     const rol = await OBTENER_ROL();
-    this.lista = ASIGNAR_PERMISOS(rol, listas, permisos);
-     */
+    this.lista = ASIGNAR_ITEMS_DASHBOARD(FUNCIONES_DASHBOARD, rol);
   },
   methods: {
     enviarId(id: number) {
