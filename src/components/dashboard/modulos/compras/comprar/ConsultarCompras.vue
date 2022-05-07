@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <BuscarElemento />
+
     <v-card>
       <v-card-title class="mr-5 ml-5">Consultar compras</v-card-title>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
@@ -74,8 +76,11 @@
 <script lang="ts">
 import Vue from "vue";
 
+import BuscarElemento from "@/components/crud/BuscarElemento.vue";
+
 export default Vue.extend({
   name: "ConsultarCompras",
+  components: { BuscarElemento },
   data: () => ({
     rangoFechaInicial: null,
     rangoFechaFinal: null,
