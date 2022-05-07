@@ -22,11 +22,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { FUNCIONES_DASHBOARD } from "@/generals/funcionalidades_dashboard";
-import { PERMISOS } from "@/generals/permisos";
-import {
-  ASIGNAR_ITEMS_DASHBOARD,
-  ASIGNAR_PERMISOS,
-} from "@/generals/procesamientos";
+import { ASIGNAR_ITEMS_DASHBOARD } from "@/generals/procesamientos";
 import { OBTENER_ROL } from "@/services/usuarios";
 
 export default Vue.extend({
