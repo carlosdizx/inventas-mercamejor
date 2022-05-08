@@ -90,9 +90,10 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <BuscarProductos
-                  @devolverUsuario="selecionarUsuario"
-                  :proveedores="productosDisponibles"
+                <BuscarElemento
+                  @devolverItem="selecionarUsuario"
+                  :items="productosDisponibles"
+                  :headers="columnas"
                 />
               </td>
             </tr>
@@ -133,17 +134,19 @@
 <script lang="ts">
 import Vue from "vue";
 
-import BuscarProductos from "@/components/dashboard/modulos/compras/comprar/BuscarProductos.vue";
+import { COLUMNAS } from "@/models/Producto";
 
 import { LISTAR_BODEGAS, LISTAR_PRODUCTOS } from "@/generals/Funciones";
 import { REDONDEAR } from "@/generals/procesamientos";
+import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 
 export default Vue.extend({
   name: "TablaCompras",
   components: {
-    BuscarProductos,
+    BuscarElemento,
   },
   data: () => ({
+    columnas: COLUMNAS,
     productos: [""],
     productoNuevo: {
       codigo_barras: "",
@@ -248,6 +251,7 @@ export default Vue.extend({
       }
     },
     selecionarUsuario(product: any) {
+      console.log(product);
       this.productoNuevo.codigo_barras = product.usuario.codigo_barras;
       this.productoNuevo.descripcion_producto = product.usuario.nombre;
     },
