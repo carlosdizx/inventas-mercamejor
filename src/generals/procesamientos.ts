@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { SUBIR_ARCHIVO } from "@/services/almacenamiento";
 import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 
-export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
+export const CAPTURAR_CAMPOS: any = async (item: any, campos: any) => {
   const datos = {};
   if (item) {
     Object.values(item).forEach((value: any, index) => {
