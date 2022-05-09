@@ -91,7 +91,8 @@
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <BuscarElemento
-                  @devolverItem="selecionarUsuario"
+                  @getItem="selecionarUsuario"
+                  icon="mdi-magnify"
                   :items="productosDisponibles"
                   :headers="columnas"
                 />
@@ -136,8 +137,10 @@ import Vue from "vue";
 
 import { COLUMNAS } from "@/models/Producto";
 
-import { LISTAR_BODEGAS, LISTAR_PRODUCTOS } from "@/generals/Funciones";
+import { LISTAR_BODEGAS } from "@/generals/Funciones";
 import { REDONDEAR } from "@/generals/procesamientos";
+import { CARGAR_INFORMACION } from "@/services/crud";
+
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 
 export default Vue.extend({
@@ -189,8 +192,8 @@ export default Vue.extend({
     },
     async listarProductos() {
       this.productosDisponibles = [];
-      const res = await LISTAR_PRODUCTOS();
-      res.forEach((prod: any) => this.productosDisponibles.push(prod.data()));
+      const res = await CARGAR_INFORMACION("productos");
+      this.productosDisponibles = res;
     },
     agregarProducto() {
       const product: any = { ...this.productoNuevo };
@@ -251,15 +254,18 @@ export default Vue.extend({
       }
     },
     selecionarUsuario(product: any) {
-      console.log(product);
-      this.productoNuevo.codigo_barras = product.usuario.codigo_barras;
-      this.productoNuevo.descripcion_producto = product.usuario.nombre;
+      this.productoNuevo.codigo_barras = product.codigo_barras;
+      this.productoNuevo.descripcion_producto = product.nombre;
     },
   },
   created() {
     this.listarBodegas();
     this.listarProductos();
     this.productos = [];
+    this.columnas = this.columnas.filter((col: any) => {
+      if (col.value !== "detalle") return true;
+      return false;
+    });
   },
 });
 </script>
