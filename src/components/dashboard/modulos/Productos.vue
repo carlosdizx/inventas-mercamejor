@@ -7,6 +7,7 @@
       :columnas="columnas"
       llave="nombre"
       :campos_form="campos_form"
+      :validaciones="validaciones"
       elimacion
     />
   </v-container>
@@ -14,7 +15,7 @@
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import { COLUMNAS, CAMPOS } from "@/models/Producto";
+import { COLUMNAS, CAMPOS, VALIDACIONES } from "@/models/Producto";
 
 import Vue from "vue";
 
@@ -24,6 +25,7 @@ export default Vue.extend({
   data: () => ({
     columnas: COLUMNAS,
     campos_form: CAMPOS,
+    validaciones: VALIDACIONES,
     datosUsuario: {},
   }),
 });

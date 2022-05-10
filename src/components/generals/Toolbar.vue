@@ -55,6 +55,7 @@ export default Vue.extend({
         timer: 1500,
         icon: "info",
       });
+      this.$router.go(0);
     },
   },
 });

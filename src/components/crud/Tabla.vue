@@ -39,6 +39,7 @@
                   :titulo="titulo"
                   :campos_form="campos_form"
                   :coleccion="coleccion"
+                  :validaciones="validaciones"
                 />
               </v-col>
             </v-row>
@@ -186,6 +187,7 @@ export default Vue.extend({
     llave: String,
     elimacion: Boolean,
     campos_form: Array,
+    validaciones: Array,
     roles: Array,
     noCrear: Boolean,
     NoEditar: Boolean,

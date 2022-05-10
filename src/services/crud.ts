@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
+import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 import { tipo_dato } from "@/generals/formats";
 
 export const LISTAR = async (colection: string) => {
@@ -28,7 +29,7 @@ export const BUSCAR = async (colection: string, id: string) =>
 
 export const ELIMINAR = async (colection: string, objeto: any) => {
   const eliminacion = await deleteDoc(doc(FIRESTORE, colection, objeto.id));
-  const datosUser = JSON.parse(<string>await OBTENER_CORREO_CUENTA_ACTUAL());
+  const datosUser: any = await BUSCAR_USUARIO_ACTUAL();
   const datosMovimiento: any = {
     entidad: colection,
     created_at: new Date(),

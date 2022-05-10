@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { SUBIR_ARCHIVO } from "@/services/almacenamiento";
 import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 
-export const CAPTURAR_CAMPOS = async (item: any, campos: any) => {
+export const CAPTURAR_CAMPOS: any = async (item: any, campos: any) => {
   const datos = {};
   if (item) {
     Object.values(item).forEach((value: any, index) => {
@@ -116,6 +116,28 @@ export const VALIDAR_CAMPOSNULOS = (obj: any) => {
     }
   });
   return value;
+};
+
+export const ASIGNAR_ITEMS_DASHBOARD = (lista: any[], rol: any) => {
+  lista.map((item: any, index) => {
+    const roles = item.roles;
+    const items = item.items;
+    if (roles) {
+      if (roles.includes(rol)) {
+        items.map((subItem: any, subindex: number) => {
+          const subRoles = subItem.roles;
+          if (subRoles) {
+            if (!subRoles.includes(rol)) {
+              items.splice(subindex, 1);
+            }
+          }
+        });
+      } else {
+        lista.splice(index, 1);
+      }
+    }
+  });
+  return lista;
 };
 
 export const REDONDEAR = (num: number, exp: number) => {
