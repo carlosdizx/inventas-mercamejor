@@ -13,6 +13,7 @@ import {
 import { FIRESTORE } from "@/firebase/config";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
 import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
+import { tipo_dato } from "@/generals/formats";
 
 export const LISTAR = async (colection: string) => {
   const coleccion = collection(FIRESTORE, colection);
@@ -48,4 +49,21 @@ export const PAGINAR = async (colection: string, ordenardor: string) => {
   const entidadRef = await collection(FIRESTORE, colection);
   const consulta = query(entidadRef, orderBy(ordenardor), startAt(1000000));
   console.log(consulta);
+};
+
+export const CARGAR_INFORMACION = async (coleccion: string) => {
+  const filas: any = [];
+  (await LISTAR(coleccion)).forEach((item) => {
+    const obj: any = JSON.parse(JSON.stringify(item.data()));
+    obj.id = item.id;
+    Object.values(obj).map(async (value: any, index: number) => {
+      if (typeof value === "object" && value) {
+        value = await tipo_dato(value);
+        const key: string = Object.keys(obj)[index].toString();
+        obj[key] = value;
+      }
+    });
+    filas.push(obj);
+  });
+  return filas;
 };

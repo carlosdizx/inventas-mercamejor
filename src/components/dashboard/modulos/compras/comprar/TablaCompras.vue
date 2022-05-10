@@ -23,11 +23,11 @@
               <td>
                 <v-text-field
                   @input="buscarProducto()"
-                  v-model="productoNuevo.codigo"
+                  v-model="productoNuevo.codigo_barras"
                 ></v-text-field>
               </td>
               <td>
-                {{ productoNuevo.descripcion }}
+                {{ productoNuevo.descripcion_producto }}
               </td>
               <td>
                 <v-select
@@ -48,7 +48,7 @@
                 <v-text-field
                   @input="calcularSubtotal()"
                   type="number"
-                  v-model="productoNuevo.precioCompra"
+                  v-model="productoNuevo.precio_compra"
                 ></v-text-field>
               </td>
               <td>
@@ -62,7 +62,7 @@
                 <v-text-field
                   @input="ingresarVenta()"
                   type="number"
-                  v-model="productoNuevo.precioVenta"
+                  v-model="productoNuevo.precio_venta"
                 ></v-text-field>
               </td>
               <td>
@@ -78,7 +78,7 @@
                 ></v-text-field>
               </td>
               <td>
-                {{ productoNuevo.subTotal }}
+                {{ productoNuevo.subtotal }}
               </td>
               <td>
                 <v-btn
@@ -90,25 +90,27 @@
                 >
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
-                <BuscarProductos
-                  @devolverUsuario="selecionarUsuario"
-                  :proveedores="productosDisponibles"
+                <BuscarElemento
+                  @getItem="selecionarUsuario"
+                  icon="mdi-magnify"
+                  :items="productosDisponibles"
+                  :headers="columnas"
                 />
               </td>
             </tr>
           </tbody>
           <tbody class="pt-3">
             <tr v-for="(item, index) in productos" :key="index">
-              <td>{{ item.codigo }}</td>
-              <td>{{ item.descripcion }}</td>
+              <td>{{ item.codigo_barras }}</td>
+              <td>{{ item.descripcion_producto }}</td>
               <td>{{ item.bodega }}</td>
               <td>{{ item.cantidad }}</td>
-              <td>{{ item.precioCompra }}</td>
+              <td>{{ item.precio_compra }}</td>
               <td>{{ item.porGanancia }}</td>
-              <td>{{ item.precioVenta }}</td>
+              <td>{{ item.precio_venta }}</td>
               <td>{{ item.impuesto }}</td>
               <td>{{ item.descuento }}</td>
-              <td>{{ item.subTotal }}</td>
+              <td>{{ item.subtotal }}</td>
               <td>
                 <v-btn color="white" icon class="success">
                   <v-icon color="white">mdi-lead-pencil</v-icon>
@@ -133,29 +135,33 @@
 <script lang="ts">
 import Vue from "vue";
 
-import BuscarProductos from "@/components/dashboard/modulos/compras/comprar/BuscarProductos.vue";
+import { COLUMNAS } from "@/models/Producto";
 
-import { LISTAR_BODEGAS, LISTAR_PRODUCTOS } from "@/generals/Funciones";
+import { LISTAR_BODEGAS } from "@/generals/Funciones";
 import { REDONDEAR } from "@/generals/procesamientos";
+import { CARGAR_INFORMACION } from "@/services/crud";
+
+import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 
 export default Vue.extend({
   name: "TablaCompras",
   components: {
-    BuscarProductos,
+    BuscarElemento,
   },
   data: () => ({
+    columnas: COLUMNAS,
     productos: [""],
     productoNuevo: {
-      codigo: "",
-      descripcion: "",
+      codigo_barras: "",
+      descripcion_producto: "",
       bodega: "",
       cantidad: 1,
-      precioCompra: 0,
-      precioVenta: 0,
+      precio_compra: 0,
+      precio_venta: 0,
       porGanancia: 0,
       impuesto: 0,
       descuento: 0,
-      subTotal: 0,
+      subtotal: 0,
     },
     bodegasDisponibles: [""],
     productosDisponibles: [""],
@@ -163,16 +169,16 @@ export default Vue.extend({
   computed: {
     validarProd() {
       if (
-        !this.productoNuevo.codigo ||
-        !this.productoNuevo.descripcion ||
-        !this.productoNuevo.descripcion ||
+        !this.productoNuevo.codigo_barras ||
+        !this.productoNuevo.descripcion_producto ||
+        !this.productoNuevo.descripcion_producto ||
         !this.productoNuevo.bodega ||
         this.productoNuevo.cantidad < 1 ||
-        this.productoNuevo.precioCompra < 1 ||
-        this.productoNuevo.precioVenta < 1 ||
+        this.productoNuevo.precio_compra < 1 ||
+        this.productoNuevo.precio_venta < 1 ||
         this.productoNuevo.porGanancia < 0 ||
-        this.productoNuevo.subTotal < 1 ||
-        this.productoNuevo.precioVenta < this.productoNuevo.precioCompra
+        this.productoNuevo.subtotal < 1 ||
+        this.productoNuevo.precio_venta < this.productoNuevo.precio_compra
       )
         return false;
       return true;
@@ -186,8 +192,8 @@ export default Vue.extend({
     },
     async listarProductos() {
       this.productosDisponibles = [];
-      const res = await LISTAR_PRODUCTOS();
-      res.forEach((prod: any) => this.productosDisponibles.push(prod.data()));
+      const res = await CARGAR_INFORMACION("productos");
+      this.productosDisponibles = res;
     },
     agregarProducto() {
       const product: any = { ...this.productoNuevo };
@@ -200,47 +206,47 @@ export default Vue.extend({
       this.$emit("enviarProductos", this.productos);
     },
     resetNuevoProducto(): void {
-      this.productoNuevo.codigo = "";
-      this.productoNuevo.descripcion = "";
+      this.productoNuevo.codigo_barras = "";
+      this.productoNuevo.descripcion_producto = "";
       this.productoNuevo.cantidad = 1;
-      this.productoNuevo.precioCompra = 0;
-      this.productoNuevo.precioVenta = 0;
+      this.productoNuevo.precio_compra = 0;
+      this.productoNuevo.precio_venta = 0;
       this.productoNuevo.impuesto = 0;
       this.productoNuevo.descuento = 0;
-      this.productoNuevo.subTotal = 10;
+      this.productoNuevo.subtotal = 10;
     },
     buscarProducto() {
       let producto = "";
       this.productosDisponibles.forEach((prod: any) => {
-        if (prod.codigo_barras === this.productoNuevo.codigo) {
+        if (prod.codigo_barras === this.productoNuevo.codigo_barras) {
           producto = prod.nombre;
         }
       });
-      this.productoNuevo.descripcion = producto;
+      this.productoNuevo.descripcion_producto = producto;
     },
     calcularSubtotal() {
-      const subTotal: number =
-        this.productoNuevo.cantidad * this.productoNuevo.precioCompra;
-      this.productoNuevo.subTotal = subTotal;
+      const subtotal: number =
+        this.productoNuevo.cantidad * this.productoNuevo.precio_compra;
+      this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
       if (this.productoNuevo.porGanancia >= 0) {
-        let precioVenta: number =
-          this.productoNuevo.precioCompra *
+        let precio_venta: number =
+          this.productoNuevo.precio_compra *
           (1 + this.productoNuevo.porGanancia / 100);
-        let precio = REDONDEAR(precioVenta, -2);
-        this.productoNuevo.precioVenta = precio;
+        let precio = REDONDEAR(precio_venta, -2);
+        this.productoNuevo.precio_venta = precio;
       }
     },
     ingresarVenta() {
       if (
-        Number(this.productoNuevo.precioVenta) >=
-        Number(this.productoNuevo.precioCompra)
+        Number(this.productoNuevo.precio_venta) >=
+        Number(this.productoNuevo.precio_compra)
       ) {
         const porGanancia: number =
-          ((Number(this.productoNuevo.precioVenta) -
-            Number(this.productoNuevo.precioCompra)) /
-            Number(this.productoNuevo.precioCompra)) *
+          ((Number(this.productoNuevo.precio_venta) -
+            Number(this.productoNuevo.precio_compra)) /
+            Number(this.productoNuevo.precio_compra)) *
           100;
         this.productoNuevo.porGanancia = Math.trunc(porGanancia);
       } else {
@@ -248,14 +254,18 @@ export default Vue.extend({
       }
     },
     selecionarUsuario(product: any) {
-      this.productoNuevo.codigo = product.usuario.codigo_barras;
-      this.productoNuevo.descripcion = product.usuario.nombre;
+      this.productoNuevo.codigo_barras = product.codigo_barras;
+      this.productoNuevo.descripcion_producto = product.nombre;
     },
   },
   created() {
     this.listarBodegas();
     this.listarProductos();
     this.productos = [];
+    this.columnas = this.columnas.filter((col: any) => {
+      if (col.value !== "detalle") return true;
+      return false;
+    });
   },
 });
 </script>

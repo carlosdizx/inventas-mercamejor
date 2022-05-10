@@ -14,9 +14,12 @@
               ></v-text-field>
             </v-col>
             <v-col cols="1" class="mt-2">
-              <v-btn icon class="error ml-1">
-                <v-icon>mdi-lead-pencil</v-icon>
-              </v-btn>
+              <BuscarElemento
+                @getItem="seleccionarProveedor"
+                icon="mdi-lead-pencil"
+                :items="proveedores"
+                :headers="columnas"
+              />
             </v-col>
             <v-col cols="6">
               <v-text-field
@@ -193,17 +196,22 @@
 <script lang="ts">
 import Vue from "vue";
 
-import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
+import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 import { GUARDAR } from "@/services/crud";
+
+import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
+import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 
 export default Vue.extend({
   name: "RegistroCompras",
   components: {
     TablaCompras,
+    BuscarElemento,
   },
   data: () => ({
+    columnas: COLUMNAS,
     cabFactura: {
       nit: "",
       nombreProveedor: "Proveedores varios",
@@ -295,9 +303,17 @@ export default Vue.extend({
       await GUARDAR("compras", this.cabFactura);
       this.resetCampos();
     },
+    seleccionarProveedor(prov: any) {
+      this.cabFactura.nit = prov.documento;
+      this.cabFactura.nombreProveedor = `${prov.nombres} ${prov.apellidos}`;
+    },
   },
   created() {
     this.listarProveedores();
+    this.columnas = this.columnas.filter((col: any) => {
+      if (col.value !== "detalle") return true;
+      return false;
+    });
   },
 });
 </script>
