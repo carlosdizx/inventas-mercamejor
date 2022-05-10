@@ -235,11 +235,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { VALIDAR_COMBO } from "@/generals/validaciones";
+import { VALIDAR_CAMPO, VALIDAR_COMBO } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
   PROCESAR_FORMULARIO,
 } from "@/generals/procesamientos";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "FormCreate",
@@ -251,6 +252,7 @@ export default Vue.extend({
       created_at: new Date(),
       updated_at: new Date(),
     },
+    validados: [""],
   }),
   props: {
     titulo: String,
@@ -267,16 +269,34 @@ export default Vue.extend({
         }
       }
     },
-    async preSubmit(): Promise<boolean> {
-      let mensajes = [];
-      this.validaciones.forEach((validacion) => {
-        console.log("Xd");
-      });
-      return true;
+    async mensajeValidaciones() {
+      let msg = "";
+      this.validados.forEach((valid) => (msg += valid + "<br/>"));
+      return msg;
     },
-    async registrarDatos(): Promise<void> {
+    async preSubmit() {
+      this.validados = [];
+      for (const validacion of this.validaciones) {
+        const resultado = await VALIDAR_CAMPO(this.datos, validacion);
+        if (resultado !== "") {
+          this.validados.push(resultado);
+          console.log("A: " + this.validados);
+        }
+      }
+    },
+    async registrarDatos(): Promise<any> {
       this.cargando = !this.cargando;
       this.datos = await CAPTURAR_CAMPOS(null, this.campos);
+      await this.preSubmit();
+      console.log("B: " + this.validados);
+      if (this.validados.length > 0) {
+        this.cargando = !this.cargando;
+        return await Swal.fire(
+          "Campos incorrectos",
+          await this.mensajeValidaciones(),
+          "error"
+        );
+      }
       this.campos = [];
       this.campos_form.forEach((campo: any) => this.campos.push(campo));
       this.datos.created_at = new Date();

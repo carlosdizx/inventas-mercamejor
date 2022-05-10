@@ -33,3 +33,21 @@ export const VALIDAR_COMBO = async (modelo: any, items: Array<any>) => {
     }
   }
 };
+
+export const VALIDAR_CAMPO = async (datos: any, validacion: any) => {
+  let mensjaes = "";
+  if (validacion.tipo === 1) {
+    const val1 = datos[validacion.nombres[0]];
+    const val2 = datos[validacion.nombres[1]];
+    console.log("valor 1: " + val1, "valor 2: " + val2);
+    const resultado = await VALIDAR_PRECIOS(val1, val2);
+    console.log(resultado);
+    if (resultado) {
+      mensjaes = "Los valores de los precios son incorrectos";
+    }
+  }
+  return mensjaes;
+};
+
+const VALIDAR_PRECIOS = async (valor1: any, valor2: any): Promise<boolean> =>
+  valor1 >= valor2;
