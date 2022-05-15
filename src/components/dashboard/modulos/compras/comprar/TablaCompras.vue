@@ -148,6 +148,7 @@ export default Vue.extend({
   components: {
     BuscarElemento,
   },
+  props: ["compras"],
   data: () => ({
     columnas: COLUMNAS,
     productos: [""],
@@ -261,7 +262,7 @@ export default Vue.extend({
   created() {
     this.listarBodegas();
     this.listarProductos();
-    this.productos = [];
+    this.productos = this.compras;
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;

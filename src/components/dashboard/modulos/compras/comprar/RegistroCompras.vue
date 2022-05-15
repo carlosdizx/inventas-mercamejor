@@ -8,7 +8,7 @@
             <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula"
-                v-model="cabFactura.nit"
+                v-model="cabFactura.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
               ></v-text-field>
@@ -24,7 +24,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Nombre del proveedor"
-                v-model="cabFactura.nombreProveedor"
+                v-model="cabFactura.nombre_proveedor"
                 readonly
                 outlined
               ></v-text-field>
@@ -39,7 +39,7 @@
               >
                 <v-text-field
                   label="Fecha de Compra"
-                  v-model="cabFactura.fechaDocumento"
+                  v-model="cabFactura.fecha_documento"
                   :error-messages="errors"
                   type="date"
                   outlined
@@ -54,7 +54,7 @@
               >
                 <v-select
                   label="Tipo de Compra"
-                  v-model="cabFactura.tipoCompra"
+                  v-model="cabFactura.tipo_compra"
                   :error-messages="errors"
                   :items="tiposDocumento"
                   outlined
@@ -70,7 +70,7 @@
                 <v-text-field
                   type="number"
                   label="Número de Documento"
-                  v-model="cabFactura.nDocumento"
+                  v-model="cabFactura.cod_factura"
                   :error-messages="errors"
                   outlined
                 ></v-text-field>
@@ -86,7 +86,7 @@
               >
                 <v-select
                   label="Tipo de Pago"
-                  v-model="cabFactura.tipoPago"
+                  v-model="cabFactura.tipo_pago"
                   :error-messages="errors"
                   :items="tiposPagos"
                   outlined
@@ -102,7 +102,7 @@
                 <v-text-field
                   label="Fecha de pago"
                   type="date"
-                  v-model="cabFactura.fechaPago"
+                  v-model="cabFactura.fecha_pago"
                   :error-messages="errors"
                   outlined
                 ></v-text-field>
@@ -117,7 +117,7 @@
                 <v-text-field
                   label="Fecha de llegada del producto"
                   type="date"
-                  v-model="cabFactura.fechaLlegadaProducto"
+                  v-model="cabFactura.fecha_llegada_producto"
                   :error-messages="errors"
                   outlined
                 ></v-text-field>
@@ -125,7 +125,10 @@
             </v-col>
           </v-row>
 
-          <TablaCompras @enviarProductos="actualizarProductos" />
+          <TablaCompras
+            :compras="cabFactura.compras"
+            @enviarProductos="actualizarProductos"
+          />
 
           <v-row class="mr-5 ml-5">
             <v-col>
@@ -213,14 +216,14 @@ export default Vue.extend({
   data: () => ({
     columnas: COLUMNAS,
     cabFactura: {
-      nit: "",
-      nombreProveedor: "Proveedores varios",
-      fechaDocumento: "",
-      nDocumento: "",
-      tipoCompra: "Compra",
-      tipoPago: "Contado",
-      fechaPago: "",
-      fechaLlegadaProducto: "",
+      documento_proveedor: 0,
+      nombre_proveedor: "Proveedores varios",
+      fecha_documento: "",
+      cod_factura: "",
+      tipo_compra: "Compra",
+      tipo_pago: "Contado",
+      fecha_pago: "",
+      fecha_llegada_producto: "",
       compras: [],
       subtotal: 0,
       descuento: 0,
@@ -235,7 +238,7 @@ export default Vue.extend({
   }),
   computed: {
     numeroDocumento() {
-      return `${this.cabFactura.tipoCompra[0]}-${this.cabFactura.nDocumento}`;
+      return `${this.cabFactura.tipo_compra[0]}-${this.cabFactura.cod_factura}`;
     },
     validarRegistro() {
       let val = false;
@@ -258,21 +261,21 @@ export default Vue.extend({
     buscarProveedor() {
       let result = "Proveedores varios";
       this.proveedores.forEach((prov: any) => {
-        if (this.cabFactura.nit === prov.documento) {
+        if (this.cabFactura.documento_proveedor === prov.documento) {
           result = `${prov.nombres} ${prov.apellidos}`;
         }
       });
-      this.cabFactura.nombreProveedor = result;
+      this.cabFactura.nombre_proveedor = result;
     },
     resetCampos() {
-      this.cabFactura.nombreProveedor = "Proveedores varios";
-      this.cabFactura.nit = "";
-      this.cabFactura.fechaDocumento = "";
-      this.cabFactura.nDocumento = "";
-      this.cabFactura.tipoCompra = "Compra";
-      this.cabFactura.tipoPago = "Contado";
-      this.cabFactura.fechaPago = "";
-      this.cabFactura.fechaLlegadaProducto = "";
+      this.cabFactura.nombre_proveedor = "Proveedores varios";
+      this.cabFactura.documento_proveedor = 0;
+      this.cabFactura.fecha_documento = "";
+      this.cabFactura.cod_factura = "";
+      this.cabFactura.tipo_compra = "Compra";
+      this.cabFactura.tipo_pago = "Contado";
+      this.cabFactura.fecha_pago = "";
+      this.cabFactura.fecha_llegada_producto = "";
       this.cabFactura.compras = [];
       this.cabFactura.subtotal = 0;
       this.cabFactura.descuento = 0;
@@ -287,7 +290,7 @@ export default Vue.extend({
     calcularSubtotal() {
       let subtototal = 0;
       this.cabFactura.compras.forEach((com: any) => {
-        subtototal += com.subTotal;
+        subtototal += Number(com.subtotal);
       });
       this.cabFactura.subtotal = subtototal;
     },
@@ -300,12 +303,15 @@ export default Vue.extend({
     async registrarCompra() {
       this.cabFactura.created_at = new Date();
       this.cabFactura.updated_at = new Date();
+      this.cabFactura.documento_proveedor = Number(
+        this.cabFactura.documento_proveedor
+      );
       await GUARDAR("compras", this.cabFactura);
       this.resetCampos();
     },
     seleccionarProveedor(prov: any) {
-      this.cabFactura.nit = prov.documento;
-      this.cabFactura.nombreProveedor = `${prov.nombres} ${prov.apellidos}`;
+      this.cabFactura.documento_proveedor = prov.documento;
+      this.cabFactura.nombre_proveedor = `${prov.nombres} ${prov.apellidos}`;
     },
   },
   created() {

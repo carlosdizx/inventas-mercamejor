@@ -40,7 +40,7 @@
               <v-col>
                 <validation-provider type="date" name="Fecha de Compra">
                   <v-text-field
-                    label="Documento Inicial de proveedores"
+                    label="Documento Final de proveedores"
                     v-model="rangoProveedorFinal"
                     type="number"
                     outlined
@@ -59,6 +59,7 @@
                   block
                   outlined
                   dense
+                  :disabled="validarFormulario"
                   >Buscar Compras</v-btn
                 >
               </v-col>
@@ -67,13 +68,13 @@
         </v-form>
         <v-col v-if="!invalid">.</v-col>
       </ValidationObserver>
-      <v-dialog v-model="dialog">
+      <v-dialog v-model="dialog" persistent>
         <v-card class="elevation-5">
-          <v-card-title>Resultado de busqueda compras</v-card-title>
+          <v-card-title>Resultado de busqueda Compras</v-card-title>
           <v-card-text>
             <v-data-table
               :headers="headers"
-              :items="items"
+              :items="datos"
               item-key="id"
               class="elevation-1"
             >
@@ -86,41 +87,71 @@
               </template>
             </v-data-table>
           </v-card-text>
+          <v-card-text>
+            <v-row>
+              <v-col cols="10"></v-col>
+              <v-col cols="2">
+                <v-btn @click="dialog = false">Cerrar</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
         </v-card>
       </v-dialog>
-      <v-data-table> </v-data-table>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts">
-import { COLUMNAS } from "@/models/ElementoCompra";
+import { COMPRAS_CONSULTA } from "@/models/ElementoCompra";
 import { CONSULTAR_COMPRAS } from "@/services/consultas";
 import Vue from "vue";
 
 export default Vue.extend({
   name: "ConsultarCompras",
   data: () => ({
-    headers: COLUMNAS,
+    headers: COMPRAS_CONSULTA,
     dialog: false,
-    rangoFechaInicial: null,
-    rangoFechaFinal: null,
-    rangoProveedorInicial: null,
-    rangoProveedorFinal: null,
+    rangoFechaInicial: "",
+    rangoFechaFinal: "",
+    rangoProveedorInicial: "",
+    rangoProveedorFinal: "",
     search: "",
     datos: [""],
   }),
+  computed: {
+    validarFormulario() {
+      let valid = false;
+      if (!this.rangoFechaInicial || !this.rangoFechaFinal) {
+        valid = true;
+      } else if (
+        new Date(this.rangoFechaInicial) > new Date(this.rangoFechaFinal)
+      ) {
+        valid = true;
+      }
+      if (this.rangoFechaInicial !== "" && this.rangoFechaFinal !== "") {
+        if (
+          Number(this.rangoProveedorInicial) > Number(this.rangoProveedorFinal)
+        ) {
+          valid = true;
+        }
+      }
+      return valid;
+    },
+  },
   methods: {
-    buscarCompras() {
-      console.log("buscar");
+    async buscarCompras() {
+      const res = await CONSULTAR_COMPRAS(
+        this.rangoFechaInicial,
+        this.rangoFechaFinal,
+        this.rangoProveedorInicial,
+        this.rangoProveedorFinal
+      );
       this.dialog = true;
+      this.datos = res;
     },
   },
   async created() {
     this.datos = [];
-    console.log(
-      await CONSULTAR_COMPRAS(new Date(2022, 5, 1), new Date(2022, 5, 30))
-    );
   },
 });
 </script>
