@@ -7,9 +7,9 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { AUTH } from "@/firebase/config";
+import { APK } from "@/firebase/config";
 
-const API_KEY = "AIzaSyBFzkqsaf-5MDzXHlO-hOFSUI5fd-4iZLw";
-const URL_SING_UP = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`;
+const URL_SING_UP = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${APK}`;
 
 export const REGISTRO_USUARIO = async (email: string, password: string) => {
   return await (

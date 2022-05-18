@@ -9,6 +9,7 @@ import {
   query,
   setDoc,
   startAt,
+  where,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
@@ -66,4 +67,22 @@ export const CARGAR_INFORMACION = async (coleccion: string) => {
     filas.push(obj);
   });
   return filas;
+};
+
+export const CONSULTA_DATOS = async (colection: string, consulta: any) => {
+  const coleccion = collection(FIRESTORE, colection);
+  let res: any = "";
+  if (consulta.length === 1) {
+    res = query(
+      coleccion,
+      where(consulta[0][0], consulta[0][1], consulta[0][2])
+    );
+  } else {
+    res = query(
+      coleccion,
+      where(consulta[0][0], consulta[0][1], consulta[0][2]),
+      where(consulta[1][0], consulta[1][1], consulta[1][2])
+    );
+  }
+  return await getDocs(res);
 };

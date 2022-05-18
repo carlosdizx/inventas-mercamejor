@@ -56,6 +56,17 @@
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
+            <v-btn
+              fab
+              color="green"
+              dark
+              small
+              outlined
+              @click="seleccionar(item)"
+              v-if="seleccion"
+            >
+              <v-icon>mdi-send-circle</v-icon>
+            </v-btn>
             <FormEdit
               v-if="!NoEditar"
               @actualizado="cargarInformacion"
@@ -162,7 +173,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ELIMINAR, LISTAR } from "@/services/crud";
+import { CONSULTA_DATOS, ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import { tipo_dato } from "@/generals/formats";
 import FormCreate from "@/components/crud/FormCreate.vue";
@@ -186,11 +197,13 @@ export default Vue.extend({
     columnas: Array,
     llave: String,
     elimacion: Boolean,
+    seleccion: Boolean,
     campos_form: Array,
     validaciones: Array,
     roles: Array,
     noCrear: Boolean,
     NoEditar: Boolean,
+    consulta: Array,
   },
   methods: {
     filtrarPorLlave(valor: any, buscado: any): boolean {
@@ -209,6 +222,21 @@ export default Vue.extend({
     async cargarInformacion() {
       this.filas = [];
       (await LISTAR(this.coleccion)).forEach((item) => {
+        const obj: any = JSON.parse(JSON.stringify(item.data()));
+        obj.id = item.id;
+        Object.values(obj).map(async (value: any, index: number) => {
+          if (typeof value === "object" && value) {
+            value = await tipo_dato(value);
+            const key: string = Object.keys(obj)[index].toString();
+            obj[key] = value;
+          }
+        });
+        this.filas.push(obj);
+      });
+    },
+    async cargarInformacionConsulta() {
+      this.filas = [];
+      (await CONSULTA_DATOS(this.coleccion, this.consulta)).forEach((item) => {
         const obj: any = JSON.parse(JSON.stringify(item.data()));
         obj.id = item.id;
         Object.values(obj).map(async (value: any, index: number) => {
@@ -242,12 +270,19 @@ export default Vue.extend({
         }
       });
     },
+    seleccionar(objeto: any) {
+      this.$emit("getItem", objeto);
+    },
     forzarRecarga() {
       this.$router.go(0);
     },
   },
   async created() {
-    await this.cargarInformacion();
+    if (!this.consulta) {
+      await this.cargarInformacion();
+    } else {
+      await this.cargarInformacionConsulta();
+    }
   },
 });
 </script>

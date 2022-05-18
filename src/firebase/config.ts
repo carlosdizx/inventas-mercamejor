@@ -17,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const FIRESTORE = getFirestore(app);
 export const AUTH = getAuth(app);
+export const APK = firebaseConfig.apiKey;
 
 export const DOWNLOAD_URL = (nombre: string, carpeta: string) =>
   getDownloadURL(ref(getStorage(), carpeta + "/" + nombre));
