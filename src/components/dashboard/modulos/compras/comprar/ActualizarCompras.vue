@@ -12,7 +12,7 @@
         seleccion
         NoEditar
         @getItem="seleccionarItem"
-        :consulta="[['precio_unitario_venta', '==', '12']]"
+        :consulta="[['precio_unitario_venta', '==', '13']]"
       ></Tabla>
     </v-card>
   </v-dialog>

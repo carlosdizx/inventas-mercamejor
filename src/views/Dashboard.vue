@@ -11,6 +11,7 @@
     <NavDrawer ref="NavDrawer" v-on:item="item = $event" />
     <Comprar v-if="item === 1" />
     <Proveedores v-if="item === 2" />
+    <CuentasOpcion v-if="item === 3" />
     <Clientes v-if="item === 5" />
     <Productos v-if="item === 8" />
     <Categorias v-if="item === 9" />
@@ -42,7 +43,7 @@ import Productos from "@/components/dashboard/modulos/Productos.vue";
 import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
 import Comprobantes from "@/components/dashboard/modulos/Comprobantes.vue";
 import Clientes from "@/components/dashboard/modulos/Clientes.vue";
-
+import CuentasOpcion from "@/components/dashboard/modulos/compras/cuentasporcobrar/CuentasOpcion.vue";
 export default Vue.extend({
   name: "Dashboard",
   components: {
@@ -61,6 +62,7 @@ export default Vue.extend({
     Comprar,
     Comprobantes,
     Clientes,
+    CuentasOpcion,
   },
   data: () => ({
     item: 0,
