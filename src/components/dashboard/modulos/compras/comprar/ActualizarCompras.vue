@@ -12,7 +12,10 @@
         seleccion
         NoEditar
         @getItem="seleccionarItem"
-        :consulta="[['precio_unitario_venta', '==', '13']]"
+        :consulta="[
+          ['precio_unitario_venta', '>', 1000],
+          ['precio_unitario_venta', '<', 5000],
+        ]"
       ></Tabla>
     </v-card>
   </v-dialog>

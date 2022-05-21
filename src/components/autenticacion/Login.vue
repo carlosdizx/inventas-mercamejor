@@ -54,15 +54,7 @@ export default Vue.extend({
     },
     async loginUser() {
       try {
-        const userCredential = await INICIAR_SESION(this.email, this.passwd);
-        const datos = userCredential.user.providerData[0].displayName;
-
-        // if (datos) {
-        //   const datosParseados = JSON.parse(datos);
-        //   console.log(datosParseados);
-        // } else {
-        //   console.log("Fallo");
-        // }
+        await INICIAR_SESION(this.email, this.passwd);
       } catch (e) {
         console.log(e);
         await NOTIFICAR_ERROR(e.code);
