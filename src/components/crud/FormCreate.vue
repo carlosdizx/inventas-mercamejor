@@ -277,7 +277,11 @@ export default Vue.extend({
     async preSubmit() {
       this.validados = [];
       for (const validacion of this.validaciones) {
-        const resultado = await VALIDAR_CAMPO(this.datos, validacion);
+        const resultado = await VALIDAR_CAMPO(
+          this.datos,
+          validacion,
+          this.coleccion
+        );
         if (resultado !== "") {
           this.validados.push(resultado);
         }

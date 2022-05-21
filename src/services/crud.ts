@@ -22,6 +22,16 @@ export const LISTAR = async (colection: string) => {
   return await getDocs(consulta);
 };
 
+export const LISTAR_NOT_IN = async (
+  colection: string,
+  campo: string,
+  valor: any
+) => {
+  const coleccion = collection(FIRESTORE, colection);
+  const consulta = query(coleccion, where(campo, "not-in", [valor]));
+  return await getDocs(consulta);
+};
+
 export const GUARDAR = async (colection: string, datos: any) =>
   addDoc(collection(FIRESTORE, colection), datos);
 
@@ -45,12 +55,6 @@ export const ELIMINAR = async (colection: string, objeto: any) => {
 
 export const EDITAR = async (colection: string, id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, colection, id), datos);
-
-export const PAGINAR = async (colection: string, ordenardor: string) => {
-  const entidadRef = await collection(FIRESTORE, colection);
-  const consulta = query(entidadRef, orderBy(ordenardor), startAt(1000000));
-  console.log(consulta);
-};
 
 export const CARGAR_INFORMACION = async (coleccion: string) => {
   const filas: any = [];

@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import { BUSCAR, LISTAR_NOT_IN } from "@/services/crud";
 
 export const VALIDAR_COMBO = async (modelo: any, items: Array<any>) => {
   if (modelo) {
@@ -34,7 +35,12 @@ export const VALIDAR_COMBO = async (modelo: any, items: Array<any>) => {
   }
 };
 
-export const VALIDAR_CAMPO = async (datos: any, validacion: any) => {
+export const VALIDAR_CAMPO = async (
+  datos: any,
+  validacion: any,
+  colecion: string
+) => {
+  console.log(validacion);
   let mensjaes = "";
   if (validacion.tipo === 1) {
     const val1 = datos[validacion.nombres[0]];
@@ -43,6 +49,14 @@ export const VALIDAR_CAMPO = async (datos: any, validacion: any) => {
     if (resultado) {
       mensjaes = "Los valores de los precios son incorrectos";
     }
+  } else if (validacion.tipo === 2) {
+    const listado = await LISTAR_NOT_IN(
+      colecion,
+      validacion.nombres[0],
+      datos[validacion.nombres[0]]
+    );
+    if (!listado.empty)
+      mensjaes = `El valor ${validacion.nombres[0]} no debe estar repetido`;
   }
   return mensjaes;
 };

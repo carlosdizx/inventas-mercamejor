@@ -102,4 +102,5 @@ export const CAMPOS: any[] = [
 
 export const VALIDACIONES = [
   { tipo: 1, nombres: ["precio_unitario_compra", "precio_unitario_venta"] },
+  { tipo: 2, nombres: ["codigo_barras"] },
 ];
