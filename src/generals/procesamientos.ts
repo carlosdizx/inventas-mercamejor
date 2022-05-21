@@ -17,6 +17,10 @@ export const CAPTURAR_CAMPOS: any = async (item: any, campos: any) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         datos[campo.name] = await SUBIR_ARCHIVO(campo.model, "comprobantes");
+      } else if (campo.format === "number") {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        datos[campo.name] = Number(campo.model);
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
