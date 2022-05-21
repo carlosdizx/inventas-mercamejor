@@ -31,7 +31,6 @@ export default Vue.extend({
   model: { prop: "value", event: "input" },
   props: {
     value: {
-      // type: String,
       type: [String, Number],
       default: "0",
     },
@@ -108,7 +107,6 @@ export default Vue.extend({
         };
       },
     },
-    // Other v-text-field properties
     properties: {
       type: Object,
       default: function () {
@@ -121,11 +119,6 @@ export default Vue.extend({
     },
   },
   data: () => ({}),
-  /*
-   v-model="cmpValue": Dessa forma, ao digitar, o valor é atualizado automaticamente no componente pai.
-   O valor digitado entra pelo newValue do Set e é emitido para o componente pai.
-   the-vue-mask nao funciona corretamente ao incluir valores existentes no componente pai.
-  */
   computed: {
     cmpValue: {
       get: function () {
@@ -143,7 +136,6 @@ export default Vue.extend({
       if (isNaN(number)) {
         number = "";
       } else {
-        // number = Number(number).toLocaleString(this.options.locale, {maximumFractionDigits: 2, minimumFractionDigits: 2, style: 'currency', currency: 'BRL'});
         number = Number(number).toLocaleString(this.options.locale, {
           maximumFractionDigits: this.options.precision,
           minimumFractionDigits: this.options.precision,
@@ -154,9 +146,7 @@ export default Vue.extend({
     machineFormat(number) {
       if (number) {
         number = this.cleanNumber(number);
-        // Ajustar quantidade de zeros à esquerda
         number = number.padStart(parseInt(this.options.precision) + 1, "0");
-        // Incluir ponto na casa correta, conforme a precisão configurada
         number =
           number.substring(
             0,
@@ -179,18 +169,14 @@ export default Vue.extend({
       return number;
     },
     keyPress($event) {
-      // console.log($event.keyCode); //keyCodes value
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-      // if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
       if (keyCode < 48 || keyCode > 57) {
-        // 46 is dot
         $event.preventDefault();
       }
       if (this.targetLength()) {
         $event.preventDefault();
       }
     },
-    // Retira todos os caracteres não numéricos e zeros à esquerda
     cleanNumber: function (value) {
       let result = "";
       if (value) {

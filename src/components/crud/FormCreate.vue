@@ -280,7 +280,6 @@ export default Vue.extend({
         const resultado = await VALIDAR_CAMPO(this.datos, validacion);
         if (resultado !== "") {
           this.validados.push(resultado);
-          console.log("A: " + this.validados);
         }
       }
     },
@@ -288,7 +287,6 @@ export default Vue.extend({
       this.cargando = !this.cargando;
       this.datos = await CAPTURAR_CAMPOS(null, this.campos);
       await this.preSubmit();
-      console.log("B: " + this.validados);
       if (this.validados.length > 0) {
         this.cargando = !this.cargando;
         return await Swal.fire(
