@@ -57,14 +57,18 @@ export const VALIDAR_CAMPO = async (
     );
     if (!listado.empty) {
       if (edicion) {
+        console.log("Edición");
         let obj: any = {};
         listado.forEach((item) => {
           obj = item;
         });
+        console.log(obj.id);
+        console.log(datos.id);
         if (listado.size > 0 && datos["id"] !== obj["id"]) {
           mensjaes = `El valor ${validacion.nombres[0]} ya se encuentra registrado`;
         }
       } else {
+        console.log("Creación");
         mensjaes = `El valor ${validacion.nombres[0]} no debe estar repetido`;
       }
     }

@@ -8,7 +8,6 @@
       llave="nombre"
       :campos_form="campos_form"
       :validaciones="validaciones"
-      elimacion
     />
   </v-container>
 </template>
