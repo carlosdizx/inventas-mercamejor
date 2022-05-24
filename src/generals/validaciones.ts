@@ -38,9 +38,9 @@ export const VALIDAR_COMBO = async (modelo: any, items: Array<any>) => {
 export const VALIDAR_CAMPO = async (
   datos: any,
   validacion: any,
-  colecion: string
+  colecion: string,
+  edicion: boolean
 ) => {
-  console.log(validacion);
   let mensjaes = "";
   if (validacion.tipo === 1) {
     const val1 = datos[validacion.nombres[0]];
@@ -55,8 +55,19 @@ export const VALIDAR_CAMPO = async (
       validacion.nombres[0],
       datos[validacion.nombres[0]]
     );
-    if (!listado.empty)
-      mensjaes = `El valor ${validacion.nombres[0]} no debe estar repetido`;
+    if (!listado.empty) {
+      if (edicion) {
+        let obj: any = {};
+        listado.forEach((item) => {
+          obj = item;
+        });
+        if (listado.size > 0 && datos["id"] !== obj["id"]) {
+          mensjaes = `El valor ${validacion.nombres[0]} ya se encuentra registrado`;
+        }
+      } else {
+        mensjaes = `El valor ${validacion.nombres[0]} no debe estar repetido`;
+      }
+    }
   }
   return mensjaes;
 };

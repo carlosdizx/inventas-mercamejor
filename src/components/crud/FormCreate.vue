@@ -280,7 +280,8 @@ export default Vue.extend({
         const resultado = await VALIDAR_CAMPO(
           this.datos,
           validacion,
-          this.coleccion
+          this.coleccion,
+          false
         );
         if (resultado !== "") {
           this.validados.push(resultado);

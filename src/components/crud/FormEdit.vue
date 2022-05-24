@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="dialog_edit" persistent max-width="600">
-    <v-btn color="red darken-4" dark @click="dialog_edit = !dialog_edit">
+  <v-dialog v-model="dialog_form" persistent max-width="600">
+    <v-btn color="red darken-4" dark @click="dialog_form = !dialog_form">
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
@@ -11,15 +11,14 @@
     <v-card class="py-2">
       <v-card-text>
         <h1 class="text-center my-3">
-          Formulario de edición para {{ titulo }}
+          Formulario de creación para {{ titulo }}
         </h1>
-        <h3 class="text-center my-3">Código de seguridad: {{ item.id }}</h3>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-form
             class="my-2"
             :disabled="cargando"
             autocomplete="off"
-            @submit.prevent="actulizarDatos"
+            @submit.prevent="actualizarDatos"
           >
             <div v-for="(campo, index) in campos" :key="index">
               <validation-provider
@@ -32,10 +31,6 @@
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :type="campo.format"
-                  :readonly="campo.readOnly"
-                  :disabled="campo.readOnly"
-                  :hint="campo.readOnly ? '**No editable**' : ''"
-                  persistent-hint
                   dense
                   outlined
                   counter
@@ -55,8 +50,6 @@
                   :items="campo.items"
                   :item-text="campo.llave"
                   :multiple="campo.multiple"
-                  :readonly="campo.readOnly"
-                  :disabled="campo.readOnly"
                   hide-selected
                   small-chips
                   dense
@@ -76,8 +69,6 @@
                   outlined
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
-                  :readonly="campo.readOnly"
-                  :disabled="campo.readOnly"
                   dense
                   counter
                   v-model="datos[campo.name]"
@@ -111,8 +102,6 @@
                   row
                   v-model="datos[campo.name]"
                   :error-messages="errors"
-                  :readonly="campo.readOnly"
-                  :disabled="campo.readOnly"
                 >
                   <br />
                   <v-radio
@@ -176,10 +165,11 @@
                   dense
                   outlined
                   counter
-                  :error-messages="errors"
                   v-model="datos[campo.name]"
+                  :error-messages="errors"
                 />
               </validation-provider>
+              <!-- Lista anidada -->
               <validation-provider
                 v-slot="{ errors }"
                 :name="campo.label"
@@ -211,10 +201,28 @@
                   :error-messages="errors"
                 />
               </validation-provider>
+              <validation-provider
+                v-slot="{ errors }"
+                :name="campo.label"
+                :rules="campo.rules"
+                v-if="campo.type === 10"
+              >
+                <v-file-input
+                  :label="campo.label"
+                  :prepend-icon="campo.prepend_icon"
+                  dense
+                  outlined
+                  counter
+                  show-size
+                  accept="image/*,.pdf"
+                  v-model="campo.model"
+                  :error-messages="errors"
+                />
+              </validation-provider>
             </div>
             <v-btn
               block
-              color="success"
+              color="primary"
               :disabled="invalid || cargando"
               type="submit"
               :loading="cargando"
@@ -230,31 +238,34 @@
 
 <script>
 import Vue from "vue";
-import { VALIDAR_COMBO } from "@/generals/validaciones";
-import {
-  CAPTURAR_CAMPOS,
-  PROCESAR_FORMULARIO,
-} from "@/generals/procesamientos";
-
+import { VALIDAR_CAMPO, VALIDAR_COMBO } from "@/generals/validaciones";
+import { PROCESAR_FORMULARIO } from "@/generals/procesamientos";
+import Swal from "sweetalert2";
 export default Vue.extend({
   name: "FormEdit",
   data: () => ({
-    dialog_edit: false,
+    dialog_form: false,
     cargando: false,
     campos: [...[]],
-    datos: {},
+    datos: {
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    validados: [""],
   }),
   props: {
     titulo: String,
     campos_form: Array,
     coleccion: String,
     item: Object,
+    validaciones: Array,
   },
   methods: {
     async inicializarForm() {
       this.campos = [...this.campos_form];
       this.campos.map((campo) => {
         this.datos["created_at"] = this.item["created_at"];
+        this.datos["id"] = this.item["id"];
         if (campo.type === 9) {
           this.datos[campo.name] = this.item[campo.name];
           this.datos[campo.name2] = this.item[campo.name2];
@@ -272,9 +283,37 @@ export default Vue.extend({
         }
       }
     },
-    async actulizarDatos() {
+    async mensajeValidaciones() {
+      let msg = "";
+      this.validados.forEach((valid) => (msg += valid + "<br/>"));
+      return msg;
+    },
+    async preSubmit() {
+      this.validados = [];
+      for (const validacion of this.validaciones) {
+        const resultado = await VALIDAR_CAMPO(
+          this.datos,
+          validacion,
+          this.coleccion,
+          true
+        );
+        if (resultado !== "") {
+          this.validados.push(resultado);
+        }
+      }
+    },
+    async actualizarDatos() {
       this.cargando = !this.cargando;
       this.datos.updated_at = new Date();
+      await this.preSubmit();
+      if (this.validados.length > 0) {
+        this.cargando = !this.cargando;
+        return await Swal.fire(
+          "Campos incorrectos",
+          await this.mensajeValidaciones(),
+          "error"
+        );
+      }
       await PROCESAR_FORMULARIO(
         this.coleccion,
         this.datos,
