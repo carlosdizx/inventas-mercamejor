@@ -100,4 +100,7 @@ export const CAMPOS = [
   },
 ];
 
-export const VALIDACIONES = [{ tipo: 2, nombres: ["documento"] }];
+export const VALIDACIONES = [
+  { tipo: 2, nombres: ["documento"] },
+  { tipo: 2, nombres: ["correo"] },
+];
