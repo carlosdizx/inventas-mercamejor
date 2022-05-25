@@ -1,5 +1,5 @@
 import Swal from "sweetalert2";
-import { BUSCAR, LISTAR_NOT_IN } from "@/services/crud";
+import { BUSCAR, LISTAR_IN } from "@/services/crud";
 
 export const VALIDAR_COMBO = async (modelo: any, items: Array<any>) => {
   if (modelo) {
@@ -50,25 +50,21 @@ export const VALIDAR_CAMPO = async (
       mensjaes = "Los valores de los precios son incorrectos";
     }
   } else if (validacion.tipo === 2) {
-    const listado = await LISTAR_NOT_IN(
+    const listado = await LISTAR_IN(
       colecion,
       validacion.nombres[0],
       datos[validacion.nombres[0]]
     );
     if (!listado.empty) {
       if (edicion) {
-        console.log("Edición");
         let obj: any = {};
         listado.forEach((item) => {
           obj = item;
         });
-        console.log(obj.id);
-        console.log(datos.id);
         if (listado.size > 0 && datos["id"] !== obj["id"]) {
           mensjaes = `El valor ${validacion.nombres[0]} ya se encuentra registrado`;
         }
       } else {
-        console.log("Creación");
         mensjaes = `El valor ${validacion.nombres[0]} no debe estar repetido`;
       }
     }
