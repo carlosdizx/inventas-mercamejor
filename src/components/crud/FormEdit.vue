@@ -289,17 +289,21 @@ export default Vue.extend({
       return msg;
     },
     async preSubmit() {
-      this.validados = [];
-      for (const validacion of this.validaciones) {
-        const resultado = await VALIDAR_CAMPO(
-          this.datos,
-          validacion,
-          this.coleccion,
-          true
-        );
-        if (resultado !== "") {
-          this.validados.push(resultado);
+      if (this.validaciones) {
+        this.validados = [];
+        for (const validacion of this.validaciones) {
+          const resultado = await VALIDAR_CAMPO(
+            this.datos,
+            validacion,
+            this.coleccion,
+            false
+          );
+          if (resultado !== "") {
+            this.validados.push(resultado);
+          }
         }
+      } else {
+        this.validados = [];
       }
     },
     async actualizarDatos() {

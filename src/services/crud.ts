@@ -22,7 +22,7 @@ export const LISTAR = async (colection: string) => {
   return await getDocs(consulta);
 };
 
-export const LISTAR_NOT_IN = async (
+export const LISTAR_IN = async (
   colection: string,
   campo: string,
   valor: any

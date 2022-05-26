@@ -24,14 +24,6 @@ export const CAMPOS: any[] = [
     model: "",
   },
   {
-    label: "Fecha de creación",
-    prepend_icon: "mdi-barcode-scan",
-    type: 1,
-    format: "text",
-    name: "created_at",
-    model: "",
-  },
-  {
     label: "Documento de identidad",
     prepend_icon: "mdi-cash-lock-open",
     type: 1,
@@ -51,14 +43,14 @@ export const CAMPOS: any[] = [
     label: "Objeto modificado",
     prepend_icon: "mdi-cash-lock-open",
     type: 3,
-    name: "objeto",
+    name: "objeto_edit",
     model: "",
   },
   {
     label: "Objeto actual",
     prepend_icon: "mdi-cash-lock-open",
     type: 3,
-    name: "objeto_edit",
+    name: "objeto",
     model: "",
   },
 ];

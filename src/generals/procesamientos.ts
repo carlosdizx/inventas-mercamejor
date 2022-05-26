@@ -74,12 +74,8 @@ export async function PROCESAR_FORMULARIO(
       timer: 1000,
     });
     datosMovimiento.accion = "Editó";
-    item.created_at = null;
-    datos.created_at = null;
-    item.updated_at = null;
-    datos.updated_at = null;
-    datosMovimiento.objeto = JSON.stringify(item);
-    datosMovimiento.objeto_edit = JSON.stringify(datos);
+    datosMovimiento.objeto_edit = JSON.stringify(item);
+    datosMovimiento.objeto = JSON.stringify(datos);
     await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
