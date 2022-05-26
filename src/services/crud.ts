@@ -28,7 +28,7 @@ export const LISTAR_NOT_IN = async (
   valor: any
 ) => {
   const coleccion = collection(FIRESTORE, colection);
-  const consulta = query(coleccion, where(campo, "not-in", [valor]));
+  const consulta = query(coleccion, where(campo, "in", [valor]));
   return await getDocs(consulta);
 };
 

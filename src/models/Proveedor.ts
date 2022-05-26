@@ -7,7 +7,7 @@ export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
   { text: "Nombres", value: "nombres" },
   { text: "Apellidos", value: "apellidos" },
-  { text: "Nit/Cedula", value: "documento" },
+  { text: "Documento", value: "documento" },
   { text: "Celular", value: "celular" },
   { text: "Correo", value: "correo" },
   { text: "Direccion", value: "direccion" },
@@ -98,4 +98,9 @@ export const CAMPOS = [
     model: "",
     rules: "required",
   },
+];
+
+export const VALIDACIONES = [
+  { tipo: 2, nombres: ["documento"] },
+  { tipo: 2, nombres: ["correo"] },
 ];

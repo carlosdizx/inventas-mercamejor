@@ -74,6 +74,7 @@
               :campos_form="campos_form"
               :coleccion="coleccion"
               :item="item"
+              :validaciones="validaciones"
             />
           </template>
           <template v-if="campos_form" v-slot:item.detalle="{ item }">
