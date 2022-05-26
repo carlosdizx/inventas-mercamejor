@@ -27,6 +27,9 @@
             <v-btn fab bottom small color="green" @click="devolverItem(item)">
               <v-icon color="white">mdi-send</v-icon>
             </v-btn>
+            <v-btn fab bottom small color="red" @click="eliminarItem(item)">
+              <v-icon color="white">mdi-trash-can</v-icon>
+            </v-btn>
           </template>
         </v-data-table>
       </v-card-text>
@@ -62,6 +65,9 @@ export default Vue.extend({
     devolverItem(item: any) {
       this.$emit("getItem", item);
       this.dialog = false;
+    },
+    eliminarItem(item: any) {
+      console.log(item);
     },
   },
 });

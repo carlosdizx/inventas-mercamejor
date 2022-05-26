@@ -1,0 +1,16 @@
+export const COLUMNAS = [
+  { text: "Nombre Proveedor", value: "nombre_proveedor" },
+  { text: "Fecha del documento", value: "fecha_documento" },
+  { text: "Código de factura", value: "cod_factura" },
+  { text: "Tipo de compra", value: "tipo_compra" },
+  { text: "Tipo de pago", value: "tipo_pago" },
+  { text: "Fecha de pago", value: "fecha_pago" },
+  { text: "Fecha de llegada del producto", value: "fecha_llegada_producto" },
+  { text: "Subtotal", value: "subtotal" },
+  { text: "Descuento", value: "descuento" },
+  { text: "Impuesto", value: "impuesto" },
+  { text: "Total", value: "total" },
+  { text: "Fecha de creacion", value: "created_at" },
+  { text: "Fecha de Actualizacion", value: "updated_at" },
+  { text: "Acciones", value: "acciones" },
+];
