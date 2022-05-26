@@ -3,8 +3,8 @@
     <v-card>
       <Tabla
         class="my-2"
-        coleccion="productos"
-        titulo="productos"
+        coleccion="compras"
+        titulo="Compras"
         :columnas="columnas"
         llave="nombre"
         :campos_form="campos_form"
