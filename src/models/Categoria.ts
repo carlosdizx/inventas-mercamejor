@@ -43,3 +43,5 @@ export const CAMPOS = [
     rules: "required",
   },
 ];
+
+export const VALIDACIONES = [{ tipo: 2, nombres: ["nombre"] }];

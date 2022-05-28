@@ -32,3 +32,5 @@ export const CAMPOS = [
     rules: "required|min:2|max:70",
   },
 ];
+
+export const VALIDACIONES = [{ tipo: 2, nombres: ["nombre"] }];
