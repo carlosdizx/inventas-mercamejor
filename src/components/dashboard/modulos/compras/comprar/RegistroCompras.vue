@@ -11,6 +11,7 @@
                 v-model="cabFactura.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
+                dense
               ></v-text-field>
             </v-col>
             <v-col cols="1" class="mt-2">
@@ -26,6 +27,7 @@
                 label="Nombre del proveedor"
                 v-model="cabFactura.nombre_proveedor"
                 readonly
+                dense
                 outlined
               ></v-text-field>
             </v-col>
@@ -43,6 +45,7 @@
                   :error-messages="errors"
                   type="date"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -58,6 +61,7 @@
                   :error-messages="errors"
                   :items="tiposDocumento"
                   outlined
+                  dense
                 ></v-select>
               </validation-provider>
             </v-col>
@@ -73,6 +77,7 @@
                   v-model="cabFactura.cod_factura"
                   :error-messages="errors"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -90,6 +95,7 @@
                   :error-messages="errors"
                   :items="tiposPagos"
                   outlined
+                  dense
                 ></v-select>
               </validation-provider>
             </v-col>
@@ -105,6 +111,7 @@
                   v-model="cabFactura.fecha_pago"
                   :error-messages="errors"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -120,6 +127,7 @@
                   v-model="cabFactura.fecha_llegada_producto"
                   :error-messages="errors"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -137,6 +145,7 @@
                 readonly
                 v-model="cabFactura.subtotal"
                 outlined
+                dense
               ></v-text-field>
             </v-col>
 
@@ -152,6 +161,7 @@
                   v-model="cabFactura.descuento"
                   :error-messages="errors"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
@@ -168,6 +178,7 @@
                   v-model="cabFactura.impuesto"
                   :error-messages="errors"
                   outlined
+                  dense
                 ></v-text-field>
               </validation-provider>
             </v-col>
