@@ -58,3 +58,5 @@ export const CAMPOS: any[] = [
     rules: "min:2|max:50",
   },
 ];
+
+export const VALIDACIONES = [{ tipo: 2, nombres: ["nombre"] }];
