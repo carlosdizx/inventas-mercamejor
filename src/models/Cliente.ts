@@ -105,3 +105,8 @@ export const CAMPOS = [
     rules: "required|min:1|max:50",
   },
 ];
+
+export const VALIDACIONES = [
+  { tipo: 2, nombres: ["documento"] },
+  { tipo: 2, nombres: ["correo"] },
+];
