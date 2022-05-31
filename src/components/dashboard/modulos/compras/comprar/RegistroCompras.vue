@@ -224,7 +224,9 @@ export default Vue.extend({
     TablaCompras,
     BuscarElemento,
   },
-  props: ["compra"],
+  props: {
+    compra: Object,
+  },
   data: () => ({
     columnas: COLUMNAS,
     cabFactura: {
@@ -246,12 +248,9 @@ export default Vue.extend({
     },
     tiposDocumento: ["Compra", "Pedido"],
     tiposPagos: ["Contado", "Credito"],
-    proveedores: [""],
+    proveedores: [{}],
   }),
   computed: {
-    numeroDocumento() {
-      return `${this.cabFactura.tipo_compra[0]}-${this.cabFactura.cod_factura}`;
-    },
     validarRegistro() {
       let val = false;
       if (
