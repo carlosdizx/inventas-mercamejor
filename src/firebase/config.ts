@@ -4,13 +4,13 @@ import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBFzkqsaf-5MDzXHlO-hOFSUI5fd-4iZLw",
-  authDomain: "inventas-app.firebaseapp.com",
-  projectId: "inventas-app",
-  storageBucket: "inventas-app.appspot.com",
-  messagingSenderId: "533111161621",
-  appId: "1:533111161621:web:33225404310a005e489f1c",
-  measurementId: "G-NK2YTKY68M",
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_APP_ID,
+  measurementId: process.env.VUE_APP_MEASUREMENT_ID,
 };
 
 // Initialize Firebase
