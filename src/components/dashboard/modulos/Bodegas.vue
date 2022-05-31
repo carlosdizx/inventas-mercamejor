@@ -7,6 +7,7 @@
       :columnas="columnas"
       llave="nombre"
       :campos_form="campos_form"
+      :validaciones="validaciones"
     />
   </v-container>
 </template>
@@ -14,7 +15,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Tabla from "@/components/crud/Tabla.vue";
-import { COLUMNAS, CAMPOS } from "@/models/Bodega";
+import { COLUMNAS, CAMPOS, VALIDACIONES } from "@/models/Bodega";
 
 export default Vue.extend({
   name: "Bodegas",
@@ -22,7 +23,7 @@ export default Vue.extend({
   data: () => ({
     columnas: COLUMNAS,
     campos_form: CAMPOS,
-    datosUsuario: {},
+    validaciones: VALIDACIONES,
   }),
 });
 </script>
