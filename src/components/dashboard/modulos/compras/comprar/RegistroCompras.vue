@@ -224,6 +224,7 @@ export default Vue.extend({
     TablaCompras,
     BuscarElemento,
   },
+  props: ["compra"],
   data: () => ({
     columnas: COLUMNAS,
     cabFactura: {
@@ -331,6 +332,9 @@ export default Vue.extend({
       if (col.value !== "detalle") return true;
       return false;
     });
+    if (this.compra) {
+      console.log(this.compra);
+    }
   },
 });
 </script>

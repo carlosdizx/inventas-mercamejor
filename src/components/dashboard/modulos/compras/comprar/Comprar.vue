@@ -22,7 +22,7 @@
     </div>
     <RegistroCompras v-if="opcion === 1" />
     <ConsultarCompras v-if="opcion === 2" />
-    <ActualizarCompras class="ml-1" v-if="opcion === 3" />
+    <ActualizarCompras v-if="opcion === 3" />
   </div>
 </template>
 
