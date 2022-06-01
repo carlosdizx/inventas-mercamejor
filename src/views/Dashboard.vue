@@ -23,7 +23,6 @@
     <Marcas v-if="item === 14" />
     <Movimientos v-if="item === 15" />
     <Comprobantes v-if="item === 16" />
-    <Sprints v-if="item === 18" />
   </div>
 </template>
 
@@ -32,7 +31,6 @@ import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
 import Comprar from "@/components/dashboard/modulos/compras/comprar/Comprar.vue";
-import Sprints from "@/components/dashboard/modulos/Sprints.vue";
 import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
 import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
 import Categorias from "@/components/dashboard/modulos/Categorias.vue";
@@ -51,7 +49,6 @@ export default Vue.extend({
   components: {
     Toolbar,
     NavDrawer,
-    Sprints,
     RegistroUsuarios,
     ActualizarUsuarios,
     Categorias,

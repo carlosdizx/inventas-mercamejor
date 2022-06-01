@@ -6,11 +6,9 @@
     <v-dialog v-model="mostrar">
       <v-card>
         <Tabla
-          class="my-2"
           coleccion="compras"
           titulo="Compras"
           :columnas="columnas"
-          llave="nombre"
           :campos_form="campos_form"
           :validaciones="validaciones"
           seleccion

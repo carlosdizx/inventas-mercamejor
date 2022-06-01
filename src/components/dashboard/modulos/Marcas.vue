@@ -5,7 +5,6 @@
       coleccion="marcas"
       titulo="marcas de productos"
       :columnas="columnas"
-      llave="nombre"
       :campos_form="campos_form"
       :validaciones="validaciones"
     />

@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <Tabla
-      class="my-2"
       coleccion="clientes"
       titulo="clientes"
       :columnas="columnas"
