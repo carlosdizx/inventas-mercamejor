@@ -11,9 +11,8 @@
     <v-card class="py-2">
       <v-card-text>
         <h1 class="text-center my-3">
-          Formulario de creación para {{ titulo }}
+          Formulario de edición para {{ titulo }}
         </h1>
-        <h3 class="text-center my-3">Código de seguridad: {{ item.id }}</h3>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-form
             class="my-2"

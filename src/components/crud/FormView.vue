@@ -11,7 +11,6 @@
     <v-card class="py-2">
       <v-card-text>
         <h1 class="text-center my-3">Formulario de visualización</h1>
-        <h3 class="text-center my-3">Código de seguridad: {{ item.id }}</h3>
         <v-tooltip color="warning">
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">
