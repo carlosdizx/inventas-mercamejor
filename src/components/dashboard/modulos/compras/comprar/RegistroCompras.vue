@@ -217,6 +217,7 @@ import { GUARDAR } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
+import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -224,30 +225,36 @@ export default Vue.extend({
     TablaCompras,
     BuscarElemento,
   },
-  props: ["compra"],
-  data: () => ({
-    columnas: COLUMNAS,
-    cabFactura: {
-      documento_proveedor: 0,
-      nombre_proveedor: "Proveedores varios",
-      fecha_documento: "",
-      cod_factura: "",
-      tipo_compra: "Compra",
-      tipo_pago: "Contado",
-      fecha_pago: "",
-      fecha_llegada_producto: "",
-      compras: [],
-      subtotal: 0,
-      descuento: 0,
-      impuesto: 0,
-      total: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
+  props: {
+    compra: {
+      type: Object as () => Compra,
     },
-    tiposDocumento: ["Compra", "Pedido"],
-    tiposPagos: ["Contado", "Credito"],
-    proveedores: [""],
-  }),
+  },
+  data() {
+    return {
+      columnas: COLUMNAS,
+      cabFactura: {
+        documento_proveedor: 0,
+        nombre_proveedor: "Proveedores varios",
+        fecha_documento: "",
+        cod_factura: "",
+        tipo_compra: "Compra",
+        tipo_pago: "Contado",
+        fecha_pago: "",
+        fecha_llegada_producto: "",
+        compras: [] as Compra[],
+        subtotal: 0,
+        descuento: 0,
+        impuesto: 0,
+        total: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      tiposDocumento: ["Compra", "Pedido"],
+      tiposPagos: ["Contado", "Credito"],
+      proveedores: [""],
+    };
+  },
   computed: {
     numeroDocumento() {
       return `${this.cabFactura.tipo_compra[0]}-${this.cabFactura.cod_factura}`;
@@ -327,7 +334,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.listarProveedores();
+    this.componentslistarProveedores();
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
