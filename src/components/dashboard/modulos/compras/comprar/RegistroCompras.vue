@@ -188,7 +188,7 @@
               <h2 class="text-gray">Total: ${{ cabFactura.total }}</h2>
             </v-col>
           </v-row>
-          <v-row class="mr-5 ml-5">
+          <v-row class="mr-5 ml-5" v-if="!compraAnterior">
             <v-col>
               <v-btn
                 @click="registrarCompra()"
@@ -197,6 +197,18 @@
                 class="color_a mb-3"
                 block
                 >Registrar</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-row class="mr-5 ml-5" v-if="compraAnterior">
+            <v-col>
+              <v-btn
+                @click="registrarCompra()"
+                x-large
+                dark
+                class="color_a mb-3"
+                block
+                >Actualizar Compra</v-btn
               >
             </v-col>
           </v-row>
@@ -226,7 +238,7 @@ export default Vue.extend({
     BuscarElemento,
   },
   props: {
-    compra: {
+    compraAnterior: {
       type: Object as () => Compra,
     },
   },
@@ -331,13 +343,27 @@ export default Vue.extend({
     },
   },
   created() {
-    this.componentslistarProveedores();
+    this.listarProveedores();
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
     });
-    if (this.compra) {
-      console.log(this.compra);
+    if (this.compraAnterior) {
+      console.log(this.compraAnterior);
+      this.cabFactura.nombre_proveedor = this.compraAnterior.nombre_proveedor;
+      this.cabFactura.documento_proveedor =
+        this.compraAnterior.documento_proveedor;
+      //this.cabFactura.fecha_documento = this.compraAnterior.fecha_documento;
+      this.cabFactura.cod_factura = this.compraAnterior.cod_factura;
+      this.cabFactura.tipo_compra = this.compraAnterior.tipo_compra;
+      this.cabFactura.tipo_pago = this.compraAnterior.tipo_pago;
+      //this.cabFactura.fecha_pago = this.compraAnterior.fecha_pago;
+      //this.cabFactura.fecha_llegada_producto = this.compraAnterior;
+      //this.cabFactura.compras = this.compraAnterior.compras;
+      this.cabFactura.subtotal = this.compraAnterior.subtotal;
+      this.cabFactura.descuento = this.compraAnterior.descuento;
+      this.cabFactura.impuesto = this.compraAnterior.impuesto;
+      this.cabFactura.total = this.compraAnterior.total;
     }
   },
 });
