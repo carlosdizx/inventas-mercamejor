@@ -2,7 +2,6 @@
 Sección tabla
  */
 export const COLUMNAS = [
-  { text: "Detalle", value: "detalle" },
   { text: "Tipo", value: "tipo" },
   { text: "Referencia", value: "referencia" },
   { text: "Archivo", value: "documento_ref" },

@@ -1,11 +1,9 @@
 <template>
   <v-container>
     <Tabla
-      class="my-2"
       coleccion="movimientos"
       titulo="movimientos del sistema"
       :columnas="columnas"
-      llave="responsable"
       :campos_form="campos_form"
       no-crear
       no-editar

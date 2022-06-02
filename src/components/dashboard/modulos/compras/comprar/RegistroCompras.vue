@@ -256,9 +256,6 @@ export default Vue.extend({
     };
   },
   computed: {
-    numeroDocumento() {
-      return `${this.cabFactura.tipo_compra[0]}-${this.cabFactura.cod_factura}`;
-    },
     validarRegistro() {
       let val = false;
       if (

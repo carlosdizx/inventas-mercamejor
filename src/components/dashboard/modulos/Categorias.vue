@@ -1,11 +1,9 @@
 <template>
   <v-container>
     <Tabla
-      class="my-2"
       coleccion="categorias"
       titulo="categorias"
       :columnas="columnas"
-      llave="nombre"
       :campos_form="campos_form"
       :validaciones="validaciones"
     />

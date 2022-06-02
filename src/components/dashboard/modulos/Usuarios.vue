@@ -14,7 +14,6 @@
       coleccion="usuarios"
       titulo="usuarios"
       :columnas="columnas"
-      llave="email"
       :campos_form="campos_form"
       noCrear
     />
