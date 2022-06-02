@@ -13,6 +13,7 @@
         <h1 class="text-center my-3">
           Formulario de creación para {{ titulo }}
         </h1>
+        <h3 class="text-center my-3">Código de seguridad: {{ item.id }}</h3>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-form
             class="my-2"
@@ -239,7 +240,10 @@
 <script>
 import Vue from "vue";
 import { VALIDAR_CAMPO, VALIDAR_COMBO } from "@/generals/validaciones";
-import { PROCESAR_FORMULARIO } from "@/generals/procesamientos";
+import {
+  CAPTURAR_CAMPOS,
+  PROCESAR_FORMULARIO,
+} from "@/generals/procesamientos";
 import Swal from "sweetalert2";
 export default Vue.extend({
   name: "FormEdit",
@@ -247,10 +251,7 @@ export default Vue.extend({
     dialog_form: false,
     cargando: false,
     campos: [...[]],
-    datos: {
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
+    datos: {},
     validados: [""],
   }),
   props: {
@@ -296,7 +297,7 @@ export default Vue.extend({
             this.datos,
             validacion,
             this.coleccion,
-            false
+            true
           );
           if (resultado !== "") {
             this.validados.push(resultado);
@@ -308,7 +309,8 @@ export default Vue.extend({
     },
     async actualizarDatos() {
       this.cargando = !this.cargando;
-      this.datos.updated_at = new Date();
+      this.datos = await CAPTURAR_CAMPOS(this.datos, this.campos);
+      this.datos.created_at = new Date();
       await this.preSubmit();
       if (this.validados.length > 0) {
         this.cargando = !this.cargando;

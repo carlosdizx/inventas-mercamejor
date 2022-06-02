@@ -6,11 +6,36 @@ import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 export const CAPTURAR_CAMPOS: any = async (item: any, campos: any) => {
   const datos = {};
   if (item) {
-    Object.values(item).forEach((value: any, index) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      datos[Object.keys(item)[index]] = value;
+    Object.keys(item).forEach((key: any) => {
+      campos.forEach((campo: any) => {
+        if (campo.name === key) {
+          if (campo.format === "number") {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            datos[key] = Number(item[key]);
+          } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            datos[key] = item[key];
+          }
+          if (campo.name2) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            datos[campo.name2] = item[campo.name2];
+          }
+        }
+      });
     });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    datos["id"] = item.id;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    datos["created_at"] = item.created_at;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    datos["updated_at"] = new Date();
+    return datos;
   } else {
     for (const campo of campos) {
       if (campo.type === 10) {

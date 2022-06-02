@@ -4,7 +4,7 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn fab color="info darken-3" v-bind="attrs" v-on="on">
+      <v-btn fab color="info darken-3" small v-bind="attrs" v-on="on">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </template>

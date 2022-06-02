@@ -61,7 +61,7 @@ export const VALIDAR_CAMPO = async (
         listado.forEach((item) => {
           obj = item;
         });
-        if (listado.size > 0 && datos["id"] !== obj["id"]) {
+        if (datos["id"] !== obj["id"]) {
           mensjaes = `El valor ${validacion.nombres[0]} ya se encuentra registrado`;
         }
       } else {

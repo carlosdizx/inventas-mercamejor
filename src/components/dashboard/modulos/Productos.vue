@@ -6,6 +6,7 @@
       :columnas="columnas"
       :campos_form="campos_form"
       :validaciones="validaciones"
+      elimacion
     />
   </v-container>
 </template>
@@ -23,7 +24,6 @@ export default Vue.extend({
     columnas: COLUMNAS,
     campos_form: CAMPOS,
     validaciones: VALIDACIONES,
-    datosUsuario: {},
   }),
 });
 </script>
