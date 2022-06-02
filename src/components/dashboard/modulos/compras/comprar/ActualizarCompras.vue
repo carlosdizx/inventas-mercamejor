@@ -20,7 +20,7 @@
         <v-btn @click="mostrar = false" class="primary">Cerrar</v-btn>
       </div>
     </v-dialog>
-    <RegistroCompras :compra="compra" v-if="!mostrar"></RegistroCompras>
+    <RegistroCompras :compraAnterior="compra" v-if="!mostrar"></RegistroCompras>
   </div>
 </template>
 

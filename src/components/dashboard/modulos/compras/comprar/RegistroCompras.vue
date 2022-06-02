@@ -68,12 +68,12 @@
             <v-col cols="3">
               <validation-provider
                 v-slot="{ errors }"
-                name="Número de Documento"
+                name="Número de Factura"
                 rules="required"
               >
                 <v-text-field
                   type="number"
-                  label="Número de Documento"
+                  label="Número de Factura"
                   v-model="cabFactura.cod_factura"
                   :error-messages="errors"
                   outlined
@@ -188,7 +188,7 @@
               <h2 class="text-gray">Total: ${{ cabFactura.total }}</h2>
             </v-col>
           </v-row>
-          <v-row class="mr-5 ml-5">
+          <v-row class="mr-5 ml-5" v-if="!compraAnterior">
             <v-col>
               <v-btn
                 @click="registrarCompra()"
@@ -197,6 +197,18 @@
                 class="color_a mb-3"
                 block
                 >Registrar</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-row class="mr-5 ml-5" v-if="compraAnterior">
+            <v-col>
+              <v-btn
+                @click="registrarCompra()"
+                x-large
+                dark
+                class="color_a mb-3"
+                block
+                >Actualizar Compra</v-btn
               >
             </v-col>
           </v-row>
@@ -217,6 +229,7 @@ import { GUARDAR } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
+import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -225,31 +238,35 @@ export default Vue.extend({
     BuscarElemento,
   },
   props: {
-    compra: Object,
-  },
-  data: () => ({
-    columnas: COLUMNAS,
-    cabFactura: {
-      documento_proveedor: 0,
-      nombre_proveedor: "Proveedores varios",
-      fecha_documento: "",
-      cod_factura: "",
-      tipo_compra: "Compra",
-      tipo_pago: "Contado",
-      fecha_pago: "",
-      fecha_llegada_producto: "",
-      compras: [],
-      subtotal: 0,
-      descuento: 0,
-      impuesto: 0,
-      total: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
+    compraAnterior: {
+      type: Object as () => Compra,
     },
-    tiposDocumento: ["Compra", "Pedido"],
-    tiposPagos: ["Contado", "Credito"],
-    proveedores: [{}],
-  }),
+  },
+  data() {
+    return {
+      columnas: COLUMNAS,
+      cabFactura: {
+        documento_proveedor: 0,
+        nombre_proveedor: "Proveedores varios",
+        fecha_documento: "",
+        cod_factura: "",
+        tipo_compra: "Compra",
+        tipo_pago: "Contado",
+        fecha_pago: "",
+        fecha_llegada_producto: "",
+        compras: [] as Compra[],
+        subtotal: 0,
+        descuento: 0,
+        impuesto: 0,
+        total: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      tiposDocumento: ["Compra", "Pedido"],
+      tiposPagos: ["Contado", "Credito"],
+      proveedores: [""],
+    };
+  },
   computed: {
     validarRegistro() {
       let val = false;
@@ -272,7 +289,9 @@ export default Vue.extend({
     buscarProveedor() {
       let result = "Proveedores varios";
       this.proveedores.forEach((prov: any) => {
-        if (this.cabFactura.documento_proveedor === prov.documento) {
+        console.log(prov);
+        if (Number(this.cabFactura.documento_proveedor) === prov.documento) {
+          console.log(prov.nombres);
           result = `${prov.nombres} ${prov.apellidos}`;
         }
       });
@@ -331,8 +350,22 @@ export default Vue.extend({
       if (col.value !== "detalle") return true;
       return false;
     });
-    if (this.compra) {
-      console.log(this.compra);
+    if (this.compraAnterior) {
+      console.log(this.compraAnterior);
+      this.cabFactura.nombre_proveedor = this.compraAnterior.nombre_proveedor;
+      this.cabFactura.documento_proveedor =
+        this.compraAnterior.documento_proveedor;
+      //this.cabFactura.fecha_documento = this.compraAnterior.fecha_documento;
+      this.cabFactura.cod_factura = this.compraAnterior.cod_factura;
+      this.cabFactura.tipo_compra = this.compraAnterior.tipo_compra;
+      this.cabFactura.tipo_pago = this.compraAnterior.tipo_pago;
+      //this.cabFactura.fecha_pago = this.compraAnterior.fecha_pago;
+      //this.cabFactura.fecha_llegada_producto = this.compraAnterior;
+      //this.cabFactura.compras = this.compraAnterior.compras;
+      this.cabFactura.subtotal = this.compraAnterior.subtotal;
+      this.cabFactura.descuento = this.compraAnterior.descuento;
+      this.cabFactura.impuesto = this.compraAnterior.impuesto;
+      this.cabFactura.total = this.compraAnterior.total;
     }
   },
 });
