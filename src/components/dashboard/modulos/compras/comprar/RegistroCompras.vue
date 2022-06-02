@@ -68,12 +68,12 @@
             <v-col cols="3">
               <validation-provider
                 v-slot="{ errors }"
-                name="Número de Documento"
+                name="Número de Factura"
                 rules="required"
               >
                 <v-text-field
                   type="number"
-                  label="Número de Documento"
+                  label="Número de Factura"
                   v-model="cabFactura.cod_factura"
                   :error-messages="errors"
                   outlined
@@ -289,7 +289,9 @@ export default Vue.extend({
     buscarProveedor() {
       let result = "Proveedores varios";
       this.proveedores.forEach((prov: any) => {
-        if (this.cabFactura.documento_proveedor === prov.documento) {
+        console.log(prov);
+        if (Number(this.cabFactura.documento_proveedor) === prov.documento) {
+          console.log(prov.nombres);
           result = `${prov.nombres} ${prov.apellidos}`;
         }
       });
