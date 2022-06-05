@@ -3,6 +3,7 @@
     <v-card-text>
       <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
     </v-card-text>
+    <DialogClientes />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form>
@@ -94,10 +95,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { TIPOS_VENTA } from "@/generals/Constantes";
+import DialogClientes from "@/components/dashboard/modulos/ventas/SubComponents/DialogClientes.vue";
 
 export default Vue.extend({
   name: "FormVentas",
-  components: {},
+  components: { DialogClientes },
   data: () => ({
     venta: { tipo_venta: "Contado" },
     tipos_venta: TIPOS_VENTA,
