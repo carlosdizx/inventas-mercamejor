@@ -4,7 +4,10 @@
       <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
     </v-card-text>
     {{ cliente }}
-    <DialogClientes v-on:cliente="cliente = $event" />
+    <DialogClientes
+      v-on:cliente="cambiarCliente($event)"
+      ref="DialogClientes"
+    />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form>
@@ -19,7 +22,7 @@
                   label="Documento de identidad"
                   prepend-icon="mdi-card-account-details"
                   append-outer-icon="mdi-magnify"
-                  @click:append-outer="buscarCliente(venta.documento_cliente)"
+                  @click:append-outer="abrirDialogoLisadoClientes"
                   dense
                   outlined
                   counter
@@ -102,16 +105,25 @@ export default Vue.extend({
   name: "FormVentas",
   components: { DialogClientes },
   data: () => ({
-    venta: { tipo_venta: "Contado" },
+    venta: {
+      documento_cliente: "",
+      nombre_cliente: "",
+      tipo_venta: "Contado",
+    },
     tipos_venta: TIPOS_VENTA,
     columnas: [],
     dialog_list: false,
     cliente: null,
   }),
   methods: {
-    buscarCliente(documento: string) {
-      console.log("Abriendo tabla de listado");
-      console.log("Buscando '" + documento + "' ...");
+    abrirDialogoLisadoClientes() {
+      const dialog: any = this.$refs.DialogClientes;
+      dialog.cambiarEstado();
+    },
+    cambiarCliente(cliente: any) {
+      this.cliente = cliente;
+      this.venta.documento_cliente = cliente.documento;
+      this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
     },
   },
 });

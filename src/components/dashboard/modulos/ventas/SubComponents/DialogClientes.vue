@@ -37,9 +37,12 @@ export default Vue.extend({
     validaciones: VALIDACIONES,
   }),
   methods: {
-    cambiarCliente(cliente: any) {
+    cambiarEstado() {
       this.dialog_list = !this.dialog_list;
       this.$emit("dialog", this.dialog_list);
+    },
+    cambiarCliente(cliente: any) {
+      this.cambiarEstado();
       this.$emit("cliente", cliente);
     },
   },

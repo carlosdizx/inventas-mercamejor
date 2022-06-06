@@ -288,7 +288,6 @@ export default Vue.extend({
       this.$router.go(0);
     },
     enviarSeleccionado(item: any) {
-      console.log("XD");
       this.$emit("enviarSeleccionado", item);
     },
   },
