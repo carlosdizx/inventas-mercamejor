@@ -11,13 +11,14 @@
       :validaciones="validaciones"
       no-editar
       no-crear
+      v-on:enviarSeleccionado="cambiarCliente($event)"
     />
   </v-dialog>
 </template>
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import { COLUMNAS, CAMPOS, VALIDACIONES } from "@/models/Cliente";
+import { CAMPOS, VALIDACIONES } from "@/models/Cliente";
 
 import Vue from "vue";
 
@@ -26,9 +27,21 @@ export default Vue.extend({
   components: { Tabla },
   data: () => ({
     dialog_list: true,
-    columnas: COLUMNAS,
+    columnas: [
+      { text: "Nombres", value: "nombres" },
+      { text: "Apellidos", value: "apellidos" },
+      { text: "Documento", value: "documento" },
+      { text: "Selección", value: "seleccion" },
+    ],
     campos_form: CAMPOS,
     validaciones: VALIDACIONES,
   }),
+  methods: {
+    cambiarCliente(cliente: any) {
+      this.dialog_list = !this.dialog_list;
+      this.$emit("dialog", this.dialog_list);
+      this.$emit("cliente", cliente);
+    },
+  },
 });
 </script>

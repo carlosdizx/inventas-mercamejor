@@ -3,7 +3,8 @@
     <v-card-text>
       <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
     </v-card-text>
-    <DialogClientes />
+    {{ cliente }}
+    <DialogClientes v-on:cliente="cliente = $event" />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form>
@@ -104,6 +105,8 @@ export default Vue.extend({
     venta: { tipo_venta: "Contado" },
     tipos_venta: TIPOS_VENTA,
     columnas: [],
+    dialog_list: false,
+    cliente: null,
   }),
   methods: {
     buscarCliente(documento: string) {
