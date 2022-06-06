@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
-import FormVentas from "@/components/dashboard/modulos/ventas/SubComponents/FormVentas.vue";
-import ListadoVue from "@/components/dashboard/modulos/ventas/SubComponents/LsitadoVentas.vue";
+import FormVentas from "@/components/dashboard/modulos/ventas/componentes/FormVentas.vue";
+import ListadoVue from "@/components/dashboard/modulos/ventas/componentes/LsitadoVentas.vue";
 import Vue from "vue";
 
 export default Vue.extend({

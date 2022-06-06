@@ -99,7 +99,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { TIPOS_VENTA } from "@/generals/Constantes";
-import DialogClientes from "@/components/dashboard/modulos/ventas/SubComponents/DialogClientes.vue";
+import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
 
 export default Vue.extend({
   name: "FormVentas",
