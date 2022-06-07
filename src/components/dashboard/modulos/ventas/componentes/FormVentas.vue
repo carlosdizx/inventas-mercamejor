@@ -88,7 +88,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Codigo del proyecto"
-                prepend-icon="mdi-barcode"
+                prepend-icon="mdi-barcode-scan"
                 type="number"
                 dense
                 outlined
@@ -98,12 +98,20 @@
               />
             </v-col>
           </v-row>
-          <!--------------------------------- Hasta aquí los campos ------------------------------->
-          <v-btn color="success" block large :disabled="invalid">
-            <v-icon>mdi-currency-usd</v-icon>
-            Registrar venta
-            <v-icon>mdi-currency-usd</v-icon>
-          </v-btn>
+          <v-row>
+            <v-col cols="6">
+              <v-btn color="info" block large>
+                Agregar productos
+                <v-icon>mdi-cart</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="6">
+              <v-btn color="success" block large :disabled="invalid">
+                Registrar venta
+                <v-icon>mdi-currency-usd</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-form>
       </ValidationObserver>
     </v-card-text>

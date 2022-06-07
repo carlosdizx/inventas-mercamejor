@@ -52,6 +52,11 @@ export default Vue.extend({
       },
     ],
   }),
+  methods: {
+    async agregarProducto(producto: any) {
+      this.filas.push(producto);
+    },
+  },
 });
 </script>
 

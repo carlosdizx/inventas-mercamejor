@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <FormVentas v-on:codigo_barras="buscarProducto($event)" />
-    <ListadoItems />
+    <ListadoItems ref="ListadoItems" />
   </v-container>
 </template>
 
@@ -19,21 +19,16 @@ export default Vue.extend({
     columnas: [],
   }),
   methods: {
-    buscarProducto: async (codigo_barras: number) => {
+    async buscarProducto(codigo_barras: number) {
       const productos = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
       if (productos.size !== 0) {
         const producto = productos.docs[0].data();
-        await Swal.fire({
-          title: producto.nombre,
-          timer: 2000,
-          html: "$" + producto.precio_unitario_venta,
-          icon: "info",
-          showConfirmButton: false,
-        });
+        const listado: any = this.$refs.ListadoItems;
+        listado.agregarProducto(producto);
       } else {
         await Swal.fire({
           title: "Producto no encontrado",
-          timer: 2000,
+          timer: 1000,
           icon: "error",
           showConfirmButton: false,
         });
