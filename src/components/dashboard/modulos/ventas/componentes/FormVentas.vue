@@ -139,8 +139,8 @@ export default Vue.extend({
       this.venta.documento_cliente = cliente.documento;
       this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
     },
-    buscarProducto: (valor: any) => {
-      console.log("Buscando producto: ", valor);
+    buscarProducto(valor: any) {
+      this.$emit("codigo_barras", valor);
     },
   },
 });

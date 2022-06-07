@@ -287,8 +287,8 @@ export default Vue.extend({
     forzarRecarga() {
       this.$router.go(0);
     },
-    enviarSeleccionado(item: any) {
-      this.$emit("enviarSeleccionado", item);
+    enviarSeleccionado(objeto: any) {
+      this.$emit("enviarSeleccionado", objeto);
     },
   },
   async created() {
