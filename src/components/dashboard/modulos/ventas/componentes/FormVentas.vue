@@ -22,11 +22,13 @@
                   prepend-icon="mdi-card-account-details"
                   append-outer-icon="mdi-magnify"
                   @click:append-outer="abrirDialogoLisadoClientes"
+                  clearable
                   dense
                   outlined
                   counter
                   v-model="venta.documento_cliente"
                   :error-messages="errors"
+                  autofocus
                 />
               </validation-provider>
             </v-col>
@@ -95,7 +97,17 @@
                 counter
                 v-model="codigo_barras"
                 v-on:keyup.enter="buscarProducto(codigo_barras)"
+                @focus="enfoque = true"
+                @focusout="enfoque = false"
               />
+            </v-col>
+            <v-col cols="6">
+              <v-chip :color="enfoque ? 'success' : 'red'">
+                {{ enfoque ? "" : "Pistola no posicionada" }}
+                <v-icon>
+                  {{ enfoque ? "mdi-barcode-scan" : "mdi-barcode-scan" }}
+                </v-icon>
+              </v-chip>
             </v-col>
           </v-row>
           <v-row>
@@ -131,6 +143,7 @@ export default Vue.extend({
     columnas: [],
     dialog_list: false,
     cliente: null,
+    enfoque: false,
   }),
   methods: {
     abrirDialogoLisadoClientes() {

@@ -82,6 +82,15 @@ export const CAMPOS: any[] = [
     rules: "required|min:2|max:20",
   },
   {
+    label: "Descuento",
+    prepend_icon: "mdi-sale-outline",
+    type: 1,
+    format: "number",
+    name: "descuento",
+    model: 0,
+    rules: "required|max:20",
+  },
+  {
     label: "Categoria",
     label2: "Subcategoria",
     type: 9,

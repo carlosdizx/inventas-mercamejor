@@ -4,44 +4,46 @@
       <v-form>
         <v-row>
           <v-col cols="2">
-            <v-text-field
-              dense
-              prefix="$"
-              label="Subtotal"
-              v-model="subtotal"
-              type="number"
-              readonly
-            />
+            <v-chip small color="amber" class="ma-2">
+              Subtotal: {{ subtotal }}
+            </v-chip>
           </v-col>
           <v-col cols="2">
-            <v-text-field
-              dense
-              prefix="$"
-              label="Descuento"
-              v-model="descuento"
-              type="number"
-              readonly
-            />
+            <v-chip small color="info" class="ma-2">
+              Descuento: {{ descuento }}
+            </v-chip>
           </v-col>
           <v-col cols="2">
-            <v-text-field
-              dense
-              prefix="$"
-              label="Total"
-              v-model="total"
-              type="number"
-              readonly
-            />
+            <v-chip color="success" class="ma-2"> Total: {{ total }} </v-chip>
           </v-col>
           <v-col cols="4">
-            <v-text-field
-              dense
-              prefix="$"
+            <vuetify-money
               label="Calculadora rápida"
-              v-model="total"
-              type="number"
-              readonly
+              prepend-icon=""
+              prefix="$"
+              dense
+              counter
+              v-model="calculadora"
             />
+            <v-chip
+              :color="
+                total === calculadora * 1
+                  ? 'amber'
+                  : total > calculadora
+                  ? 'red'
+                  : 'success'
+              "
+              class="ma-2"
+            >
+              {{
+                total === calculadora * 1
+                  ? "$ "
+                  : total > calculadora
+                  ? "debe $"
+                  : "cambio $"
+              }}
+              {{ Math.abs(this.total - this.calculadora * 1) }}
+            </v-chip>
           </v-col>
         </v-row>
       </v-form>
@@ -88,7 +90,6 @@ export default Vue.extend({
         if (temp.id === producto.id) {
           temp.cantidad = temp.cantidad + 1;
           temp.subtotal = temp.cantidad * producto.precio_unitario_venta;
-          temp.descuento += temp.producto;
           agregado = true;
         }
       }
@@ -110,8 +111,13 @@ export default Vue.extend({
     },
     calcularValores() {
       this.subtotal = 0;
+      this.descuento = 0;
+      this.total = 0;
+      this.calculadora = this.calculadora * 1;
       this.filas.forEach((item: any) => {
         this.subtotal += item.subtotal;
+        this.descuento += item.descuento * item.cantidad;
+        this.total = this.subtotal - this.descuento;
       });
     },
   },
