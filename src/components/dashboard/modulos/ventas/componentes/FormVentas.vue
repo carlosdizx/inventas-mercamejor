@@ -3,7 +3,6 @@
     <v-card-text>
       <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
     </v-card-text>
-    {{ cliente }}
     <DialogClientes
       v-on:cliente="cambiarCliente($event)"
       ref="DialogClientes"

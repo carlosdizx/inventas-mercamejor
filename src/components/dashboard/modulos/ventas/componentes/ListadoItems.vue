@@ -1,14 +1,62 @@
 <template>
-  <v-data-table :headers="columnas" :items="filas">
-    <template v-slot:item.cantidad="{ item }">
-      <v-edit-dialog>
-        {{ item.cantidad }}
-        <template v-slot:input>
-          <v-text-field label="Editar" counter />
-        </template>
-      </v-edit-dialog>
-    </template>
-  </v-data-table>
+  <div>
+    <v-card-text>
+      <v-form>
+        <v-row>
+          <v-col cols="2">
+            <v-text-field
+              dense
+              prefix="$"
+              label="Subtotal"
+              v-model="subtotal"
+              type="number"
+              readonly
+            />
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              dense
+              prefix="$"
+              label="Descuento"
+              v-model="descuento"
+              type="number"
+              readonly
+            />
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              dense
+              prefix="$"
+              label="Total"
+              v-model="total"
+              type="number"
+              readonly
+            />
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              dense
+              prefix="$"
+              label="Calculadora rápida"
+              v-model="total"
+              type="number"
+              readonly
+            />
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-card-text>
+    <v-data-table :headers="columnas" :items="filas">
+      <template v-slot:item.cantidad="{ item }">
+        <v-edit-dialog>
+          {{ item.cantidad }}
+          <template v-slot:input>
+            <v-text-field label="Editar" counter />
+          </template>
+        </v-edit-dialog>
+      </template>
+    </v-data-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -18,11 +66,16 @@ import Swal from "sweetalert2";
 export default Vue.extend({
   name: "ListadoItems",
   data: () => ({
+    total: 0,
+    subtotal: 0,
+    descuento: 0,
+    calculadora: 0,
     columnas: [
       { text: "Codigo", value: "codigo_barras" },
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
       { text: "Precio", value: "precio_unitario_venta" },
+      { text: "Descuento", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [{}],
@@ -35,6 +88,7 @@ export default Vue.extend({
         if (temp.id === producto.id) {
           temp.cantidad = temp.cantidad + 1;
           temp.subtotal = temp.cantidad * producto.precio_unitario_venta;
+          temp.descuento += temp.producto;
           agregado = true;
         }
       }
@@ -45,6 +99,7 @@ export default Vue.extend({
         agregado = true;
       }
       if (agregado) {
+        this.calcularValores();
         await Swal.fire({
           title: "Agregado con exito!",
           icon: "success",
@@ -52,6 +107,12 @@ export default Vue.extend({
           timer: 500,
         });
       }
+    },
+    calcularValores() {
+      this.subtotal = 0;
+      this.filas.forEach((item: any) => {
+        this.subtotal += item.subtotal;
+      });
     },
   },
   created() {
