@@ -26,7 +26,7 @@ export default Vue.extend({
   name: "DialogClientes",
   components: { Tabla },
   data: () => ({
-    dialog_list: true,
+    dialog_list: false,
     columnas: [
       { text: "Nombres", value: "nombres" },
       { text: "Apellidos", value: "apellidos" },

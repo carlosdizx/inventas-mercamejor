@@ -84,6 +84,20 @@
               </validation-provider>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                label="Codigo del proyecto"
+                prepend-icon="mdi-barcode"
+                type="number"
+                dense
+                outlined
+                clearable
+                counter
+                v-on:keyup.enter="buscarProducto($event.target.value)"
+              />
+            </v-col>
+          </v-row>
           <!--------------------------------- Hasta aquí los campos ------------------------------->
           <v-btn color="success" block large :disabled="invalid">
             <v-icon>mdi-currency-usd</v-icon>
@@ -124,6 +138,9 @@ export default Vue.extend({
       this.cliente = cliente;
       this.venta.documento_cliente = cliente.documento;
       this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
+    },
+    buscarProducto: (valor: any) => {
+      console.log("Buscando producto: ", valor);
     },
   },
 });
