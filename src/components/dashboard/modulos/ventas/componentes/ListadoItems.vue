@@ -1,32 +1,19 @@
 <template>
   <v-data-table :headers="columnas" :items="filas">
-    <!--
-        <template v-slot:item.name="props">
-      <v-edit-dialog
-        :return-value.sync="props.item.name"
-        @save="save"
-        @cancel="cancel"
-        @open="open"
-        @close="close"
-      >
-        {{ props.item.name }}
+    <template v-slot:item.cantidad="{ item }">
+      <v-edit-dialog>
+        {{ item.cantidad }}
         <template v-slot:input>
-          <v-text-field
-            v-model="props.item.name"
-            :rules="[max25chars]"
-            label="Edit"
-            single-line
-            counter
-          ></v-text-field>
+          <v-text-field label="Editar" counter />
         </template>
       </v-edit-dialog>
     </template>
-    -->
   </v-data-table>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "ListadoItems",
@@ -36,26 +23,39 @@ export default Vue.extend({
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
       { text: "Precio", value: "precio_unitario_venta" },
-      { text: "Impuesto", value: "impuesto" },
       { text: "Subtotal", value: "subtotal" },
-      { text: "Acciones", value: "acciones" },
     ],
-    filas: [
-      {
-        codigo_barras: 1000,
-        nombre: "verga",
-        cantidad: 2,
-        precio_unitario_venta: 5000,
-        impuesto: 0,
-        subtotal: 10000,
-        acciones: "eliminar",
-      },
-    ],
+    filas: [{}],
   }),
   methods: {
     async agregarProducto(producto: any) {
-      this.filas.push(producto);
+      let agregado = false;
+      for (const fila of this.filas) {
+        const temp: any = fila;
+        if (temp.id === producto.id) {
+          temp.cantidad = temp.cantidad + 1;
+          temp.subtotal = temp.cantidad * producto.precio_unitario_venta;
+          agregado = true;
+        }
+      }
+      if (!agregado) {
+        producto.cantidad = 1;
+        producto.subtotal = producto.precio_unitario_venta;
+        this.filas.push(producto);
+        agregado = true;
+      }
+      if (agregado) {
+        await Swal.fire({
+          title: "Agregado con exito!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 500,
+        });
+      }
     },
+  },
+  created() {
+    this.filas = [];
   },
 });
 </script>

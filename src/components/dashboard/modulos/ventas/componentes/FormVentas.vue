@@ -94,17 +94,12 @@
                 outlined
                 clearable
                 counter
-                v-on:keyup.enter="buscarProducto($event.target.value)"
+                v-model="codigo_barras"
+                v-on:keyup.enter="buscarProducto(codigo_barras)"
               />
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
-              <v-btn color="info" block large>
-                Agregar productos
-                <v-icon>mdi-cart</v-icon>
-              </v-btn>
-            </v-col>
             <v-col cols="6">
               <v-btn color="success" block large :disabled="invalid">
                 Registrar venta
@@ -127,6 +122,7 @@ export default Vue.extend({
   name: "FormVentas",
   components: { DialogClientes },
   data: () => ({
+    codigo_barras: null,
     venta: {
       documento_cliente: "",
       nombre_cliente: "",
@@ -149,6 +145,7 @@ export default Vue.extend({
     },
     buscarProducto(valor: any) {
       this.$emit("codigo_barras", valor);
+      this.codigo_barras = null;
     },
   },
 });

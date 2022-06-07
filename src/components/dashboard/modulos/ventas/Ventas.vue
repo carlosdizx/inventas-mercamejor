@@ -22,7 +22,8 @@ export default Vue.extend({
     async buscarProducto(codigo_barras: number) {
       const productos = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
       if (productos.size !== 0) {
-        const producto = productos.docs[0].data();
+        const producto: any = productos.docs[0].data();
+        producto.id = productos.docs[0].id;
         const listado: any = this.$refs.ListadoItems;
         listado.agregarProducto(producto);
       } else {
