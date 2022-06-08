@@ -135,8 +135,8 @@ export default Vue.extend({
   data: () => ({
     codigo_barras: null,
     venta: {
-      documento_cliente: "",
-      nombre_cliente: "",
+      documento_cliente: 2222222,
+      nombre_cliente: "Clientes varios",
       tipo_venta: "Contado",
     },
     tipos_venta: TIPOS_VENTA,
