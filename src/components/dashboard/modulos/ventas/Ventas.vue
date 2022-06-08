@@ -15,9 +15,6 @@ import Swal from "sweetalert2";
 export default Vue.extend({
   name: "Ventas",
   components: { FormVentas, ListadoItems },
-  data: () => ({
-    columnas: [],
-  }),
   methods: {
     async buscarProducto(codigo_barras: number) {
       const productos = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
