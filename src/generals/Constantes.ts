@@ -10,3 +10,5 @@ export const GENEROS = ["Masculino", "Femenino", "Otro"];
 export const ROLES = ["Empleado", "Admin"]; //"Admin"],
 
 export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];
+
+export const TIPOS_VENTA = ["Contado", "Credito"];

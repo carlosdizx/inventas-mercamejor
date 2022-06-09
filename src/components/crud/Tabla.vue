@@ -96,6 +96,16 @@
               <v-icon>mdi-file-export</v-icon>
             </v-btn>
           </template>
+          <template v-slot:item.seleccion="{ item }">
+            <v-btn
+              color="success darken-1"
+              dark
+              icon
+              @click="enviarSeleccionado(item)"
+            >
+              <v-icon>mdi-send</v-icon>
+            </v-btn>
+          </template>
           <template v-slot:item.calificacion="{ item }">
             <v-tooltip color="primary" bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -276,6 +286,9 @@ export default Vue.extend({
     },
     forzarRecarga() {
       this.$router.go(0);
+    },
+    enviarSeleccionado(objeto: any) {
+      this.$emit("enviarSeleccionado", objeto);
     },
   },
   async created() {
