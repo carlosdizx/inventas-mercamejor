@@ -254,7 +254,7 @@ export default Vue.extend({
         tipo_pago: "Contado",
         fecha_pago: "",
         fecha_llegada_producto: "",
-        compras: [] as Compra[],
+        compras: [],
         subtotal: 0,
         descuento: 0,
         impuesto: 0,
@@ -289,9 +289,7 @@ export default Vue.extend({
     buscarProveedor() {
       let result = "Proveedores varios";
       this.proveedores.forEach((prov: any) => {
-        console.log(prov);
         if (Number(this.cabFactura.documento_proveedor) === prov.documento) {
-          console.log(prov.nombres);
           result = `${prov.nombres} ${prov.apellidos}`;
         }
       });
@@ -351,17 +349,22 @@ export default Vue.extend({
       return false;
     });
     if (this.compraAnterior) {
-      console.log(this.compraAnterior);
       this.cabFactura.nombre_proveedor = this.compraAnterior.nombre_proveedor;
       this.cabFactura.documento_proveedor =
         this.compraAnterior.documento_proveedor;
-      //this.cabFactura.fecha_documento = this.compraAnterior.fecha_documento;
+      this.cabFactura.fecha_documento =
+        this.compraAnterior.fecha_documento.toString();
       this.cabFactura.cod_factura = this.compraAnterior.cod_factura;
       this.cabFactura.tipo_compra = this.compraAnterior.tipo_compra;
       this.cabFactura.tipo_pago = this.compraAnterior.tipo_pago;
-      //this.cabFactura.fecha_pago = this.compraAnterior.fecha_pago;
-      //this.cabFactura.fecha_llegada_producto = this.compraAnterior;
-      //this.cabFactura.compras = this.compraAnterior.compras;
+      this.cabFactura.fecha_pago = this.compraAnterior.fecha_pago.toString();
+      this.cabFactura.fecha_llegada_producto =
+        this.compraAnterior.fecha_llegada_producto.toString();
+
+      const compras: Array<Compra> = this.compraAnterior.compras;
+
+      this.cabFactura.compras = compras;
+
       this.cabFactura.subtotal = this.compraAnterior.subtotal;
       this.cabFactura.descuento = this.compraAnterior.descuento;
       this.cabFactura.impuesto = this.compraAnterior.impuesto;

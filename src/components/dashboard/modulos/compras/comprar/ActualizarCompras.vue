@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="!mostrar" class="mt-6 mb-6 text-center">
+    <div
+      v-if="!mostrar && Object.keys(compra).length === 0"
+      class="mt-6 mb-6 text-center"
+    >
       <v-btn @click="mostrar = true" class="warning">Buscar compra</v-btn>
     </div>
     <v-dialog v-model="mostrar">
@@ -20,7 +23,10 @@
         <v-btn @click="mostrar = false" class="primary">Cerrar</v-btn>
       </div>
     </v-dialog>
-    <RegistroCompras :compraAnterior="compra" v-if="!mostrar"></RegistroCompras>
+    <RegistroCompras
+      :compraAnterior="compra"
+      v-if="Object.keys(compra).length !== 0"
+    ></RegistroCompras>
   </div>
 </template>
 
