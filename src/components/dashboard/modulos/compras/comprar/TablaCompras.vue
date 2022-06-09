@@ -219,7 +219,7 @@ export default Vue.extend({
     buscarProducto() {
       let producto = "";
       this.productosDisponibles.forEach((prod: any) => {
-        if (prod.codigo_barras === this.productoNuevo.codigo_barras) {
+        if (prod.codigo_barras === Number(this.productoNuevo.codigo_barras)) {
           producto = prod.nombre;
         }
       });

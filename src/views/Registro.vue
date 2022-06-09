@@ -88,7 +88,6 @@ export default Vue.extend({
         });
       } catch (e) {
         await NOTIFICAR_ERROR(e.code);
-        console.log(e);
       }
     },
   },
