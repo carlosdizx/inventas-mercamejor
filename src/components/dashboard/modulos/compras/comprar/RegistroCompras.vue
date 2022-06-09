@@ -1,6 +1,9 @@
 <template>
   <v-card>
-    <v-card-title class="mr-5 ml-5">Registrar compra</v-card-title>
+    <v-card-title class="mr-5 ml-5" v-if="this.compraAnterior === undefined"
+      >Registrar compra</v-card-title
+    >
+    <v-card-title class="mr-5 ml-5" v-else>Actualizar compra</v-card-title>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
       <v-form @submit.prevent="crearCuenta">
         <v-card-text>
