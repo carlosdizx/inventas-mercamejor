@@ -9,7 +9,7 @@
     />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form>
+        <v-form @submit.prevent="enviarDatos">
           <v-row>
             <v-col cols="6">
               <validation-provider
@@ -112,7 +112,13 @@
           </v-row>
           <v-row>
             <v-col cols="6">
-              <v-btn color="success" block large :disabled="invalid">
+              <v-btn
+                color="success"
+                block
+                large
+                :disabled="invalid"
+                type="submit"
+              >
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>
               </v-btn>
@@ -140,7 +146,6 @@ export default Vue.extend({
       tipo_venta: "Contado",
     },
     tipos_venta: TIPOS_VENTA,
-    columnas: [],
     dialog_list: false,
     cliente: null,
     enfoque: false,
@@ -158,6 +163,14 @@ export default Vue.extend({
     buscarProducto(valor: any) {
       this.$emit("codigo_barras", valor);
       this.codigo_barras = null;
+    },
+    enviarDatos() {
+      const datos = {
+        documento_cliente: this.venta.documento_cliente,
+        nombre_cliente: this.venta.nombre_cliente,
+        tipo_venta: this.venta.tipo_venta,
+      };
+      this.$emit("datos_cliente", datos);
     },
   },
 });

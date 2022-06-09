@@ -1,14 +1,11 @@
 <template>
   <v-container>
-    <FormVentas v-on:codigo_barras="buscarProducto($event)" />
-    <ListadoItems ref="ListadoItems" />
-    <Factura
-      tipo_factura="Factura de venta"
-      :documento="1082749257"
-      nombre="Carlos Díaz"
-      caja="#####"
-      :productos="productos"
+    <FormVentas
+      v-on:codigo_barras="buscarProducto($event)"
+      v-on:datos_cliente="generarFactura($event)"
     />
+    <ListadoItems ref="ListadoItems" />
+    <Factura ref="Factura" />
   </v-container>
 </template>
 
@@ -24,29 +21,7 @@ export default Vue.extend({
   name: "Ventas",
   components: { FormVentas, ListadoItems, Factura },
   data: () => ({
-    productos: [
-      {
-        nombre: "Leche 1L Colacteos",
-        cantidad: 1,
-        precio: 3500,
-        descuento: 0,
-        subtotal: 7000,
-      },
-      {
-        nombre: "Leche alqueria 1L",
-        cantidad: 1,
-        precio: 3200,
-        descuento: 0,
-        subtotal: 6400,
-      },
-      {
-        nombre: "Leche Purace 1L",
-        cantidad: 2,
-        precio: 3300,
-        descuento: 0,
-        subtotal: 6600,
-      },
-    ],
+    productos: [],
   }),
   methods: {
     async buscarProducto(codigo_barras: number) {
@@ -64,6 +39,10 @@ export default Vue.extend({
           showConfirmButton: false,
         });
       }
+    },
+    generarFactura(datos_cliente: any) {
+      const factura: any = this.$refs.Factura;
+      factura.asignarValores(datos_cliente, null);
     },
   },
 });
