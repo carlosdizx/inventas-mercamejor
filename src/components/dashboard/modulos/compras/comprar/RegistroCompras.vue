@@ -11,7 +11,7 @@
             <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula"
-                v-model="cabFactura.documento_proveedor"
+                v-model="compra.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -28,7 +28,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Nombre del proveedor"
-                v-model="cabFactura.nombre_proveedor"
+                v-model="compra.nombre_proveedor"
                 readonly
                 dense
                 outlined
@@ -44,7 +44,7 @@
               >
                 <v-text-field
                   label="Fecha de Compra"
-                  v-model="cabFactura.fecha_documento"
+                  v-model="compra.fecha_documento"
                   :error-messages="errors"
                   type="date"
                   outlined
@@ -60,7 +60,7 @@
               >
                 <v-select
                   label="Tipo de Compra"
-                  v-model="cabFactura.tipo_compra"
+                  v-model="compra.tipo_compra"
                   :error-messages="errors"
                   :items="tiposDocumento"
                   outlined
@@ -77,7 +77,7 @@
                 <v-text-field
                   type="number"
                   label="Número de Factura"
-                  v-model="cabFactura.cod_factura"
+                  v-model="compra.cod_factura"
                   :error-messages="errors"
                   outlined
                   dense
@@ -94,7 +94,7 @@
               >
                 <v-select
                   label="Tipo de Pago"
-                  v-model="cabFactura.tipo_pago"
+                  v-model="compra.tipo_pago"
                   :error-messages="errors"
                   :items="tiposPagos"
                   outlined
@@ -111,7 +111,7 @@
                 <v-text-field
                   label="Fecha de pago"
                   type="date"
-                  v-model="cabFactura.fecha_pago"
+                  v-model="compra.fecha_pago"
                   :error-messages="errors"
                   outlined
                   dense
@@ -127,7 +127,7 @@
                 <v-text-field
                   label="Fecha de llegada del producto"
                   type="date"
-                  v-model="cabFactura.fecha_llegada_producto"
+                  v-model="compra.fecha_llegada_producto"
                   :error-messages="errors"
                   outlined
                   dense
@@ -137,7 +137,7 @@
           </v-row>
 
           <TablaCompras
-            :compras="cabFactura.compras"
+            :compras="compra.compras"
             @enviarProductos="actualizarProductos"
           />
 
@@ -146,7 +146,7 @@
               <v-text-field
                 label="Subtotal"
                 readonly
-                v-model="cabFactura.subtotal"
+                v-model="compra.subtotal"
                 outlined
                 dense
               ></v-text-field>
@@ -161,7 +161,7 @@
                 <v-text-field
                   @input="calcularTotal()"
                   label="Descuento"
-                  v-model="cabFactura.descuento"
+                  v-model="compra.descuento"
                   :error-messages="errors"
                   outlined
                   dense
@@ -178,7 +178,7 @@
                 <v-text-field
                   label="Impuesto"
                   @input="calcularTotal()"
-                  v-model="cabFactura.impuesto"
+                  v-model="compra.impuesto"
                   :error-messages="errors"
                   outlined
                   dense
@@ -188,7 +188,7 @@
           </v-row>
           <v-row class="mr-5 ml-5">
             <v-col class="text-center">
-              <h2 class="text-gray">Total: ${{ cabFactura.total }}</h2>
+              <h2 class="text-gray">Total: ${{ compra.total }}</h2>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5" v-if="!compraAnterior">
@@ -248,23 +248,7 @@ export default Vue.extend({
   data() {
     return {
       columnas: COLUMNAS,
-      cabFactura: {
-        documento_proveedor: 0,
-        nombre_proveedor: "Proveedores varios",
-        fecha_documento: "",
-        cod_factura: "",
-        tipo_compra: "Compra",
-        tipo_pago: "Contado",
-        fecha_pago: "",
-        fecha_llegada_producto: "",
-        compras: [],
-        subtotal: 0,
-        descuento: 0,
-        impuesto: 0,
-        total: 0,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
+      compra: {} as Compra,
       tiposDocumento: ["Compra", "Pedido"],
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
@@ -274,9 +258,9 @@ export default Vue.extend({
     validarRegistro() {
       let val = false;
       if (
-        this.cabFactura.total < 1 ||
-        this.cabFactura.descuento < this.cabFactura.total ||
-        this.cabFactura.compras.length === 0
+        this.compra.total < 1 ||
+        this.compra.descuento < this.compra.total ||
+        this.compra.compras.length === 0
       ) {
         val = true;
       }
@@ -292,57 +276,55 @@ export default Vue.extend({
     buscarProveedor() {
       let result = "Proveedores varios";
       this.proveedores.forEach((prov: any) => {
-        if (Number(this.cabFactura.documento_proveedor) === prov.documento) {
+        if (Number(this.compra.documento_proveedor) === prov.documento) {
           result = `${prov.nombres} ${prov.apellidos}`;
         }
       });
-      this.cabFactura.nombre_proveedor = result;
+      this.compra.nombre_proveedor = result;
     },
     resetCampos() {
-      this.cabFactura.nombre_proveedor = "Proveedores varios";
-      this.cabFactura.documento_proveedor = 0;
-      this.cabFactura.fecha_documento = "";
-      this.cabFactura.cod_factura = "";
-      this.cabFactura.tipo_compra = "Compra";
-      this.cabFactura.tipo_pago = "Contado";
-      this.cabFactura.fecha_pago = "";
-      this.cabFactura.fecha_llegada_producto = "";
-      this.cabFactura.compras = [];
-      this.cabFactura.subtotal = 0;
-      this.cabFactura.descuento = 0;
-      this.cabFactura.impuesto = 0;
-      this.cabFactura.total = 0;
+      this.compra.nombre_proveedor = "Proveedores varios";
+      this.compra.documento_proveedor = 0;
+      this.compra.fecha_documento = new Date();
+      this.compra.cod_factura = "";
+      this.compra.tipo_compra = "Compra";
+      this.compra.tipo_pago = "Contado";
+      this.compra.fecha_pago = new Date();
+      this.compra.fecha_llegada_producto = new Date();
+      this.compra.compras = [];
+      this.compra.subtotal = 0;
+      this.compra.descuento = 0;
+      this.compra.impuesto = 0;
+      this.compra.total = 0;
     },
     actualizarProductos(productos: any) {
-      this.cabFactura.compras = productos;
+      this.compra.compras = productos;
       this.calcularSubtotal();
       this.calcularTotal();
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.cabFactura.compras.forEach((com: any) => {
+      this.compra.compras.forEach((com: any) => {
         subtototal += Number(com.subtotal);
       });
-      this.cabFactura.subtotal = subtototal;
+      this.compra.subtotal = subtototal;
     },
     calcularTotal() {
-      this.cabFactura.total =
-        Number(this.cabFactura.subtotal) -
-        Number(this.cabFactura.descuento) +
-        Number(this.cabFactura.impuesto);
+      this.compra.total =
+        Number(this.compra.subtotal) -
+        Number(this.compra.descuento) +
+        Number(this.compra.impuesto);
     },
     async registrarCompra() {
-      this.cabFactura.created_at = new Date();
-      this.cabFactura.updated_at = new Date();
-      this.cabFactura.documento_proveedor = Number(
-        this.cabFactura.documento_proveedor
-      );
-      await GUARDAR("compras", this.cabFactura);
+      this.compra.created_at = new Date();
+      this.compra.updated_at = new Date();
+      this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
+      await GUARDAR("compras", this.compra);
       this.resetCampos();
     },
     seleccionarProveedor(prov: any) {
-      this.cabFactura.documento_proveedor = prov.documento;
-      this.cabFactura.nombre_proveedor = `${prov.nombres} ${prov.apellidos}`;
+      this.compra.documento_proveedor = prov.documento;
+      this.compra.nombre_proveedor = `${prov.nombres} ${prov.apellidos}`;
     },
   },
   created() {
@@ -352,26 +334,7 @@ export default Vue.extend({
       return false;
     });
     if (this.compraAnterior) {
-      this.cabFactura.nombre_proveedor = this.compraAnterior.nombre_proveedor;
-      this.cabFactura.documento_proveedor =
-        this.compraAnterior.documento_proveedor;
-      this.cabFactura.fecha_documento =
-        this.compraAnterior.fecha_documento.toString();
-      this.cabFactura.cod_factura = this.compraAnterior.cod_factura;
-      this.cabFactura.tipo_compra = this.compraAnterior.tipo_compra;
-      this.cabFactura.tipo_pago = this.compraAnterior.tipo_pago;
-      this.cabFactura.fecha_pago = this.compraAnterior.fecha_pago.toString();
-      this.cabFactura.fecha_llegada_producto =
-        this.compraAnterior.fecha_llegada_producto.toString();
-
-      const compras: Array<Compra> = this.compraAnterior.compras;
-
-      this.cabFactura.compras = compras;
-
-      this.cabFactura.subtotal = this.compraAnterior.subtotal;
-      this.cabFactura.descuento = this.compraAnterior.descuento;
-      this.cabFactura.impuesto = this.compraAnterior.impuesto;
-      this.cabFactura.total = this.compraAnterior.total;
+      this.compra = this.compraAnterior;
     }
   },
 });
