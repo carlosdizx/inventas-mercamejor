@@ -120,6 +120,15 @@ export default Vue.extend({
         this.total = this.subtotal - this.descuento;
       });
     },
+    darItemsFactura() {
+      const datos_factura = {
+        productos: this.filas,
+        subtotal: this.subtotal,
+        descuento: this.descuento,
+        total: this.total,
+      };
+      return datos_factura;
+    },
   },
   created() {
     this.filas = [];

@@ -4,13 +4,16 @@
       <h2 class="mx-auto text-center">{{ tipo_factura }}</h2>
     </v-card-title>
     <v-card-text>
-      <h2>{{ documento_cliente }}</h2>
+      <h2>Documento del cliente: {{ documento_cliente }}</h2>
       <h2>No factura: {{ consecutivo }} de 100000</h2>
       <h3>Caja: {{ caja }}</h3>
-      {{ nombre_cliente }}
+      <div class="colum__2">
+        <p class="izquierda">{{ nombre_cliente }}</p>
+        <p class="derecha">Credito</p>
+      </div>
       <div class="colum__4">
         <h4 class="colum__4-h4">Producto</h4>
-        <h4 class="colum__4-h4">Precio</h4>
+        <h4 class="colum__4-h4">Precio unitario</h4>
         <h4 class="colum__4-h4">Descuento</h4>
         <h4 class="colum__4-h4">Subtotal</h4>
       </div>
@@ -26,7 +29,9 @@
           {{ producto.cantidad }}*{{ producto.nombre }}
         </h5>
         <h5 class="productos__h5">{{ producto.precio }}</h5>
-        <h5 class="productos__h5">{{ producto.descuento }}</h5>
+        <h5 class="productos__h5">
+          {{ producto.cantidad }}*{{ producto.descuento }}
+        </h5>
         <h5 class="productos__h5">{{ producto.subtotal }}</h5>
         <v-divider />
       </div>
@@ -61,18 +66,29 @@ export default Vue.extend({
     nombre_cliente: "",
     documento_cliente: "",
     caja: "@@@@@@_1",
-    productos: [],
+    productos: [{}],
     consecutivo: 0,
     subtotal: 0,
     descuento: 0,
     total: 0,
   }),
   methods: {
-    asignarValores(datos_cliente: any, datos_venta: any) {
+    async asignarValores(datos_cliente: any, datos_venta: any) {
+      const productos: any[] = [];
+      for (const producto of datos_venta.productos) {
+        productos.push({
+          nombre: producto.nombre,
+          cantidad: producto.cantidad,
+          precio: producto.precio_unitario_venta,
+          descuento: producto.descuento,
+          subtotal: producto.subtotal,
+        });
+      }
       this.documento_cliente = datos_cliente.documento_cliente;
       this.nombre_cliente = datos_cliente.nombre_cliente;
-      this.consecutivo = Math.floor(Math.random() * (20 - 1)) + 1;
-      this.caja = "@@@@@@_" + Math.floor(Math.random() * (20 - 1)) + 1;
+      this.productos = productos;
+      this.consecutivo = Math.floor(Math.random() * (10000 - 1)) + 1;
+      this.caja = "@@@@@@_" + (Math.floor(Math.random() * (3 - 1)) + 1);
       this.calcularVenta();
     },
     calcularVenta() {
@@ -88,7 +104,6 @@ export default Vue.extend({
 .factura {
   margin: 0px;
   width: 500px;
-  height: 750px;
   overflow: auto;
 }
 

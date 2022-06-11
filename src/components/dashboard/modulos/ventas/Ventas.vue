@@ -42,7 +42,8 @@ export default Vue.extend({
     },
     generarFactura(datos_cliente: any) {
       const factura: any = this.$refs.Factura;
-      factura.asignarValores(datos_cliente, null);
+      const datos: any = this.$refs.ListadoItems;
+      factura.asignarValores(datos_cliente, datos.darItemsFactura());
     },
   },
 });
