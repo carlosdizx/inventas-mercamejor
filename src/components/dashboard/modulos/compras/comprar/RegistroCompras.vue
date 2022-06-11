@@ -10,7 +10,7 @@
           <v-row class="mr-5 ml-5">
             <v-col cols="5">
               <v-text-field
-                label="NIT/Cédula"
+                label="NIT/Cédula proveedor"
                 v-model="compra.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
