@@ -54,10 +54,10 @@ export const CAMPOS = [
     label: "documento de identidad",
     prepend_icon: "mdi-card-account-details",
     type: 1,
-    format: "number",
+    format: "text",
     name: "documento",
     model: "",
-    rules: "required|min:6|max:20|numeric",
+    rules: "required|min:6|max:20",
   },
   {
     label: "Celular",
