@@ -9,7 +9,7 @@
     />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form @submit.prevent="enviarDatos">
+        <v-form @submit.prevent="">
           <v-row>
             <v-col cols="6">
               <validation-provider
@@ -117,7 +117,7 @@
                 block
                 large
                 :disabled="invalid"
-                type="submit"
+                @click="enviarDatos"
               >
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>

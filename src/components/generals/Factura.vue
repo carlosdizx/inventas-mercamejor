@@ -1,58 +1,63 @@
 <template>
-  <v-card class="factura">
-    <v-card-title>
-      <h2 class="mx-auto text-center">{{ tipo_factura }}</h2>
-    </v-card-title>
-    <v-card-text>
-      <h2>Documento del cliente: {{ documento_cliente }}</h2>
-      <h2>No factura: {{ consecutivo }} de 100000</h2>
-      <h3>Caja: {{ caja }}</h3>
-      <div class="colum__2">
-        <p class="izquierda">{{ nombre_cliente }}</p>
-        <p class="derecha">Credito</p>
-      </div>
-      <div class="colum__4">
-        <h4 class="colum__4-h4">Producto</h4>
-        <h4 class="colum__4-h4">Precio unitario</h4>
-        <h4 class="colum__4-h4">Descuento</h4>
-        <h4 class="colum__4-h4">Subtotal</h4>
-      </div>
+  <v-dialog v-model="dialog" persistent max-width="500">
+    <v-btn color="red darken-2" @click="cambiarEstado">
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
+    <v-card class="factura">
+      <v-card-title>
+        <h2 class="mx-auto text-center">{{ tipo_factura }}</h2>
+      </v-card-title>
+      <v-card-text>
+        <h2>Documento del cliente: {{ documento_cliente }}</h2>
+        <h2>No factura: {{ consecutivo }} de 100000</h2>
+        <h3>Caja: {{ caja }}</h3>
+        <div class="colum__2">
+          <p class="izquierda">{{ nombre_cliente }}</p>
+          <p class="derecha">Credito</p>
+        </div>
+        <div class="colum__4">
+          <h4 class="colum__4-h4">Producto</h4>
+          <h4 class="colum__4-h4">Precio unitario</h4>
+          <h4 class="colum__4-h4">Descuento</h4>
+          <h4 class="colum__4-h4">Subtotal</h4>
+        </div>
 
-      <!--  seccion productos  -->
+        <!--  seccion productos  -->
 
-      <div
-        v-for="(producto, index) in productos"
-        :key="index"
-        class="productos"
-      >
-        <h5 class="productos__h5">
-          {{ producto.cantidad }}*{{ producto.nombre }}
-        </h5>
-        <h5 class="productos__h5">{{ producto.precio }}</h5>
-        <h5 class="productos__h5">
-          {{ producto.cantidad }}*{{ producto.descuento }}
-        </h5>
-        <h5 class="productos__h5">{{ producto.subtotal }}</h5>
-        <v-divider />
+        <div
+          v-for="(producto, index) in productos"
+          :key="index"
+          class="productos"
+        >
+          <h5 class="productos__h5">
+            {{ producto.cantidad }}*{{ producto.nombre }}
+          </h5>
+          <h5 class="productos__h5">{{ producto.precio }}</h5>
+          <h5 class="productos__h5">
+            {{ producto.cantidad }}*{{ producto.descuento }}
+          </h5>
+          <h5 class="productos__h5">{{ producto.subtotal }}</h5>
+          <v-divider />
+        </div>
+      </v-card-text>
+
+      <!--  Calculos  -->
+      <div class="sub">
+        <b class="subtotal">Subtotal:</b>
+        <b class="subtotal__N">${{ subtotal }}</b>
       </div>
-    </v-card-text>
-
-    <!--  Calculos  -->
-    <div class="sub">
-      <b class="subtotal">Subtotal:</b>
-      <b class="subtotal__N">${{ subtotal }}</b>
-    </div>
-    <div class="des">
-      <b class="descuento">Descuento:</b>
-      <b class="descuento__N">${{ descuento }}</b>
-    </div>
-    <div class="tot">
-      <b class="total">Total:</b>
-      <b class="total__N">${{ descuento }}</b>
-    </div>
-    <v-divider />
-    <h2>Gracias por su compra</h2>
-  </v-card>
+      <div class="des">
+        <b class="descuento">Descuento:</b>
+        <b class="descuento__N">${{ descuento }}</b>
+      </div>
+      <div class="tot">
+        <b class="total">Total:</b>
+        <b class="total__N">${{ descuento }}</b>
+      </div>
+      <v-divider />
+      <h2>Gracias por su compra</h2>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -61,6 +66,7 @@ import Vue from "vue";
 export default Vue.extend({
   name: "Factura",
   data: () => ({
+    dialog: false,
     tipo_factura: "Factura de venta",
     documento: null,
     nombre_cliente: "",
@@ -73,6 +79,9 @@ export default Vue.extend({
     total: 0,
   }),
   methods: {
+    cambiarEstado() {
+      this.dialog = !this.dialog;
+    },
     async asignarValores(datos_cliente: any, datos_venta: any) {
       const productos: any[] = [];
       for (const producto of datos_venta.productos) {
@@ -103,7 +112,6 @@ export default Vue.extend({
 <style scoped>
 .factura {
   margin: 0px;
-  width: 500px;
   overflow: auto;
 }
 

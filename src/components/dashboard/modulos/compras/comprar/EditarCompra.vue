@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="mostrar">
-    <h1>Mostrar</h1>
+    <h1>Mostrsar</h1>
   </v-dialog>
 </template>
 
@@ -10,10 +10,6 @@ export default {
     mostrar: Boolean,
   },
   name: "EditarCompra",
-  methods: {
-    closeEdicion(): void {
-      this.$emit("cerrar");
-    },
-  },
+  methods: {},
 };
 </script>
