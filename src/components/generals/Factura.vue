@@ -11,6 +11,7 @@
         <h2>Documento del cliente: {{ documento_cliente }}</h2>
         <h2>No factura: {{ consecutivo }} de 100000</h2>
         <h3>Caja: {{ caja }}</h3>
+        <h3>Fecha de pago: {{ fecha_pago ? fecha_pago : "No aplica" }}</h3>
         <div class="colum__2">
           <p class="izquierda">{{ nombre_cliente }}</p>
           <p class="derecha">{{ tipo_factura }}</p>
@@ -69,6 +70,7 @@ export default Vue.extend({
     dialog: false,
     tipo: "Venta",
     tipo_factura: "Factura de venta",
+    fecha_pago: null,
     documento: null,
     nombre_cliente: "",
     documento_cliente: "",
@@ -97,6 +99,7 @@ export default Vue.extend({
       this.documento_cliente = datos_cliente.documento_cliente;
       this.nombre_cliente = datos_cliente.nombre_cliente;
       this.tipo = datos_cliente.tipo;
+      this.fecha_pago = datos_cliente.fecha_pago;
       this.tipo_factura = datos_cliente.tipo_factura;
       this.productos = productos;
       this.consecutivo = Math.floor(Math.random() * (10000 - 1)) + 1;

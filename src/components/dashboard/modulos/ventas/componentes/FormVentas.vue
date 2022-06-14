@@ -74,7 +74,7 @@
                 outlined
                 clearable
                 counter
-                v-model="venta.consecutivo"
+                v-model="venta.fecha_pago"
               />
             </v-col>
           </v-row>
@@ -137,6 +137,7 @@ export default Vue.extend({
       documento_cliente: 2222222,
       nombre_cliente: "Clientes varios",
       tipo_venta: "Contado",
+      fecha_pago: null,
     },
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
@@ -163,6 +164,7 @@ export default Vue.extend({
         nombre_cliente: this.venta.nombre_cliente,
         tipo_factura: this.venta.tipo_venta,
         tipo: "venta",
+        fecha_pago: this.venta.fecha_pago,
       };
       this.$emit("datos_cliente", datos);
     },
