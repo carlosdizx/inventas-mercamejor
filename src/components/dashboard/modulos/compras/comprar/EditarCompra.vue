@@ -5,15 +5,16 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue";
+export default Vue.extend({
   props: {
     mostrar: Boolean,
   },
   name: "EditarCompra",
   methods: {
-    closeEdicion(): void {
+    closeEdicion() {
       this.$emit("cerrar");
     },
   },
-};
+});
 </script>
