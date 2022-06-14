@@ -65,24 +65,17 @@
               </validation-provider>
             </v-col>
             <v-col cols="6">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo venta"
-                rules="required"
+              <v-text-field
                 v-if="venta.tipo_venta === 'Credito'"
-              >
-                <v-text-field
-                  label="Fecha de pago"
-                  prepend-icon="mdi-numeric"
-                  type="date"
-                  dense
-                  outlined
-                  clearable
-                  counter
-                  v-model="venta.consecutivo"
-                  :error-messages="errors"
-                />
-              </validation-provider>
+                label="Fecha de pago"
+                prepend-icon="mdi-numeric"
+                type="date"
+                dense
+                outlined
+                clearable
+                counter
+                v-model="venta.consecutivo"
+              />
             </v-col>
           </v-row>
           <v-row>
