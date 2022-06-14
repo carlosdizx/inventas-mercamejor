@@ -168,7 +168,8 @@ export default Vue.extend({
       const datos = {
         documento_cliente: this.venta.documento_cliente,
         nombre_cliente: this.venta.nombre_cliente,
-        tipo_venta: this.venta.tipo_venta,
+        tipo_factura: this.venta.tipo_venta,
+        tipo: "venta",
       };
       this.$emit("datos_cliente", datos);
     },

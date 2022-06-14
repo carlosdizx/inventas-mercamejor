@@ -5,7 +5,7 @@
     </v-btn>
     <v-card class="factura">
       <v-card-title>
-        <h2 class="mx-auto text-center">{{ tipo_factura }}</h2>
+        <h2 class="mx-auto text-center">Factura de {{ tipo }}</h2>
       </v-card-title>
       <v-card-text>
         <h2>Documento del cliente: {{ documento_cliente }}</h2>
@@ -13,7 +13,7 @@
         <h3>Caja: {{ caja }}</h3>
         <div class="colum__2">
           <p class="izquierda">{{ nombre_cliente }}</p>
-          <p class="derecha">Credito</p>
+          <p class="derecha">{{ tipo_factura }}</p>
         </div>
         <div class="colum__4">
           <h4 class="colum__4-h4">Producto</h4>
@@ -67,6 +67,7 @@ export default Vue.extend({
   name: "Factura",
   data: () => ({
     dialog: false,
+    tipo: "Venta",
     tipo_factura: "Factura de venta",
     documento: null,
     nombre_cliente: "",
@@ -82,9 +83,9 @@ export default Vue.extend({
     cambiarEstado() {
       this.dialog = !this.dialog;
     },
-    async asignarValores(datos_cliente: any, datos_venta: any) {
+    async asignarValores(datos_cliente: any, datos_movimiento: any) {
       const productos: any[] = [];
-      for (const producto of datos_venta.productos) {
+      for (const producto of datos_movimiento.productos) {
         productos.push({
           nombre: producto.nombre,
           cantidad: producto.cantidad,
@@ -95,10 +96,12 @@ export default Vue.extend({
       }
       this.documento_cliente = datos_cliente.documento_cliente;
       this.nombre_cliente = datos_cliente.nombre_cliente;
+      this.tipo = datos_cliente.tipo;
+      this.tipo_factura = datos_cliente.tipo_factura;
       this.productos = productos;
       this.consecutivo = Math.floor(Math.random() * (10000 - 1)) + 1;
       this.caja = "@@@@@@_" + (Math.floor(Math.random() * (3 - 1)) + 1);
-      this.calcularVenta(datos_venta, productos);
+      this.calcularVenta(datos_movimiento, productos);
     },
     calcularVenta(datos: any, productos: any[]) {
       let subtotal = 0;
