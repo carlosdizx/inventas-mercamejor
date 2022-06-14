@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <FormVentas
-      v-on:codigo_barras="buscarProducto($event)"
+      @codigo_barras="buscarProducto($event)"
       v-on:datos_cliente="generarFactura($event)"
     />
     <ListadoItems ref="ListadoItems" />
@@ -44,6 +44,7 @@ export default Vue.extend({
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
       factura.asignarValores(datos_cliente, datos.darItemsFactura());
+      factura.cambiarEstado();
     },
   },
 });

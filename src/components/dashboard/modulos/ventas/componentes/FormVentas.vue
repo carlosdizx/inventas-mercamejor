@@ -9,7 +9,7 @@
     />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form @submit.prevent="enviarDatos">
+        <v-form @submit.prevent="">
           <v-row>
             <v-col cols="6">
               <validation-provider
@@ -65,24 +65,17 @@
               </validation-provider>
             </v-col>
             <v-col cols="6">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo venta"
-                rules="required"
+              <v-text-field
                 v-if="venta.tipo_venta === 'Credito'"
-              >
-                <v-text-field
-                  label="Fecha de pago"
-                  prepend-icon="mdi-numeric"
-                  type="date"
-                  dense
-                  outlined
-                  clearable
-                  counter
-                  v-model="venta.consecutivo"
-                  :error-messages="errors"
-                />
-              </validation-provider>
+                label="Fecha de pago"
+                prepend-icon="mdi-numeric"
+                type="date"
+                dense
+                outlined
+                clearable
+                counter
+                v-model="venta.fecha_pago"
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -117,7 +110,7 @@
                 block
                 large
                 :disabled="invalid"
-                type="submit"
+                @click="enviarDatos"
               >
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>
@@ -144,6 +137,7 @@ export default Vue.extend({
       documento_cliente: 2222222,
       nombre_cliente: "Clientes varios",
       tipo_venta: "Contado",
+      fecha_pago: null,
     },
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
@@ -168,7 +162,9 @@ export default Vue.extend({
       const datos = {
         documento_cliente: this.venta.documento_cliente,
         nombre_cliente: this.venta.nombre_cliente,
-        tipo_venta: this.venta.tipo_venta,
+        tipo_factura: this.venta.tipo_venta,
+        tipo: "venta",
+        fecha_pago: this.venta.fecha_pago,
       };
       this.$emit("datos_cliente", datos);
     },

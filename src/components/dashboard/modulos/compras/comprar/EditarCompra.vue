@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="mostrar">
-    <h1>Mostrar</h1>
+    <h1>Mostrsar</h1>
   </v-dialog>
 </template>
 
