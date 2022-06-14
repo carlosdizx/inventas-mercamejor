@@ -46,6 +46,27 @@
             </v-chip>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="6">
+            <v-slider
+              label="Descuento adicional"
+              max="100"
+              min="0"
+              v-model="descuento_adicional"
+              thumb-label="always"
+            />
+            <vuetify-money
+              label="Descuento"
+              prepend-icon="mdi-percent"
+              type="number"
+              prefix="%"
+              dense
+              outlined
+              counter
+              v-model="descuento_adicional"
+            />
+          </v-col>
+        </v-row>
       </v-form>
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
@@ -81,6 +102,7 @@ export default Vue.extend({
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [{}],
+    descuento_adicional: 0,
   }),
   methods: {
     async agregarProducto(producto: any) {
