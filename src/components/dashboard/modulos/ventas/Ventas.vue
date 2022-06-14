@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <FormVentas
-      @codigo_barras="buscarProducto($event)"
+      v-on:codigo_barras="buscarProducto($event)"
       v-on:datos_cliente="generarFactura($event)"
     />
     <ListadoItems ref="ListadoItems" />
@@ -43,8 +43,19 @@ export default Vue.extend({
     generarFactura(datos_cliente: any) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
-      factura.asignarValores(datos_cliente, datos.darItemsFactura());
-      factura.cambiarEstado();
+      const productos: [] = datos.darItemsFactura().productos;
+      if (productos.length > 0) {
+        factura.asignarValores(datos_cliente, datos.darItemsFactura());
+        factura.cambiarEstado();
+      } else {
+        Swal.fire({
+          title: "Sin productos",
+          html: "No se puede generar una factura y registrar venta",
+          icon: "error",
+          timer: 800,
+          showConfirmButton: false,
+        });
+      }
     },
   },
 });
