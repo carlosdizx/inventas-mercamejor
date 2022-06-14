@@ -23,6 +23,7 @@
     <Marcas v-if="item === 14" />
     <Movimientos v-if="item === 15" />
     <Comprobantes v-if="item === 16" />
+    <cuadre-cuentas v-if="item === 17" />
   </div>
 </template>
 
@@ -44,6 +45,7 @@ import Comprobantes from "@/components/dashboard/modulos/Comprobantes.vue";
 import Clientes from "@/components/dashboard/modulos/Clientes.vue";
 import CuentasOpcion from "@/components/dashboard/modulos/compras/cuentasporcobrar/CuentasOpcion.vue";
 import Ventas from "@/components/dashboard/modulos/ventas/Ventas.vue";
+import CuadreCuentas from "@/components/dashboard/modulos/cuandre_cuentas/CuadreCuentas.vue";
 export default Vue.extend({
   name: "Dashboard",
   components: {
@@ -63,6 +65,7 @@ export default Vue.extend({
     Clientes,
     CuentasOpcion,
     Ventas,
+    CuadreCuentas,
   },
   data: () => ({
     item: 0,

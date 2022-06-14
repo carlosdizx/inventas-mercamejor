@@ -119,4 +119,16 @@ export const FUNCIONES_DASHBOARD: any[] = [
       },
     ],
   },
+  {
+    titulo: "Cuadre Cuentas",
+    roles: ["Admin", "Empleado"],
+    items: [
+      {
+        id: 17,
+        icono: "mdi-home",
+        titulo: "Cuadre Cuentas",
+        roles: ["Admin", "Empleado"],
+      },
+    ],
+  },
 ];
