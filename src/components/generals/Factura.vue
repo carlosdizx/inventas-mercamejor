@@ -52,7 +52,7 @@
       </div>
       <div class="tot">
         <b class="total">Total:</b>
-        <b class="total__N">${{ descuento }}</b>
+        <b class="total__N">${{ total }}</b>
       </div>
       <v-divider />
       <h2>Gracias por su compra</h2>
@@ -98,12 +98,20 @@ export default Vue.extend({
       this.productos = productos;
       this.consecutivo = Math.floor(Math.random() * (10000 - 1)) + 1;
       this.caja = "@@@@@@_" + (Math.floor(Math.random() * (3 - 1)) + 1);
-      this.calcularVenta();
+      this.calcularVenta(datos_venta, productos);
     },
-    calcularVenta() {
-      this.subtotal = 0;
-      this.descuento = 0;
-      this.total = 0;
+    calcularVenta(datos: any, productos: any[]) {
+      let subtotal = 0;
+      let descuento = 0;
+      let total = 0;
+      productos.forEach((producto) => {
+        subtotal += producto.cantidad * producto.precio;
+        descuento += producto.cantidad * producto.descuento;
+        total = subtotal - descuento;
+      });
+      this.subtotal = subtotal;
+      this.descuento = descuento;
+      this.total = subtotal - descuento;
     },
   },
 });
