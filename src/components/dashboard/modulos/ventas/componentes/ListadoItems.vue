@@ -64,6 +64,7 @@
               outlined
               counter
               v-model="descuento_adicional"
+              @input="evaluarValorDescuento"
             />
           </v-col>
         </v-row>
@@ -150,6 +151,17 @@ export default Vue.extend({
         total: this.total,
       };
       return datos_factura;
+    },
+    evaluarValorDescuento() {
+      if (this.descuento_adicional > 100) {
+        this.descuento_adicional = 0;
+        Swal.fire({
+          title: "Valor errado",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 800,
+        });
+      }
     },
   },
   created() {
