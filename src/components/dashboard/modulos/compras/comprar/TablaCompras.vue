@@ -126,6 +126,7 @@
               </td>
             </tr>
           </tbody>
+          <EditarCompra />
         </template>
       </v-simple-table>
     </v-col>
@@ -142,11 +143,13 @@ import { REDONDEAR } from "@/generals/procesamientos";
 import { CARGAR_INFORMACION } from "@/services/crud";
 
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
+import EditarCompra from "./EditarCompra.vue";
 
 export default Vue.extend({
   name: "TablaCompras",
   components: {
     BuscarElemento,
+    EditarCompra,
   },
   props: ["compras"],
   data: () => ({
