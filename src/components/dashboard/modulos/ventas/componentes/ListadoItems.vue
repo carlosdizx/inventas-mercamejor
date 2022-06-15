@@ -3,50 +3,6 @@
     <v-card-text>
       <v-form>
         <v-row>
-          <v-col cols="2">
-            <v-chip small color="amber" class="ma-2">
-              Subtotal: {{ subtotal }}
-            </v-chip>
-          </v-col>
-          <v-col cols="2">
-            <v-chip small color="info" class="ma-2">
-              Descuento: {{ descuento }}
-            </v-chip>
-          </v-col>
-          <v-col cols="2">
-            <v-chip color="success" class="ma-2"> Total: {{ total }} </v-chip>
-          </v-col>
-          <v-col cols="4">
-            <vuetify-money
-              label="Calculadora rápida"
-              prepend-icon=""
-              prefix="$"
-              dense
-              counter
-              v-model="calculadora"
-            />
-            <v-chip
-              :color="
-                total === calculadora * 1
-                  ? 'amber'
-                  : total > calculadora
-                  ? 'red'
-                  : 'success'
-              "
-              class="ma-2"
-            >
-              {{
-                total === calculadora * 1
-                  ? "$ "
-                  : total > calculadora
-                  ? "debe $"
-                  : "cambio $"
-              }}
-              {{ Math.abs(this.total - this.calculadora * 1) }}
-            </v-chip>
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="6">
             <v-slider
               label="Descuento adicional"
@@ -66,6 +22,47 @@
               v-model="descuento_adicional"
               @input="evaluarValorDescuento"
             />
+            <v-text-field
+              label="Precio final"
+              prepend-icon="mdi-cash"
+              type="number"
+              prefix="$"
+              color="success"
+              dense
+              readonly
+              outlined
+              :value="total - (total * descuento_adicional) / 100"
+            />
+            <v-col cols="6">
+              <vuetify-money
+                label="Calculadora rápida"
+                prepend-icon=""
+                prefix="$"
+                dense
+                counter
+                v-model="calculadora"
+              />
+            </v-col>
+          </v-col>
+          <v-col cols="6">
+            <v-chip color="amber" class="ma-2">
+              Subtotal: {{ subtotal }}
+            </v-chip>
+            <v-chip color="info" class="ma-2">
+              Descuento: {{ descuento }}
+            </v-chip>
+            <v-chip color="success" class="ma-2"> Total: {{ total }} </v-chip>
+            <v-chip color="success" class="ma-2">
+              Descuento adicional: {{ (total * descuento_adicional) / 100 }}
+            </v-chip>
+            <v-alert
+              outlined
+              dark
+              color="success darken-2"
+              class="mx-auto text-center"
+            >
+              Precio final: $ {{ total - (total * descuento_adicional) / 100 }}
+            </v-alert>
           </v-col>
         </v-row>
       </v-form>
@@ -162,6 +159,9 @@ export default Vue.extend({
           timer: 800,
         });
       }
+    },
+    calcularPrecioFinal(): number {
+      return this.total - (this.total * this.descuento_adicional) / 100;
     },
   },
   created() {
