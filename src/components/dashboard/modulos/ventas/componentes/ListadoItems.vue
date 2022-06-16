@@ -69,10 +69,10 @@
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
       <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog>
+        <v-edit-dialog :return-value="item.cantidad" @save="calcularValores">
           {{ item.cantidad }}
           <template v-slot:input>
-            <v-text-field label="Editar" counter />
+            <v-text-field label="Editar" counter v-model="item.cantidad" />
           </template>
         </v-edit-dialog>
       </template>
@@ -159,9 +159,6 @@ export default Vue.extend({
           timer: 800,
         });
       }
-    },
-    calcularPrecioFinal(): number {
-      return this.total - (this.total * this.descuento_adicional) / 100;
     },
   },
   created() {
