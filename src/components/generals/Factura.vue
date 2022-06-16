@@ -12,6 +12,7 @@
         <h2>No factura: {{ consecutivo }} de 100000</h2>
         <h3>Caja: {{ caja }}</h3>
         <h3>Fecha de pago: {{ fecha_pago ? fecha_pago : "No aplica" }}</h3>
+        <h3>232323</h3>
         <div class="colum__2">
           <p class="izquierda">{{ nombre_cliente }}</p>
           <p class="derecha">{{ tipo_factura }}</p>

@@ -1,5 +1,5 @@
 import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
-import { DatosEmpresa } from "@/entity/DatosEmpresa";
+import { DatosEmpresa } from "@/class/DatosEmpresa";
 
 export const LISTAR_CATEGORIAS = async () => await LISTAR("categorias");
 

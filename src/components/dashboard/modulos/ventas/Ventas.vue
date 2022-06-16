@@ -48,7 +48,7 @@ export default Vue.extend({
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;
       if (productos.length > 0) {
-        const consecutivo = await DAR_NUMERO_FACTURA(1);
+        const consecutivo = await DAR_NUMERO_FACTURA(2);
         await factura.asignarValores(
           datos_cliente,
           datos.darItemsFactura(),
