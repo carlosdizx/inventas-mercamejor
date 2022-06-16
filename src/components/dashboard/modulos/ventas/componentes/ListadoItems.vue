@@ -104,9 +104,10 @@ export default Vue.extend({
       { text: "Codigo", value: "codigo_barras" },
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
-      { text: "Precio", value: "precio_unitario_venta" },
-      { text: "Descuento", value: "descuento" },
+      { text: "Precio*uni", value: "precio_unitario_venta" },
+      { text: "Descuento*uni", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
+      { text: "Descuento", value: "subtotal" },
     ],
     filas: [{}],
     descuento_adicional: 0,
@@ -151,9 +152,8 @@ export default Vue.extend({
     },
     cambiarCantidadProducto() {
       for (const fila of this.filas) {
-        const temp: any = fila;
-        console.log(temp);
-        temp.subtotal = temp.cantidad * temp.precio_unitario_venta;
+        const producto: any = fila;
+        producto.subtotal = producto.cantidad * producto.precio_unitario_venta;
       }
       this.calcularValores();
     },
