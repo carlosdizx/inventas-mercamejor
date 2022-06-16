@@ -69,10 +69,19 @@
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
       <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog :return-value="item.cantidad" @save="calcularValores">
+        <v-edit-dialog
+          @save="cambiarCantidadProducto"
+          @clse="cambiarCantidadProducto"
+          @cancel="cambiarCantidadProducto"
+        >
           {{ item.cantidad }}
           <template v-slot:input>
-            <v-text-field label="Editar" counter v-model="item.cantidad" />
+            <v-text-field
+              @focusout="cambiarCantidadProducto"
+              label="Editar"
+              counter
+              v-model="item.cantidad"
+            />
           </template>
         </v-edit-dialog>
       </template>
@@ -139,6 +148,14 @@ export default Vue.extend({
         this.descuento += item.descuento * item.cantidad;
         this.total = this.subtotal - this.descuento;
       });
+    },
+    cambiarCantidadProducto() {
+      for (const fila of this.filas) {
+        const temp: any = fila;
+        console.log(temp);
+        temp.subtotal = temp.cantidad * temp.precio_unitario_venta;
+      }
+      this.calcularValores();
     },
     darItemsFactura() {
       const datos_factura = {
