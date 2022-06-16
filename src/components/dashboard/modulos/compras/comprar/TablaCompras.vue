@@ -112,7 +112,12 @@
               <td>{{ item.descuento }}</td>
               <td>{{ item.subtotal }}</td>
               <td>
-                <v-btn color="white" icon class="success">
+                <v-btn
+                  @click="mostrarEditarCompra = true"
+                  color="white"
+                  icon
+                  class="success"
+                >
                   <v-icon color="white">mdi-lead-pencil</v-icon>
                 </v-btn>
                 <v-btn
@@ -126,7 +131,10 @@
               </td>
             </tr>
           </tbody>
-          <EditarCompra />
+          <EditarCompra
+            @actualizar="actualizar"
+            :mostrar="mostrarEditarCompra"
+          />
         </template>
       </v-simple-table>
     </v-col>
@@ -144,6 +152,7 @@ import { CARGAR_INFORMACION } from "@/services/crud";
 
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
+import { ProductoCompra } from "@/interfaces/ProductoCompra";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -151,10 +160,12 @@ export default Vue.extend({
     BuscarElemento,
     EditarCompra,
   },
-  props: ["compras"],
+  props: {
+    compras: Object,
+  },
   data: () => ({
     columnas: COLUMNAS,
-    productos: [""],
+    productos: [{}],
     productoNuevo: {
       codigo_barras: "",
       descripcion_producto: "",
@@ -167,8 +178,9 @@ export default Vue.extend({
       descuento: 0,
       subtotal: 0,
     },
-    bodegasDisponibles: [""],
-    productosDisponibles: [""],
+    bodegasDisponibles: [{}],
+    productosDisponibles: [{}],
+    mostrarEditarCompra: false,
   }),
   computed: {
     validarProd() {
@@ -201,7 +213,10 @@ export default Vue.extend({
     },
     agregarProducto() {
       const product: any = { ...this.productoNuevo };
-      this.productos.unshift(product);
+      const nuevosProductos = this.productos;
+      nuevosProductos.push(product);
+      this.productos = nuevosProductos;
+      //this.productos.push(product);
       this.resetNuevoProducto();
       this.$emit("enviarProductos", this.productos);
     },
@@ -261,11 +276,19 @@ export default Vue.extend({
       this.productoNuevo.codigo_barras = product.codigo_barras;
       this.productoNuevo.descripcion_producto = product.nombre;
     },
+    actualizar(element: any) {
+      console.log(element);
+      this.mostrarEditarCompra = false;
+    },
   },
   created() {
     this.listarBodegas();
     this.listarProductos();
-    this.productos = this.compras;
+    this.productos = [];
+    if (this.compras) {
+      this.productos = this.compras;
+    }
+
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
