@@ -48,9 +48,13 @@ export default Vue.extend({
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;
       if (productos.length > 0) {
-        await factura.asignarValores(datos_cliente, datos.darItemsFactura());
+        const consecutivo = await DAR_NUMERO_FACTURA(1);
+        await factura.asignarValores(
+          datos_cliente,
+          datos.darItemsFactura(),
+          consecutivo
+        );
         factura.cambiarEstado();
-        await DAR_NUMERO_FACTURA(1);
       } else {
         await Swal.fire({
           title: "Sin productos",

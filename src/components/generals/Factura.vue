@@ -85,7 +85,11 @@ export default Vue.extend({
     cambiarEstado() {
       this.dialog = !this.dialog;
     },
-    async asignarValores(datos_cliente: any, datos_movimiento: any) {
+    async asignarValores(
+      datos_cliente: any,
+      datos_movimiento: any,
+      consecutivo: number
+    ) {
       const productos: any[] = [];
       for (const producto of datos_movimiento.productos) {
         productos.push({
@@ -101,8 +105,8 @@ export default Vue.extend({
       this.tipo = datos_cliente.tipo;
       this.fecha_pago = datos_cliente.fecha_pago;
       this.tipo_factura = datos_cliente.tipo_factura;
+      this.consecutivo = consecutivo;
       this.productos = productos;
-      this.consecutivo = Math.floor(Math.random() * (10000 - 1)) + 1;
       this.caja = "@@@@@@_" + (Math.floor(Math.random() * (3 - 1)) + 1);
       this.calcularVenta(datos_movimiento, productos);
     },
