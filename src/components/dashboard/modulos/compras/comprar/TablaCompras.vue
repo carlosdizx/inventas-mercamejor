@@ -113,7 +113,7 @@
               <td>{{ item.subtotal }}</td>
               <td>
                 <v-btn
-                  @click="mostrarEditarCompra = true"
+                  @click="seleccionarCompraEditar(item, index)"
                   color="white"
                   icon
                   class="success"
@@ -132,8 +132,11 @@
             </tr>
           </tbody>
           <EditarCompra
+            v-if="mostrarEditarCompra"
             @actualizar="actualizar"
+            :compraAnterior="compraEditar"
             :mostrar="mostrarEditarCompra"
+            :indexElement="editarCompraIndice"
           />
         </template>
       </v-simple-table>
@@ -142,7 +145,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
 
 import { COLUMNAS } from "@/models/Producto";
 
@@ -153,6 +156,7 @@ import { CARGAR_INFORMACION } from "@/services/crud";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -161,7 +165,9 @@ export default Vue.extend({
     EditarCompra,
   },
   props: {
-    compras: Object,
+    compras: {
+      type: Object as PropType<Compra>,
+    },
   },
   data: () => ({
     columnas: COLUMNAS,
@@ -181,6 +187,8 @@ export default Vue.extend({
     bodegasDisponibles: [{}],
     productosDisponibles: [{}],
     mostrarEditarCompra: false,
+    compraEditar: {} as ProductoCompra,
+    editarCompraIndice: 1,
   }),
   computed: {
     validarProd() {
@@ -276,9 +284,15 @@ export default Vue.extend({
       this.productoNuevo.codigo_barras = product.codigo_barras;
       this.productoNuevo.descripcion_producto = product.nombre;
     },
+    seleccionarCompraEditar(compra: ProductoCompra, index: number) {
+      this.mostrarEditarCompra = true;
+      this.editarCompraIndice = index;
+      this.compraEditar = compra;
+    },
     actualizar(element: any) {
-      console.log(element);
+      console.log("elemtno dta", element);
       this.mostrarEditarCompra = false;
+      this.productos[element.indice] = element.compra;
     },
   },
   created() {
@@ -288,11 +302,45 @@ export default Vue.extend({
     if (this.compras) {
       this.productos = this.compras;
     }
-
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
     });
   },
 });
+// data() {
+//   return {
+//     players: new Array<Player>()
+//     players: [] as Player[] correctly form to data
+//   };
+// },
+// props: {
+//   message: {
+//     type: Object as PropType<FlashInterface>,
+//     required: true,
+//   },
+// },
+
+// import Vue, { PropType } from 'vue'
+// interface ComplexMessage {
+//   title: string,
+//   okMessage: string,
+//   cancelMessage: string
+// }
+// const Component = Vue.extend({
+//   props: {
+//     name: String,
+//     success: { type: String },
+//     callback: {
+//       type: Function as PropType<() => void>
+//     },
+//     message: {
+//       type: Object as PropType<ComplexMessage>,
+//       required: true,
+//       validator (message: ComplexMessage) {
+//         return !!message.title;
+//       }
+//     }
+//   }
+// })
 </script>

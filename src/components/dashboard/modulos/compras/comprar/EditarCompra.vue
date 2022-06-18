@@ -24,21 +24,25 @@
                 <th>
                   <v-text-field
                     placeholder="Ingrese Código"
-                    v-model="compra.codigo"
+                    v-model="compra.codigo_barras"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
                     placeholder="Ingrese Descripcíon"
-                    v-model="compra.descripcion"
+                    v-model="compra.descripcion_producto"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field v-model="compra.bodega"></v-text-field>
                 </th>
                 <th>
+                  <v-text-field v-model="compra.cantidad"></v-text-field>
+                </th>
+                <th>
                   <v-text-field v-model="compra.precio_compra"></v-text-field>
                 </th>
+
                 <th>
                   <v-text-field v-model="compra.por_ganancia"></v-text-field>
                 </th>
@@ -54,9 +58,6 @@
                 <th>
                   <v-text-field v-model="compra.subtotal"></v-text-field>
                 </th>
-                <th>
-                  <v-text-field v-model="compra.total"></v-text-field>
-                </th>
               </tr>
             </tbody>
           </v-simple-table>
@@ -70,34 +71,33 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
+
+import { ProductoCompra } from "@/interfaces/ProductoCompra";
+
 export default Vue.extend({
   name: "EditarCompra",
   props: {
-    product: String,
     mostrar: Boolean,
     indexElement: Number,
+    compraAnterior: {
+      type: Object as PropType<ProductoCompra>,
+    },
   },
   data: () => ({
-    compra: {
-      product: "",
-      codigo: "2000",
-      descripcion: "margarita",
-      bodega: "Principal",
-      cantidad: 24,
-      precio_compra: 1200,
-      por_ganancia: 12,
-      precio_venta: 1400,
-      impuesto: 0,
-      descuento: 0,
-      subtotal: 0,
-      total: 28800,
-    },
+    compra: {} as ProductoCompra,
   }),
   methods: {
     closeEdicion() {
-      this.$emit("actualizar", this.compra);
+      this.$emit("actualizar", {
+        compra: this.compra,
+        indice: this.indexElement,
+      });
     },
+  },
+  created() {
+    console.log(this.compraAnterior);
+    this.compra = this.compraAnterior;
   },
 });
 </script>
