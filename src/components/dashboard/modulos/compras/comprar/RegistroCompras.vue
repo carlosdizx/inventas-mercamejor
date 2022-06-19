@@ -223,7 +223,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue, { PropType } from "vue";
 
 import { COLUMNAS } from "@/models/Proveedor";
 
@@ -242,7 +242,7 @@ export default Vue.extend({
   },
   props: {
     compraAnterior: {
-      type: Object as () => Compra,
+      type: Object as PropType<Compra>,
     },
   },
   data() {
