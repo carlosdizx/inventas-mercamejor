@@ -107,7 +107,6 @@ export default Vue.extend({
       { text: "Precio*uni", value: "precio_unitario_venta" },
       { text: "Descuento*uni", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
-      { text: "Descuento", value: "subtotal" },
     ],
     filas: [{}],
     descuento_adicional: 0,

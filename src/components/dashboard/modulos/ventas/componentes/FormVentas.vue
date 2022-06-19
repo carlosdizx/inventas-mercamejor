@@ -27,6 +27,7 @@
                   outlined
                   counter
                   v-model="venta.documento_cliente"
+                  @focusout="buscarCliente(venta.documento_cliente)"
                   :error-messages="errors"
                   autofocus
                 />
@@ -127,6 +128,7 @@
 import Vue from "vue";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
+import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/generals/Funciones";
 
 export default Vue.extend({
   name: "FormVentas",
@@ -148,6 +150,10 @@ export default Vue.extend({
     abrirDialogoLisadoClientes() {
       const dialog: any = this.$refs.DialogClientes;
       dialog.cambiarEstado();
+    },
+    async buscarCliente(documento: any) {
+      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(documento);
+      this.cambiarCliente(resultado);
     },
     cambiarCliente(cliente: any) {
       this.cliente = cliente;
