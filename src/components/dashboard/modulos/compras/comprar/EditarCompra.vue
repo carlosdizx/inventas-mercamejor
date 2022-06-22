@@ -40,26 +40,34 @@
                   ></v-select>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.cantidad"></v-text-field>
+                  <v-text-field v-model.number="compra.cantidad"></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.precio_compra"></v-text-field>
+                  <v-text-field
+                    v-model.number="compra.precio_compra"
+                  ></v-text-field>
                 </th>
 
                 <th>
-                  <v-text-field v-model="compra.por_ganancia"></v-text-field>
+                  <v-text-field
+                    v-model.number="compra.por_ganancia"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.precio_venta"></v-text-field>
+                  <v-text-field
+                    v-model.number="compra.precio_venta"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.impuesto"></v-text-field>
+                  <v-text-field v-model.number="compra.impuesto"></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.descuento"></v-text-field>
+                  <v-text-field
+                    v-model.number="compra.descuento"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.subtotal"></v-text-field>
+                  <v-text-field v-model.number="compra.subtotal"></v-text-field>
                 </th>
               </tr>
             </tbody>
@@ -103,7 +111,6 @@ export default Vue.extend({
     },
   },
   created() {
-    console.log(this.compraAnterior);
     this.compra = { ...this.compraAnterior };
   },
 });
