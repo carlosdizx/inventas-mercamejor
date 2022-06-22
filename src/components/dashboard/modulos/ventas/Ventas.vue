@@ -49,6 +49,9 @@ export default Vue.extend({
       const productos: [] = datos.darItemsFactura().productos;
       if (productos.length > 0) {
         const consecutivo = await DAR_NUMERO_FACTURA(1);
+        if (typeof consecutivo === "boolean") {
+          return;
+        }
         await factura.asignarValores(
           datos_cliente,
           datos.darItemsFactura(),

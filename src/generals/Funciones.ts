@@ -1,5 +1,6 @@
 import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
 import { DatosEmpresa } from "@/class/DatosEmpresa";
+import Swal from "sweetalert2";
 
 export const LISTAR_CATEGORIAS = async () => await LISTAR("categorias");
 
@@ -18,15 +19,28 @@ export const DAR_NUMERO_FACTURA = async (tipo: number) => {
   const resultado: any = await BUSCAR("datos_generales", "mercamejor");
   const factura: DatosEmpresa = new DatosEmpresa(
     resultado.consecutivo_compra,
-    resultado.consecutivo_venta
+    resultado.consecutivo_venta,
+    resultado.cantidad_compra,
+    resultado.cantidad_venta
   );
-  let consecutivo = 0;
+  const validacion = await factura.consecutivosValidos();
+  if (!validacion) {
+    await Swal.fire(
+      "No se pueden generar mas facturas",
+      "Limite de facturas alcanzadas",
+      "error"
+    );
+    return false;
+  }
+  let consecutivo = "";
   if (tipo === 1) {
     await factura.modificarConsecutivoVenta();
-    consecutivo = factura.darConsecutivoVenta();
+    consecutivo =
+      factura.darConsecutivoVenta() + " de " + resultado.cantidad_venta;
   } else {
     await factura.modificarConsecutivoCompra();
-    consecutivo = factura.darConsecutivoCompra();
+    consecutivo =
+      factura.darConsecutivoCompra() + " de " + resultado.cantidad_compra;
   }
   await EDITAR(
     "datos_generales",

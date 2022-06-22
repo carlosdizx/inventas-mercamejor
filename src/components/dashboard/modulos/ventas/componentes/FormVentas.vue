@@ -143,7 +143,7 @@ export default Vue.extend({
     },
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
-    cliente: null,
+    cliente: { nombres: "Clientes", apellidos: "varios", documento: 2222222 },
     enfoque: false,
   }),
   methods: {
