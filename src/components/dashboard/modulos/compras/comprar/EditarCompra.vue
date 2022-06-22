@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="mostrar">
     <v-card class="pt-3">
       <div class="text-center">
-        <h1>Editar Compra</h1>
+        <h1>Editar item de compra</h1>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-simple-table class="ml-3 mt-3">
             <thead>
@@ -22,19 +22,22 @@
             <tbody>
               <tr>
                 <th>
-                  <v-text-field
-                    placeholder="Ingrese Código"
-                    v-model="compra.codigo_barras"
-                  ></v-text-field>
+                  <h2>
+                    {{ compra.codigo_barras }}
+                  </h2>
                 </th>
                 <th>
-                  <v-text-field
-                    placeholder="Ingrese Descripcíon"
-                    v-model="compra.descripcion_producto"
-                  ></v-text-field>
+                  <h2>
+                    {{ compra.descripcion_producto }}
+                  </h2>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.bodega"></v-text-field>
+                  <v-select
+                    v-model="compra.bodega"
+                    :items="bodegasDisponibles"
+                    item-text="nombre"
+                    item-value="nombre"
+                  ></v-select>
                 </th>
                 <th>
                   <v-text-field v-model="compra.cantidad"></v-text-field>
@@ -61,8 +64,8 @@
               </tr>
             </tbody>
           </v-simple-table>
-          <v-btn class="danger" @click="closeEdicion()">Cancelar</v-btn>
-          <v-btn class="success" @click="closeEdicion()">Actualizar</v-btn>
+          <v-btn class="danger" @click="cancelar()">Cancelar</v-btn>
+          <v-btn class="success" @click="actualizarItem()">Actualizar</v-btn>
           <v-col v-if="!invalid">.</v-col>
         </ValidationObserver>
       </div>
@@ -83,16 +86,20 @@ export default Vue.extend({
     compraAnterior: {
       type: Object as PropType<ProductoCompra>,
     },
+    bodegasDisponibles: Array,
   },
   data: () => ({
     compra: {} as ProductoCompra,
   }),
   methods: {
-    closeEdicion() {
+    actualizarItem() {
       this.$emit("actualizar", {
         compra: this.compra,
         indice: this.indexElement,
       });
+    },
+    cancelar() {
+      this.$emit("cancelar");
     },
   },
   created() {

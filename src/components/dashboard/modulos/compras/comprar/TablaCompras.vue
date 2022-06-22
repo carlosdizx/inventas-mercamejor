@@ -134,9 +134,11 @@
           <EditarCompra
             v-if="mostrarEditarCompra"
             @actualizar="actualizar"
+            @cancelar="mostrarEditarCompra = false"
             :compraAnterior="compraEditar"
             :mostrar="mostrarEditarCompra"
             :indexElement="editarCompraIndice"
+            :bodegasDisponibles="bodegasDisponibles"
           />
         </template>
       </v-simple-table>
