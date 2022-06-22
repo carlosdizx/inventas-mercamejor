@@ -1,6 +1,7 @@
 <template>
   <v-row class="mr-5 ml-5">
     <v-col>
+      {{ productoNuevo }}
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -55,7 +56,7 @@
                 <v-text-field
                   @input="ingresarGanancia()"
                   type="number"
-                  v-model="productoNuevo.porGanancia"
+                  v-model="porGanancia"
                 ></v-text-field>
               </td>
               <td>
@@ -91,7 +92,7 @@
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <BuscarElemento
-                  @getItem="selecionarUsuario"
+                  @getItem="seleccionaProducto"
                   icon="mdi-magnify"
                   :items="productosDisponibles"
                   :headers="columnas"
@@ -147,7 +148,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
+import Vue from "vue";
 
 import { COLUMNAS } from "@/models/Producto";
 
@@ -174,23 +175,13 @@ export default Vue.extend({
   data: () => ({
     columnas: COLUMNAS,
     productos: [{}],
-    productoNuevo: {
-      codigo_barras: "",
-      descripcion_producto: "",
-      bodega: "",
-      cantidad: 1,
-      precio_compra: 0,
-      precio_venta: 0,
-      porGanancia: 0,
-      impuesto: 0,
-      descuento: 0,
-      subtotal: 0,
-    },
+    productoNuevo: {} as ProductoCompra,
     bodegasDisponibles: [{}],
     productosDisponibles: [{}],
     mostrarEditarCompra: false,
     compraEditar: {} as ProductoCompra,
     editarCompraIndice: 1,
+    porGanancia: 0,
   }),
   computed: {
     validarProd() {
@@ -202,7 +193,7 @@ export default Vue.extend({
         this.productoNuevo.cantidad < 1 ||
         this.productoNuevo.precio_compra < 1 ||
         this.productoNuevo.precio_venta < 1 ||
-        this.productoNuevo.porGanancia < 0 ||
+        this.porGanancia < 0 ||
         this.productoNuevo.subtotal < 1 ||
         this.productoNuevo.precio_venta < this.productoNuevo.precio_compra
       )
@@ -235,7 +226,7 @@ export default Vue.extend({
       this.$emit("enviarProductos", this.productos);
     },
     resetNuevoProducto(): void {
-      this.productoNuevo.codigo_barras = "";
+      this.productoNuevo.codigo_barras = null;
       this.productoNuevo.descripcion_producto = "";
       this.productoNuevo.cantidad = 1;
       this.productoNuevo.precio_compra = 0;
@@ -259,10 +250,9 @@ export default Vue.extend({
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
-      if (this.productoNuevo.porGanancia >= 0) {
+      if (this.porGanancia >= 0) {
         let precio_venta: number =
-          this.productoNuevo.precio_compra *
-          (1 + this.productoNuevo.porGanancia / 100);
+          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
         this.productoNuevo.precio_venta = precio;
       }
@@ -277,14 +267,24 @@ export default Vue.extend({
             Number(this.productoNuevo.precio_compra)) /
             Number(this.productoNuevo.precio_compra)) *
           100;
-        this.productoNuevo.porGanancia = Math.trunc(porGanancia);
+        this.porGanancia = Math.trunc(porGanancia);
       } else {
-        this.productoNuevo.porGanancia = 0;
+        this.porGanancia = 0;
       }
     },
-    selecionarUsuario(product: any) {
-      this.productoNuevo.codigo_barras = product.codigo_barras;
-      this.productoNuevo.descripcion_producto = product.nombre;
+    seleccionaProducto(product: any): void {
+      const productoNuevo: ProductoCompra = {
+        codigo_barras: product.codigo_barras,
+        descripcion_producto: product.nombre,
+        bodega: this.productoNuevo.bodega,
+        cantidad: this.productoNuevo.cantidad,
+        precio_compra: 0,
+        precio_venta: 0,
+        impuesto: 0,
+        descuento: 0,
+        subtotal: 0,
+      };
+      this.productoNuevo = productoNuevo;
     },
     seleccionarCompraEditar(compra: ProductoCompra, index: number) {
       this.mostrarEditarCompra = true;
@@ -311,39 +311,4 @@ export default Vue.extend({
     });
   },
 });
-// data() {
-//   return {
-//     players: new Array<Player>()
-//     players: [] as Player[] correctly form to data
-//   };
-// },
-// props: {
-//   message: {
-//     type: Object as PropType<FlashInterface>,
-//     required: true,
-//   },
-// },
-
-// import Vue, { PropType } from 'vue'
-// interface ComplexMessage {
-//   title: string,
-//   okMessage: string,
-//   cancelMessage: string
-// }
-// const Component = Vue.extend({
-//   props: {
-//     name: String,
-//     success: { type: String },
-//     callback: {
-//       type: Function as PropType<() => void>
-//     },
-//     message: {
-//       type: Object as PropType<ComplexMessage>,
-//       required: true,
-//       validator (message: ComplexMessage) {
-//         return !!message.title;
-//       }
-//     }
-//   }
-// })
 </script>
