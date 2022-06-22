@@ -69,10 +69,19 @@
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
       <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog>
+        <v-edit-dialog
+          @save="cambiarCantidadProducto"
+          @clse="cambiarCantidadProducto"
+          @cancel="cambiarCantidadProducto"
+        >
           {{ item.cantidad }}
           <template v-slot:input>
-            <v-text-field label="Editar" counter />
+            <v-text-field
+              @focusout="cambiarCantidadProducto"
+              label="Editar"
+              counter
+              v-model="item.cantidad"
+            />
           </template>
         </v-edit-dialog>
       </template>
@@ -95,8 +104,8 @@ export default Vue.extend({
       { text: "Codigo", value: "codigo_barras" },
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
-      { text: "Precio", value: "precio_unitario_venta" },
-      { text: "Descuento", value: "descuento" },
+      { text: "Precio*uni", value: "precio_unitario_venta" },
+      { text: "Descuento*uni", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [{}],
@@ -140,6 +149,13 @@ export default Vue.extend({
         this.total = this.subtotal - this.descuento;
       });
     },
+    cambiarCantidadProducto() {
+      for (const fila of this.filas) {
+        const producto: any = fila;
+        producto.subtotal = producto.cantidad * producto.precio_unitario_venta;
+      }
+      this.calcularValores();
+    },
     darItemsFactura() {
       const datos_factura = {
         productos: this.filas,
@@ -159,9 +175,6 @@ export default Vue.extend({
           timer: 800,
         });
       }
-    },
-    calcularPrecioFinal(): number {
-      return this.total - (this.total * this.descuento_adicional) / 100;
     },
   },
   created() {

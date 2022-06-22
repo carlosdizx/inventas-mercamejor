@@ -1,5 +1,5 @@
 import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
-import { DatosEmpresa } from "@/entity/DatosEmpresa";
+import { DatosEmpresa } from "@/class/DatosEmpresa";
 
 export const LISTAR_CATEGORIAS = async () => await LISTAR("categorias");
 
@@ -34,4 +34,14 @@ export const DAR_NUMERO_FACTURA = async (tipo: number) => {
     JSON.parse(JSON.stringify(factura))
   );
   return consecutivo;
+};
+
+export const BUSCAR_CLIENTE_POR_DOCUMENTO = async (documento: any) => {
+  const resultado = await LISTAR_IN("clientes", "documento", documento);
+  console.log(resultado.size);
+  if (resultado.size === 1) {
+    return resultado.docs[0].data();
+  } else {
+    return { nombres: "Clientes", apellidos: "Varios", documento: 2222222 };
+  }
 };
