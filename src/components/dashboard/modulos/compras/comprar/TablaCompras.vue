@@ -168,7 +168,7 @@ export default Vue.extend({
   },
   props: {
     compras: {
-      type: Object as PropType<Compra>,
+      type: Array as () => Array<Compra>,
     },
   },
   data: () => ({
@@ -302,7 +302,8 @@ export default Vue.extend({
     this.listarProductos();
     this.productos = [];
     if (this.compras) {
-      this.productos = this.compras;
+      const nuevasCompras: Array<Compra> = this.compras;
+      this.productos = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;

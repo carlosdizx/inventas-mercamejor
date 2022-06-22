@@ -329,6 +329,8 @@ export default Vue.extend({
   },
   created() {
     this.listarProveedores();
+    this.compra.descuento = 0;
+    this.compra.impuesto = 0;
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
