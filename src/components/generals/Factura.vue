@@ -25,21 +25,22 @@
         </div>
 
         <!--  seccion productos  -->
-
-        <div
-          v-for="(producto, index) in productos"
-          :key="index"
-          class="productos"
-        >
-          <h5 class="productos__h5">
-            {{ producto.cantidad }}*{{ producto.nombre }}
-          </h5>
-          <h5 class="productos__h5">{{ producto.precio }}</h5>
-          <h5 class="productos__h5">
-            {{ producto.cantidad }}*{{ producto.descuento }}
-          </h5>
-          <h5 class="productos__h5">{{ producto.subtotal }}</h5>
-          <v-divider />
+        <div class="scroll">
+          <div
+            v-for="(producto, index) in productos"
+            :key="index"
+            class="productos"
+          >
+            <h5 class="productos__h5">
+              {{ producto.cantidad }}*{{ producto.nombre }}
+            </h5>
+            <h5 class="productos__h5">{{ producto.precio }}</h5>
+            <h5 class="productos__h5">
+              {{ producto.cantidad }}*{{ producto.descuento }}
+            </h5>
+            <h5 class="productos__h5">{{ producto.subtotal }}</h5>
+            <v-divider />
+          </div>
         </div>
       </v-card-text>
 
@@ -131,7 +132,6 @@ export default Vue.extend({
 <style scoped>
 .factura {
   margin: 0px;
-  overflow: auto;
 }
 
 h1 {
@@ -175,7 +175,10 @@ h3 {
   width: 23%;
   text-align: center;
 }
-
+.scroll {
+  height: 258px;
+  overflow: auto;
+}
 .productos__h5 {
   margin: 0;
   padding-bottom: 5px;

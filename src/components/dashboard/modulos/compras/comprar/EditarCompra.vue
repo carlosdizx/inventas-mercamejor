@@ -97,7 +97,7 @@ export default Vue.extend({
   },
   created() {
     console.log(this.compraAnterior);
-    this.compra = this.compraAnterior;
+    this.compra = { ...this.compraAnterior };
   },
 });
 </script>
