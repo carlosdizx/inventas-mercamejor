@@ -69,12 +69,14 @@
                 <v-text-field
                   type="number"
                   v-model.number="productoNuevo.impuesto"
+                  @input="calcularSubtotal()"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
                   v-model.number="productoNuevo.descuento"
+                  @input="calcularSubtotal()"
                 ></v-text-field>
               </td>
               <td>
@@ -83,7 +85,7 @@
               <td>
                 <v-btn
                   color="white"
-                  @click="agregarProducto"
+                  @click="agregarProducto()"
                   :disabled="!validarProd"
                   icon
                   class="warning ml-1"
@@ -106,7 +108,15 @@
               <td>{{ item.bodega }}</td>
               <td>{{ item.cantidad }}</td>
               <td>{{ item.precio_compra }}</td>
-              <td>{{ item.porGanancia }}</td>
+              <td>
+                {{
+                  Math.trunc(
+                    ((item.precio_venta - item.precio_compra) /
+                      item.precio_compra) *
+                      100
+                  )
+                }}
+              </td>
               <td>{{ item.precio_venta }}</td>
               <td>{{ item.impuesto }}</td>
               <td>{{ item.descuento }}</td>
@@ -173,6 +183,7 @@ export default Vue.extend({
   data: () => ({
     columnas: COLUMNAS,
     productos: [] as ProductoCompra[],
+    productosPorGanancia: [],
     productoNuevo: {} as ProductoCompra,
     compraEditar: {} as ProductoCompra,
     bodegasDisponibles: [{}],
@@ -222,15 +233,19 @@ export default Vue.extend({
       this.productos.splice(index, 1);
       this.$emit("enviarProductos", this.productos);
     },
-    resetNuevoProducto(): void {
-      this.productoNuevo.codigo_barras = null;
-      this.productoNuevo.descripcion_producto = "";
-      this.productoNuevo.cantidad = 1;
-      this.productoNuevo.precio_compra = 0;
-      this.productoNuevo.precio_venta = 0;
-      this.productoNuevo.impuesto = 0;
-      this.productoNuevo.descuento = 0;
-      this.productoNuevo.subtotal = 0;
+    resetNuevoProducto() {
+      const producto: ProductoCompra = {
+        codigo_barras: null,
+        descripcion_producto: "",
+        bodega: this.productoNuevo.bodega || "",
+        cantidad: this.productoNuevo.cantidad || 1,
+        precio_compra: 0,
+        precio_venta: 0,
+        impuesto: 0,
+        descuento: 0,
+        subtotal: 0,
+      };
+      this.productoNuevo = producto;
     },
     buscarProducto() {
       let producto = "";
@@ -253,7 +268,9 @@ export default Vue.extend({
     calcularSubtotal() {
       const subtotal: number =
         Number(this.productoNuevo.cantidad) *
-        Number(this.productoNuevo.precio_compra);
+          Number(this.productoNuevo.precio_compra) +
+        Number(this.productoNuevo.impuesto) -
+        Number(this.productoNuevo.descuento);
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
@@ -307,7 +324,7 @@ export default Vue.extend({
   created() {
     this.listarBodegas();
     this.listarProductos();
-    this.productoNuevo.cantidad = 1;
+    this.resetNuevoProducto();
     if (this.compras) {
       const nuevasCompras: Array<ProductoCompra> = this.compras;
       this.productos = nuevasCompras;

@@ -65,10 +65,14 @@
                   ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model.number="compra.impuesto"></v-text-field>
+                  <v-text-field
+                    @input="calcularSubtotal()"
+                    v-model.number="compra.impuesto"
+                  ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
+                    @input="calcularSubtotal()"
                     v-model.number="compra.descuento"
                   ></v-text-field>
                 </th>
@@ -81,7 +85,12 @@
             </tbody>
           </v-simple-table>
           <v-btn class="danger" @click="cancelar()">Cancelar</v-btn>
-          <v-btn class="success" @click="actualizarItem()">Actualizar</v-btn>
+          <v-btn
+            class="success"
+            :disabled="!validarDatos"
+            @click="actualizarItem()"
+            >Actualizar</v-btn
+          >
           <v-col v-if="!invalid">.</v-col>
         </ValidationObserver>
       </div>
@@ -109,6 +118,24 @@ export default Vue.extend({
     compra: {} as ProductoCompra,
     porGanancia: 0,
   }),
+  computed: {
+    validarDatos() {
+      if (
+        !this.compra.codigo_barras ||
+        !this.compra.descripcion_producto ||
+        !this.compra.descripcion_producto ||
+        !this.compra.bodega ||
+        this.compra.cantidad < 1 ||
+        this.compra.precio_compra < 1 ||
+        this.compra.precio_venta < 1 ||
+        this.porGanancia < 0 ||
+        this.compra.subtotal < 0 ||
+        this.compra.precio_venta < this.compra.precio_compra
+      )
+        return false;
+      return true;
+    },
+  },
   methods: {
     actualizarItem() {
       this.$emit("actualizar", {
@@ -129,9 +156,11 @@ export default Vue.extend({
       this.calcularSubtotal();
     },
     calcularSubtotal() {
-      const subtotal: number = this.compra.cantidad * this.compra.precio_compra;
+      const subtotal: number =
+        this.compra.cantidad * this.compra.precio_compra -
+        this.compra.descuento +
+        this.compra.impuesto;
       this.compra.subtotal = subtotal;
-      console.log(this.compra.subtotal);
     },
     ingresarGanancia() {
       if (this.porGanancia >= 0 && this.compra.precio_compra) {
@@ -142,7 +171,6 @@ export default Vue.extend({
       }
     },
     ingresarVenta() {
-      console.log("ingresar venta");
       if (
         Number(this.compra.precio_venta) >= Number(this.compra.precio_compra)
       ) {
@@ -159,6 +187,11 @@ export default Vue.extend({
   },
   created() {
     this.compra = { ...this.compraAnterior };
+    this.porGanancia = Math.trunc(
+      ((this.compra.precio_venta - this.compra.precio_compra) /
+        this.compra.precio_compra) *
+        100
+    );
     this.calcularGananciaPrecioCompra();
   },
 });
