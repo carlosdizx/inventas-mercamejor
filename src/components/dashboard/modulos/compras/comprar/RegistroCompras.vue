@@ -235,6 +235,7 @@ import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCo
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Compra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { Inventarios } from "@/models/Inventarios";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -262,7 +263,6 @@ export default Vue.extend({
       if (this.compra.total < 1 || this.compra.descuento < this.compra.total) {
         val = false;
       }
-      console.log("total", this.compra.total);
       return val;
     },
   },
@@ -310,7 +310,7 @@ export default Vue.extend({
         documento_proveedor: null,
         nombre_proveedor: "Proveedores varios",
         fecha_documento: new Date(),
-        cod_factura: "",
+        cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
         tipo_pago: this.compra.tipo_pago,
         fecha_pago: new Date(),
@@ -343,7 +343,29 @@ export default Vue.extend({
       this.compra.updated_at = new Date();
       this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
       await GUARDAR("compras", this.compra);
-      this.resetCampos();
+      const inventarios: Array<Inventarios> = [];
+      this.compra.compras.forEach((compra) => {
+        const inventario: Inventarios = {
+          created_at: new Date(),
+          updated_at: new Date(),
+          fecha_llegada_producto: this.compra.fecha_llegada_producto,
+          cedula_nit: this.compra.documento_proveedor,
+          nombres: this.compra.nombre_proveedor,
+          tipo_factura: this.compra.tipo_compra,
+          documento: this.compra.cod_factura,
+          bodega: compra.bodega,
+          producto: compra.descripcion_producto,
+          codigo_barras: compra.codigo_barras,
+          salidas: compra.cantidad,
+          entradas: 0,
+          cruce: "",
+          caja: "",
+        };
+        inventarios.push(inventario);
+      });
+      for (const item of inventarios) {
+        await GUARDAR("inventarios", item);
+      }
     },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
