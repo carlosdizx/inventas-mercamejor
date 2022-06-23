@@ -23,7 +23,7 @@
               <td>
                 <v-text-field
                   @input="buscarProducto()"
-                  v-model="productoNuevo.codigo_barras"
+                  v-model.number="productoNuevo.codigo_barras"
                 ></v-text-field>
               </td>
               <td>
@@ -40,7 +40,7 @@
               <td>
                 <v-text-field
                   @input="calcularSubtotal()"
-                  v-model="productoNuevo.cantidad"
+                  v-model.number="productoNuevo.cantidad"
                   type="number"
                 ></v-text-field>
               </td>
@@ -48,33 +48,33 @@
                 <v-text-field
                   @input="calcularGananciaPrecioCompra()"
                   type="number"
-                  v-model="productoNuevo.precio_compra"
+                  v-model.number="productoNuevo.precio_compra"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   @input="ingresarGanancia()"
                   type="number"
-                  v-model="porGanancia"
+                  v-model.number="porGanancia"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   @input="ingresarVenta()"
                   type="number"
-                  v-model="productoNuevo.precio_venta"
+                  v-model.number="productoNuevo.precio_venta"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
-                  v-model="productoNuevo.impuesto"
+                  v-model.number="productoNuevo.impuesto"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
-                  v-model="productoNuevo.descuento"
+                  v-model.number="productoNuevo.descuento"
                 ></v-text-field>
               </td>
               <td>
@@ -230,7 +230,7 @@ export default Vue.extend({
       this.productoNuevo.precio_venta = 0;
       this.productoNuevo.impuesto = 0;
       this.productoNuevo.descuento = 0;
-      this.productoNuevo.subtotal = 10;
+      this.productoNuevo.subtotal = 0;
     },
     buscarProducto() {
       let producto = "";
@@ -252,7 +252,8 @@ export default Vue.extend({
     },
     calcularSubtotal() {
       const subtotal: number =
-        this.productoNuevo.cantidad * this.productoNuevo.precio_compra;
+        Number(this.productoNuevo.cantidad) *
+        Number(this.productoNuevo.precio_compra);
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {

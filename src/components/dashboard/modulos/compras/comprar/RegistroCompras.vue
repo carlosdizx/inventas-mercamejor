@@ -11,7 +11,7 @@
             <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula proveedor"
-                v-model="compra.documento_proveedor"
+                v-model.number="compra.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -146,7 +146,7 @@
               <v-text-field
                 label="Subtotal"
                 readonly
-                v-model="compra.subtotal"
+                v-model.number="compra.subtotal"
                 outlined
                 dense
               ></v-text-field>
@@ -161,7 +161,7 @@
                 <v-text-field
                   @input="calcularTotal()"
                   label="Descuento"
-                  v-model="compra.descuento"
+                  v-model.number="compra.descuento"
                   :error-messages="errors"
                   outlined
                   dense
@@ -178,7 +178,7 @@
                 <v-text-field
                   label="Impuesto"
                   @input="calcularTotal()"
-                  v-model="compra.impuesto"
+                  v-model.number="compra.impuesto"
                   :error-messages="errors"
                   outlined
                   dense
@@ -195,9 +195,9 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
+                :disabled="validarRegistro"
+                color="color_a mb-3"
                 x-large
-                dark
-                class="color_a mb-3"
                 block
                 >Registrar</v-btn
               >
@@ -207,6 +207,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
+                :disabled="validarRegistro"
                 x-large
                 dark
                 class="color_a mb-3"
@@ -257,14 +258,11 @@ export default Vue.extend({
   },
   computed: {
     validarRegistro() {
-      let val = false;
-      if (
-        this.compra.total < 1 ||
-        this.compra.descuento < this.compra.total ||
-        this.compra.compras.length === 0
-      ) {
-        val = true;
+      let val = true;
+      if (this.compra.total < 1 || this.compra.descuento < this.compra.total) {
+        val = false;
       }
+      console.log("total", this.compra.total);
       return val;
     },
   },
@@ -354,9 +352,24 @@ export default Vue.extend({
   },
   created() {
     this.listarProveedores();
-    this.compra.descuento = 0;
-    this.compra.impuesto = 0;
-    this.compra.nombre_proveedor = "Proveedores varios";
+    const compra: Compra = {
+      documento_proveedor: null,
+      nombre_proveedor: "Proveedores varios",
+      fecha_documento: new Date(),
+      cod_factura: "",
+      tipo_compra: "",
+      tipo_pago: "",
+      fecha_pago: new Date(),
+      fecha_llegada_producto: new Date(),
+      compras: [],
+      subtotal: 0,
+      descuento: 0,
+      impuesto: 0,
+      total: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    this.compra = compra;
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
