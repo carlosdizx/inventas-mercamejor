@@ -40,21 +40,27 @@
                   ></v-select>
                 </th>
                 <th>
-                  <v-text-field v-model.number="compra.cantidad"></v-text-field>
+                  <v-text-field
+                    @input="calcularSubtotal()"
+                    v-model.number="compra.cantidad"
+                  ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
+                    @input="calcularGananciaPrecioCompra()"
                     v-model.number="compra.precio_compra"
                   ></v-text-field>
                 </th>
 
                 <th>
                   <v-text-field
-                    v-model.number="compra.por_ganancia"
+                    @input="ingresarGanancia()"
+                    v-model.number="porGanancia"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
+                    @input="ingresarVenta()"
                     v-model.number="compra.precio_venta"
                   ></v-text-field>
                 </th>
@@ -67,7 +73,9 @@
                   ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model.number="compra.subtotal"></v-text-field>
+                  <h2>
+                    {{ compra.subtotal }}
+                  </h2>
                 </th>
               </tr>
             </tbody>
@@ -85,6 +93,7 @@
 import Vue, { PropType } from "vue";
 
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { REDONDEAR } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "EditarCompra",
@@ -98,6 +107,7 @@ export default Vue.extend({
   },
   data: () => ({
     compra: {} as ProductoCompra,
+    porGanancia: 0,
   }),
   methods: {
     actualizarItem() {
@@ -109,9 +119,47 @@ export default Vue.extend({
     cancelar() {
       this.$emit("cancelar");
     },
+    calcularGananciaPrecioCompra() {
+      if (this.porGanancia > 0 && this.compra.precio_compra > 0) {
+        let precio_venta: number =
+          this.compra.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.compra.precio_venta = precio;
+      }
+      this.calcularSubtotal();
+    },
+    calcularSubtotal() {
+      const subtotal: number = this.compra.cantidad * this.compra.precio_compra;
+      this.compra.subtotal = subtotal;
+      console.log(this.compra.subtotal);
+    },
+    ingresarGanancia() {
+      if (this.porGanancia >= 0 && this.compra.precio_compra) {
+        let precio_venta: number =
+          this.compra.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.compra.precio_venta = precio;
+      }
+    },
+    ingresarVenta() {
+      console.log("ingresar venta");
+      if (
+        Number(this.compra.precio_venta) >= Number(this.compra.precio_compra)
+      ) {
+        const porGanancia: number =
+          ((Number(this.compra.precio_venta) -
+            Number(this.compra.precio_compra)) /
+            Number(this.compra.precio_compra)) *
+          100;
+        this.porGanancia = Math.trunc(porGanancia);
+      } else {
+        this.porGanancia = 0;
+      }
+    },
   },
   created() {
     this.compra = { ...this.compraAnterior };
+    this.calcularGananciaPrecioCompra();
   },
 });
 </script>
