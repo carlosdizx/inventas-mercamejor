@@ -1,7 +1,6 @@
 <template>
   <v-row class="mr-5 ml-5">
     <v-col>
-      {{ productoNuevo }}
       <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -47,7 +46,7 @@
               </td>
               <td>
                 <v-text-field
-                  @input="calcularSubtotal()"
+                  @input="calcularGananciaPrecioCompra()"
                   type="number"
                   v-model="productoNuevo.precio_compra"
                 ></v-text-field>
@@ -159,7 +158,6 @@ import { CARGAR_INFORMACION } from "@/services/crud";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
-import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -169,17 +167,17 @@ export default Vue.extend({
   },
   props: {
     compras: {
-      type: Array as () => Array<Compra>,
+      type: Array as () => Array<ProductoCompra>,
     },
   },
   data: () => ({
     columnas: COLUMNAS,
-    productos: [{}],
+    productos: [] as ProductoCompra[],
     productoNuevo: {} as ProductoCompra,
+    compraEditar: {} as ProductoCompra,
     bodegasDisponibles: [{}],
     productosDisponibles: [{}],
     mostrarEditarCompra: false,
-    compraEditar: {} as ProductoCompra,
     editarCompraIndice: 1,
     porGanancia: 0,
   }),
@@ -213,13 +211,12 @@ export default Vue.extend({
       this.productosDisponibles = res;
     },
     agregarProducto() {
-      const product: any = { ...this.productoNuevo };
-      const nuevosProductos = this.productos;
+      const product: ProductoCompra = { ...this.productoNuevo };
+      const nuevosProductos: ProductoCompra[] = this.productos;
       nuevosProductos.push(product);
       this.productos = nuevosProductos;
-      //this.productos.push(product);
-      this.resetNuevoProducto();
       this.$emit("enviarProductos", this.productos);
+      this.resetNuevoProducto();
     },
     eliminarItem(index: number) {
       this.productos.splice(index, 1);
@@ -244,13 +241,22 @@ export default Vue.extend({
       });
       this.productoNuevo.descripcion_producto = producto;
     },
+    calcularGananciaPrecioCompra() {
+      if (this.porGanancia > 0 && this.productoNuevo.precio_compra > 0) {
+        let precio_venta: number =
+          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.productoNuevo.precio_venta = precio;
+      }
+      this.calcularSubtotal();
+    },
     calcularSubtotal() {
       const subtotal: number =
         this.productoNuevo.cantidad * this.productoNuevo.precio_compra;
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
-      if (this.porGanancia >= 0) {
+      if (this.porGanancia >= 0 && this.productoNuevo.precio_compra) {
         let precio_venta: number =
           this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
@@ -278,11 +284,11 @@ export default Vue.extend({
         descripcion_producto: product.nombre,
         bodega: this.productoNuevo.bodega,
         cantidad: this.productoNuevo.cantidad,
-        precio_compra: 0,
-        precio_venta: 0,
-        impuesto: 0,
-        descuento: 0,
-        subtotal: 0,
+        precio_compra: this.productoNuevo.precio_compra,
+        precio_venta: this.productoNuevo.precio_venta,
+        impuesto: this.productoNuevo.impuesto || 0,
+        descuento: this.productoNuevo.descuento || 0,
+        subtotal: this.productoNuevo.subtotal,
       };
       this.productoNuevo = productoNuevo;
     },
@@ -292,17 +298,17 @@ export default Vue.extend({
       this.compraEditar = compra;
     },
     actualizar(element: any) {
-      console.log("elemtno dta", element);
       this.mostrarEditarCompra = false;
       this.productos[element.indice] = element.compra;
+      this.$emit("enviarProductos", this.productos);
     },
   },
   created() {
     this.listarBodegas();
     this.listarProductos();
-    this.productos = [];
+    this.productoNuevo.cantidad = 1;
     if (this.compras) {
-      const nuevasCompras: Array<Compra> = this.compras;
+      const nuevasCompras: Array<ProductoCompra> = this.compras;
       this.productos = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {
