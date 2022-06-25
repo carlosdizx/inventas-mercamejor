@@ -11,7 +11,7 @@
             <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula proveedor"
-                v-model="compra.documento_proveedor"
+                v-model.number="compra.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -146,7 +146,7 @@
               <v-text-field
                 label="Subtotal"
                 readonly
-                v-model="compra.subtotal"
+                v-model.number="compra.subtotal"
                 outlined
                 dense
               ></v-text-field>
@@ -161,7 +161,7 @@
                 <v-text-field
                   @input="calcularTotal()"
                   label="Descuento"
-                  v-model="compra.descuento"
+                  v-model.number="compra.descuento"
                   :error-messages="errors"
                   outlined
                   dense
@@ -178,7 +178,7 @@
                 <v-text-field
                   label="Impuesto"
                   @input="calcularTotal()"
-                  v-model="compra.impuesto"
+                  v-model.number="compra.impuesto"
                   :error-messages="errors"
                   outlined
                   dense
@@ -195,9 +195,9 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
+                :disabled="validarRegistro"
+                color="color_a mb-3"
                 x-large
-                dark
-                class="color_a mb-3"
                 block
                 >Registrar</v-btn
               >
@@ -207,6 +207,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
+                :disabled="validarRegistro"
                 x-large
                 dark
                 class="color_a mb-3"
@@ -233,6 +234,8 @@ import { GUARDAR } from "@/services/crud";
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Compra } from "@/interfaces/Compra";
+import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { Inventarios } from "@/models/Inventarios";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -256,13 +259,9 @@ export default Vue.extend({
   },
   computed: {
     validarRegistro() {
-      let val = false;
-      if (
-        this.compra.total < 1 ||
-        this.compra.descuento < this.compra.total ||
-        this.compra.compras.length === 0
-      ) {
-        val = true;
+      let val = true;
+      if (this.compra.total < 1 || this.compra.descuento < this.compra.total) {
+        val = false;
       }
       return val;
     },
@@ -283,22 +282,46 @@ export default Vue.extend({
       this.compra.nombre_proveedor = result;
     },
     resetCampos() {
-      this.compra.nombre_proveedor = "Proveedores varios";
-      this.compra.documento_proveedor = 0;
-      this.compra.fecha_documento = new Date();
-      this.compra.cod_factura = "";
-      this.compra.tipo_compra = "Compra";
-      this.compra.tipo_pago = "Contado";
-      this.compra.fecha_pago = new Date();
-      this.compra.fecha_llegada_producto = new Date();
-      this.compra.compras = [];
-      this.compra.subtotal = 0;
-      this.compra.descuento = 0;
-      this.compra.impuesto = 0;
-      this.compra.total = 0;
+      const compra: Compra = {
+        descuento: 0,
+        impuesto: 0,
+        documento_proveedor: null,
+        nombre_proveedor: "Proveedores varios",
+        fecha_documento: new Date(),
+        cod_factura: "",
+        tipo_compra: this.compra.tipo_compra,
+        tipo_pago: this.compra.tipo_pago,
+        fecha_pago: new Date(),
+        fecha_llegada_producto: new Date(),
+        compras: [],
+        subtotal: 0,
+        total: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      this.compra = compra;
     },
-    actualizarProductos(productos: any) {
-      this.compra.compras = productos;
+    actualizarProductos(productos: ProductoCompra[]) {
+      const productoss: Array<ProductoCompra> = productos;
+      this.compra.compras = productoss;
+      const compra: Compra = {
+        descuento: 0,
+        impuesto: 0,
+        documento_proveedor: null,
+        nombre_proveedor: "Proveedores varios",
+        fecha_documento: new Date(),
+        cod_factura: this.compra.cod_factura,
+        tipo_compra: this.compra.tipo_compra,
+        tipo_pago: this.compra.tipo_pago,
+        fecha_pago: new Date(),
+        fecha_llegada_producto: new Date(),
+        compras: productos,
+        subtotal: 0,
+        total: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      this.compra = compra;
       this.calcularSubtotal();
       this.calcularTotal();
     },
@@ -320,7 +343,29 @@ export default Vue.extend({
       this.compra.updated_at = new Date();
       this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
       await GUARDAR("compras", this.compra);
-      this.resetCampos();
+      const inventarios: Array<Inventarios> = [];
+      this.compra.compras.forEach((compra) => {
+        const inventario: Inventarios = {
+          created_at: new Date(),
+          updated_at: new Date(),
+          fecha_llegada_producto: this.compra.fecha_llegada_producto,
+          cedula_nit: this.compra.documento_proveedor,
+          nombres: this.compra.nombre_proveedor,
+          tipo_factura: this.compra.tipo_compra,
+          documento: this.compra.cod_factura,
+          bodega: compra.bodega,
+          producto: compra.descripcion_producto,
+          codigo_barras: compra.codigo_barras,
+          salidas: compra.cantidad,
+          entradas: 0,
+          cruce: "",
+          caja: "",
+        };
+        inventarios.push(inventario);
+      });
+      for (const item of inventarios) {
+        await GUARDAR("inventarios", item);
+      }
     },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
@@ -329,6 +374,24 @@ export default Vue.extend({
   },
   created() {
     this.listarProveedores();
+    const compra: Compra = {
+      documento_proveedor: null,
+      nombre_proveedor: "Proveedores varios",
+      fecha_documento: new Date(),
+      cod_factura: "",
+      tipo_compra: "",
+      tipo_pago: "",
+      fecha_pago: new Date(),
+      fecha_llegada_producto: new Date(),
+      compras: [],
+      subtotal: 0,
+      descuento: 0,
+      impuesto: 0,
+      total: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    this.compra = compra;
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;

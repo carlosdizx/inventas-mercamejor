@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="mostrar">
     <v-card class="pt-3">
       <div class="text-center">
-        <h1>Editar Compra</h1>
+        <h1>Editar item de compra</h1>
         <ValidationObserver ref="observer" v-slot="{ invalid }">
           <v-simple-table class="ml-3 mt-3">
             <thead>
@@ -22,47 +22,75 @@
             <tbody>
               <tr>
                 <th>
+                  <h2>
+                    {{ compra.codigo_barras }}
+                  </h2>
+                </th>
+                <th>
+                  <h2>
+                    {{ compra.descripcion_producto }}
+                  </h2>
+                </th>
+                <th>
+                  <v-select
+                    v-model="compra.bodega"
+                    :items="bodegasDisponibles"
+                    item-text="nombre"
+                    item-value="nombre"
+                  ></v-select>
+                </th>
+                <th>
                   <v-text-field
-                    placeholder="Ingrese Código"
-                    v-model="compra.codigo_barras"
+                    @input="calcularSubtotal()"
+                    v-model.number="compra.cantidad"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
-                    placeholder="Ingrese Descripcíon"
-                    v-model="compra.descripcion_producto"
+                    @input="calcularGananciaPrecioCompra()"
+                    v-model.number="compra.precio_compra"
                   ></v-text-field>
-                </th>
-                <th>
-                  <v-text-field v-model="compra.bodega"></v-text-field>
-                </th>
-                <th>
-                  <v-text-field v-model="compra.cantidad"></v-text-field>
-                </th>
-                <th>
-                  <v-text-field v-model="compra.precio_compra"></v-text-field>
                 </th>
 
                 <th>
-                  <v-text-field v-model="compra.por_ganancia"></v-text-field>
+                  <v-text-field
+                    @input="ingresarGanancia()"
+                    v-model.number="porGanancia"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.precio_venta"></v-text-field>
+                  <v-text-field
+                    @input="ingresarVenta()"
+                    v-model.number="compra.precio_venta"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.impuesto"></v-text-field>
+                  <v-text-field
+                    @input="calcularSubtotal()"
+                    v-model.number="compra.impuesto"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.descuento"></v-text-field>
+                  <v-text-field
+                    @input="calcularSubtotal()"
+                    v-model.number="compra.descuento"
+                  ></v-text-field>
                 </th>
                 <th>
-                  <v-text-field v-model="compra.subtotal"></v-text-field>
+                  <h2>
+                    {{ compra.subtotal }}
+                  </h2>
                 </th>
               </tr>
             </tbody>
           </v-simple-table>
-          <v-btn class="danger" @click="closeEdicion()">Cancelar</v-btn>
-          <v-btn class="success" @click="closeEdicion()">Actualizar</v-btn>
+          <v-btn class="danger" @click="cancelar()">Cancelar</v-btn>
+          <v-btn
+            class="success"
+            :disabled="!validarDatos"
+            @click="actualizarItem()"
+            >Actualizar</v-btn
+          >
           <v-col v-if="!invalid">.</v-col>
         </ValidationObserver>
       </div>
@@ -74,6 +102,7 @@
 import Vue, { PropType } from "vue";
 
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { REDONDEAR } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "EditarCompra",
@@ -83,21 +112,87 @@ export default Vue.extend({
     compraAnterior: {
       type: Object as PropType<ProductoCompra>,
     },
+    bodegasDisponibles: Array,
   },
   data: () => ({
     compra: {} as ProductoCompra,
+    porGanancia: 0,
   }),
+  computed: {
+    validarDatos() {
+      if (
+        !this.compra.codigo_barras ||
+        !this.compra.descripcion_producto ||
+        !this.compra.descripcion_producto ||
+        !this.compra.bodega ||
+        this.compra.cantidad < 1 ||
+        this.compra.precio_compra < 1 ||
+        this.compra.precio_venta < 1 ||
+        this.porGanancia < 0 ||
+        this.compra.subtotal < 0 ||
+        this.compra.precio_venta < this.compra.precio_compra
+      )
+        return false;
+      return true;
+    },
+  },
   methods: {
-    closeEdicion() {
+    actualizarItem() {
       this.$emit("actualizar", {
         compra: this.compra,
         indice: this.indexElement,
       });
     },
+    cancelar() {
+      this.$emit("cancelar");
+    },
+    calcularGananciaPrecioCompra() {
+      if (this.porGanancia > 0 && this.compra.precio_compra > 0) {
+        let precio_venta: number =
+          this.compra.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.compra.precio_venta = precio;
+      }
+      this.calcularSubtotal();
+    },
+    calcularSubtotal() {
+      const subtotal: number =
+        this.compra.cantidad * this.compra.precio_compra -
+        this.compra.descuento +
+        this.compra.impuesto;
+      this.compra.subtotal = subtotal;
+    },
+    ingresarGanancia() {
+      if (this.porGanancia >= 0 && this.compra.precio_compra) {
+        let precio_venta: number =
+          this.compra.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.compra.precio_venta = precio;
+      }
+    },
+    ingresarVenta() {
+      if (
+        Number(this.compra.precio_venta) >= Number(this.compra.precio_compra)
+      ) {
+        const porGanancia: number =
+          ((Number(this.compra.precio_venta) -
+            Number(this.compra.precio_compra)) /
+            Number(this.compra.precio_compra)) *
+          100;
+        this.porGanancia = Math.trunc(porGanancia);
+      } else {
+        this.porGanancia = 0;
+      }
+    },
   },
   created() {
-    console.log(this.compraAnterior);
     this.compra = { ...this.compraAnterior };
+    this.porGanancia = Math.trunc(
+      ((this.compra.precio_venta - this.compra.precio_compra) /
+        this.compra.precio_compra) *
+        100
+    );
+    this.calcularGananciaPrecioCompra();
   },
 });
 </script>

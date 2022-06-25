@@ -23,7 +23,7 @@
               <td>
                 <v-text-field
                   @input="buscarProducto()"
-                  v-model="productoNuevo.codigo_barras"
+                  v-model.number="productoNuevo.codigo_barras"
                 ></v-text-field>
               </td>
               <td>
@@ -40,41 +40,43 @@
               <td>
                 <v-text-field
                   @input="calcularSubtotal()"
-                  v-model="productoNuevo.cantidad"
+                  v-model.number="productoNuevo.cantidad"
                   type="number"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  @input="calcularSubtotal()"
+                  @input="calcularGananciaPrecioCompra()"
                   type="number"
-                  v-model="productoNuevo.precio_compra"
+                  v-model.number="productoNuevo.precio_compra"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   @input="ingresarGanancia()"
                   type="number"
-                  v-model="productoNuevo.porGanancia"
+                  v-model.number="porGanancia"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   @input="ingresarVenta()"
                   type="number"
-                  v-model="productoNuevo.precio_venta"
+                  v-model.number="productoNuevo.precio_venta"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
-                  v-model="productoNuevo.impuesto"
+                  v-model.number="productoNuevo.impuesto"
+                  @input="calcularSubtotal()"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
-                  v-model="productoNuevo.descuento"
+                  v-model.number="productoNuevo.descuento"
+                  @input="calcularSubtotal()"
                 ></v-text-field>
               </td>
               <td>
@@ -83,7 +85,7 @@
               <td>
                 <v-btn
                   color="white"
-                  @click="agregarProducto"
+                  @click="agregarProducto()"
                   :disabled="!validarProd"
                   icon
                   class="warning ml-1"
@@ -91,7 +93,7 @@
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <BuscarElemento
-                  @getItem="selecionarUsuario"
+                  @getItem="seleccionaProducto"
                   icon="mdi-magnify"
                   :items="productosDisponibles"
                   :headers="columnas"
@@ -106,7 +108,15 @@
               <td>{{ item.bodega }}</td>
               <td>{{ item.cantidad }}</td>
               <td>{{ item.precio_compra }}</td>
-              <td>{{ item.porGanancia }}</td>
+              <td>
+                {{
+                  Math.trunc(
+                    ((item.precio_venta - item.precio_compra) /
+                      item.precio_compra) *
+                      100
+                  )
+                }}
+              </td>
               <td>{{ item.precio_venta }}</td>
               <td>{{ item.impuesto }}</td>
               <td>{{ item.descuento }}</td>
@@ -134,9 +144,11 @@
           <EditarCompra
             v-if="mostrarEditarCompra"
             @actualizar="actualizar"
+            @cancelar="mostrarEditarCompra = false"
             :compraAnterior="compraEditar"
             :mostrar="mostrarEditarCompra"
             :indexElement="editarCompraIndice"
+            :bodegasDisponibles="bodegasDisponibles"
           />
         </template>
       </v-simple-table>
@@ -145,7 +157,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
+import Vue from "vue";
 
 import { COLUMNAS } from "@/models/Producto";
 
@@ -156,7 +168,6 @@ import { CARGAR_INFORMACION } from "@/services/crud";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
-import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -166,29 +177,20 @@ export default Vue.extend({
   },
   props: {
     compras: {
-      type: Object as PropType<Compra>,
+      type: Array as () => Array<ProductoCompra>,
     },
   },
   data: () => ({
     columnas: COLUMNAS,
-    productos: [{}],
-    productoNuevo: {
-      codigo_barras: "",
-      descripcion_producto: "",
-      bodega: "",
-      cantidad: 1,
-      precio_compra: 0,
-      precio_venta: 0,
-      porGanancia: 0,
-      impuesto: 0,
-      descuento: 0,
-      subtotal: 0,
-    },
+    productos: [] as ProductoCompra[],
+    productosPorGanancia: [],
+    productoNuevo: {} as ProductoCompra,
+    compraEditar: {} as ProductoCompra,
     bodegasDisponibles: [{}],
     productosDisponibles: [{}],
     mostrarEditarCompra: false,
-    compraEditar: {} as ProductoCompra,
     editarCompraIndice: 1,
+    porGanancia: 0,
   }),
   computed: {
     validarProd() {
@@ -200,7 +202,7 @@ export default Vue.extend({
         this.productoNuevo.cantidad < 1 ||
         this.productoNuevo.precio_compra < 1 ||
         this.productoNuevo.precio_venta < 1 ||
-        this.productoNuevo.porGanancia < 0 ||
+        this.porGanancia < 0 ||
         this.productoNuevo.subtotal < 1 ||
         this.productoNuevo.precio_venta < this.productoNuevo.precio_compra
       )
@@ -220,27 +222,30 @@ export default Vue.extend({
       this.productosDisponibles = res;
     },
     agregarProducto() {
-      const product: any = { ...this.productoNuevo };
-      const nuevosProductos = this.productos;
+      const product: ProductoCompra = { ...this.productoNuevo };
+      const nuevosProductos: ProductoCompra[] = this.productos;
       nuevosProductos.push(product);
       this.productos = nuevosProductos;
-      //this.productos.push(product);
-      this.resetNuevoProducto();
       this.$emit("enviarProductos", this.productos);
+      this.resetNuevoProducto();
     },
     eliminarItem(index: number) {
       this.productos.splice(index, 1);
       this.$emit("enviarProductos", this.productos);
     },
-    resetNuevoProducto(): void {
-      this.productoNuevo.codigo_barras = "";
-      this.productoNuevo.descripcion_producto = "";
-      this.productoNuevo.cantidad = 1;
-      this.productoNuevo.precio_compra = 0;
-      this.productoNuevo.precio_venta = 0;
-      this.productoNuevo.impuesto = 0;
-      this.productoNuevo.descuento = 0;
-      this.productoNuevo.subtotal = 10;
+    resetNuevoProducto() {
+      const producto: ProductoCompra = {
+        codigo_barras: null,
+        descripcion_producto: "",
+        bodega: this.productoNuevo.bodega || "",
+        cantidad: this.productoNuevo.cantidad || 1,
+        precio_compra: 0,
+        precio_venta: 0,
+        impuesto: 0,
+        descuento: 0,
+        subtotal: 0,
+      };
+      this.productoNuevo = producto;
     },
     buscarProducto() {
       let producto = "";
@@ -251,16 +256,27 @@ export default Vue.extend({
       });
       this.productoNuevo.descripcion_producto = producto;
     },
+    calcularGananciaPrecioCompra() {
+      if (this.porGanancia > 0 && this.productoNuevo.precio_compra > 0) {
+        let precio_venta: number =
+          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        this.productoNuevo.precio_venta = precio;
+      }
+      this.calcularSubtotal();
+    },
     calcularSubtotal() {
       const subtotal: number =
-        this.productoNuevo.cantidad * this.productoNuevo.precio_compra;
+        Number(this.productoNuevo.cantidad) *
+          Number(this.productoNuevo.precio_compra) +
+        Number(this.productoNuevo.impuesto) -
+        Number(this.productoNuevo.descuento);
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
-      if (this.productoNuevo.porGanancia >= 0) {
+      if (this.porGanancia >= 0 && this.productoNuevo.precio_compra) {
         let precio_venta: number =
-          this.productoNuevo.precio_compra *
-          (1 + this.productoNuevo.porGanancia / 100);
+          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
         this.productoNuevo.precio_venta = precio;
       }
@@ -275,14 +291,24 @@ export default Vue.extend({
             Number(this.productoNuevo.precio_compra)) /
             Number(this.productoNuevo.precio_compra)) *
           100;
-        this.productoNuevo.porGanancia = Math.trunc(porGanancia);
+        this.porGanancia = Math.trunc(porGanancia);
       } else {
-        this.productoNuevo.porGanancia = 0;
+        this.porGanancia = 0;
       }
     },
-    selecionarUsuario(product: any) {
-      this.productoNuevo.codigo_barras = product.codigo_barras;
-      this.productoNuevo.descripcion_producto = product.nombre;
+    seleccionaProducto(product: any): void {
+      const productoNuevo: ProductoCompra = {
+        codigo_barras: product.codigo_barras,
+        descripcion_producto: product.nombre,
+        bodega: this.productoNuevo.bodega,
+        cantidad: this.productoNuevo.cantidad,
+        precio_compra: this.productoNuevo.precio_compra,
+        precio_venta: this.productoNuevo.precio_venta,
+        impuesto: this.productoNuevo.impuesto || 0,
+        descuento: this.productoNuevo.descuento || 0,
+        subtotal: this.productoNuevo.subtotal,
+      };
+      this.productoNuevo = productoNuevo;
     },
     seleccionarCompraEditar(compra: ProductoCompra, index: number) {
       this.mostrarEditarCompra = true;
@@ -290,17 +316,18 @@ export default Vue.extend({
       this.compraEditar = compra;
     },
     actualizar(element: any) {
-      console.log("elemtno dta", element);
       this.mostrarEditarCompra = false;
       this.productos[element.indice] = element.compra;
+      this.$emit("enviarProductos", this.productos);
     },
   },
   created() {
     this.listarBodegas();
     this.listarProductos();
-    this.productos = [];
+    this.resetNuevoProducto();
     if (this.compras) {
-      this.productos = this.compras;
+      const nuevasCompras: Array<ProductoCompra> = this.compras;
+      this.productos = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
@@ -308,39 +335,4 @@ export default Vue.extend({
     });
   },
 });
-// data() {
-//   return {
-//     players: new Array<Player>()
-//     players: [] as Player[] correctly form to data
-//   };
-// },
-// props: {
-//   message: {
-//     type: Object as PropType<FlashInterface>,
-//     required: true,
-//   },
-// },
-
-// import Vue, { PropType } from 'vue'
-// interface ComplexMessage {
-//   title: string,
-//   okMessage: string,
-//   cancelMessage: string
-// }
-// const Component = Vue.extend({
-//   props: {
-//     name: String,
-//     success: { type: String },
-//     callback: {
-//       type: Function as PropType<() => void>
-//     },
-//     message: {
-//       type: Object as PropType<ComplexMessage>,
-//       required: true,
-//       validator (message: ComplexMessage) {
-//         return !!message.title;
-//       }
-//     }
-//   }
-// })
 </script>
