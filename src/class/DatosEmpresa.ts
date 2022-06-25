@@ -1,8 +1,8 @@
 export class DatosEmpresa {
   private consecutivo_compra: number;
   private consecutivo_venta: number;
-  private cantidad_venta: number;
-  private cantidad_compra: number;
+  private readonly cantidad_venta: number;
+  private readonly cantidad_compra: number;
 
   constructor(
     consecutivo_compra: number,

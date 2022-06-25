@@ -78,7 +78,7 @@ export default Vue.extend({
     documento_cliente: "",
     caja: "@@@@@@_1",
     productos: [{}],
-    consecutivo: 0,
+    consecutivo: undefined,
     subtotal: 0,
     descuento: 0,
     total: 0,

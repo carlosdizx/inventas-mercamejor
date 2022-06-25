@@ -52,7 +52,6 @@ export const DAR_NUMERO_FACTURA = async (tipo: number) => {
 
 export const BUSCAR_CLIENTE_POR_DOCUMENTO = async (documento: any) => {
   const resultado = await LISTAR_IN("clientes", "documento", documento);
-  console.log(resultado.size);
   if (resultado.size === 1) {
     return resultado.docs[0].data();
   } else {
