@@ -38,6 +38,7 @@ import { CAMPOS, VALIDACIONES } from "@/models/Producto";
 import { COLUMNAS } from "@/models/Compra";
 
 import Vue from "vue";
+import { Compra } from "@/interfaces/Compra";
 
 export default Vue.extend({
   name: "Productos",
@@ -48,7 +49,7 @@ export default Vue.extend({
     validaciones: VALIDACIONES,
     datosUsuario: {},
     mostrar: true,
-    compra: {},
+    compra: {} as Compra,
   }),
   methods: {
     seleccionarItem(producto: any) {
