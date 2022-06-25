@@ -78,7 +78,7 @@ export default Vue.extend({
     documento_cliente: "",
     caja: "@@@@@@_1",
     productos: [{}],
-    consecutivo: undefined,
+    consecutivo: null,
     subtotal: 0,
     descuento: 0,
     total: 0,
@@ -90,7 +90,7 @@ export default Vue.extend({
     async asignarValores(
       datos_cliente: any,
       datos_movimiento: any,
-      consecutivo: string | boolean
+      consecutivo: any
     ) {
       const productos: any[] = [];
       for (const producto of datos_movimiento.productos) {
