@@ -1,5 +1,5 @@
 import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
-import { DatosEmpresa } from "@/class/DatosEmpresa";
+import { Empresa } from "@/class/Empresa";
 import Swal from "sweetalert2";
 
 export const LISTAR_CATEGORIAS = async () => await LISTAR("categorias");
@@ -17,7 +17,7 @@ export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) =>
 
 export const DAR_NUMERO_FACTURA = async (tipo: number) => {
   const resultado: any = await BUSCAR("datos_generales", "mercamejor");
-  const factura: DatosEmpresa = new DatosEmpresa(
+  const factura: Empresa = new Empresa(
     resultado.consecutivo_compra,
     resultado.consecutivo_venta,
     resultado.cantidad_compra,
