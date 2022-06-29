@@ -388,10 +388,16 @@ export default Vue.extend({
               await GUARDAR("inventarios", item);
             }
             this.resetCampos();
+            await Swal.fire({
+              title: "Compra registrada con éxito",
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
           } else {
             await Swal.fire({
               title: "Número de factura ya existe",
-              icon: "success",
+              icon: "warning",
               timer: 1000,
               showConfirmButton: false,
             });
