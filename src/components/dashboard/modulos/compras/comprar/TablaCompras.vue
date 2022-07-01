@@ -169,6 +169,8 @@ import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 
+import Swal from "sweetalert2";
+
 export default Vue.extend({
   name: "TablaCompras",
   components: {
@@ -230,8 +232,19 @@ export default Vue.extend({
       this.resetNuevoProducto();
     },
     eliminarItem(index: number) {
-      this.productos.splice(index, 1);
-      this.$emit("enviarProductos", this.productos);
+      Swal.fire({
+        title: "¿Esta seguro de Eliminar este item?",
+        showDenyButton: true,
+        confirmButtonColor: "red",
+        confirmButtonText: "Eliminar",
+        denyButtonColor: "green",
+        denyButtonText: `Cancelar`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          this.productos.splice(index, 1);
+          this.$emit("enviarProductos", this.productos);
+        }
+      });
     },
     resetNuevoProducto() {
       const producto: ProductoCompra = {
