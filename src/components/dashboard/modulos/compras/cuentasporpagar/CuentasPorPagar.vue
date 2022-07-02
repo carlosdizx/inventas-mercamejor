@@ -9,6 +9,7 @@
               <v-text-field
                 type="date"
                 label="Ingrese fecha pago"
+                v-model="fechaRegistro"
               ></v-text-field>
             </v-col>
             <v-btn @click="mostrar = true" class="primary">Buscar compra</v-btn>
@@ -19,10 +20,9 @@
                   titulo="Compras"
                   :columnas="columnas"
                   seleccion
-                  no-editar
-                  no-crear
                   NoEditar
-                  @enviarSeleccionado="seleccionarCompra($event)"
+                  noCrear
+                  @getItem="seleccionarItem"
                   :consulta="[['tipo_pago', '==', 'Credito']]"
                 ></Tabla>
               </v-card>
@@ -45,8 +45,13 @@
             </thead>
             <tbody>
               <tr>
-                <td>name</td>
+                <td></td>
                 <td>categoria</td>
+                <td>categoria</td>
+                <td>categoria</td>
+                <td>
+                  <v-btn class="success">Abonar</v-btn>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -58,9 +63,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { CONSULTA_DATOS } from "@/services/crud";
 
-import { COLUMNAS } from "@/models/CuentasPorPagar";
+import { COLUMNAS, CAMPOS } from "@/models/CuentasPorPagar";
 
 import Tabla from "@/components/crud/Tabla.vue";
 
@@ -69,20 +73,22 @@ export default Vue.extend({
   data: () => ({
     mostrar: false,
     columnas: COLUMNAS,
+    campos_form: CAMPOS,
+    compra: {},
+    fechaRegistro: "",
   }),
   components: {
     Tabla,
   },
   methods: {
-    async getCuentasPorPagar() {
-      const result = await CONSULTA_DATOS("compras", [
-        ["tipo_pago", "==", "Credito"],
-      ]);
-      console.log(result);
-    },
-    seleccionarCompra(item: any) {
+    seleccionarItem(item: any) {
       console.log(item);
+      this.mostrar = false;
+      this.compra = item;
     },
+  },
+  created() {
+    this.fechaRegistro = new Date().toISOString().slice(0, 10);
   },
 });
 </script>
