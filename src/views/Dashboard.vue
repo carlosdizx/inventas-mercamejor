@@ -43,7 +43,7 @@ import Productos from "@/components/dashboard/modulos/Productos.vue";
 import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
 import Comprobantes from "@/components/dashboard/modulos/Comprobantes.vue";
 import Clientes from "@/components/dashboard/modulos/Clientes.vue";
-import CuentasOpcion from "@/components/dashboard/modulos/compras/cuentasporcobrar/CuentasOpcion.vue";
+import CuentasOpcion from "@/components/dashboard/modulos/compras/cuentasporpagar/CuentasOpcion.vue";
 import Ventas from "@/components/dashboard/modulos/ventas/Ventas.vue";
 import CuadreCuentas from "@/components/dashboard/modulos/cuandre_cuentas/CuadreCuentas.vue";
 export default Vue.extend({
