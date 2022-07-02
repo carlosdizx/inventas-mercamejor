@@ -39,16 +39,16 @@
                 <th class="text-left">Cédula</th>
                 <th class="text-left">Nombre</th>
                 <th class="text-left">Valor</th>
-                <th class="text-left">Cruzar</th>
+                <th class="text-left">Cruzar (factura)</th>
                 <th class="text-left">Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td></td>
-                <td>categoria</td>
-                <td>categoria</td>
-                <td>categoria</td>
+                <td>{{ compra.documento_proveedor }}</td>
+                <td>{{ compra.nombre_proveedor }}</td>
+                <td>{{ compra.total }}</td>
+                <td>{{ compra.cod_factura }}</td>
                 <td>
                   <v-btn class="success">Abonar</v-btn>
                 </td>
