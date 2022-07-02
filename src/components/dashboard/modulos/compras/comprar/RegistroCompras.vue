@@ -308,8 +308,8 @@ export default Vue.extend({
       const compra: Compra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: null,
-        nombre_proveedor: "Proveedores varios",
+        documento_proveedor: this.compra.documento_proveedor || null,
+        nombre_proveedor: this.compra.nombre_proveedor || "Proveedores varios",
         fecha_documento: new Date(),
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
@@ -343,6 +343,7 @@ export default Vue.extend({
       this.compra.created_at = new Date();
       this.compra.updated_at = new Date();
       this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
+      this.compra.cod_factura = "C-" + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
