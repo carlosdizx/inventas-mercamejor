@@ -1,18 +1,18 @@
-import { Producto } from "@/class/Producto";
-import { Cliente } from "@/class/Cliente";
+import { Producto } from "@/Entity/Producto";
+import { Cliente } from "@/Entity/Cliente";
 
 export class Factura {
-  private _cliente: Cliente;
+  private readonly _cliente: Cliente;
 
-  private _tipo: string;
+  private readonly _tipo: string;
 
-  private _productos: Producto[];
+  private readonly _productos: Producto[];
 
-  private _subtotal: number;
+  private readonly _subtotal: number;
 
-  private _descuento: number;
+  private readonly _descuento: number;
 
-  private _total: number;
+  private readonly _total: number;
 
   constructor(cliente: Cliente, tipo: string, productos: Producto[]) {
     this._cliente = cliente;

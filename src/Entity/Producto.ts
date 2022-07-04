@@ -1,12 +1,12 @@
 export class Producto {
-  private _nombre: string;
-  private _codigo_barras: number;
-  private _marca: string;
-  private _precio_unitario_compra: number;
-  private _precio_unitario_venta: number;
-  private _descuento: number;
-  private _categoria: string;
-  private _subCategoria: string;
+  private readonly _nombre: string;
+  private readonly _codigo_barras: number;
+  private readonly _marca: string;
+  private readonly _precio_unitario_compra: number;
+  private readonly _precio_unitario_venta: number;
+  private readonly _descuento: number;
+  private readonly _categoria: string;
+  private readonly _subCategoria: string;
 
   constructor(
     nombre: string,
