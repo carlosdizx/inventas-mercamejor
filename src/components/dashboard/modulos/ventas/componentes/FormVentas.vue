@@ -128,7 +128,7 @@
 import Vue from "vue";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
-import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/generals/Funciones";
+import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
 
 export default Vue.extend({
   name: "FormVentas",
