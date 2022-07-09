@@ -92,7 +92,9 @@
 <script lang="ts">
 import Vue from "vue";
 import Swal from "sweetalert2";
-import { YA_LISTADO } from "@/UseCases/ProductosUseCases";
+import { AGREGAR_PRODUCTO, YA_LISTADO } from "@/UseCases/ProductosUseCases";
+import { Producto } from "@/entity/Producto";
+import { ProductoVenta } from "@/dto/ProductoVenta";
 
 export default Vue.extend({
   name: "ListadoItems",
@@ -102,25 +104,29 @@ export default Vue.extend({
     descuento: 0,
     calculadora: 0,
     columnas: [
-      { text: "Codigo", value: "codigo_barras" },
+      { text: "Codigo", value: "codigo" },
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
-      { text: "Precio*uni", value: "precio_unitario_venta" },
-      { text: "Descuento*uni", value: "descuento" },
+      { text: "Precio*uni", value: "precio" },
       { text: "Subtotal", value: "subtotal" },
     ],
-    filas: [{}],
+    filas: [] as ProductoVenta[],
     descuento_adicional: 0,
   }),
   methods: {
-    async agregarProducto(producto: any) {
+    async agregarProducto(producto: Producto) {
       const agregado = await YA_LISTADO(this.filas, producto);
       if (agregado) {
-        console.log("hacer calculos...");
+        AGREGAR_PRODUCTO(this.filas, producto);
       } else {
-        producto.cantidad = 1;
-        producto.subtotal = 1 * producto.precio_unitario_venta;
-        this.filas.push(producto);
+        const pv: ProductoVenta = new ProductoVenta(
+          producto.codigo_barras,
+          producto.nombre,
+          1,
+          producto.precio_unitario_venta,
+          producto.descuento
+        );
+        this.filas.push(pv);
       }
     },
     calcularValores() {
