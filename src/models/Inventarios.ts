@@ -5,6 +5,7 @@ export interface Inventarios {
   codigo_barras: number | null;
   cedula_nit: number | null;
   nombres: string;
+  apellidos: string;
   tipo_factura: string;
   bodega: string;
   caja: string;
