@@ -1,4 +1,4 @@
-export class DatosEmpresa {
+export class Empresa {
   private consecutivo_compra: number;
   private consecutivo_venta: number;
   private readonly cantidad_venta: number;
