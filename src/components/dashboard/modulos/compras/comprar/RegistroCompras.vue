@@ -28,7 +28,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Nombre del proveedor"
-                v-model="compra.nombre_proveedor"
+                v-model="nombresProveedor"
                 readonly
                 dense
                 outlined
@@ -237,6 +237,7 @@ import { Compra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
+import { CuentaPorPagar } from "@/models/CuentasPorPagar";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -286,7 +287,7 @@ export default Vue.extend({
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
         if (Number(this.compra.documento_proveedor) === prov.documento) {
-          nombres = prov.nombres;
+          nombres = nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
       });
@@ -399,8 +400,18 @@ export default Vue.extend({
               };
               inventarios.push(inventario);
             });
-            if (this.compra.tipo_compra === "Credito") {
-              await GUARDAR("cuentas_por_pagar", this.compra);
+            if (this.compra.tipo_pago === "Credito") {
+              const cuentaPorPagar: CuentaPorPagar = {
+                fecha_compra: this.compra.fecha_documento,
+                cedula_proveedor: Number(this.compra.documento_proveedor),
+                nombres_proveedor: this.compra.nombres_proveedor,
+                apellidos_proveedor: this.compra.apellidos_proveedor,
+                codigo_factura: this.compra.cod_factura,
+                valor_total: Number(this.compra.total),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              };
+              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
