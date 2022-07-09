@@ -31,3 +31,15 @@ export const AGREGAR_PRODUCTO = (
   }
   return productos;
 };
+
+export const TOTALIZAR_VALORES = (productos: ProductoVenta[]) => {
+  let subtotal = 0;
+  let descuento = 0;
+  let total = 0;
+  for (const temp of productos) {
+    subtotal += temp.subtotal;
+    descuento += temp.descuento * temp.cantidad;
+    total = subtotal - descuento;
+  }
+  return { subtotal: subtotal, descuento: descuento, total: total };
+};

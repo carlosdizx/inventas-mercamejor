@@ -92,7 +92,11 @@
 <script lang="ts">
 import Vue from "vue";
 import Swal from "sweetalert2";
-import { AGREGAR_PRODUCTO, YA_LISTADO } from "@/UseCases/ProductosUseCases";
+import {
+  AGREGAR_PRODUCTO,
+  TOTALIZAR_VALORES,
+  YA_LISTADO,
+} from "@/UseCases/ProductosUseCases";
 import { Producto } from "@/entity/Producto";
 import { ProductoVenta } from "@/dto/ProductoVenta";
 
@@ -108,6 +112,7 @@ export default Vue.extend({
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
       { text: "Precio*uni", value: "precio" },
+      { text: "descuento*uni", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [] as ProductoVenta[],
@@ -128,17 +133,14 @@ export default Vue.extend({
       } else {
         this.filas.push(pv);
       }
+      this.calcularValores();
     },
     calcularValores() {
-      this.subtotal = 0;
-      this.descuento = 0;
-      this.total = 0;
+      const valores = TOTALIZAR_VALORES(this.filas);
+      this.subtotal = valores.subtotal;
+      this.descuento = valores.descuento;
+      this.total = valores.total;
       this.calculadora = this.calculadora * 1;
-      this.filas.forEach((item: any) => {
-        this.subtotal += item.subtotal;
-        this.descuento += item.descuento * item.cantidad;
-        this.total = this.subtotal - this.descuento;
-      });
     },
     cambiarCantidadProducto() {
       for (const fila of this.filas) {
