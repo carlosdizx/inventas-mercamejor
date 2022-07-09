@@ -206,7 +206,7 @@
           <v-row class="mr-5 ml-5" v-if="compraAnterior">
             <v-col>
               <v-btn
-                @click="registrarCompra()"
+                @click="actualizarCompa()"
                 :disabled="validarRegistro"
                 x-large
                 dark
@@ -229,13 +229,14 @@ import Vue, { PropType } from "vue";
 import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-import { GUARDAR } from "@/services/crud";
+import { BUSCAR, GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Compra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -307,8 +308,8 @@ export default Vue.extend({
       const compra: Compra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: null,
-        nombre_proveedor: "Proveedores varios",
+        documento_proveedor: this.compra.documento_proveedor || null,
+        nombre_proveedor: this.compra.nombre_proveedor || "Proveedores varios",
         fecha_documento: new Date(),
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
@@ -342,30 +343,133 @@ export default Vue.extend({
       this.compra.created_at = new Date();
       this.compra.updated_at = new Date();
       this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
-      await GUARDAR("compras", this.compra);
-      const inventarios: Array<Inventarios> = [];
-      this.compra.compras.forEach((compra) => {
-        const inventario: Inventarios = {
-          created_at: new Date(),
-          updated_at: new Date(),
-          fecha_llegada_producto: this.compra.fecha_llegada_producto,
-          cedula_nit: this.compra.documento_proveedor,
-          nombres: this.compra.nombre_proveedor,
-          tipo_factura: this.compra.tipo_compra,
-          documento: this.compra.cod_factura,
-          bodega: compra.bodega,
-          producto: compra.descripcion_producto,
-          codigo_barras: compra.codigo_barras,
-          salidas: compra.cantidad,
-          entradas: 0,
-          cruce: "",
-          caja: "",
-        };
-        inventarios.push(inventario);
+      this.compra.cod_factura = "C-" + this.compra.cod_factura;
+      Swal.fire({
+        title: "¿Esta seguro de registrar esta compra?",
+        showDenyButton: true,
+        confirmButtonText: "Registrar",
+        confirmButtonColor: "green",
+        denyButtonText: `No aún no!`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let existe = false;
+          const res = await LISTAR_IN(
+            "compras",
+            "cod_factura",
+            this.compra.cod_factura
+          );
+          res.forEach((val: any) => {
+            if (val.exists) {
+              existe = true;
+            }
+          });
+          if (!existe) {
+            await GUARDAR("compras", this.compra);
+            const inventarios: Array<Inventarios> = [];
+            this.compra.compras.forEach((compra) => {
+              const inventario: Inventarios = {
+                created_at: new Date(),
+                updated_at: new Date(),
+                fecha_llegada_producto: this.compra.fecha_llegada_producto,
+                cedula_nit: this.compra.documento_proveedor,
+                nombres: this.compra.nombre_proveedor,
+                tipo_factura: this.compra.tipo_compra,
+                documento: this.compra.cod_factura,
+                bodega: compra.bodega,
+                producto: compra.descripcion_producto,
+                codigo_barras: compra.codigo_barras,
+                salidas: compra.cantidad,
+                entradas: 0,
+                cruce: "",
+                caja: "",
+              };
+              inventarios.push(inventario);
+            });
+            for (const item of inventarios) {
+              await GUARDAR("inventarios", item);
+            }
+            this.resetCampos();
+            await Swal.fire({
+              title: "Compra registrada con éxito",
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          } else {
+            await Swal.fire({
+              title: "Número de factura ya existe",
+              icon: "warning",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          }
+        }
       });
-      for (const item of inventarios) {
-        await GUARDAR("inventarios", item);
-      }
+    },
+    actualizarCompa() {
+      this.compra.updated_at = new Date();
+      this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
+      Swal.fire({
+        title: "¿Esta seguro de Actualizar esta compra?",
+        showDenyButton: true,
+        confirmButtonText: "Actualizar",
+        confirmButtonColor: "green",
+        denyButtonText: `Cancelar!`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let existe = false;
+          const res = await LISTAR_IN(
+            "compras",
+            "cod_factura",
+            this.compra.cod_factura
+          );
+          res.forEach((val: any) => {
+            if (val.exists) {
+              existe = true;
+            }
+          });
+          if (!existe) {
+            await GUARDAR("compras", this.compra);
+            const inventarios: Array<Inventarios> = [];
+            this.compra.compras.forEach((compra) => {
+              const inventario: Inventarios = {
+                created_at: new Date(),
+                updated_at: new Date(),
+                fecha_llegada_producto: this.compra.fecha_llegada_producto,
+                cedula_nit: this.compra.documento_proveedor,
+                nombres: this.compra.nombre_proveedor,
+                tipo_factura: this.compra.tipo_compra,
+                documento: this.compra.cod_factura,
+                bodega: compra.bodega,
+                producto: compra.descripcion_producto,
+                codigo_barras: compra.codigo_barras,
+                salidas: compra.cantidad,
+                entradas: 0,
+                cruce: "",
+                caja: "",
+              };
+              inventarios.push(inventario);
+            });
+            for (const item of inventarios) {
+              await GUARDAR("inventarios", item);
+            }
+            this.resetCampos();
+            await Swal.fire({
+              title: "Compra actualizada con éxito",
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          } else {
+            await Swal.fire({
+              title: "Número de factura ya existe",
+              icon: "warning",
+              timer: 1000,
+              showConfirmButton: false,
+            });
+          }
+        }
+      });
     },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
