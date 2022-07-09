@@ -62,3 +62,14 @@ export const CAMPOS = [
     rules: "required|max:25",
   },
 ];
+
+export interface CuentaPorPagar {
+  fecha_compra: Date;
+  cedula_proveedor: string;
+  nombres_proveedor: string;
+  apellidos_proveedor: string;
+  codigo_factura: string;
+  valor_total: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
