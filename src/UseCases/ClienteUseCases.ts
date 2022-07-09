@@ -5,6 +5,6 @@ export const BUSCAR_CLIENTE_POR_DOCUMENTO = async (documento: any) => {
   if (resultado.size === 1) {
     return resultado.docs[0].data();
   } else {
-    return { nombres: "Clientes", apellidos: "Varios", documento: 2222222 };
+    return { nombres: "Clientes", apellidos: "Varios", documento: documento };
   }
 };

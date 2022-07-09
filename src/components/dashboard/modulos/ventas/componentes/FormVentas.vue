@@ -82,7 +82,7 @@
           <v-row>
             <v-col cols="6">
               <v-text-field
-                label="Codigo del proyecto"
+                label="Codigo del producto o servicio"
                 prepend-icon="mdi-barcode-scan"
                 type="number"
                 dense

@@ -25,6 +25,9 @@ export default Vue.extend({
   components: { FormVentas, ListadoItems, Factura },
   data: () => ({
     productos: [],
+    audio: new Audio(),
+    add: require("@/assets/audios/add_product.mp3"),
+    notFound: require("@/assets/audios/not_found_product.mp3"),
   }),
   methods: {
     async buscarProducto(codigo_barras: number) {
@@ -34,7 +37,12 @@ export default Vue.extend({
         producto.id = productos.docs[0].id;
         const listado: any = this.$refs.ListadoItems;
         listado.agregarProducto(producto);
+        this.audio.src = this.add;
+        await this.audio.play();
       } else {
+        this.audio.src = this.notFound;
+        await this.audio.play();
+
         await Swal.fire({
           title: "Producto no encontrado",
           timer: 1000,
