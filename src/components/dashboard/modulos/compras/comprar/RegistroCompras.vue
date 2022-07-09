@@ -229,7 +229,7 @@ import Vue, { PropType } from "vue";
 import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-import { BUSCAR, GUARDAR, LISTAR_IN } from "@/services/crud";
+import { GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
@@ -385,6 +385,9 @@ export default Vue.extend({
               };
               inventarios.push(inventario);
             });
+            if (this.compra.tipo_compra === "Credito") {
+              await GUARDAR("cuentas_por_pagar", this.compra);
+            }
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
             }
