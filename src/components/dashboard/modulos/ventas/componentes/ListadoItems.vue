@@ -92,6 +92,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Swal from "sweetalert2";
+import { YA_LISTADO } from "@/UseCases/ProductosUseCases";
 
 export default Vue.extend({
   name: "ListadoItems",
@@ -113,29 +114,13 @@ export default Vue.extend({
   }),
   methods: {
     async agregarProducto(producto: any) {
-      let agregado = false;
-      for (const fila of this.filas) {
-        const temp: any = fila;
-        if (temp.id === producto.id) {
-          temp.cantidad = temp.cantidad + 1;
-          temp.subtotal = temp.cantidad * producto.precio_unitario_venta;
-          agregado = true;
-        }
-      }
-      if (!agregado) {
-        producto.cantidad = 1;
-        producto.subtotal = producto.precio_unitario_venta;
-        this.filas.push(producto);
-        agregado = true;
-      }
+      const agregado = await YA_LISTADO(this.filas, producto);
       if (agregado) {
-        this.calcularValores();
-        await Swal.fire({
-          title: "Agregado con exito!",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 500,
-        });
+        console.log("hacer calculos...");
+      } else {
+        producto.cantidad = 1;
+        producto.subtotal = 1 * producto.precio_unitario_venta;
+        this.filas.push(producto);
       }
     },
     calcularValores() {
