@@ -116,16 +116,16 @@ export default Vue.extend({
   methods: {
     async agregarProducto(producto: Producto) {
       const agregado = await YA_LISTADO(this.filas, producto);
+      const pv: ProductoVenta = new ProductoVenta(
+        producto.codigo_barras,
+        producto.nombre,
+        1,
+        producto.precio_unitario_venta,
+        producto.descuento
+      );
       if (agregado) {
-        AGREGAR_PRODUCTO(this.filas, producto);
+        this.filas = AGREGAR_PRODUCTO(this.filas, producto);
       } else {
-        const pv: ProductoVenta = new ProductoVenta(
-          producto.codigo_barras,
-          producto.nombre,
-          1,
-          producto.precio_unitario_venta,
-          producto.descuento
-        );
         this.filas.push(pv);
       }
     },
