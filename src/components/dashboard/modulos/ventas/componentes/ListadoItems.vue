@@ -79,6 +79,7 @@
             <v-text-field
               @focusout="cambiarCantidadProducto"
               label="Editar"
+              type="number"
               counter
               v-model="item.cantidad"
             />
@@ -135,19 +136,22 @@ export default Vue.extend({
       }
       this.calcularValores();
     },
-    calcularValores() {
+    async calcularValores() {
       const valores = TOTALIZAR_VALORES(this.filas);
       this.subtotal = valores.subtotal;
       this.descuento = valores.descuento;
       this.total = valores.total;
       this.calculadora = this.calculadora * 1;
     },
-    cambiarCantidadProducto() {
+    async cambiarCantidadProducto() {
       for (const fila of this.filas) {
-        const producto: any = fila;
-        producto.subtotal = producto.cantidad * producto.precio_unitario_venta;
+        if (isNaN(fila.cantidad)) fila.subtotal = fila.cantidad * fila.precio;
+        else {
+          fila.cantidad = 0;
+          fila.subtotal = fila.cantidad * fila.precio;
+        }
       }
-      this.calcularValores();
+      await this.calcularValores();
     },
     darItemsFactura() {
       const datos_factura = {
