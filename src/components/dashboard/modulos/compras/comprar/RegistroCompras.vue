@@ -139,6 +139,7 @@
           <TablaCompras
             :compras="compra.compras"
             @enviarProductos="actualizarProductos"
+            :eliminarDatos="eliminarDatos"
           />
 
           <v-row class="mr-5 ml-5">
@@ -257,6 +258,7 @@ export default Vue.extend({
       tiposDocumento: ["Compra", "Pedido"],
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
+      eliminarDatos: false,
     };
   },
   computed: {
@@ -417,6 +419,7 @@ export default Vue.extend({
               await GUARDAR("inventarios", item);
             }
             this.resetCampos();
+            this.eliminarDatos = !this.eliminarDatos;
             await Swal.fire({
               title: "Compra registrada con éxito",
               icon: "success",
@@ -483,6 +486,7 @@ export default Vue.extend({
               await GUARDAR("inventarios", item);
             }
             this.resetCampos();
+            this.eliminarDatos = !this.eliminarDatos;
             await Swal.fire({
               title: "Compra actualizada con éxito",
               icon: "success",

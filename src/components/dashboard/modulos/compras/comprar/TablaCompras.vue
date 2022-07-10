@@ -181,6 +181,7 @@ export default Vue.extend({
     compras: {
       type: Array as () => Array<ProductoCompra>,
     },
+    eliminarDatos: Boolean,
   },
   data: () => ({
     columnas: COLUMNAS,
@@ -346,6 +347,12 @@ export default Vue.extend({
       if (col.value !== "detalle") return true;
       return false;
     });
+  },
+  watch: {
+    eliminarDatos() {
+      console.log("se registro");
+      this.productos = [];
+    },
   },
 });
 </script>
