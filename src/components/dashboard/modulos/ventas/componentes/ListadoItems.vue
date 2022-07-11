@@ -69,19 +69,17 @@
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
       <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog
-          @save="cambiarCantidadProducto"
-          @close="cambiarCantidadProducto"
-          @cancel="cambiarCantidadProducto"
-        >
+        <v-edit-dialog>
           {{ item.cantidad }}
           <template v-slot:input>
             <v-text-field
-              @focusout="cambiarCantidadProducto"
+              @focusout="cambiarCantidadProducto($event.target.value, item)"
+              @keydown.enter="
+                cambiarCantidadProducto($event.target.value, item)
+              "
               label="Editar"
               type="number"
               counter
-              v-model="item.cantidad"
             />
           </template>
         </v-edit-dialog>
@@ -143,24 +141,23 @@ export default Vue.extend({
       this.total = valores.total;
       this.calculadora = this.calculadora * 1;
     },
-    async cambiarCantidadProducto() {
-      for (const fila of this.filas) {
-        const parse = parseInt(fila.cantidad.toString());
-        if (isNaN(parse)) {
-          fila.cantidad = 1;
-          fila.subtotal = fila.cantidad * fila.precio;
-          await Swal.fire({
-            title: "Valor errado",
-            text: "Asegurate de escribir un valor correcto",
-            timer: 1000,
-            showConfirmButton: false,
-            icon: "error",
-          });
-        } else {
-          fila.subtotal = fila.cantidad * fila.precio;
-        }
+    cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
+      let parse = parseInt(valor.toString());
+      if (isNaN(parse)) {
+        Swal.fire({
+          title: "Valor errado",
+          text: "Asegurate de escribir un valor correcto",
+          timer: 1000,
+          showConfirmButton: false,
+          icon: "error",
+        });
+        return item.cantidad;
+      } else {
+        item.cantidad = parse;
+        item.subtotal = item.cantidad * item.precio;
+        this.calcularValores();
+        return parse;
       }
-      await this.calcularValores();
     },
     darItemsFactura() {
       const datos_factura = {
