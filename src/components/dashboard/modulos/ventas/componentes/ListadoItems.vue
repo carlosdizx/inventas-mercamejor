@@ -71,7 +71,7 @@
       <template v-slot:item.cantidad="{ item }">
         <v-edit-dialog
           @save="cambiarCantidadProducto"
-          @clse="cambiarCantidadProducto"
+          @close="cambiarCantidadProducto"
           @cancel="cambiarCantidadProducto"
         >
           {{ item.cantidad }}
@@ -134,7 +134,7 @@ export default Vue.extend({
       } else {
         this.filas.push(pv);
       }
-      this.calcularValores();
+      await this.calcularValores();
     },
     async calcularValores() {
       const valores = TOTALIZAR_VALORES(this.filas);
@@ -145,9 +145,18 @@ export default Vue.extend({
     },
     async cambiarCantidadProducto() {
       for (const fila of this.filas) {
-        if (isNaN(fila.cantidad)) fila.subtotal = fila.cantidad * fila.precio;
-        else {
-          fila.cantidad = 0;
+        const parse = parseInt(fila.cantidad.toString());
+        if (isNaN(parse)) {
+          fila.cantidad = 1;
+          fila.subtotal = fila.cantidad * fila.precio;
+          await Swal.fire({
+            title: "Valor errado",
+            text: "Asegurate de escribir un valor correcto",
+            timer: 1000,
+            showConfirmButton: false,
+            icon: "error",
+          });
+        } else {
           fila.subtotal = fila.cantidad * fila.precio;
         }
       }
