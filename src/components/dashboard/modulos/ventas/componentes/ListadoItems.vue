@@ -93,6 +93,7 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 import {
   AGREGAR_PRODUCTO,
+  CAMBIAR_CANTIDAD,
   TOTALIZAR_VALORES,
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
@@ -141,23 +142,9 @@ export default Vue.extend({
       this.total = valores.total;
       this.calculadora = this.calculadora * 1;
     },
-    cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
-      let parse = parseInt(valor.toString());
-      if (isNaN(parse)) {
-        Swal.fire({
-          title: "Valor errado",
-          text: "Asegurate de escribir un valor correcto",
-          timer: 1000,
-          showConfirmButton: false,
-          icon: "error",
-        });
-        return item.cantidad;
-      } else {
-        item.cantidad = parse;
-        item.subtotal = item.cantidad * item.precio;
-        this.calcularValores();
-        return parse;
-      }
+    async cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
+      await CAMBIAR_CANTIDAD(valor, item);
+      await this.calcularValores();
     },
     darItemsFactura() {
       const datos_factura = {
