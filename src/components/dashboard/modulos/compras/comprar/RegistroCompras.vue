@@ -238,7 +238,7 @@ import { Compra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
-import { CuentaPorPagar } from "@/models/CuentasPorPagar";
+import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -412,6 +412,8 @@ export default Vue.extend({
                 valor_total: Number(this.compra.total),
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                valor_debido: 0,
+                estado: EstadoCuentaPorPagar.PENDIENTE,
               };
               await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }

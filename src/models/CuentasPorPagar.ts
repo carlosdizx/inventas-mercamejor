@@ -1,10 +1,11 @@
 export const COLUMNAS = [
-  { text: "Documento Proveedor", value: "documento_proveedor" },
+  { text: "Documento Proveedor", value: "cedula_proveedor" },
   { text: "Nombre Proveedor", value: "nombre_proveedor" },
-  { text: "Fecha de llegada compra", value: "fecha_llegada_producto" },
-  { text: "Fecha de creación de factura", value: "created_at" },
-  { text: "Valor", value: "total" },
-  { text: "Código de factura", value: "cod_factura" },
+  { text: "Fecha de llegada compra", value: "fecha_compra" },
+  { text: "Fecha de creación de factura", value: "createdAt" },
+  { text: "Fecha de Actualizacion", value: "updatedAt" },
+  { text: "Valor", value: "valor_total" },
+  { text: "Código de factura", value: "codigo_factura" },
   { text: "Acciones", value: "acciones" },
 ];
 
@@ -70,6 +71,14 @@ export interface CuentaPorPagar {
   apellidos_proveedor: string;
   codigo_factura: string;
   valor_total: number;
+  valor_debido: number;
+  estado: EstadoCuentaPorPagar;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export enum EstadoCuentaPorPagar {
+  PENDIENTE = "Pendiente",
+  REALIZADO = "Realizado",
+  RECHAZADO = "Rechazado",
 }
