@@ -16,7 +16,7 @@
             <v-dialog v-model="mostrar">
               <v-card>
                 <Tabla
-                  coleccion="compras"
+                  coleccion="datos_generales"
                   titulo="Cuentas por pagar"
                   :columnas="columnas"
                   seleccion
@@ -50,7 +50,12 @@
                 <td>{{ compra.cod_factura }}</td>
                 <td><v-text-field v-model="valorAbono"></v-text-field></td>
                 <td>
-                  <v-btn class="success">Abonar</v-btn>
+                  <v-btn
+                    :disabled="validarAbonoBoton"
+                    @click="realizarAbono()"
+                    class="success"
+                    >Abonar</v-btn
+                  >
                 </td>
               </tr>
             </tbody>
@@ -68,6 +73,7 @@ import Vue from "vue";
 import { COLUMNAS, CAMPOS, CuentaPorPagar } from "@/models/CuentasPorPagar";
 
 import Tabla from "@/components/crud/Tabla.vue";
+import { GUARDAR } from "@/services/crud";
 
 export default Vue.extend({
   name: "CuentasPorPagar",
@@ -83,6 +89,16 @@ export default Vue.extend({
   components: {
     Tabla,
   },
+  computed: {
+    validarAbonoBoton() {
+      if (
+        this.cuentaPorPagar.valor_total - this.cuentaPorPagar.valor_debido ===
+        0
+      )
+        return true;
+      return false;
+    },
+  },
   methods: {
     seleccionarItem(item: any) {
       console.log(item);
@@ -90,6 +106,10 @@ export default Vue.extend({
       this.compra = item;
       this.cuentaPorPagar = item;
       this.valorAbono = item;
+    },
+    async realizarAbono() {
+      const cuentaPorPagar: CuentaPorPagar = this.cuentaPorPagar;
+      await GUARDAR("cuentas", cuentaPorPagar);
     },
   },
   created() {

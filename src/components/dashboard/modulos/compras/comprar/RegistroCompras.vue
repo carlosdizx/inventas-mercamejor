@@ -415,7 +415,7 @@ export default Vue.extend({
                 valor_debido: 0,
                 estado: EstadoCuentaPorPagar.PENDIENTE,
               };
-              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+              await GUARDAR("cuentas", cuentaPorPagar);
             }
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
