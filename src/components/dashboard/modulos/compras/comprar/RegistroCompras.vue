@@ -412,10 +412,10 @@ export default Vue.extend({
                 valor_total: Number(this.compra.total),
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                valor_debido: 0,
+                valor_debido: Number(this.compra.total),
                 estado: EstadoCuentaPorPagar.PENDIENTE,
               };
-              await GUARDAR("cuentas", cuentaPorPagar);
+              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
