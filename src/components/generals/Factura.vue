@@ -97,7 +97,7 @@ export default Vue.extend({
         productos.push({
           nombre: producto.nombre,
           cantidad: producto.cantidad,
-          precio: producto.precio_unitario_venta,
+          precio: producto.precio,
           descuento: producto.descuento,
           subtotal: producto.subtotal,
         });
