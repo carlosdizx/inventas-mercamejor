@@ -73,6 +73,7 @@
           {{ item.cantidad }}
           <template v-slot:input>
             <v-text-field
+              @focusout="cambiarCantidadProducto($event.target.value, item)"
               @keydown.enter="
                 cambiarCantidadProducto($event.target.value, item)
               "
@@ -142,10 +143,6 @@ export default Vue.extend({
       this.calculadora = this.calculadora * 1;
     },
     async cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
-      if (valor == 0) {
-        this.filas = this.filas.filter((producto) => producto !== item);
-        return;
-      }
       await CAMBIAR_CANTIDAD(valor, item);
       await this.calcularValores();
     },
