@@ -1,6 +1,6 @@
-import { Cliente } from "@/Entity/Cliente";
-import { Producto } from "@/Entity/Producto";
-import { Factura } from "@/Entity/Factura";
+import { Cliente } from "@/entity/Cliente";
+import { Producto } from "@/entity/Producto";
+import { Factura } from "@/entity/Factura";
 
 export class Venta {
   private readonly _cliente: Cliente;

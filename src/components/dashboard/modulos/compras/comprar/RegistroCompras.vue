@@ -28,7 +28,7 @@
             <v-col cols="6">
               <v-text-field
                 label="Nombre del proveedor"
-                v-model="compra.nombre_proveedor"
+                v-model="nombresProveedor"
                 readonly
                 dense
                 outlined
@@ -139,6 +139,7 @@
           <TablaCompras
             :compras="compra.compras"
             @enviarProductos="actualizarProductos"
+            :eliminarDatos="eliminarDatos"
           />
 
           <v-row class="mr-5 ml-5">
@@ -229,7 +230,7 @@ import Vue, { PropType } from "vue";
 import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-import { BUSCAR, GUARDAR, LISTAR_IN } from "@/services/crud";
+import { GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
@@ -237,6 +238,7 @@ import { Compra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
+import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -256,6 +258,7 @@ export default Vue.extend({
       tiposDocumento: ["Compra", "Pedido"],
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
+      eliminarDatos: false,
     };
   },
   computed: {
@@ -266,6 +269,14 @@ export default Vue.extend({
       }
       return val;
     },
+    nombresProveedor() {
+      let nombres = "Proveedores Varios";
+      if (this.compra.nombres_proveedor) {
+        nombres =
+          this.compra.nombres_proveedor + " " + this.compra.apellidos_proveedor;
+      }
+      return nombres;
+    },
   },
   methods: {
     async listarProveedores() {
@@ -274,20 +285,24 @@ export default Vue.extend({
       res.forEach((prov: any) => this.proveedores.push(prov.data()));
     },
     buscarProveedor() {
-      let result = "Proveedores varios";
+      let nombres = "";
+      let apellidos = "";
       this.proveedores.forEach((prov: any) => {
         if (Number(this.compra.documento_proveedor) === prov.documento) {
-          result = `${prov.nombres} ${prov.apellidos}`;
+          nombres = nombres = prov.nombres;
+          apellidos = prov.apellidos;
         }
       });
-      this.compra.nombre_proveedor = result;
+      this.compra.nombres_proveedor = nombres;
+      this.compra.apellidos_proveedor = apellidos;
     },
     resetCampos() {
       const compra: Compra = {
         descuento: 0,
         impuesto: 0,
         documento_proveedor: null,
-        nombre_proveedor: "Proveedores varios",
+        nombres_proveedor: "",
+        apellidos_proveedor: "",
         fecha_documento: new Date(),
         cod_factura: "",
         tipo_compra: this.compra.tipo_compra,
@@ -309,7 +324,8 @@ export default Vue.extend({
         descuento: 0,
         impuesto: 0,
         documento_proveedor: this.compra.documento_proveedor || null,
-        nombre_proveedor: this.compra.nombre_proveedor || "Proveedores varios",
+        nombres_proveedor: this.compra.nombres_proveedor || "",
+        apellidos_proveedor: this.compra.apellidos_proveedor || "",
         fecha_documento: new Date(),
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
@@ -372,7 +388,8 @@ export default Vue.extend({
                 updated_at: new Date(),
                 fecha_llegada_producto: this.compra.fecha_llegada_producto,
                 cedula_nit: this.compra.documento_proveedor,
-                nombres: this.compra.nombre_proveedor,
+                nombres: this.compra.nombres_proveedor,
+                apellidos: this.compra.apellidos_proveedor,
                 tipo_factura: this.compra.tipo_compra,
                 documento: this.compra.cod_factura,
                 bodega: compra.bodega,
@@ -385,10 +402,26 @@ export default Vue.extend({
               };
               inventarios.push(inventario);
             });
+            if (this.compra.tipo_pago === "Credito") {
+              const cuentaPorPagar: CuentaPorPagar = {
+                fecha_compra: this.compra.fecha_documento,
+                cedula_proveedor: Number(this.compra.documento_proveedor),
+                nombres_proveedor: this.compra.nombres_proveedor,
+                apellidos_proveedor: this.compra.apellidos_proveedor,
+                codigo_factura: this.compra.cod_factura,
+                valor_total: Number(this.compra.total),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                valor_debido: 0,
+                estado: EstadoCuentaPorPagar.PENDIENTE,
+              };
+              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+            }
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
             }
             this.resetCampos();
+            this.eliminarDatos = !this.eliminarDatos;
             await Swal.fire({
               title: "Compra registrada con éxito",
               icon: "success",
@@ -437,7 +470,8 @@ export default Vue.extend({
                 updated_at: new Date(),
                 fecha_llegada_producto: this.compra.fecha_llegada_producto,
                 cedula_nit: this.compra.documento_proveedor,
-                nombres: this.compra.nombre_proveedor,
+                nombres: this.compra.nombres_proveedor,
+                apellidos: this.compra.apellidos_proveedor,
                 tipo_factura: this.compra.tipo_compra,
                 documento: this.compra.cod_factura,
                 bodega: compra.bodega,
@@ -454,6 +488,7 @@ export default Vue.extend({
               await GUARDAR("inventarios", item);
             }
             this.resetCampos();
+            this.eliminarDatos = !this.eliminarDatos;
             await Swal.fire({
               title: "Compra actualizada con éxito",
               icon: "success",
@@ -473,14 +508,16 @@ export default Vue.extend({
     },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
-      this.compra.nombre_proveedor = `${prov.nombres} ${prov.apellidos}`;
+      this.compra.nombres_proveedor = prov.nombres;
+      this.compra.apellidos_proveedor = prov.apellidos;
     },
   },
   created() {
     this.listarProveedores();
     const compra: Compra = {
       documento_proveedor: null,
-      nombre_proveedor: "Proveedores varios",
+      nombres_proveedor: "",
+      apellidos_proveedor: "",
       fecha_documento: new Date(),
       cod_factura: "",
       tipo_compra: "",
