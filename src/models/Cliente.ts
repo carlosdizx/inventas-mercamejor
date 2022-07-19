@@ -4,14 +4,14 @@ import { GENEROS, TIPOS_DOCUMENTO } from "@/generals/Constantes";
  Sección tabla
  */
 export const COLUMNAS = [
+  { text: "Detalle", value: "detalle" },
   { text: "Nombres", value: "nombres" },
   { text: "Apellidos", value: "apellidos" },
   { text: "Fecha de nacimiento", value: "fechaNacimiento" },
-  { text: "Género", value: "documento" },
+  { text: "Género", value: "genero" },
   { text: "Documento de identidad", value: "documento" },
   { text: "Correo", value: "correo" },
   { text: "Fecha de creación", value: "created_at" },
-  { text: "Fecha de edición", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
 ];
 
@@ -106,7 +106,4 @@ export const CAMPOS = [
   },
 ];
 
-export const VALIDACIONES = [
-  { tipo: 2, nombres: ["documento"] },
-  { tipo: 2, nombres: ["correo"] },
-];
+export const VALIDACIONES = [{ tipo: 2, nombres: ["documento"] }];
