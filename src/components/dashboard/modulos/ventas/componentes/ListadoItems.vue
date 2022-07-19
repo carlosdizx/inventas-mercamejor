@@ -73,7 +73,6 @@
           {{ item.cantidad }}
           <template v-slot:input>
             <v-text-field
-              @focusout="cambiarCantidadProducto($event.target.value, item)"
               @keydown.enter="
                 cambiarCantidadProducto($event.target.value, item)
               "
