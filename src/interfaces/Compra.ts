@@ -14,6 +14,12 @@ export interface Compra {
   descuento: number;
   impuesto: number;
   total: number;
+  estado: EstadoCompra;
   created_at: Date;
   updated_at: Date;
+}
+
+export enum EstadoCompra {
+  APROBADO = "Aprobado",
+  CANCELADO = "Cancelado",
 }

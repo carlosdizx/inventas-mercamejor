@@ -234,7 +234,7 @@ import { GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { Compra } from "@/interfaces/Compra";
+import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
@@ -312,6 +312,7 @@ export default Vue.extend({
         compras: [],
         subtotal: 0,
         total: 0,
+        estado: EstadoCompra.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -335,6 +336,7 @@ export default Vue.extend({
         compras: productos,
         subtotal: 0,
         total: 0,
+        estado: EstadoCompra.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -529,6 +531,7 @@ export default Vue.extend({
       descuento: 0,
       impuesto: 0,
       total: 0,
+      estado: EstadoCompra.APROBADO,
       created_at: new Date(),
       updated_at: new Date(),
     };
