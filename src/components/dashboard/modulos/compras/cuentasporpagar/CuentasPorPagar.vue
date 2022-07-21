@@ -40,7 +40,8 @@
                 <th class="text-left">Nombres</th>
                 <th class="text-left">Apellidos</th>
                 <th class="text-left">Cruzar (factura)</th>
-                <th class="text-left">Valor Abono</th>
+                <th class="text-left">Valor Pendiente</th>
+                <th class="text-left">Valor Total</th>
                 <th class="text-left">Acciones</th>
               </tr>
             </thead>
@@ -53,6 +54,7 @@
                 <td>
                   <v-text-field v-model.number="valorAbono"></v-text-field>
                 </td>
+                <td>{{ cuentaPorPagar.valor_debido }}</td>
                 <td>
                   <v-btn
                     :disabled="!validarAbonoBoton"
@@ -78,6 +80,7 @@ import {
   CuentaPorPagar,
   EstadoCuentaPorPagar,
 } from "@/models/CuentasPorPagar";
+import { MovCuentaPorPagar } from "@/models/MovCuentasPorPagar";
 
 import Tabla from "@/components/crud/Tabla.vue";
 import { EDITAR, GUARDAR } from "@/services/crud";
@@ -109,18 +112,34 @@ export default Vue.extend({
       this.idCuentaPorPagar = item.id;
     },
     async realizarAbono() {
-      console.log("abono");
-      const cuentaPorPagar: CuentaPorPagar = this.cuentaPorPagar;
       const nuevaCuentaPorPagar: CuentaPorPagar = {
         ...this.cuentaPorPagar,
+        updatedAt: new Date(),
+      };
+      if (nuevaCuentaPorPagar.valor_debido - this.valorAbono <= 0) {
+        nuevaCuentaPorPagar.estado = EstadoCuentaPorPagar.COMPLETADO;
+      }
+      nuevaCuentaPorPagar.valor_debido =
+        nuevaCuentaPorPagar.valor_debido - this.valorAbono;
+      const nuevoMovimiento: MovCuentaPorPagar = {
+        fecha_mov: new Date(this.fechaRegistro),
+        cedula_empleado: "",
+        nombres_empleado: "nombres",
+        apellidos_empleado: "apellidos",
+        caja: "Caja1",
+        cuenta_por_pagar: "cxp-1",
+        cruce: nuevaCuentaPorPagar.codigo_factura,
+        valor: this.valorAbono,
+        estado: EstadoCuentaPorPagar.REALIZADO,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      cuentaPorPagar.valor_debido =
-        cuentaPorPagar.valor_total - this.valorAbono;
-      cuentaPorPagar.estado = EstadoCuentaPorPagar.REALIZADO;
-      await EDITAR("cuentas_por_pagar", this.idCuentaPorPagar, cuentaPorPagar);
-      await GUARDAR("cuentas_por_pagar", nuevaCuentaPorPagar);
+      await EDITAR(
+        "cuentas_por_pagar",
+        this.idCuentaPorPagar,
+        nuevaCuentaPorPagar
+      );
+      await GUARDAR("mov_cuentas_por_pagar", nuevoMovimiento);
       this.limpiarDatos();
     },
     limpiarDatos() {
