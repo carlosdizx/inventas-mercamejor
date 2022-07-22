@@ -154,37 +154,25 @@
             </v-col>
 
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Descuento"
-                rules="required"
-              >
-                <v-text-field
-                  @input="calcularTotal()"
-                  label="Descuento"
-                  v-model.number="compra.descuento"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                @input="calcularTotal()"
+                label="Descuento"
+                v-model.number="compra.descuento"
+                type="number"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
 
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Impuesto"
-                rules="required"
-              >
-                <v-text-field
-                  label="Impuesto"
-                  @input="calcularTotal()"
-                  v-model.number="compra.impuesto"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Impuesto"
+                @input="calcularTotal()"
+                v-model.number="compra.impuesto"
+                type="number"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
@@ -234,7 +222,7 @@ import { GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { Compra } from "@/interfaces/Compra";
+import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
@@ -263,9 +251,15 @@ export default Vue.extend({
   },
   computed: {
     validarRegistro() {
-      let val = true;
-      if (this.compra.total < 1 || this.compra.descuento < this.compra.total) {
-        val = false;
+      let val = false;
+      if (
+        this.compra.cod_factura === "" ||
+        this.compra.total < this.compra.descuento - this.compra.impuesto ||
+        this.compra.total <= 0 ||
+        this.compra.descuento < 0 ||
+        this.compra.impuesto < 0
+      ) {
+        val = true;
       }
       return val;
     },
@@ -312,6 +306,7 @@ export default Vue.extend({
         compras: [],
         subtotal: 0,
         total: 0,
+        estado: EstadoCompra.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -335,6 +330,7 @@ export default Vue.extend({
         compras: productos,
         subtotal: 0,
         total: 0,
+        estado: EstadoCompra.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -356,9 +352,6 @@ export default Vue.extend({
         Number(this.compra.impuesto);
     },
     async registrarCompra() {
-      this.compra.created_at = new Date();
-      this.compra.updated_at = new Date();
-      this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
       this.compra.cod_factura = "C-" + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
@@ -375,11 +368,17 @@ export default Vue.extend({
             this.compra.cod_factura
           );
           res.forEach((val: any) => {
+            console.log(val);
             if (val.exists) {
               existe = true;
             }
           });
           if (!existe) {
+            this.compra.created_at = new Date();
+            this.compra.updated_at = new Date();
+            this.compra.documento_proveedor = Number(
+              this.compra.documento_proveedor
+            );
             await GUARDAR("compras", this.compra);
             const inventarios: Array<Inventarios> = [];
             this.compra.compras.forEach((compra) => {
@@ -412,7 +411,7 @@ export default Vue.extend({
                 valor_total: Number(this.compra.total),
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                valor_debido: 0,
+                valor_debido: Number(this.compra.total),
                 estado: EstadoCuentaPorPagar.PENDIENTE,
               };
               await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
@@ -422,6 +421,7 @@ export default Vue.extend({
             }
             this.resetCampos();
             this.eliminarDatos = !this.eliminarDatos;
+            this.limpiarCompra();
             await Swal.fire({
               title: "Compra registrada con éxito",
               icon: "success",
@@ -489,6 +489,7 @@ export default Vue.extend({
             }
             this.resetCampos();
             this.eliminarDatos = !this.eliminarDatos;
+            this.limpiarCompra();
             await Swal.fire({
               title: "Compra actualizada con éxito",
               icon: "success",
@@ -511,28 +512,32 @@ export default Vue.extend({
       this.compra.nombres_proveedor = prov.nombres;
       this.compra.apellidos_proveedor = prov.apellidos;
     },
+    limpiarCompra() {
+      const compra: Compra = {
+        documento_proveedor: null,
+        nombres_proveedor: "",
+        apellidos_proveedor: "",
+        fecha_documento: new Date(),
+        cod_factura: "",
+        tipo_compra: "",
+        tipo_pago: "",
+        fecha_pago: new Date(),
+        fecha_llegada_producto: new Date(),
+        compras: [],
+        subtotal: 0,
+        descuento: 0,
+        impuesto: 0,
+        total: 0,
+        estado: EstadoCompra.APROBADO,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      this.compra = compra;
+    },
   },
   created() {
+    this.limpiarCompra();
     this.listarProveedores();
-    const compra: Compra = {
-      documento_proveedor: null,
-      nombres_proveedor: "",
-      apellidos_proveedor: "",
-      fecha_documento: new Date(),
-      cod_factura: "",
-      tipo_compra: "",
-      tipo_pago: "",
-      fecha_pago: new Date(),
-      fecha_llegada_producto: new Date(),
-      compras: [],
-      subtotal: 0,
-      descuento: 0,
-      impuesto: 0,
-      total: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-    this.compra = compra;
     this.columnas = this.columnas.filter((col: any) => {
       if (col.value !== "detalle") return true;
       return false;
