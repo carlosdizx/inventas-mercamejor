@@ -60,16 +60,16 @@
     <v-row class="mr-5 ml-5">
       <v-col>
         <v-btn
-          @click="dialog = true"
+          @click="realizarConsulta()"
           x-large
           dark
           class="color_a mb-3"
           block
           outlined
           dense
-          :disabled="validarFormulario"
           >Buscar
         </v-btn>
+        {{ rangoFechaInicial }}
         <v-dialog v-model="dialog" hide-overlay persistent width="400">
           <v-card color="color_a" dark>
             <v-card-text>
@@ -91,15 +91,22 @@ import Vue from "vue";
 export default Vue.extend({
   name: "CuadreCuentas",
   data: () => ({
+    rangoFechaInicial: "",
+    rangoFechaFinal: "",
     items: ["caja 1", "caja 2", "", "caja n"],
     model: ["Carrots"],
     dialog: false,
   }),
-  watch: {
-    dialog(val) {
-      if (!val) return;
+  methods: {
+    realizarConsulta() {
+      this.dialog = true;
+      //const consulta = await firebase('conus');
+      setTimeout(() => {
+        console.log("esta es la fecha", this.rangoFechaInicial);
+        console.log("fecha 2", this.rangoFechaFinal);
 
-      setTimeout(() => (this.dialog = false), 4000);
+        this.dialog = false;
+      }, 3000);
     },
   },
 });
