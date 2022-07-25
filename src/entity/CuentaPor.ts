@@ -8,7 +8,7 @@ export const TIPO_PAGAR = "por pagar";
 export class CuentaPor {
   private readonly _factura: Factura;
   private readonly _cliente: Cliente | Producto;
-  private readonly _consecutivo: string;
+  private readonly _codigo: string;
   private readonly _abonos: AbonoCuentas[];
   private readonly _fecha: Date;
   private readonly _tipo: string;
@@ -16,12 +16,12 @@ export class CuentaPor {
   constructor(
     factura: Factura,
     cliente: Cliente,
-    consecutivo: string,
+    codigo: string,
     tipo: number
   ) {
     this._factura = factura;
     this._cliente = cliente;
-    this._consecutivo = consecutivo;
+    this._codigo = codigo;
     this._abonos = [];
     this._fecha = new Date();
     this._tipo = tipo === 1 ? TIPO_COBRAR : TIPO_PAGAR;
@@ -35,8 +35,8 @@ export class CuentaPor {
     return this._cliente;
   }
 
-  get consecutivo(): string {
-    return this._consecutivo;
+  get codigo(): string {
+    return this._codigo;
   }
 
   get abonos(): AbonoCuentas[] {

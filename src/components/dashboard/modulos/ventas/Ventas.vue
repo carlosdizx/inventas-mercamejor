@@ -17,6 +17,9 @@ import Vue from "vue";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import Swal from "sweetalert2";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
+import { CREAR_CUENTA_POR_COBRAR } from "@/UseCases/CuentaPorUseCase";
+import { Factura as FacturaEntity } from "@/entity/Factura";
+import { Cliente } from "@/entity/Cliente";
 
 export default Vue.extend({
   name: "Ventas",
@@ -55,6 +58,21 @@ export default Vue.extend({
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;
+        }
+        if (datos_cliente.tipo_factura === "Credito") {
+          const cliente: Cliente = new Cliente(
+            "Cédula de ciudadania",
+            "1082749257",
+            "Carlos",
+            "Díaz",
+            new Date(),
+            "Masculino",
+            "3026508102",
+            "carlos.diaz@ias.com.co",
+            "Mz G casa 5"
+          );
+          await CREAR_CUENTA_POR_COBRAR(datos_cliente, cliente, "1");
+          console.log("Cuenta por cobrar generada");
         }
         await factura.asignarValores(
           datos_cliente,
