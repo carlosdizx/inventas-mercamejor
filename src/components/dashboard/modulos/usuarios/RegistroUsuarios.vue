@@ -179,7 +179,7 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <!-- <v-row class="mr-5 ml-5">
+            <!-- <v-row entity="mr-5 ml-5">
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"

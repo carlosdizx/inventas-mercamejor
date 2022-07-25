@@ -14,27 +14,31 @@ import FormVentas from "@/components/dashboard/modulos/ventas/componentes/FormVe
 import ListadoItems from "@/components/dashboard/modulos/ventas/componentes/ListadoItems.vue";
 import Factura from "@/components/generals/Factura.vue";
 import Vue from "vue";
-import {
-  BUSCAR_PRODUCTOS_CODIGO_BARRAS,
-  DAR_NUMERO_FACTURA,
-} from "@/generals/Funciones";
+import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import Swal from "sweetalert2";
+import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 
 export default Vue.extend({
   name: "Ventas",
   components: { FormVentas, ListadoItems, Factura },
   data: () => ({
     productos: [],
+    audio: new Audio(),
+    add: require("@/assets/audios/add_product.mp3"),
+    notFound: require("@/assets/audios/not_found_product.mp3"),
   }),
   methods: {
     async buscarProducto(codigo_barras: number) {
-      const productos = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
-      if (productos.size !== 0) {
-        const producto: any = productos.docs[0].data();
-        producto.id = productos.docs[0].id;
+      const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
+      if (producto) {
         const listado: any = this.$refs.ListadoItems;
         listado.agregarProducto(producto);
+        this.audio.src = this.add;
+        await this.audio.play();
       } else {
+        this.audio.src = this.notFound;
+        await this.audio.play();
+
         await Swal.fire({
           title: "Producto no encontrado",
           timer: 1000,

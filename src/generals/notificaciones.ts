@@ -50,5 +50,12 @@ export const NOTIFICAR_ERROR = async (codigo: any) => {
       showConfirmButton: false,
       timer: 1500,
     });
+  } else if (codigo === "auth/network-request-failed") {
+    await Swal.fire({
+      title: "Sin conexión a internet!",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }
 };

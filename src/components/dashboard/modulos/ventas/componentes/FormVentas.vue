@@ -82,7 +82,7 @@
           <v-row>
             <v-col cols="6">
               <v-text-field
-                label="Codigo del proyecto"
+                label="Codigo del producto o servicio"
                 prepend-icon="mdi-barcode-scan"
                 type="number"
                 dense
@@ -128,7 +128,7 @@
 import Vue from "vue";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
-import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/generals/Funciones";
+import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
 
 export default Vue.extend({
   name: "FormVentas",

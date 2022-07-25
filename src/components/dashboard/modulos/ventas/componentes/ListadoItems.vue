@@ -69,18 +69,16 @@
     </v-card-text>
     <v-data-table :headers="columnas" :items="filas">
       <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog
-          @save="cambiarCantidadProducto"
-          @clse="cambiarCantidadProducto"
-          @cancel="cambiarCantidadProducto"
-        >
+        <v-edit-dialog>
           {{ item.cantidad }}
           <template v-slot:input>
             <v-text-field
-              @focusout="cambiarCantidadProducto"
+              @keydown.enter="
+                cambiarCantidadProducto($event.target.value, item)
+              "
               label="Editar"
+              type="number"
               counter
-              v-model="item.cantidad"
             />
           </template>
         </v-edit-dialog>
@@ -92,6 +90,14 @@
 <script lang="ts">
 import Vue from "vue";
 import Swal from "sweetalert2";
+import {
+  AGREGAR_PRODUCTO,
+  CAMBIAR_CANTIDAD,
+  TOTALIZAR_VALORES,
+  YA_LISTADO,
+} from "@/UseCases/ProductosUseCases";
+import { Producto } from "@/entity/Producto";
+import { ProductoVenta } from "@/dto/ProductoVenta";
 
 export default Vue.extend({
   name: "ListadoItems",
@@ -101,60 +107,47 @@ export default Vue.extend({
     descuento: 0,
     calculadora: 0,
     columnas: [
-      { text: "Codigo", value: "codigo_barras" },
+      { text: "Codigo", value: "codigo" },
       { text: "Producto", value: "nombre" },
       { text: "Cantidad", value: "cantidad" },
-      { text: "Precio*uni", value: "precio_unitario_venta" },
-      { text: "Descuento*uni", value: "descuento" },
+      { text: "Precio*uni", value: "precio" },
+      { text: "descuento*uni", value: "descuento" },
       { text: "Subtotal", value: "subtotal" },
     ],
-    filas: [{}],
+    filas: [] as ProductoVenta[],
     descuento_adicional: 0,
   }),
   methods: {
-    async agregarProducto(producto: any) {
-      let agregado = false;
-      for (const fila of this.filas) {
-        const temp: any = fila;
-        if (temp.id === producto.id) {
-          temp.cantidad = temp.cantidad + 1;
-          temp.subtotal = temp.cantidad * producto.precio_unitario_venta;
-          agregado = true;
-        }
-      }
-      if (!agregado) {
-        producto.cantidad = 1;
-        producto.subtotal = producto.precio_unitario_venta;
-        this.filas.push(producto);
-        agregado = true;
-      }
+    async agregarProducto(producto: Producto) {
+      const agregado = await YA_LISTADO(this.filas, producto);
+      const pv: ProductoVenta = new ProductoVenta(
+        producto.codigo_barras,
+        producto.nombre,
+        1,
+        producto.precio_unitario_venta,
+        producto.descuento
+      );
       if (agregado) {
-        this.calcularValores();
-        await Swal.fire({
-          title: "Agregado con exito!",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 500,
-        });
+        this.filas = AGREGAR_PRODUCTO(this.filas, producto);
+      } else {
+        this.filas.push(pv);
       }
+      await this.calcularValores();
     },
-    calcularValores() {
-      this.subtotal = 0;
-      this.descuento = 0;
-      this.total = 0;
+    async calcularValores() {
+      const valores = TOTALIZAR_VALORES(this.filas);
+      this.subtotal = valores.subtotal;
+      this.descuento = valores.descuento;
+      this.total = valores.total;
       this.calculadora = this.calculadora * 1;
-      this.filas.forEach((item: any) => {
-        this.subtotal += item.subtotal;
-        this.descuento += item.descuento * item.cantidad;
-        this.total = this.subtotal - this.descuento;
-      });
     },
-    cambiarCantidadProducto() {
-      for (const fila of this.filas) {
-        const producto: any = fila;
-        producto.subtotal = producto.cantidad * producto.precio_unitario_venta;
+    async cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
+      if (valor == 0) {
+        this.filas = this.filas.filter((producto) => producto !== item);
+        return;
       }
-      this.calcularValores();
+      await CAMBIAR_CANTIDAD(valor, item);
+      await this.calcularValores();
     },
     darItemsFactura() {
       const datos_factura = {
