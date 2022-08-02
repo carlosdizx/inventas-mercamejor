@@ -1,36 +1,101 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    :items-per-page="5"
-    class="elevation-1"
-  ></v-data-table>
+  <div>
+    <v-data-table :headers="headers" :items="desserts">
+      <template v-slot:item.invfs="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.invfs"
+          large
+          persistent
+          @save="save"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          <div>{{ props.item.invfs }}</div>
+          <template v-slot:input>
+            <div class="mt-4 text-h6">Editar inventario fisico</div>
+            <v-text-field
+              v-model="props.item.invfs"
+              :rules="[max25chars]"
+              label="Edit"
+              single-line
+              counter
+              autofocus
+            ></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+      <template v-slot:item.ajuste="props">
+        <v-edit-dialog
+          :return-value.sync="props.item.ajuste"
+          large
+          persistent
+          @save="save"
+          @cancel="cancel"
+          @open="open"
+          @close="close"
+        >
+          <div class="primary">{{ props.item.ajuste }}</div>
+          <template v-slot:input>
+            <div class="mt-4 text-h6">Editar Ajuste</div>
+            <v-text-field
+              v-model="props.item.ajuste"
+              :rules="[max25chars]"
+              label="Edit"
+              single-line
+              counter
+              autofocus
+            ></v-text-field>
+          </template>
+        </v-edit-dialog>
+      </template>
+    </v-data-table>
+
+    <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+      {{ snackText }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn v-bind="attrs" text @click="snack = false"> Close </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
 </template>
 <script>
 export default {
   data() {
     return {
+      snack: false,
+      snackColor: "",
+      snackText: "",
+      max25chars: (v) => v.length <= 25 || "Input too long!",
+      pagination: {},
       headers: [
+        { text: "Descripcion productos", value: "descripcion" },
+        { text: "Inventario inicial", value: "inventarioinicial" },
+        { text: "Compras", value: "compras" },
         {
-          text: "Dessert (100g serving)",
-          align: "start",
-          sortable: false,
-          value: "name",
+          text: "Ventas",
+          value: "ventas",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
+        { text: "Ajuste", value: "ajuste" },
+        {
+          text: "Inventario Final",
+          value: "invf",
+        },
+        { text: "Inventario fisico", value: "invfs" },
+        { text: "Saldo Tota", value: "saldot" },
       ],
+
       desserts: [
         {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
+          descripcion: "Arroz 500 g ",
+          inventarioinicial: 159,
+          compras: 6.0,
+          ventas: 24,
+          ajuste: 0,
+          invf: 1,
+          invfs: 0,
+          saldot: 0,
         },
         {
           name: "Ice cream sandwich",
@@ -106,6 +171,26 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    save() {
+      this.snack = true;
+      this.snackColor = "success";
+      this.snackText = "Data saved";
+    },
+    cancel() {
+      this.snack = true;
+      this.snackColor = "error";
+      this.snackText = "Canceled";
+    },
+    open() {
+      this.snack = true;
+      this.snackColor = "info";
+      this.snackText = "Dialog opened";
+    },
+    close() {
+      console.log("Dialog closed");
+    },
   },
 };
 </script>
