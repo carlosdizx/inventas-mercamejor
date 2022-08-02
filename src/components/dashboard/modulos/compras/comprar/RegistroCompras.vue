@@ -297,12 +297,12 @@ export default Vue.extend({
         documento_proveedor: null,
         nombres_proveedor: "",
         apellidos_proveedor: "",
-        fecha_documento: new Date(),
+        fecha_documento: "",
         cod_factura: "",
         tipo_compra: this.compra.tipo_compra,
         tipo_pago: this.compra.tipo_pago,
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_pago: "",
+        fecha_llegada_producto: "",
         compras: [],
         subtotal: 0,
         total: 0,
@@ -321,12 +321,12 @@ export default Vue.extend({
         documento_proveedor: this.compra.documento_proveedor || null,
         nombres_proveedor: this.compra.nombres_proveedor || "",
         apellidos_proveedor: this.compra.apellidos_proveedor || "",
-        fecha_documento: new Date(),
+        fecha_documento: this.compra.fecha_documento || "",
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
         tipo_pago: this.compra.tipo_pago,
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_pago: this.compra.fecha_pago || "",
+        fecha_llegada_producto: this.compra.fecha_llegada_producto || "",
         compras: productos,
         subtotal: 0,
         total: 0,
@@ -385,7 +385,9 @@ export default Vue.extend({
               const inventario: Inventarios = {
                 created_at: new Date(),
                 updated_at: new Date(),
-                fecha_llegada_producto: this.compra.fecha_llegada_producto,
+                fecha_llegada_producto: new Date(
+                  this.compra.fecha_llegada_producto
+                ),
                 cedula_nit: this.compra.documento_proveedor,
                 nombres: this.compra.nombres_proveedor,
                 apellidos: this.compra.apellidos_proveedor,
@@ -403,7 +405,7 @@ export default Vue.extend({
             });
             if (this.compra.tipo_pago === "Credito") {
               const cuentaPorPagar: CuentaPorPagar = {
-                fecha_compra: this.compra.fecha_documento,
+                fecha_compra: new Date(this.compra.fecha_documento),
                 cedula_proveedor: Number(this.compra.documento_proveedor),
                 nombres_proveedor: this.compra.nombres_proveedor,
                 apellidos_proveedor: this.compra.apellidos_proveedor,
@@ -468,7 +470,9 @@ export default Vue.extend({
               const inventario: Inventarios = {
                 created_at: new Date(),
                 updated_at: new Date(),
-                fecha_llegada_producto: this.compra.fecha_llegada_producto,
+                fecha_llegada_producto: new Date(
+                  this.compra.fecha_llegada_producto
+                ),
                 cedula_nit: this.compra.documento_proveedor,
                 nombres: this.compra.nombres_proveedor,
                 apellidos: this.compra.apellidos_proveedor,
