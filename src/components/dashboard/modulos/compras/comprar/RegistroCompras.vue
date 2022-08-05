@@ -227,6 +227,7 @@ import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
+import { getFechaDesdeInput } from "@/generals/formats";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -254,6 +255,8 @@ export default Vue.extend({
       let val = false;
       if (
         this.compra.cod_factura === "" ||
+        !this.compra.fecha_documento ||
+        !this.compra.tipo_pago ||
         this.compra.total < this.compra.descuento - this.compra.impuesto ||
         this.compra.total <= 0 ||
         this.compra.descuento < 0 ||
@@ -289,28 +292,6 @@ export default Vue.extend({
       });
       this.compra.nombres_proveedor = nombres;
       this.compra.apellidos_proveedor = apellidos;
-    },
-    resetCampos() {
-      const compra: Compra = {
-        descuento: 0,
-        impuesto: 0,
-        documento_proveedor: null,
-        nombres_proveedor: "",
-        apellidos_proveedor: "",
-        fecha_documento: "",
-        cod_factura: "",
-        tipo_compra: this.compra.tipo_compra,
-        tipo_pago: this.compra.tipo_pago,
-        fecha_pago: "",
-        fecha_llegada_producto: "",
-        compras: [],
-        subtotal: 0,
-        total: 0,
-        estado: EstadoCompra.APROBADO,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-      this.compra = compra;
     },
     actualizarProductos(productos: ProductoCompra[]) {
       const productoss: Array<ProductoCompra> = productos;
@@ -352,7 +333,7 @@ export default Vue.extend({
         Number(this.compra.impuesto);
     },
     async registrarCompra() {
-      this.compra.cod_factura = "C-" + this.compra.cod_factura;
+      const numeroDeFactura = "C-" + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -365,34 +346,51 @@ export default Vue.extend({
           const res = await LISTAR_IN(
             "compras",
             "cod_factura",
-            this.compra.cod_factura
+            numeroDeFactura
           );
           res.forEach((val: any) => {
-            console.log(val);
             if (val.exists) {
               existe = true;
             }
           });
           if (!existe) {
-            this.compra.created_at = new Date();
-            this.compra.updated_at = new Date();
-            this.compra.documento_proveedor = Number(
-              this.compra.documento_proveedor
-            );
-            await GUARDAR("compras", this.compra);
+            const nuevaCompra: Compra = {
+              created_at: new Date(),
+              updated_at: new Date(),
+              documento_proveedor: Number(this.compra.documento_proveedor),
+              fecha_documento: getFechaDesdeInput(
+                String(this.compra.fecha_documento)
+              ),
+              fecha_pago: getFechaDesdeInput(String(this.compra.fecha_pago)),
+              fecha_llegada_producto: getFechaDesdeInput(
+                String(this.compra.fecha_llegada_producto)
+              ),
+              compras: this.compra.compras,
+              nombres_proveedor: this.compra.nombres_proveedor,
+              apellidos_proveedor: this.compra.apellidos_proveedor,
+              cod_factura: numeroDeFactura,
+              tipo_compra: this.compra.tipo_compra,
+              tipo_pago: this.compra.tipo_pago,
+              subtotal: this.compra.subtotal,
+              descuento: this.compra.descuento,
+              impuesto: this.compra.impuesto,
+              total: this.compra.total,
+              estado: EstadoCompra.APROBADO,
+            };
+            await GUARDAR("compras", nuevaCompra);
             const inventarios: Array<Inventarios> = [];
-            this.compra.compras.forEach((compra) => {
+            nuevaCompra.compras.forEach((compra) => {
               const inventario: Inventarios = {
                 created_at: new Date(),
                 updated_at: new Date(),
-                fecha_llegada_producto: new Date(
-                  this.compra.fecha_llegada_producto
+                fecha_llegada_producto: getFechaDesdeInput(
+                  String(nuevaCompra.fecha_llegada_producto)
                 ),
-                cedula_nit: this.compra.documento_proveedor,
-                nombres: this.compra.nombres_proveedor,
-                apellidos: this.compra.apellidos_proveedor,
-                tipo_factura: this.compra.tipo_compra,
-                documento: this.compra.cod_factura,
+                cedula_nit: nuevaCompra.documento_proveedor,
+                nombres: nuevaCompra.nombres_proveedor,
+                apellidos: nuevaCompra.apellidos_proveedor,
+                tipo_factura: nuevaCompra.tipo_compra,
+                documento: numeroDeFactura,
                 bodega: compra.bodega,
                 producto: compra.descripcion_producto,
                 codigo_barras: compra.codigo_barras,
@@ -403,25 +401,26 @@ export default Vue.extend({
               };
               inventarios.push(inventario);
             });
-            if (this.compra.tipo_pago === "Credito") {
+            if (nuevaCompra.tipo_pago === "Credito") {
               const cuentaPorPagar: CuentaPorPagar = {
-                fecha_compra: new Date(this.compra.fecha_documento),
-                cedula_proveedor: Number(this.compra.documento_proveedor),
-                nombres_proveedor: this.compra.nombres_proveedor,
-                apellidos_proveedor: this.compra.apellidos_proveedor,
-                codigo_factura: this.compra.cod_factura,
-                valor_total: Number(this.compra.total),
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                valor_debido: Number(this.compra.total),
+                fecha_compra: getFechaDesdeInput(
+                  String(nuevaCompra.fecha_documento)
+                ),
+                cedula_proveedor: Number(nuevaCompra.documento_proveedor),
+                nombres_proveedor: nuevaCompra.nombres_proveedor,
+                apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+                codigo_factura: numeroDeFactura,
+                valor_total: Number(nuevaCompra.total),
+                valor_debido: Number(nuevaCompra.total),
                 estado: EstadoCuentaPorPagar.PENDIENTE,
               };
-              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+              //await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }
-            for (const item of inventarios) {
-              await GUARDAR("inventarios", item);
-            }
-            this.resetCampos();
+            // for (const item of inventarios) {
+            //   await GUARDAR("inventarios", item);
+            // }
             this.eliminarDatos = !this.eliminarDatos;
             this.limpiarCompra();
             await Swal.fire({
@@ -491,7 +490,6 @@ export default Vue.extend({
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
             }
-            this.resetCampos();
             this.eliminarDatos = !this.eliminarDatos;
             this.limpiarCompra();
             await Swal.fire({
@@ -521,12 +519,12 @@ export default Vue.extend({
         documento_proveedor: null,
         nombres_proveedor: "",
         apellidos_proveedor: "",
-        fecha_documento: new Date(),
+        fecha_documento: "",
         cod_factura: "",
         tipo_compra: "",
         tipo_pago: "",
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_pago: "",
+        fecha_llegada_producto: "",
         compras: [],
         subtotal: 0,
         descuento: 0,
