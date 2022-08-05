@@ -103,36 +103,22 @@
               </validation-provider>
             </v-col>
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Fecha de pago"
-                rules="required"
-              >
-                <v-text-field
-                  label="Fecha de pago"
-                  type="date"
-                  v-model="compra.fecha_pago"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Fecha de pago"
+                type="date"
+                v-model="compra.fecha_pago"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Fecha de llegada del producto"
-                rules="required"
-              >
-                <v-text-field
-                  label="Fecha de llegada del producto"
-                  type="date"
-                  v-model="compra.fecha_llegada_producto"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Fecha de llegada del producto"
+                type="date"
+                v-model="compra.fecha_llegada_producto"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -429,6 +415,10 @@ export default Vue.extend({
               timer: 1000,
               showConfirmButton: false,
             });
+            const observer: any = this.$refs.observer;
+            if (observer) {
+              observer.reset();
+            }
           } else {
             await Swal.fire({
               title: "Número de factura ya existe",
