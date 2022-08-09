@@ -31,10 +31,14 @@ export const tipo_dato = async (valor: any) => {
 };
 
 export const getFechaDesdeInput = (stringfecha: string) => {
-  const datosFecha: string[] = stringfecha.split("-");
-  return new Date(
-    Number(datosFecha[0]),
-    Number(datosFecha[1]) - 1,
-    Number(datosFecha[2])
-  );
+  if (stringfecha) {
+    const datosFecha: string[] = stringfecha.split("-");
+    return new Date(
+      Number(datosFecha[0]),
+      Number(datosFecha[1]) - 1,
+      Number(datosFecha[2])
+    );
+  } else {
+    return "";
+  }
 };
