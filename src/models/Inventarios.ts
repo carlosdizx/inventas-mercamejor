@@ -1,5 +1,5 @@
 export interface Inventarios {
-  fecha_llegada_producto: Date;
+  fecha_factura: Date | string | null;
   created_at: Date;
   updated_at: Date;
   codigo_barras: number | null;

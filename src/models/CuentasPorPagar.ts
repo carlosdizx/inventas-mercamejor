@@ -85,7 +85,7 @@ export const CAMPOS = [
 ];
 
 export interface CuentaPorPagar {
-  fecha_compra: Date;
+  fecha_compra: Date | string | null;
   cedula_proveedor: number | "";
   nombres_proveedor: string;
   apellidos_proveedor: string;
