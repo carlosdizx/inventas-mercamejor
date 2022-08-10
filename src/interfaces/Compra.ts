@@ -1,6 +1,6 @@
 import { ProductoCompra } from "./ProductoCompra";
 export interface Compra {
-  documento_proveedor: number | null;
+  documento_proveedor: number | null | "";
   nombres_proveedor: string;
   apellidos_proveedor: string;
   fecha_documento: Date | string | null;

@@ -271,7 +271,7 @@ export default Vue.extend({
       let nombres = "";
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
-        if (Number(this.compra.documento_proveedor) === prov.documento) {
+        if (this.compra.documento_proveedor === prov.documento) {
           nombres = nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
@@ -343,7 +343,7 @@ export default Vue.extend({
             const nuevaCompra: Compra = {
               created_at: new Date(),
               updated_at: new Date(),
-              documento_proveedor: Number(this.compra.documento_proveedor),
+              documento_proveedor: this.compra.documento_proveedor,
               fecha_documento: getFechaDesdeInput(
                 String(this.compra.fecha_documento)
               ),
@@ -382,7 +382,6 @@ export default Vue.extend({
                 codigo_barras: compra.codigo_barras,
                 salidas: compra.cantidad,
                 entradas: 0,
-                cruce: "",
                 caja: "",
               };
               inventarios.push(inventario);
@@ -390,21 +389,23 @@ export default Vue.extend({
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
             }
-            // if (nuevaCompra.tipo_pago === "Credito") {
-            //   const cuentaPorPagar: CuentaPorPagar = {
-            //     createdAt: new Date(),
-            //     updatedAt: new Date(),
-            //     fecha_compra: new Date(),
-            //     cedula_proveedor: Number(nuevaCompra.documento_proveedor),
-            //     nombres_proveedor: nuevaCompra.nombres_proveedor,
-            //     apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-            //     codigo_factura: numeroDeFactura,
-            //     valor_total: Number(nuevaCompra.total),
-            //     valor_debido: Number(nuevaCompra.total),
-            //     estado: EstadoCuentaPorPagar.PENDIENTE,
-            //   };
-            //   await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
-            // }
+            if (nuevaCompra.tipo_pago === "Credito") {
+              const cuentaPorPagar: CuentaPorPagar = {
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                fecha_compra: getFechaDesdeInput(
+                  String(this.compra.fecha_documento)
+                ),
+                cedula_proveedor: nuevaCompra.documento_proveedor,
+                nombres_proveedor: nuevaCompra.nombres_proveedor,
+                apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+                codigo_factura: numeroDeFactura,
+                valor_total: Number(nuevaCompra.total),
+                valor_debido: Number(nuevaCompra.total),
+                estado: EstadoCuentaPorPagar.PENDIENTE,
+              };
+              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+            }
             // this.eliminarDatos = !this.eliminarDatos;
             // this.limpiarCompra();
             // const observer: any = this.$refs.observer;
@@ -430,7 +431,7 @@ export default Vue.extend({
     },
     // actualizarCompa() {
     //   this.compra.updated_at = new Date();
-    //   this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
+    //   this.compra.documento_proveedor = this.compra.documento_proveedor;
     //   Swal.fire({
     //     title: "¿Esta seguro de Actualizar esta compra?",
     //     showDenyButton: true,
