@@ -170,7 +170,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="!validarRegistro"
+                :disabled="validarRegistro"
                 color="color_a mb-3"
                 x-large
                 block
@@ -243,6 +243,7 @@ export default Vue.extend({
         this.compra.cod_factura === "" ||
         !this.compra.fecha_documento ||
         !this.compra.tipo_pago ||
+        !this.compra.tipo_compra ||
         this.compra.total < this.compra.descuento - this.compra.impuesto ||
         this.compra.total <= 0 ||
         this.compra.descuento < 0 ||
@@ -285,7 +286,7 @@ export default Vue.extend({
       const compra: Compra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: this.compra.documento_proveedor || null,
+        documento_proveedor: this.compra.documento_proveedor || "",
         nombres_proveedor: this.compra.nombres_proveedor || "",
         apellidos_proveedor: this.compra.apellidos_proveedor || "",
         fecha_documento: this.compra.fecha_documento || "",
@@ -406,18 +407,18 @@ export default Vue.extend({
               };
               await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }
-            // this.eliminarDatos = !this.eliminarDatos;
-            // this.limpiarCompra();
-            // const observer: any = this.$refs.observer;
-            // if (observer) {
-            //   observer.reset();
-            // }
-            // await Swal.fire({
-            //   title: "Compra registrada con éxito",
-            //   icon: "success",
-            //   timer: 1000,
-            //   showConfirmButton: false,
-            // });
+            this.eliminarDatos = !this.eliminarDatos;
+            this.limpiarCompra();
+            const observer: any = this.$refs.observer;
+            if (observer) {
+              observer.reset();
+            }
+            await Swal.fire({
+              title: "Compra registrada con éxito",
+              icon: "success",
+              timer: 1000,
+              showConfirmButton: false,
+            });
           } else {
             await Swal.fire({
               title: "Número de factura ya existe",
@@ -503,7 +504,7 @@ export default Vue.extend({
     },
     limpiarCompra() {
       const compra: Compra = {
-        documento_proveedor: null,
+        documento_proveedor: "",
         nombres_proveedor: "",
         apellidos_proveedor: "",
         fecha_documento: "",
