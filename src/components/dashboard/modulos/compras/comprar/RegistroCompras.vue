@@ -21,6 +21,7 @@
               <BuscarElemento
                 @getItem="seleccionarProveedor"
                 icon="mdi-lead-pencil"
+                nombre="Proveedor"
                 :items="proveedores"
                 :headers="columnas"
               />
