@@ -1,4 +1,4 @@
-import { LISTAR_IN } from "@/services/crud";
+import { LISTAR_IN, EDITAR } from "@/services/crud";
 import { Producto } from "@/entity/Producto";
 import { ProductoVenta } from "@/dto/ProductoVenta";
 import Swal from "sweetalert2";
@@ -64,4 +64,11 @@ export const CAMBIAR_CANTIDAD = async (
     item.subtotal = item.cantidad * item.precio;
     return parse;
   }
+};
+
+export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
+  idProducto: string,
+  cantidad: number
+) => {
+  await EDITAR("productos", idProducto + "/unidades", cantidad);
 };
