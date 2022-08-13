@@ -21,6 +21,7 @@
               <BuscarElemento
                 @getItem="seleccionarProveedor"
                 icon="mdi-lead-pencil"
+                nombre="Proveedor"
                 :items="proveedores"
                 :headers="columnas"
               />
@@ -103,36 +104,22 @@
               </validation-provider>
             </v-col>
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Fecha de pago"
-                rules="required"
-              >
-                <v-text-field
-                  label="Fecha de pago"
-                  type="date"
-                  v-model="compra.fecha_pago"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Fecha de pago"
+                type="date"
+                v-model="compra.fecha_pago"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
             <v-col>
-              <validation-provider
-                v-slot="{ errors }"
-                name="Fecha de llegada del producto"
-                rules="required"
-              >
-                <v-text-field
-                  label="Fecha de llegada del producto"
-                  type="date"
-                  v-model="compra.fecha_llegada_producto"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-text-field
+                label="Fecha de llegada del producto"
+                type="date"
+                v-model="compra.fecha_llegada_producto"
+                outlined
+                dense
+              ></v-text-field>
             </v-col>
           </v-row>
 
@@ -227,6 +214,7 @@ import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
+import { getFechaDesdeInput } from "@/generals/formats";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -254,6 +242,9 @@ export default Vue.extend({
       let val = false;
       if (
         this.compra.cod_factura === "" ||
+        !this.compra.fecha_documento ||
+        !this.compra.tipo_pago ||
+        !this.compra.tipo_compra ||
         this.compra.total < this.compra.descuento - this.compra.impuesto ||
         this.compra.total <= 0 ||
         this.compra.descuento < 0 ||
@@ -282,7 +273,7 @@ export default Vue.extend({
       let nombres = "";
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
-        if (Number(this.compra.documento_proveedor) === prov.documento) {
+        if (this.compra.documento_proveedor === prov.documento) {
           nombres = nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
@@ -290,43 +281,21 @@ export default Vue.extend({
       this.compra.nombres_proveedor = nombres;
       this.compra.apellidos_proveedor = apellidos;
     },
-    resetCampos() {
-      const compra: Compra = {
-        descuento: 0,
-        impuesto: 0,
-        documento_proveedor: null,
-        nombres_proveedor: "",
-        apellidos_proveedor: "",
-        fecha_documento: new Date(),
-        cod_factura: "",
-        tipo_compra: this.compra.tipo_compra,
-        tipo_pago: this.compra.tipo_pago,
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
-        compras: [],
-        subtotal: 0,
-        total: 0,
-        estado: EstadoCompra.APROBADO,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-      this.compra = compra;
-    },
     actualizarProductos(productos: ProductoCompra[]) {
       const productoss: Array<ProductoCompra> = productos;
       this.compra.compras = productoss;
       const compra: Compra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: this.compra.documento_proveedor || null,
+        documento_proveedor: this.compra.documento_proveedor || "",
         nombres_proveedor: this.compra.nombres_proveedor || "",
         apellidos_proveedor: this.compra.apellidos_proveedor || "",
-        fecha_documento: new Date(),
+        fecha_documento: this.compra.fecha_documento || "",
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
         tipo_pago: this.compra.tipo_pago,
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_pago: this.compra.fecha_pago || "",
+        fecha_llegada_producto: this.compra.fecha_llegada_producto || "",
         compras: productos,
         subtotal: 0,
         total: 0,
@@ -352,7 +321,7 @@ export default Vue.extend({
         Number(this.compra.impuesto);
     },
     async registrarCompra() {
-      this.compra.cod_factura = "C-" + this.compra.cod_factura;
+      const numeroDeFactura = "C-" + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -365,63 +334,86 @@ export default Vue.extend({
           const res = await LISTAR_IN(
             "compras",
             "cod_factura",
-            this.compra.cod_factura
+            numeroDeFactura
           );
           res.forEach((val: any) => {
-            console.log(val);
             if (val.exists) {
               existe = true;
             }
           });
           if (!existe) {
-            this.compra.created_at = new Date();
-            this.compra.updated_at = new Date();
-            this.compra.documento_proveedor = Number(
-              this.compra.documento_proveedor
-            );
-            await GUARDAR("compras", this.compra);
+            const nuevaCompra: Compra = {
+              created_at: new Date(),
+              updated_at: new Date(),
+              documento_proveedor: this.compra.documento_proveedor,
+              fecha_documento: getFechaDesdeInput(
+                String(this.compra.fecha_documento)
+              ),
+              fecha_pago: getFechaDesdeInput(String(this.compra.fecha_pago)),
+              fecha_llegada_producto: getFechaDesdeInput(
+                String(this.compra.fecha_llegada_producto)
+              ),
+              compras: this.compra.compras,
+              nombres_proveedor: this.compra.nombres_proveedor,
+              apellidos_proveedor: this.compra.apellidos_proveedor,
+              cod_factura: numeroDeFactura,
+              tipo_compra: this.compra.tipo_compra,
+              tipo_pago: this.compra.tipo_pago,
+              subtotal: this.compra.subtotal,
+              descuento: this.compra.descuento,
+              impuesto: this.compra.impuesto,
+              total: this.compra.total,
+              estado: EstadoCompra.APROBADO,
+            };
+            await GUARDAR("compras", nuevaCompra);
             const inventarios: Array<Inventarios> = [];
-            this.compra.compras.forEach((compra) => {
+            nuevaCompra.compras.forEach((compra) => {
               const inventario: Inventarios = {
                 created_at: new Date(),
                 updated_at: new Date(),
-                fecha_llegada_producto: this.compra.fecha_llegada_producto,
-                cedula_nit: this.compra.documento_proveedor,
-                nombres: this.compra.nombres_proveedor,
-                apellidos: this.compra.apellidos_proveedor,
-                tipo_factura: this.compra.tipo_compra,
-                documento: this.compra.cod_factura,
+                fecha_factura: getFechaDesdeInput(
+                  String(this.compra.fecha_documento)
+                ),
+                cedula_nit: nuevaCompra.documento_proveedor,
+                nombres: nuevaCompra.nombres_proveedor,
+                apellidos: nuevaCompra.apellidos_proveedor,
+                tipo_factura: nuevaCompra.tipo_compra,
+                documento: numeroDeFactura,
                 bodega: compra.bodega,
                 producto: compra.descripcion_producto,
                 codigo_barras: compra.codigo_barras,
                 salidas: compra.cantidad,
                 entradas: 0,
-                cruce: "",
                 caja: "",
               };
               inventarios.push(inventario);
             });
-            if (this.compra.tipo_pago === "Credito") {
+            for (const item of inventarios) {
+              await GUARDAR("inventarios", item);
+            }
+            if (nuevaCompra.tipo_pago === "Credito") {
               const cuentaPorPagar: CuentaPorPagar = {
-                fecha_compra: this.compra.fecha_documento,
-                cedula_proveedor: Number(this.compra.documento_proveedor),
-                nombres_proveedor: this.compra.nombres_proveedor,
-                apellidos_proveedor: this.compra.apellidos_proveedor,
-                codigo_factura: this.compra.cod_factura,
-                valor_total: Number(this.compra.total),
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                valor_debido: Number(this.compra.total),
+                fecha_compra: getFechaDesdeInput(
+                  String(this.compra.fecha_documento)
+                ),
+                cedula_proveedor: nuevaCompra.documento_proveedor,
+                nombres_proveedor: nuevaCompra.nombres_proveedor,
+                apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+                codigo_factura: numeroDeFactura,
+                valor_total: Number(nuevaCompra.total),
+                valor_debido: Number(nuevaCompra.total),
                 estado: EstadoCuentaPorPagar.PENDIENTE,
               };
               await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
             }
-            for (const item of inventarios) {
-              await GUARDAR("inventarios", item);
-            }
-            this.resetCampos();
             this.eliminarDatos = !this.eliminarDatos;
             this.limpiarCompra();
+            const observer: any = this.$refs.observer;
+            if (observer) {
+              observer.reset();
+            }
             await Swal.fire({
               title: "Compra registrada con éxito",
               icon: "success",
@@ -439,74 +431,73 @@ export default Vue.extend({
         }
       });
     },
-    actualizarCompa() {
-      this.compra.updated_at = new Date();
-      this.compra.documento_proveedor = Number(this.compra.documento_proveedor);
-      Swal.fire({
-        title: "¿Esta seguro de Actualizar esta compra?",
-        showDenyButton: true,
-        confirmButtonText: "Actualizar",
-        confirmButtonColor: "green",
-        denyButtonText: `Cancelar!`,
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          let existe = false;
-          const res = await LISTAR_IN(
-            "compras",
-            "cod_factura",
-            this.compra.cod_factura
-          );
-          res.forEach((val: any) => {
-            if (val.exists) {
-              existe = true;
-            }
-          });
-          if (!existe) {
-            await GUARDAR("compras", this.compra);
-            const inventarios: Array<Inventarios> = [];
-            this.compra.compras.forEach((compra) => {
-              const inventario: Inventarios = {
-                created_at: new Date(),
-                updated_at: new Date(),
-                fecha_llegada_producto: this.compra.fecha_llegada_producto,
-                cedula_nit: this.compra.documento_proveedor,
-                nombres: this.compra.nombres_proveedor,
-                apellidos: this.compra.apellidos_proveedor,
-                tipo_factura: this.compra.tipo_compra,
-                documento: this.compra.cod_factura,
-                bodega: compra.bodega,
-                producto: compra.descripcion_producto,
-                codigo_barras: compra.codigo_barras,
-                salidas: compra.cantidad,
-                entradas: 0,
-                cruce: "",
-                caja: "",
-              };
-              inventarios.push(inventario);
-            });
-            for (const item of inventarios) {
-              await GUARDAR("inventarios", item);
-            }
-            this.resetCampos();
-            this.eliminarDatos = !this.eliminarDatos;
-            this.limpiarCompra();
-            await Swal.fire({
-              title: "Compra actualizada con éxito",
-              icon: "success",
-              timer: 1000,
-              showConfirmButton: false,
-            });
-          } else {
-            await Swal.fire({
-              title: "Número de factura ya existe",
-              icon: "warning",
-              timer: 1000,
-              showConfirmButton: false,
-            });
-          }
-        }
-      });
-    },
+    // actualizarCompa() {
+    //   this.compra.updated_at = new Date();
+    //   this.compra.documento_proveedor = this.compra.documento_proveedor;
+    //   Swal.fire({
+    //     title: "¿Esta seguro de Actualizar esta compra?",
+    //     showDenyButton: true,
+    //     confirmButtonText: "Actualizar",
+    //     confirmButtonColor: "green",
+    //     denyButtonText: `Cancelar!`,
+    //   }).then(async (result) => {
+    //     if (result.isConfirmed) {
+    //       let existe = false;
+    //       const res = await LISTAR_IN(
+    //         "compras",
+    //         "cod_factura",
+    //         this.compra.cod_factura
+    //       );
+    //       res.forEach((val: any) => {
+    //         if (val.exists) {
+    //           existe = true;
+    //         }
+    //       });
+    //       if (!existe) {
+    //         await GUARDAR("compras", this.compra);
+    //         const inventarios: Array<Inventarios> = [];
+    //         this.compra.compras.forEach((compra) => {
+    //           const inventario: Inventarios = {
+    //             created_at: new Date(),
+    //             updated_at: new Date(),
+    //             fecha_factura: new Date(String(this.compra.fecha_documento)),
+    //             cedula_nit: this.compra.documento_proveedor,
+    //             nombres: this.compra.nombres_proveedor,
+    //             apellidos: this.compra.apellidos_proveedor,
+    //             tipo_factura: this.compra.tipo_compra,
+    //             documento: this.compra.cod_factura,
+    //             bodega: compra.bodega,
+    //             producto: compra.descripcion_producto,
+    //             codigo_barras: compra.codigo_barras,
+    //             salidas: compra.cantidad,
+    //             entradas: 0,
+    //             cruce: "",
+    //             caja: "",
+    //           };
+    //           inventarios.push(inventario);
+    //         });
+    //         for (const item of inventarios) {
+    //           await GUARDAR("inventarios", item);
+    //         }
+    //         this.eliminarDatos = !this.eliminarDatos;
+    //         this.limpiarCompra();
+    //         await Swal.fire({
+    //           title: "Compra actualizada con éxito",
+    //           icon: "success",
+    //           timer: 1000,
+    //           showConfirmButton: false,
+    //         });
+    //       } else {
+    //         await Swal.fire({
+    //           title: "Número de factura ya existe",
+    //           icon: "warning",
+    //           timer: 1000,
+    //           showConfirmButton: false,
+    //         });
+    //       }
+    //     }
+    //   });
+    // },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
       this.compra.nombres_proveedor = prov.nombres;
@@ -514,15 +505,15 @@ export default Vue.extend({
     },
     limpiarCompra() {
       const compra: Compra = {
-        documento_proveedor: null,
+        documento_proveedor: "",
         nombres_proveedor: "",
         apellidos_proveedor: "",
-        fecha_documento: new Date(),
+        fecha_documento: "",
         cod_factura: "",
         tipo_compra: "",
         tipo_pago: "",
-        fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_pago: "",
+        fecha_llegada_producto: "",
         compras: [],
         subtotal: 0,
         descuento: 0,

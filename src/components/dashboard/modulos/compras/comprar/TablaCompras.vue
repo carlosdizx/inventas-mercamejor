@@ -350,7 +350,6 @@ export default Vue.extend({
   },
   watch: {
     eliminarDatos() {
-      console.log("se registro");
       this.productos = [];
     },
   },
