@@ -215,6 +215,7 @@ import { Inventarios } from "@/models/Inventarios";
 import Swal from "sweetalert2";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import { getFechaDesdeInput } from "@/generals/formats";
+import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -390,6 +391,7 @@ export default Vue.extend({
             });
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
+              await ACTUALIZAR_UNIDADES_PRODUCTO("123", item.entradas);
             }
             if (nuevaCompra.tipo_pago === "Credito") {
               const cuentaPorPagar: CuentaPorPagar = {

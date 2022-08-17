@@ -70,5 +70,5 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   idProducto: string,
   cantidad: number
 ) => {
-  await EDITAR("productos", idProducto + "/unidades", cantidad);
+  await EDITAR("productos", idProducto, { cantidad });
 };
