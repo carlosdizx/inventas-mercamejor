@@ -383,15 +383,19 @@ export default Vue.extend({
                 bodega: compra.bodega,
                 producto: compra.descripcion_producto,
                 codigo_barras: compra.codigo_barras,
-                salidas: compra.cantidad,
-                entradas: 0,
+                salidas: 0,
+                entradas: compra.cantidad,
                 caja: "",
               };
               inventarios.push(inventario);
             });
             for (const item of inventarios) {
               await GUARDAR("inventarios", item);
-              await ACTUALIZAR_UNIDADES_PRODUCTO("123", item.entradas);
+              await ACTUALIZAR_UNIDADES_PRODUCTO(
+                Number(item.codigo_barras),
+                item.entradas,
+                "ADICIONAR"
+              );
             }
             if (nuevaCompra.tipo_pago === "Credito") {
               const cuentaPorPagar: CuentaPorPagar = {
