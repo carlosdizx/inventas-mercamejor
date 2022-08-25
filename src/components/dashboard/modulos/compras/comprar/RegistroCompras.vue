@@ -205,17 +205,13 @@ import Vue, { PropType } from "vue";
 import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-import { GUARDAR, LISTAR_IN } from "@/services/crud";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
-import { Inventarios } from "@/models/Inventarios";
+import { REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
-import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
-import { getFechaDesdeInput } from "@/generals/formats";
-import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -322,7 +318,6 @@ export default Vue.extend({
         Number(this.compra.impuesto);
     },
     async registrarCompra() {
-      const numeroDeFactura = "C-" + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -331,108 +326,12 @@ export default Vue.extend({
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          let existe = false;
-          const res = await LISTAR_IN(
-            "compras",
-            "cod_factura",
-            numeroDeFactura
-          );
-          res.forEach((val: any) => {
-            if (val.exists) {
-              existe = true;
-            }
-          });
-          if (!existe) {
-            const nuevaCompra: Compra = {
-              created_at: new Date(),
-              updated_at: new Date(),
-              documento_proveedor: this.compra.documento_proveedor,
-              fecha_documento: getFechaDesdeInput(
-                String(this.compra.fecha_documento)
-              ),
-              fecha_pago: getFechaDesdeInput(String(this.compra.fecha_pago)),
-              fecha_llegada_producto: getFechaDesdeInput(
-                String(this.compra.fecha_llegada_producto)
-              ),
-              compras: this.compra.compras,
-              nombres_proveedor: this.compra.nombres_proveedor,
-              apellidos_proveedor: this.compra.apellidos_proveedor,
-              cod_factura: numeroDeFactura,
-              tipo_compra: this.compra.tipo_compra,
-              tipo_pago: this.compra.tipo_pago,
-              subtotal: this.compra.subtotal,
-              descuento: this.compra.descuento,
-              impuesto: this.compra.impuesto,
-              total: this.compra.total,
-              estado: EstadoCompra.APROBADO,
-            };
-            await GUARDAR("compras", nuevaCompra);
-            const inventarios: Array<Inventarios> = [];
-            nuevaCompra.compras.forEach((compra) => {
-              const inventario: Inventarios = {
-                created_at: new Date(),
-                updated_at: new Date(),
-                fecha_factura: getFechaDesdeInput(
-                  String(this.compra.fecha_documento)
-                ),
-                cedula_nit: nuevaCompra.documento_proveedor,
-                nombres: nuevaCompra.nombres_proveedor,
-                apellidos: nuevaCompra.apellidos_proveedor,
-                tipo_factura: nuevaCompra.tipo_compra,
-                documento: numeroDeFactura,
-                bodega: compra.bodega,
-                producto: compra.descripcion_producto,
-                codigo_barras: compra.codigo_barras,
-                salidas: 0,
-                entradas: compra.cantidad,
-                caja: "",
-              };
-              inventarios.push(inventario);
-            });
-            for (const item of inventarios) {
-              await GUARDAR("inventarios", item);
-              await ACTUALIZAR_UNIDADES_PRODUCTO(
-                Number(item.codigo_barras),
-                item.entradas,
-                "ADICIONAR"
-              );
-            }
-            if (nuevaCompra.tipo_pago === "Credito") {
-              const cuentaPorPagar: CuentaPorPagar = {
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                fecha_compra: getFechaDesdeInput(
-                  String(this.compra.fecha_documento)
-                ),
-                cedula_proveedor: nuevaCompra.documento_proveedor,
-                nombres_proveedor: nuevaCompra.nombres_proveedor,
-                apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-                codigo_factura: numeroDeFactura,
-                valor_total: Number(nuevaCompra.total),
-                valor_debido: Number(nuevaCompra.total),
-                estado: EstadoCuentaPorPagar.PENDIENTE,
-              };
-              await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
-            }
-            this.eliminarDatos = !this.eliminarDatos;
-            this.limpiarCompra();
-            const observer: any = this.$refs.observer;
-            if (observer) {
-              observer.reset();
-            }
-            await Swal.fire({
-              title: "Compra registrada con éxito",
-              icon: "success",
-              timer: 1000,
-              showConfirmButton: false,
-            });
-          } else {
-            await Swal.fire({
-              title: "Número de factura ya existe",
-              icon: "warning",
-              timer: 1000,
-              showConfirmButton: false,
-            });
+          await REGISTRAR_NUEVA_COMPRA(this.compra);
+          this.eliminarDatos = !this.eliminarDatos;
+          this.limpiarCompra();
+          const observer: any = this.$refs.observer;
+          if (observer) {
+            observer.reset();
           }
         }
       });
