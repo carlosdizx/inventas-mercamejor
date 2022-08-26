@@ -210,8 +210,9 @@ import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCo
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
-import { REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
+import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
+import { getFechaDesdeInput } from "@/generals/formats";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -271,7 +272,7 @@ export default Vue.extend({
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
         if (this.compra.documento_proveedor === prov.documento) {
-          nombres = nombres = prov.nombres;
+          nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
       });
@@ -336,84 +337,37 @@ export default Vue.extend({
         }
       });
     },
-    // actualizarCompa() {
-    //   this.compra.updated_at = new Date();
-    //   this.compra.documento_proveedor = this.compra.documento_proveedor;
-    //   Swal.fire({
-    //     title: "¿Esta seguro de Actualizar esta compra?",
-    //     showDenyButton: true,
-    //     confirmButtonText: "Actualizar",
-    //     confirmButtonColor: "green",
-    //     denyButtonText: `Cancelar!`,
-    //   }).then(async (result) => {
-    //     if (result.isConfirmed) {
-    //       let existe = false;
-    //       const res = await LISTAR_IN(
-    //         "compras",
-    //         "cod_factura",
-    //         this.compra.cod_factura
-    //       );
-    //       res.forEach((val: any) => {
-    //         if (val.exists) {
-    //           existe = true;
-    //         }
-    //       });
-    //       if (!existe) {
-    //         await GUARDAR("compras", this.compra);
-    //         const inventarios: Array<Inventarios> = [];
-    //         this.compra.compras.forEach((compra) => {
-    //           const inventario: Inventarios = {
-    //             created_at: new Date(),
-    //             updated_at: new Date(),
-    //             fecha_factura: new Date(String(this.compra.fecha_documento)),
-    //             cedula_nit: this.compra.documento_proveedor,
-    //             nombres: this.compra.nombres_proveedor,
-    //             apellidos: this.compra.apellidos_proveedor,
-    //             tipo_factura: this.compra.tipo_compra,
-    //             documento: this.compra.cod_factura,
-    //             bodega: compra.bodega,
-    //             producto: compra.descripcion_producto,
-    //             codigo_barras: compra.codigo_barras,
-    //             salidas: compra.cantidad,
-    //             entradas: 0,
-    //             cruce: "",
-    //             caja: "",
-    //           };
-    //           inventarios.push(inventario);
-    //         });
-    //         for (const item of inventarios) {
-    //           await GUARDAR("inventarios", item);
-    //         }
-    //         this.eliminarDatos = !this.eliminarDatos;
-    //         this.limpiarCompra();
-    //         await Swal.fire({
-    //           title: "Compra actualizada con éxito",
-    //           icon: "success",
-    //           timer: 1000,
-    //           showConfirmButton: false,
-    //         });
-    //       } else {
-    //         await Swal.fire({
-    //           title: "Número de factura ya existe",
-    //           icon: "warning",
-    //           timer: 1000,
-    //           showConfirmButton: false,
-    //         });
-    //       }
-    //     }
-    //   });
-    // },
+    async actualizarCompa() {
+      Swal.fire({
+        title: "¿Esta seguro de Actualizar esta compra?",
+        showDenyButton: true,
+        confirmButtonText: "Actualizar",
+        confirmButtonColor: "green",
+        denyButtonText: `No!`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await ACTUALIZAR_COMPRA(this.compra, this.compraAnterior);
+          this.eliminarDatos = !this.eliminarDatos;
+          this.limpiarCompra();
+          const observer: any = this.$refs.observer;
+          if (observer) {
+            observer.reset();
+          }
+        }
+      });
+    },
     seleccionarProveedor(prov: any) {
       this.compra.documento_proveedor = prov.documento;
       this.compra.nombres_proveedor = prov.nombres;
       this.compra.apellidos_proveedor = prov.apellidos;
+      console.log(this.compra.fecha_documento);
     },
     limpiarCompra() {
       const compra: Compra = {
         documento_proveedor: "",
         nombres_proveedor: "",
         apellidos_proveedor: "",
-        fecha_documento: "",
+        fecha_documento: new Date().toISOString().slice(0, 10),
         cod_factura: "",
         tipo_compra: "",
         tipo_pago: "",
@@ -439,7 +393,9 @@ export default Vue.extend({
       return false;
     });
     if (this.compraAnterior) {
-      this.compra = this.compraAnterior;
+      this.compra = { ...this.compraAnterior };
+      this.compra.cod_factura =
+        this.compraAnterior.cod_factura.split("-")[1] || "";
     }
   },
 });
