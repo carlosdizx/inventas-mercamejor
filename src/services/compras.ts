@@ -6,7 +6,9 @@ import { Inventarios } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 
-export const REGISTRAR_NUEVA_COMPRA = async (compra: Compra): Promise<void> => {
+export const REGISTRAR_NUEVA_COMPRA = async (
+  compra: Compra
+): Promise<boolean> => {
   const numeroDeFactura = "C-" + compra.cod_factura;
 
   let existe = false;
@@ -90,6 +92,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (compra: Compra): Promise<void> => {
       timer: 1000,
       showConfirmButton: false,
     });
+    return true;
   } else {
     await Swal.fire({
       title: "Número de factura ya existe",
@@ -97,6 +100,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (compra: Compra): Promise<void> => {
       timer: 1000,
       showConfirmButton: false,
     });
+    return false;
   }
 };
 
@@ -104,15 +108,12 @@ export const ACTUALIZAR_COMPRA = async (
   compra: Compra,
   compraAnterior: Compra
 ): Promise<void> => {
-  const numeroDeFactura = "C-" + compra.cod_factura;
+  const numeroDeFacturaNuevo = "C-" + compra.cod_factura;
 
-  const res = await LISTAR_IN("compras", "cod_factura", numeroDeFactura);
+  const res = await LISTAR_IN("compras", "cod_factura", numeroDeFacturaNuevo);
   let validacionCodigoFactura = true;
-
-  if (compra.cod_factura !== compraAnterior.cod_factura) {
-    console.log("diferente");
+  if (numeroDeFacturaNuevo !== compraAnterior.cod_factura) {
     res.forEach((val: any) => {
-      console.log(val);
       if (val.exist()) {
         console.log(val.exist());
         console.log(2, val.exist);

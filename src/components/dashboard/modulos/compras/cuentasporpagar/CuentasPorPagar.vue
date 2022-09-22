@@ -127,7 +127,7 @@ export default Vue.extend({
         nombres_empleado: "nombres",
         apellidos_empleado: "apellidos",
         caja: "Caja1",
-        cuenta_por_pagar: "Cxp-1",
+        cuenta_por_pagar: "CxP-1",
         cruce: nuevaCuentaPorPagar.codigo_factura,
         valor: this.valorAbono,
         estado: EstadoCuentaPorPagar.REALIZADO,

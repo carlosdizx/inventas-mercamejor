@@ -11,7 +11,7 @@
             <v-col cols="5">
               <v-text-field
                 label="NIT/Cédula proveedor"
-                v-model.number="compra.documento_proveedor"
+                v-model="compra.documento_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -70,20 +70,31 @@
               </validation-provider>
             </v-col>
             <v-col cols="3">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Número de Factura"
-                rules="required"
-              >
-                <v-text-field
-                  type="number"
-                  label="Número de Factura"
-                  v-model="compra.cod_factura"
-                  :error-messages="errors"
-                  outlined
-                  dense
-                ></v-text-field>
-              </validation-provider>
+              <v-row>
+                <v-col cols="8">
+                  <validation-provider
+                    v-slot="{ errors }"
+                    name="Número de Factura"
+                    rules="required"
+                  >
+                    <v-text-field
+                      type="number"
+                      label="Número de Factura"
+                      v-model="compra.cod_factura"
+                      :error-messages="errors"
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </validation-provider>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    disabled
+                    dense
+                    :value="'C-' + compra.cod_factura"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
@@ -327,12 +338,13 @@ export default Vue.extend({
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await REGISTRAR_NUEVA_COMPRA(this.compra);
-          this.eliminarDatos = !this.eliminarDatos;
-          this.limpiarCompra();
-          const observer: any = this.$refs.observer;
-          if (observer) {
-            observer.reset();
+          if (await REGISTRAR_NUEVA_COMPRA(this.compra)) {
+            this.eliminarDatos = !this.eliminarDatos;
+            this.limpiarCompra();
+            const observer: any = this.$refs.observer;
+            if (observer) {
+              observer.reset();
+            }
           }
         }
       });
@@ -360,7 +372,6 @@ export default Vue.extend({
       this.compra.documento_proveedor = prov.documento;
       this.compra.nombres_proveedor = prov.nombres;
       this.compra.apellidos_proveedor = prov.apellidos;
-      console.log(this.compra.fecha_documento);
     },
     limpiarCompra() {
       const compra: Compra = {
