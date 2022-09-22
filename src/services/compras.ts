@@ -6,21 +6,24 @@ import { Inventarios } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 
-export const REGISTRAR_NUEVA_COMPRA = async (
-  compra: Compra
+export const IS_NUM_FACTURA_EXISTE = async (
+  codigoFactura: string
 ): Promise<boolean> => {
-  const numeroDeFactura = "C-" + compra.cod_factura;
-
   let existe = false;
-  const res = await LISTAR_IN("compras", "cod_factura", numeroDeFactura);
+  const res = await LISTAR_IN("compras", "cod_factura", codigoFactura);
   res.forEach((val: any) => {
-    console.log(val.exists);
     if (val.exists) {
       existe = true;
     }
   });
+  return existe;
+};
 
-  if (!existe) {
+export const REGISTRAR_NUEVA_COMPRA = async (
+  compra: Compra
+): Promise<boolean> => {
+  const numeroDeFactura = "C-" + compra.cod_factura;
+  if (!(await IS_NUM_FACTURA_EXISTE(numeroDeFactura))) {
     const nuevaCompra: Compra = {
       created_at: new Date(),
       updated_at: new Date(),
@@ -109,19 +112,11 @@ export const ACTUALIZAR_COMPRA = async (
   compraAnterior: Compra
 ): Promise<void> => {
   const numeroDeFacturaNuevo = "C-" + compra.cod_factura;
-
-  const res = await LISTAR_IN("compras", "cod_factura", numeroDeFacturaNuevo);
-  let validacionCodigoFactura = true;
-  if (numeroDeFacturaNuevo !== compraAnterior.cod_factura) {
-    res.forEach((val: any) => {
-      if (val.exist()) {
-        console.log(val.exist());
-        console.log(2, val.exist);
-        validacionCodigoFactura = false;
-      }
-    });
-  }
-  if (validacionCodigoFactura) {
+  if (
+    numeroDeFacturaNuevo === compraAnterior.cod_factura ||
+    (numeroDeFacturaNuevo !== compraAnterior.cod_factura &&
+      !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
+  ) {
     console.log("pasa");
     // const nuevaCompra: Compra = {
     //   created_at: new Date(),
@@ -135,7 +130,7 @@ export const ACTUALIZAR_COMPRA = async (
     //   compras: compra.compras,
     //   nombres_proveedor: compra.nombres_proveedor,
     //   apellidos_proveedor: compra.apellidos_proveedor,
-    //   cod_factura: numeroDeFactura,
+    //   cod_factura: numeroDeFacturaNuevo,
     //   tipo_compra: compra.tipo_compra,
     //   tipo_pago: compra.tipo_pago,
     //   subtotal: compra.subtotal,
@@ -155,7 +150,7 @@ export const ACTUALIZAR_COMPRA = async (
     //     nombres: nuevaCompra.nombres_proveedor,
     //     apellidos: nuevaCompra.apellidos_proveedor,
     //     tipo_factura: nuevaCompra.tipo_compra,
-    //     documento: numeroDeFactura,
+    //     documento: numeroDeFacturaNuevo,
     //     bodega: itemCompra.bodega,
     //     producto: itemCompra.descripcion_producto,
     //     codigo_barras: itemCompra.codigo_barras,
@@ -181,7 +176,7 @@ export const ACTUALIZAR_COMPRA = async (
     //     cedula_proveedor: nuevaCompra.documento_proveedor,
     //     nombres_proveedor: nuevaCompra.nombres_proveedor,
     //     apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-    //     codigo_factura: numeroDeFactura,
+    //     codigo_factura: numeroDeFacturaNuevo,
     //     valor_total: Number(nuevaCompra.total),
     //     valor_debido: Number(nuevaCompra.total),
     //     estado: EstadoCuentaPorPagar.PENDIENTE,
