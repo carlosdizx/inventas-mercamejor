@@ -5,7 +5,7 @@
         max-width="300"
         alt="Inventas"
         class="mx-auto login"
-        src="@/assets/login.jpg"
+        src="@/assets/login.png"
       />
     </v-card-title>
     <v-card-text>
