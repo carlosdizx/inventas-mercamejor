@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { Inventarios } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
+import { ProductoCompra } from "@/interfaces/ProductoCompra";
 
 export const IS_NUM_FACTURA_EXISTE = async (
   codigoFactura: string
@@ -107,17 +108,47 @@ export const REGISTRAR_NUEVA_COMPRA = async (
   }
 };
 
+export const ACTUALIZAR_ITEMS_INVENTARIOS = async (
+  nuevasCompras: ProductoCompra[],
+  comprasAnteriores: ProductoCompra[]
+): Promise<void> => {
+  console.log(comprasAnteriores);
+  console.log(nuevasCompras);
+};
+
+export const ACTUALIZAR_UNIDADES_PRODUCTOS = async (
+  nuevasCompras: ProductoCompra[],
+  comprasAnteriores: ProductoCompra[]
+): Promise<void> => {
+  console.log(nuevasCompras);
+  console.log(comprasAnteriores);
+};
+
+export const ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA = async (
+  codFactura: string
+): Promise<void> => {
+  console.log(codFactura);
+};
+
 export const ACTUALIZAR_COMPRA = async (
   compra: Compra,
   compraAnterior: Compra
 ): Promise<boolean> => {
   const numeroDeFacturaNuevo = "C-" + compra.cod_factura;
+  const isFacturaAnterior = numeroDeFacturaNuevo === compraAnterior.cod_factura;
   if (
-    numeroDeFacturaNuevo === compraAnterior.cod_factura ||
-    (numeroDeFacturaNuevo !== compraAnterior.cod_factura &&
-      !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
+    isFacturaAnterior ||
+    (!isFacturaAnterior && !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
   ) {
-    console.log("pasa");
+    await ACTUALIZAR_ITEMS_INVENTARIOS(
+      [...compra.compras],
+      [...compraAnterior.compras]
+    );
+    await ACTUALIZAR_UNIDADES_PRODUCTOS(
+      [...compra.compras],
+      [...compraAnterior.compras]
+    );
+    await ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA(compra.cod_factura);
     // const nuevaCompra: Compra = {
     //   created_at: new Date(),
     //   updated_at: new Date(),

@@ -404,6 +404,7 @@ export default Vue.extend({
     });
     if (this.compraAnterior) {
       this.compra = { ...this.compraAnterior };
+      this.compra.compras = [...this.compraAnterior.compras];
       this.compra.cod_factura =
         this.compraAnterior.cod_factura.split("-")[1] || "";
     }

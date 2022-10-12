@@ -3,13 +3,16 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   orderBy,
   query,
+  QuerySnapshot,
   setDoc,
   startAt,
   where,
+  WhereFilterOp,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
@@ -73,7 +76,10 @@ export const CARGAR_INFORMACION = async (coleccion: string) => {
   return filas;
 };
 
-export const CONSULTA_DATOS = async (colection: string, consulta: any) => {
+export const CONSULTA_DATOS = async (
+  colection: string,
+  consulta: any
+): Promise<QuerySnapshot<DocumentData>> => {
   const coleccion = collection(FIRESTORE, colection);
   let res: any = "";
   if (consulta.length === 1) {
@@ -89,4 +95,33 @@ export const CONSULTA_DATOS = async (colection: string, consulta: any) => {
     );
   }
   return await getDocs(res);
+};
+
+export const CONSULTA_SIMPLE = async (
+  coleccion: string,
+  propiedad: string,
+  condicion: WhereFilterOp,
+  valor: string | number
+): Promise<QuerySnapshot<DocumentData>> => {
+  return await getDocs(
+    query(collection(FIRESTORE, coleccion), where(propiedad, condicion, valor))
+  );
+};
+
+export const CONSULTA_COMPUESTA = async (
+  coleccion: string,
+  propiedad: string,
+  condicion: WhereFilterOp,
+  valor: string | number,
+  propiedad2: string,
+  condicion2: WhereFilterOp,
+  valor2: string | number
+): Promise<QuerySnapshot<DocumentData>> => {
+  return await getDocs(
+    query(
+      collection(FIRESTORE, coleccion),
+      where(propiedad, condicion, valor),
+      where(propiedad2, condicion2, valor2)
+    )
+  );
 };
