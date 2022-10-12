@@ -1,11 +1,11 @@
 <template>
   <v-card>
-    <v-card-title class="mr-5 ml-5" v-if="this.compraAnterior === undefined"
+    <v-card-title class="mr-5 ml-5" v-if="compraAnterior === undefined"
       >Registrar compra</v-card-title
     >
     <v-card-title class="mr-5 ml-5" v-else>Actualizar compra</v-card-title>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
-      <v-form @submit.prevent="crearCuenta">
+      <v-form>
         <v-card-text>
           <v-row class="mr-5 ml-5">
             <v-col cols="5">
@@ -223,7 +223,6 @@ import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
 import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
-import { getFechaDesdeInput } from "@/generals/formats";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -337,14 +336,12 @@ export default Vue.extend({
         confirmButtonColor: "green",
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
-        if (result.isConfirmed) {
-          if (await REGISTRAR_NUEVA_COMPRA(this.compra)) {
-            this.eliminarDatos = !this.eliminarDatos;
-            this.limpiarCompra();
-            const observer: any = this.$refs.observer;
-            if (observer) {
-              observer.reset();
-            }
+        if (result.isConfirmed && (await REGISTRAR_NUEVA_COMPRA(this.compra))) {
+          this.eliminarDatos = !this.eliminarDatos;
+          this.limpiarCompra();
+          const observer: any = this.$refs.observer;
+          if (observer) {
+            observer.reset();
           }
         }
       });
@@ -357,8 +354,10 @@ export default Vue.extend({
         confirmButtonColor: "green",
         denyButtonText: `No!`,
       }).then(async (result) => {
-        if (result.isConfirmed) {
-          await ACTUALIZAR_COMPRA(this.compra, this.compraAnterior);
+        if (
+          result.isConfirmed &&
+          (await ACTUALIZAR_COMPRA(this.compra, this.compraAnterior))
+        ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
@@ -411,9 +410,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped>
-.v-row {
-  margin: 0px 0px 0px;
-}
-</style>

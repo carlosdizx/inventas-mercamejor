@@ -110,7 +110,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (
 export const ACTUALIZAR_COMPRA = async (
   compra: Compra,
   compraAnterior: Compra
-): Promise<void> => {
+): Promise<boolean> => {
   const numeroDeFacturaNuevo = "C-" + compra.cod_factura;
   if (
     numeroDeFacturaNuevo === compraAnterior.cod_factura ||
@@ -189,6 +189,7 @@ export const ACTUALIZAR_COMPRA = async (
     //   timer: 1000,
     //   showConfirmButton: false,
     // });
+    return true;
   } else {
     await Swal.fire({
       title: "Número de factura ya existe",
@@ -196,5 +197,6 @@ export const ACTUALIZAR_COMPRA = async (
       timer: 1000,
       showConfirmButton: false,
     });
+    return false;
   }
 };
