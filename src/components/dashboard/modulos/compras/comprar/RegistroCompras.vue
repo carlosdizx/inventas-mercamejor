@@ -234,6 +234,7 @@ export default Vue.extend({
     compraAnterior: {
       type: Object as PropType<Compra>,
     },
+    idcompraanterior: String,
   },
   data() {
     return {
@@ -336,7 +337,10 @@ export default Vue.extend({
         confirmButtonColor: "green",
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
-        if (result.isConfirmed && (await REGISTRAR_NUEVA_COMPRA(this.compra))) {
+        if (
+          result.isConfirmed &&
+          (await REGISTRAR_NUEVA_COMPRA({ ...this.compra }))
+        ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
@@ -356,7 +360,11 @@ export default Vue.extend({
       }).then(async (result) => {
         if (
           result.isConfirmed &&
-          (await ACTUALIZAR_COMPRA(this.compra, this.compraAnterior))
+          (await ACTUALIZAR_COMPRA(
+            { ...this.compra },
+            this.compraAnterior,
+            this.idcompraanterior
+          ))
         ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();

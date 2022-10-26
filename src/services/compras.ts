@@ -135,9 +135,9 @@ export const ACTUALIZAR_UNIDADES_PRODUCTOS = async (
 ): Promise<void> => {
   console.log(nuevasCompras);
   console.log(comprasAnteriores);
-  for (const movInv of comprasAnteriores) {
-    await BORRAR_MOVIMIENTO_INVENTARIO(movInv);
-  }
+  // for (const movInv of comprasAnteriores) {
+  //   await BORRAR_MOVIMIENTO_INVENTARIO(movInv);
+  // }
 };
 
 export const ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA = async (
@@ -148,7 +148,8 @@ export const ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA = async (
 
 export const ACTUALIZAR_COMPRA = async (
   nuevaCompra: Compra,
-  compraAnterior: Compra
+  compraAnterior: Compra,
+  idCompra: string
 ): Promise<boolean> => {
   const numeroDeFacturaNuevo = "C-" + nuevaCompra.cod_factura;
   const isNumFacturaAnterior =
@@ -158,6 +159,7 @@ export const ACTUALIZAR_COMPRA = async (
     (!isNumFacturaAnterior &&
       !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
   ) {
+    console.log(idCompra);
     await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
       [...compraAnterior.compras],
       compraAnterior.cod_factura
@@ -167,7 +169,7 @@ export const ACTUALIZAR_COMPRA = async (
       compraAnterior.cod_factura
     );
     await ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA(nuevaCompra.cod_factura);
-    await EDITAR(coleccionCompras, compraAnterior.id, nuevaCompra);
+    await EDITAR(coleccionCompras, idCompra, nuevaCompra);
     return true;
   } else {
     await Swal.fire({
