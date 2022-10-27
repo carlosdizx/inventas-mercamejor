@@ -7,7 +7,7 @@ import { getFechaDesdeInput } from "./../generals/formats";
 import { GUARDAR, LISTAR_IN } from "@/services/crud";
 import { Compra, EstadoCompra } from "./../interfaces/Compra";
 import Swal from "sweetalert2";
-import { Inventarios } from "@/models/Inventarios";
+import { IInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
@@ -54,9 +54,9 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       estado: EstadoCompra.APROBADO,
     };
     await GUARDAR(coleccionCompras, nuevaCompra);
-    const inventarios: Array<Inventarios> = [];
+    const inventarios: Array<IInventario> = [];
     nuevaCompra.compras.forEach((itemCompra) => {
-      const inventario: Inventarios = {
+      const inventario: IInventario = {
         created_at: new Date(),
         updated_at: new Date(),
         fecha_factura: getFechaDesdeInput(String(compra.fecha_documento)),
@@ -119,7 +119,6 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES = async (
   cod_factura: string
 ): Promise<void> => {
   const movInventarios = await BUSCAR_MOVIMIENTOS_INVENTARIO(cod_factura);
-  console.log(movInventarios);
   for (const movimientoInv of movInventarios) {
     await ACTUALIZAR_UNIDADES_PRODUCTO(
       movimientoInv.codigo_barras,
@@ -131,24 +130,36 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES = async (
 };
 
 const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
-  comprasAnteriores: ProductoCompra[],
+  nuevaCompra: Compra,
   cod_factura: string
 ): Promise<void> => {
-  console.log(comprasAnteriores, cod_factura);
+  for (const itemCompra of nuevaCompra.compras) {
+    const inventario: IInventario = {
+      created_at: new Date(),
+      updated_at: new Date(),
+      fecha_factura: getFechaDesdeInput(String(nuevaCompra.fecha_documento)),
+      cedula_nit: nuevaCompra.documento_proveedor,
+      nombres: nuevaCompra.nombres_proveedor,
+      apellidos: nuevaCompra.apellidos_proveedor,
+      tipo_factura: nuevaCompra.tipo_compra,
+      documento: cod_factura,
+      bodega: itemCompra.bodega,
+      producto: itemCompra.descripcion_producto,
+      codigo_barras: itemCompra.codigo_barras,
+      salidas: 0,
+      entradas: itemCompra.cantidad,
+      caja: "",
+    };
+    await GUARDAR_MOVIMIENTO_INVENTARIO(inventario);
+    await ACTUALIZAR_UNIDADES_PRODUCTO(
+      Number(inventario.codigo_barras),
+      inventario.entradas,
+      "ADICIONAR"
+    );
+  }
 };
 
-export const ACTUALIZAR_UNIDADES_PRODUCTOS = async (
-  nuevasCompras: ProductoCompra[],
-  comprasAnteriores: ProductoCompra[]
-): Promise<void> => {
-  console.log(nuevasCompras);
-  console.log(comprasAnteriores);
-  // for (const movInv of comprasAnteriores) {
-  //   await BORRAR_MOVIMIENTO_INVENTARIO(movInv);
-  // }
-};
-
-export const ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA = async (
+export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
   codFactura: string
 ): Promise<void> => {
   console.log(codFactura);
@@ -171,10 +182,10 @@ export const ACTUALIZAR_COMPRA = async (
       compraAnterior.cod_factura
     );
     await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
-      [...nuevaCompra.compras],
+      { ...nuevaCompra },
       compraAnterior.cod_factura
     );
-    await ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA(nuevaCompra.cod_factura);
+    await ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA(nuevaCompra.cod_factura);
     //await EDITAR(coleccionCompras, idCompra, nuevaCompra);
     return true;
   } else {
