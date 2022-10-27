@@ -1,12 +1,15 @@
-import { LISTAR_IN, EDITAR } from "@/services/crud";
+import { LISTAR_IN, ACTUALIZAR } from "@/services/crud";
 import { Producto } from "@/entity/Producto";
 import { ProductoVenta } from "@/dto/ProductoVenta";
 import Swal from "sweetalert2";
 
 export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) => {
-  const producto = await LISTAR_IN("productos", "codigo_barras", codigo);
-  if (producto.size === 1) {
-    return producto.docs[0].data();
+  const data = await LISTAR_IN("productos", "codigo_barras", codigo);
+  if (data.size === 1) {
+    return {
+      producto: data.docs[0].data(),
+      idProducto: data.docs[0].id,
+    };
   } else {
     return null;
   }
@@ -72,12 +75,13 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
 ): Promise<void> => {
   const producto: any = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codBarras);
+  let unidades = producto.producto.cantidad;
   if (tipoOperacion === "ADICIONAR") {
-    producto.cantidad = producto.cantidad + cantidad;
+    unidades = unidades + cantidad;
   } else if (tipoOperacion === "RESTAR") {
-    producto.cantidad = producto.cantidad - cantidad;
+    unidades = unidades - cantidad;
   } else {
-    producto.cantidad = cantidad;
+    unidades = cantidad;
   }
-  await EDITAR("productos", producto.id, producto);
+  await ACTUALIZAR("productos", producto.idProducto, { cantidad: unidades });
 };

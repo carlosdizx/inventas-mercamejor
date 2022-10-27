@@ -1,6 +1,6 @@
-import { EDITAR } from "./crud";
 import {
   BORRAR_MOVIMIENTO_INVENTARIO,
+  BUSCAR_MOVIMIENTOS_INVENTARIO,
   GUARDAR_MOVIMIENTO_INVENTARIO,
 } from "./movInventarios";
 import { getFechaDesdeInput } from "./../generals/formats";
@@ -116,10 +116,18 @@ export const REGISTRAR_NUEVA_COMPRA = async (
 };
 
 const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES = async (
-  comprasAnteriores: ProductoCompra[],
   cod_factura: string
 ): Promise<void> => {
-  console.log(comprasAnteriores, cod_factura);
+  const movInventarios = await BUSCAR_MOVIMIENTOS_INVENTARIO(cod_factura);
+  console.log(movInventarios);
+  for (const movimientoInv of movInventarios) {
+    await ACTUALIZAR_UNIDADES_PRODUCTO(
+      movimientoInv.codigo_barras,
+      movimientoInv.entradas,
+      "RESTAR"
+    );
+    await BORRAR_MOVIMIENTO_INVENTARIO(movimientoInv);
+  }
 };
 
 const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
@@ -159,9 +167,7 @@ export const ACTUALIZAR_COMPRA = async (
     (!isNumFacturaAnterior &&
       !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
   ) {
-    console.log(idCompra);
     await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
-      [...compraAnterior.compras],
       compraAnterior.cod_factura
     );
     await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
@@ -169,7 +175,7 @@ export const ACTUALIZAR_COMPRA = async (
       compraAnterior.cod_factura
     );
     await ACTUALIZAR_CUENTASXPAGAR_NUMFACTURA(nuevaCompra.cod_factura);
-    await EDITAR(coleccionCompras, idCompra, nuevaCompra);
+    //await EDITAR(coleccionCompras, idCompra, nuevaCompra);
     return true;
   } else {
     await Swal.fire({
