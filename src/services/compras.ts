@@ -11,6 +11,7 @@ import { IInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { BUSCAR_CUENTA_POR_PAGAR } from "./cuentasxpagar";
 
 const coleccionCompras = "compras";
 
@@ -160,9 +161,44 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
 };
 
 export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
+  nuevaCompra: Compra,
+  compraAnterior: Compra,
   codFactura: string
 ): Promise<void> => {
-  console.log(codFactura);
+  if (
+    nuevaCompra.tipo_pago === "Credito" &&
+    compraAnterior.tipo_pago === "Credito"
+  ) {
+    // actualizar cuenta por pagar anterior
+    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(codFactura);
+    console.log("cuenta por pagar anterior", cuentaAnterior);
+    // const cuentaPorPagar: CuentaPorPagar = {
+    //   createdAt: new Date(),
+    //   updatedAt: new Date(),
+    //   fecha_compra: getFechaDesdeInput(String(compraAnterior.fecha_documento)),
+    //   cedula_proveedor: nuevaCompra.documento_proveedor,
+    //   nombres_proveedor: nuevaCompra.nombres_proveedor,
+    //   apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+    //   codigo_factura: codFactura,
+    //   valor_total: Number(nuevaCompra.total),
+    //   valor_debido: Number(nuevaCompra.total),
+    //   estado: EstadoCuentaPorPagar.PENDIENTE,
+    // };
+    // console.log(cuentaPorPagar);
+    //await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+  } else if (
+    nuevaCompra.tipo_pago === "Credito" &&
+    compraAnterior.tipo_pago === "Contado"
+  ) {
+    console.log("nueva compra");
+    //crear nueva cuenta por pagar
+  } else if (
+    nuevaCompra.tipo_pago === "Contado" &&
+    compraAnterior.tipo_pago === "Credito"
+  ) {
+    //eliminar cuenta por pagar anterior
+    console.log("eliminar cuenta por pagar anterior");
+  }
 };
 
 export const ACTUALIZAR_COMPRA = async (
@@ -178,14 +214,18 @@ export const ACTUALIZAR_COMPRA = async (
     (!isNumFacturaAnterior &&
       !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
   ) {
-    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
-      compraAnterior.cod_factura
+    // await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
+    //   compraAnterior.cod_factura
+    // );
+    // await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
+    //   { ...nuevaCompra },
+    //   compraAnterior.cod_factura
+    // );
+    await ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA(
+      nuevaCompra,
+      compraAnterior,
+      numeroDeFacturaNuevo
     );
-    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
-      { ...nuevaCompra },
-      compraAnterior.cod_factura
-    );
-    await ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA(nuevaCompra.cod_factura);
     //await EDITAR(coleccionCompras, idCompra, nuevaCompra);
     return true;
   } else {
