@@ -4,7 +4,7 @@ import {
   GUARDAR_MOVIMIENTO_INVENTARIO,
 } from "./movInventarios";
 import { getFechaDesdeInput } from "@/generals/formats";
-import { GUARDAR, LISTAR_IN } from "@/services/crud";
+import { EDITAR, GUARDAR, LISTAR_IN } from "@/services/crud";
 import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import Swal from "sweetalert2";
 import { IInventario } from "@/models/Inventarios";
@@ -236,19 +236,19 @@ export const ACTUALIZAR_COMPRA = async (
     (!isNumFacturaAnterior &&
       !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
   ) {
-    // await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
-    //   compraAnterior.cod_factura
-    // );
-    // await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
-    //   { ...nuevaCompra },
-    //   compraAnterior.cod_factura
-    // );
+    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
+      compraAnterior.cod_factura
+    );
+    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(
+      { ...nuevaCompra },
+      compraAnterior.cod_factura
+    );
     await ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA(
       nuevaCompra,
       compraAnterior,
       numeroDeFacturaNuevo
     );
-    //await EDITAR(coleccionCompras, idCompra, nuevaCompra);
+    await EDITAR(coleccionCompras, idCompra, nuevaCompra);
     return true;
   } else {
     await Swal.fire({
