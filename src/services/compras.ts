@@ -3,9 +3,9 @@ import {
   BUSCAR_MOVIMIENTOS_INVENTARIO,
   GUARDAR_MOVIMIENTO_INVENTARIO,
 } from "./movInventarios";
-import { getFechaDesdeInput } from "./../generals/formats";
+import { getFechaDesdeInput } from "@/generals/formats";
 import { GUARDAR, LISTAR_IN } from "@/services/crud";
-import { Compra, EstadoCompra } from "./../interfaces/Compra";
+import { Compra, EstadoCompra } from "@/interfaces/Compra";
 import Swal from "sweetalert2";
 import { IInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
@@ -13,7 +13,8 @@ import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import {
   ACTUALIZAR_CUENTA_PAGAR,
   BUSCAR_CUENTA_POR_PAGAR,
-} from "./cuentasxpagar";
+  REGISTRAR_NUEVA_CUENTAPORPAGAR,
+} from "@/services/cuentasxpagar";
 
 const coleccionCompras = "compras";
 
@@ -195,7 +196,19 @@ export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
     compraAnterior.tipo_pago === "Contado"
   ) {
     console.log("nueva compra");
-    //crear nueva cuenta por pagar
+    const nuevaCuentaPagar: CuentaPorPagar = {
+      updatedAt: new Date(),
+      createdAt: new Date(),
+      fecha_compra: nuevaCompra.fecha_documento,
+      cedula_proveedor: nuevaCompra.documento_proveedor,
+      nombres_proveedor: nuevaCompra.nombres_proveedor,
+      apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+      codigo_factura: codFactura,
+      valor_total: Number(nuevaCompra.total),
+      valor_debido: Number(nuevaCompra.total),
+      estado: EstadoCuentaPorPagar.PENDIENTE,
+    };
+    await REGISTRAR_NUEVA_CUENTAPORPAGAR(nuevaCuentaPagar);
   } else if (
     nuevaCompra.tipo_pago === "Contado" &&
     compraAnterior.tipo_pago === "Credito"

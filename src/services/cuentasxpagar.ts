@@ -1,5 +1,5 @@
 import { CuentaPorPagar } from "./../models/CuentasPorPagar";
-import { ACTUALIZAR, CONSULTA_SIMPLE } from "@/services/crud";
+import { ACTUALIZAR, CONSULTA_SIMPLE, GUARDAR } from "@/services/crud";
 
 const coleccionCuentas = "cuentas_por_pagar";
 
@@ -25,3 +25,10 @@ export const ACTUALIZAR_CUENTA_PAGAR = async (
   nuevaCuenta: CuentaPorPagar
 ): Promise<void> =>
   await ACTUALIZAR(coleccionCuentas, idCuentaPagar, nuevaCuenta);
+
+export const REGISTRAR_NUEVA_CUENTAPORPAGAR = async (
+  nuevaCuenta: CuentaPorPagar
+): Promise<void> => {
+  console.log("nueva cuenta", nuevaCuenta);
+  await GUARDAR(coleccionCuentas, nuevaCuenta);
+};
