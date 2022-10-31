@@ -3,16 +3,18 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   orderBy,
   query,
+  QuerySnapshot,
   setDoc,
-  startAt,
+  updateDoc,
   where,
+  WhereFilterOp,
 } from "firebase/firestore";
 import { FIRESTORE } from "@/firebase/config";
-import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
 import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 import { tipo_dato } from "@/generals/formats";
 
@@ -56,6 +58,9 @@ export const ELIMINAR = async (colection: string, objeto: any) => {
 export const EDITAR = async (colection: string, id: string, datos: any) =>
   await setDoc(doc(FIRESTORE, colection, id), datos);
 
+export const ACTUALIZAR = async (colection: string, id: string, datos: any) =>
+  await updateDoc(doc(FIRESTORE, colection, id), datos);
+
 export const CARGAR_INFORMACION = async (coleccion: string) => {
   const filas: any = [];
   (await LISTAR(coleccion)).forEach((item) => {
@@ -73,7 +78,10 @@ export const CARGAR_INFORMACION = async (coleccion: string) => {
   return filas;
 };
 
-export const CONSULTA_DATOS = async (colection: string, consulta: any) => {
+export const CONSULTA_DATOS = async (
+  colection: string,
+  consulta: any
+): Promise<QuerySnapshot<DocumentData>> => {
   const coleccion = collection(FIRESTORE, colection);
   let res: any = "";
   if (consulta.length === 1) {
@@ -89,4 +97,49 @@ export const CONSULTA_DATOS = async (colection: string, consulta: any) => {
     );
   }
   return await getDocs(res);
+};
+
+export const CONSULTA_SIMPLE = async (
+  coleccion: string,
+  propiedad: string,
+  condicion: WhereFilterOp,
+  valor: string | number
+): Promise<QuerySnapshot<DocumentData>> => {
+  return await getDocs(
+    query(collection(FIRESTORE, coleccion), where(propiedad, condicion, valor))
+  );
+};
+
+export const CONSULTA_COMPUESTA = async (
+  coleccion: string,
+  propiedad: string,
+  condicion: WhereFilterOp,
+  valor: string | number,
+  propiedad2: string,
+  condicion2: WhereFilterOp,
+  valor2: string | number
+): Promise<QuerySnapshot<DocumentData>> => {
+  return await getDocs(
+    query(
+      collection(FIRESTORE, coleccion),
+      where(propiedad, condicion, valor),
+      where(propiedad2, condicion2, valor2)
+    )
+  );
+};
+
+export const DATOS_IN_ARRAY = (datos: any) => {
+  const filas: any[] = [];
+  datos.forEach((item: any) => {
+    const obj: any = JSON.parse(JSON.stringify(item.data()));
+    obj.id = item.id;
+    Object.values(obj).map(async (value: any, index: number) => {
+      if (typeof value === "object" && value) {
+        const key: string = Object.keys(obj)[index].toString();
+        obj[key] = value;
+      }
+    });
+    filas.push(obj);
+  });
+  return filas;
 };

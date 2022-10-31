@@ -25,6 +25,7 @@
     </v-dialog>
     <RegistroCompras
       :compraAnterior="compra"
+      :idcompraanterior="idCompraAnterior"
       v-if="Object.keys(compra).length !== 0"
     ></RegistroCompras>
   </div>
@@ -50,11 +51,13 @@ export default Vue.extend({
     datosUsuario: {},
     mostrar: true,
     compra: {} as Compra,
+    idCompraAnterior: "",
   }),
   methods: {
     seleccionarItem(producto: any) {
       this.mostrar = !this.mostrar;
       this.compra = producto;
+      this.idCompraAnterior = producto.id;
     },
   },
 });
