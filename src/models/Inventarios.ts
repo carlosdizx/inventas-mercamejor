@@ -1,4 +1,4 @@
-export interface Inventarios {
+export interface IInventario {
   fecha_factura: Date | string | null;
   created_at: Date;
   updated_at: Date;
