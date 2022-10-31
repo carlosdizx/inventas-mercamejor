@@ -10,8 +10,10 @@ import Swal from "sweetalert2";
 import { IInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
-import { ProductoCompra } from "@/interfaces/ProductoCompra";
-import { BUSCAR_CUENTA_POR_PAGAR } from "./cuentasxpagar";
+import {
+  ACTUALIZAR_CUENTA_PAGAR,
+  BUSCAR_CUENTA_POR_PAGAR,
+} from "./cuentasxpagar";
 
 const coleccionCompras = "compras";
 
@@ -169,23 +171,25 @@ export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
     nuevaCompra.tipo_pago === "Credito" &&
     compraAnterior.tipo_pago === "Credito"
   ) {
-    // actualizar cuenta por pagar anterior
-    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(codFactura);
-    console.log("cuenta por pagar anterior", cuentaAnterior);
-    // const cuentaPorPagar: CuentaPorPagar = {
-    //   createdAt: new Date(),
-    //   updatedAt: new Date(),
-    //   fecha_compra: getFechaDesdeInput(String(compraAnterior.fecha_documento)),
-    //   cedula_proveedor: nuevaCompra.documento_proveedor,
-    //   nombres_proveedor: nuevaCompra.nombres_proveedor,
-    //   apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-    //   codigo_factura: codFactura,
-    //   valor_total: Number(nuevaCompra.total),
-    //   valor_debido: Number(nuevaCompra.total),
-    //   estado: EstadoCuentaPorPagar.PENDIENTE,
-    // };
-    // console.log(cuentaPorPagar);
-    //await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(
+      compraAnterior.cod_factura
+    );
+    const nuevaCuentaPagar: CuentaPorPagar = {
+      updatedAt: new Date(),
+      createdAt: cuentaAnterior.cuenta.createdAt,
+      fecha_compra: nuevaCompra.fecha_documento,
+      cedula_proveedor: nuevaCompra.documento_proveedor,
+      nombres_proveedor: nuevaCompra.nombres_proveedor,
+      apellidos_proveedor: nuevaCompra.apellidos_proveedor,
+      codigo_factura: codFactura,
+      valor_total: Number(nuevaCompra.total),
+      valor_debido:
+        nuevaCompra.total -
+        (cuentaAnterior.cuenta.valor_total -
+          cuentaAnterior.cuenta.valor_debido),
+      estado: cuentaAnterior.cuenta.estado,
+    };
+    await ACTUALIZAR_CUENTA_PAGAR(cuentaAnterior.id, nuevaCuentaPagar);
   } else if (
     nuevaCompra.tipo_pago === "Credito" &&
     compraAnterior.tipo_pago === "Contado"

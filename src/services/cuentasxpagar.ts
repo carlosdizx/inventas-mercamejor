@@ -1,8 +1,11 @@
-import { CONSULTA_SIMPLE } from "@/services/crud";
+import { CuentaPorPagar } from "./../models/CuentasPorPagar";
+import { ACTUALIZAR, CONSULTA_SIMPLE } from "@/services/crud";
 
 const coleccionCuentas = "cuentas_por_pagar";
 
-export const BUSCAR_CUENTA_POR_PAGAR = async (codFactura: string) => {
+export const BUSCAR_CUENTA_POR_PAGAR = async (
+  codFactura: string
+): Promise<any> => {
   const cuentaxpag = { cuenta: {}, id: "" };
   const cuentaXPagar = await CONSULTA_SIMPLE(
     coleccionCuentas,
@@ -16,3 +19,9 @@ export const BUSCAR_CUENTA_POR_PAGAR = async (codFactura: string) => {
   });
   return cuentaxpag;
 };
+
+export const ACTUALIZAR_CUENTA_PAGAR = async (
+  idCuentaPagar: string,
+  nuevaCuenta: CuentaPorPagar
+): Promise<void> =>
+  await ACTUALIZAR(coleccionCuentas, idCuentaPagar, nuevaCuenta);
