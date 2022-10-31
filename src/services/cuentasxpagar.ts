@@ -34,7 +34,6 @@ export const ACTUALIZAR_CUENTA_PAGAR = async (
 export const REGISTRAR_NUEVA_CUENTAPORPAGAR = async (
   nuevaCuenta: CuentaPorPagar
 ): Promise<void> => {
-  console.log("nueva cuenta", nuevaCuenta);
   await GUARDAR(coleccionCuentas, nuevaCuenta);
 };
 
