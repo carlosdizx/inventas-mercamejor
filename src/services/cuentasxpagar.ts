@@ -1,5 +1,10 @@
 import { CuentaPorPagar } from "./../models/CuentasPorPagar";
-import { ACTUALIZAR, CONSULTA_SIMPLE, GUARDAR } from "@/services/crud";
+import {
+  ACTUALIZAR,
+  CONSULTA_SIMPLE,
+  ELIMINAR,
+  GUARDAR,
+} from "@/services/crud";
 
 const coleccionCuentas = "cuentas_por_pagar";
 
@@ -31,4 +36,10 @@ export const REGISTRAR_NUEVA_CUENTAPORPAGAR = async (
 ): Promise<void> => {
   console.log("nueva cuenta", nuevaCuenta);
   await GUARDAR(coleccionCuentas, nuevaCuenta);
+};
+
+export const ELIMINAR_CUENTA_PORPAGAR = async (
+  compra: CuentaPorPagar
+): Promise<void> => {
+  await ELIMINAR(coleccionCuentas, compra);
 };

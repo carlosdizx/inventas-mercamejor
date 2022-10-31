@@ -13,6 +13,7 @@ import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import {
   ACTUALIZAR_CUENTA_PAGAR,
   BUSCAR_CUENTA_POR_PAGAR,
+  ELIMINAR_CUENTA_PORPAGAR,
   REGISTRAR_NUEVA_CUENTAPORPAGAR,
 } from "@/services/cuentasxpagar";
 
@@ -195,7 +196,6 @@ export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
     nuevaCompra.tipo_pago === "Credito" &&
     compraAnterior.tipo_pago === "Contado"
   ) {
-    console.log("nueva compra");
     const nuevaCuentaPagar: CuentaPorPagar = {
       updatedAt: new Date(),
       createdAt: new Date(),
@@ -213,8 +213,13 @@ export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
     nuevaCompra.tipo_pago === "Contado" &&
     compraAnterior.tipo_pago === "Credito"
   ) {
-    //eliminar cuenta por pagar anterior
-    console.log("eliminar cuenta por pagar anterior");
+    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(
+      compraAnterior.cod_factura
+    );
+    await ELIMINAR_CUENTA_PORPAGAR({
+      ...cuentaAnterior.cuenta,
+      id: cuentaAnterior.id,
+    });
   }
 };
 
