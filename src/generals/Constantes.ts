@@ -12,3 +12,8 @@ export const ROLES = ["Empleado", "Admin"]; //"Admin"],
 export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];
 
 export const TIPOS_VENTA = ["Contado", "Credito"];
+
+export enum ETiposVenta {
+  CONTADO = "Contado",
+  CREDITO = "Credito",
+}

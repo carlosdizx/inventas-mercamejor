@@ -89,8 +89,8 @@
                 outlined
                 clearable
                 counter
-                v-model="codigo_barras"
-                v-on:keyup.enter="buscarProducto(codigo_barras)"
+                v-model.number="codigo_barras"
+                @input="buscarProducto()"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
               />
@@ -160,8 +160,8 @@ export default Vue.extend({
       this.venta.documento_cliente = cliente.documento;
       this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
     },
-    buscarProducto(valor: any) {
-      this.$emit("codigo_barras", valor);
+    buscarProducto() {
+      this.$emit("codigo_barras", this.codigo_barras);
       this.codigo_barras = null;
     },
     enviarDatos() {
@@ -173,6 +173,11 @@ export default Vue.extend({
         fecha_pago: this.venta.fecha_pago,
       };
       this.$emit("datos_cliente", datos);
+    },
+    limpiarCodeBar() {
+      console.log("limpiar code");
+
+      this.codigo_barras = null;
     },
   },
 });
