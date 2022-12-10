@@ -26,8 +26,8 @@
                   dense
                   outlined
                   counter
-                  v-model="venta.documento_cliente"
-                  @focusout="buscarCliente(venta.documento_cliente)"
+                  v-model="venta.documento"
+                  @focusout="buscarCliente()"
                   :error-messages="errors"
                   autofocus
                 />
@@ -40,7 +40,7 @@
                 dense
                 outlined
                 counter
-                v-model="venta.nombre_cliente"
+                v-model="venta.nombres"
                 readonly
                 disabled
               />
@@ -75,7 +75,7 @@
                 outlined
                 clearable
                 counter
-                v-model="venta.fecha_pago"
+                v-model="fecha_pago"
               />
             </v-col>
           </v-row>
@@ -126,9 +126,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { TIPOS_VENTA } from "@/generals/Constantes";
+import { ETiposVenta, TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
+import { IVenta } from "@/models/Venta";
+import { FECHA_TO_STRING_INPUT } from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "FormVentas",
@@ -136,11 +138,16 @@ export default Vue.extend({
   data: () => ({
     codigo_barras: null,
     venta: {
-      documento_cliente: 2222222,
-      nombre_cliente: "Clientes varios",
-      tipo_venta: "Contado",
-      fecha_pago: null,
-    },
+      documento: "2222222",
+      nombres: "Clientes varios",
+      apellidos: "",
+      tipo_venta: ETiposVenta.CONTADO,
+      fecha_pago: new Date(),
+      subtotal: 0,
+      descuento: 0,
+      total: 0,
+    } as IVenta,
+    fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
     cliente: { nombres: "Clientes", apellidos: "varios", documento: 2222222 },
@@ -151,28 +158,23 @@ export default Vue.extend({
       const dialog: any = this.$refs.DialogClientes;
       dialog.cambiarEstado();
     },
-    async buscarCliente(documento: any) {
-      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(documento);
+    async buscarCliente() {
+      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(
+        this.venta.documento
+      );
       this.cambiarCliente(resultado);
     },
     cambiarCliente(cliente: any) {
       this.cliente = cliente;
-      this.venta.documento_cliente = cliente.documento;
-      this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
+      this.venta.documento = cliente.documento;
+      this.venta.nombres = cliente.nombres + " " + cliente.apellidos;
     },
     buscarProducto() {
       this.$emit("codigo_barras", this.codigo_barras);
       this.codigo_barras = null;
     },
     enviarDatos() {
-      const datos = {
-        documento_cliente: this.venta.documento_cliente,
-        nombre_cliente: this.venta.nombre_cliente,
-        tipo_factura: this.venta.tipo_venta,
-        tipo: "venta",
-        fecha_pago: this.venta.fecha_pago,
-      };
-      this.$emit("datos_cliente", datos);
+      this.$emit("datos_cliente", this.venta);
     },
     limpiarCodeBar() {
       console.log("limpiar code");

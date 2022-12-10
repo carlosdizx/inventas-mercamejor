@@ -4,11 +4,12 @@ export interface IVenta {
   documento: string;
   nombres: string;
   apellidos: string;
-  tipo_compra: ETiposVenta;
+  tipo_venta: ETiposVenta;
   subtotal: number;
   descuento: number;
   total: number;
   productos: IProductoVenta[];
+  fecha_pago: Date;
 }
 
 export interface IProductoVenta {
