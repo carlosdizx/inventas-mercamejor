@@ -40,7 +40,7 @@
                 dense
                 outlined
                 counter
-                v-model="venta.nombres"
+                :value="`${venta.nombres + ' ' + venta.apellidos}`"
                 readonly
                 disabled
               />
@@ -98,9 +98,7 @@
             <v-col cols="6">
               <v-chip :color="enfoque ? 'success' : 'red'">
                 {{ enfoque ? "" : "Pistola no posicionada" }}
-                <v-icon>
-                  {{ enfoque ? "mdi-barcode-scan" : "mdi-barcode-scan" }}
-                </v-icon>
+                <v-icon>mdi-barcode-scan</v-icon>
               </v-chip>
             </v-col>
           </v-row>
@@ -111,7 +109,7 @@
                 block
                 large
                 :disabled="invalid"
-                @click="enviarDatos"
+                @click="registrarVenta"
               >
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>
@@ -130,7 +128,10 @@ import { ETiposVenta, TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
 import { IVenta } from "@/models/Venta";
-import { FECHA_TO_STRING_INPUT } from "@/generals/procesamientos";
+import {
+  FECHA_TO_STRING_INPUT,
+  STRINT_TO_FECHA,
+} from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "FormVentas",
@@ -146,11 +147,11 @@ export default Vue.extend({
       subtotal: 0,
       descuento: 0,
       total: 0,
+      productos: [],
     } as IVenta,
     fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
-    cliente: { nombres: "Clientes", apellidos: "varios", documento: 2222222 },
     enfoque: false,
   }),
   methods: {
@@ -165,21 +166,30 @@ export default Vue.extend({
       this.cambiarCliente(resultado);
     },
     cambiarCliente(cliente: any) {
-      this.cliente = cliente;
       this.venta.documento = cliente.documento;
-      this.venta.nombres = cliente.nombres + " " + cliente.apellidos;
+      this.venta.apellidos = cliente.apellidos;
+      this.venta.nombres = cliente.nombres;
     },
     buscarProducto() {
       this.$emit("codigo_barras", this.codigo_barras);
       this.codigo_barras = null;
     },
-    enviarDatos() {
+    registrarVenta() {
+      this.venta.fecha_pago = STRINT_TO_FECHA(this.fecha_pago);
       this.$emit("datos_cliente", this.venta);
+      this.resetDatosVenta();
     },
-    limpiarCodeBar() {
-      console.log("limpiar code");
-
-      this.codigo_barras = null;
+    resetDatosVenta() {
+      this.venta.documento = "2222222";
+      this.venta.nombres = "Clientes varios";
+      this.venta.apellidos = "";
+      this.venta.tipo_venta = ETiposVenta.CONTADO;
+      this.venta.fecha_pago = new Date();
+      this.venta.subtotal = 0;
+      this.venta.descuento = 0;
+      this.venta.total = 0;
+      this.venta.productos = [];
+      this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
   },
 });

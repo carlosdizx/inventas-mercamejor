@@ -17,6 +17,7 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
+import { IVenta } from "@/models/Venta";
 
 export default Vue.extend({
   name: "Ventas",
@@ -48,7 +49,7 @@ export default Vue.extend({
         });
       }
     },
-    async generarFactura(datos_cliente: any) {
+    async generarFactura(datos_cliente: IVenta) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;

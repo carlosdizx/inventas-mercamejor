@@ -119,7 +119,6 @@ export default Vue.extend({
   }),
   methods: {
     async agregarProducto(productoNuevo: Producto) {
-      console.log("producto nuevo", productoNuevo);
       const agregado = await YA_LISTADO(this.filas, productoNuevo);
       const producto: ProductoVenta = new ProductoVenta(
         productoNuevo.codigo_barras,
