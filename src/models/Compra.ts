@@ -1,3 +1,5 @@
+import { IProductoCompra } from "./ProductoCompra";
+
 export const COLUMNAS = [
   { text: "Nombre Proveedor", value: "nombre_proveedor" },
   { text: "Fecha del documento", value: "fecha_documento" },
@@ -14,3 +16,28 @@ export const COLUMNAS = [
   { text: "Fecha de Actualizacion", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
 ];
+
+export interface ICompra {
+  documento_proveedor: number | null | "";
+  nombres_proveedor: string;
+  apellidos_proveedor: string;
+  fecha_documento: Date | string | null;
+  cod_factura: string;
+  tipo_compra: string;
+  tipo_pago: string;
+  fecha_pago: Date | string | null;
+  fecha_llegada_producto: Date | string | null;
+  compras: IProductoCompra[];
+  subtotal: number;
+  descuento: number;
+  impuesto: number;
+  total: number;
+  estado: EstadoCompra;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export enum EstadoCompra {
+  APROBADO = "Aprobado",
+  CANCELADO = "Cancelado",
+}

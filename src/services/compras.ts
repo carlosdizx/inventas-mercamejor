@@ -5,7 +5,7 @@ import {
 } from "./movInventarios";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { EDITAR, GUARDAR, LISTAR_IN } from "@/services/crud";
-import { Compra, EstadoCompra } from "@/interfaces/Compra";
+import { ICompra, EstadoCompra } from "@/models/Compra";
 import Swal from "sweetalert2";
 import { IInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
@@ -135,7 +135,7 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES = async (
 };
 
 const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
-  nuevaCompra: Compra,
+  nuevaCompra: ICompra,
   cod_factura: string
 ): Promise<void> => {
   for (const itemCompra of nuevaCompra.compras) {
@@ -158,15 +158,15 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
     await GUARDAR_MOVIMIENTO_INVENTARIO(inventario);
     await ACTUALIZAR_UNIDADES_PRODUCTO(
       Number(inventario.codigo_barras),
-      inventario.entradas,
+      0,
       "ADICIONAR"
     );
   }
 };
 
 export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
-  nuevaCompra: Compra,
-  compraAnterior: Compra,
+  nuevaCompra: ICompra,
+  compraAnterior: ICompra,
   codFactura: string
 ): Promise<void> => {
   if (
@@ -224,8 +224,8 @@ export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
 };
 
 export const ACTUALIZAR_COMPRA = async (
-  nuevaCompra: Compra,
-  compraAnterior: Compra,
+  nuevaCompra: ICompra,
+  compraAnterior: ICompra,
   idCompra: string
 ): Promise<boolean> => {
   const numeroDeFacturaNuevo = "C-" + nuevaCompra.cod_factura;
