@@ -1,5 +1,5 @@
 export interface IProductoCompra {
-  codigo_barras: number | null;
+  codigo_barras: number;
   descripcion_producto: string;
   bodega: string;
   cantidad: number;

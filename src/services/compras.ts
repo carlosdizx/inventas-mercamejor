@@ -1,13 +1,14 @@
 import {
   BORRAR_MOVIMIENTO_INVENTARIO,
   BUSCAR_MOVIMIENTOS_INVENTARIO,
+  GUARDAR_INVENTARIO,
   GUARDAR_MOVIMIENTO_INVENTARIO,
 } from "./movInventarios";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { EDITAR, GUARDAR, LISTAR_IN } from "@/services/crud";
 import { ICompra, EstadoCompra } from "@/models/Compra";
 import Swal from "sweetalert2";
-import { IInventario } from "@/models/Inventarios";
+import { IInventario, IProductosInventario } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import { CuentaPorPagar, EstadoCuentaPorPagar } from "@/models/CuentasPorPagar";
 import {
@@ -16,6 +17,7 @@ import {
   ELIMINAR_CUENTA_PORPAGAR,
   REGISTRAR_NUEVA_CUENTAPORPAGAR,
 } from "@/services/cuentasxpagar";
+import { IProductoCompra } from "@/models/ProductoCompra";
 
 const coleccionCompras = "compras";
 
@@ -33,11 +35,11 @@ export const IS_NUM_FACTURA_EXISTE = async (
 };
 
 export const REGISTRAR_NUEVA_COMPRA = async (
-  compra: Compra
+  compra: ICompra
 ): Promise<boolean> => {
   const numeroDeFactura = "C-" + compra.cod_factura;
   if (!(await IS_NUM_FACTURA_EXISTE(numeroDeFactura))) {
-    const nuevaCompra: Compra = {
+    const nuevaCompra: ICompra = {
       created_at: new Date(),
       updated_at: new Date(),
       documento_proveedor: compra.documento_proveedor,
@@ -59,26 +61,29 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       estado: EstadoCompra.APROBADO,
     };
     await GUARDAR(coleccionCompras, nuevaCompra);
-    const inventarios: Array<IInventario> = [];
-    nuevaCompra.compras.forEach((itemCompra) => {
-      const inventario: IInventario = {
-        created_at: new Date(),
-        updated_at: new Date(),
-        fecha_factura: getFechaDesdeInput(String(compra.fecha_documento)),
-        cedula_nit: nuevaCompra.documento_proveedor,
-        nombres: nuevaCompra.nombres_proveedor,
-        apellidos: nuevaCompra.apellidos_proveedor,
-        tipo_factura: nuevaCompra.tipo_compra,
-        documento: numeroDeFactura,
+    const inventario: Array<IInventario> = {
+      fecha_factura: compra.fecha_documento,
+      created_at: new Date(),
+      updated_at: new Date(),
+      cedula_nit: compra.documento_proveedor,
+      nombres: compra.nombres_proveedor,
+      apellidos: compra.apellidos_proveedor,
+      tipo_factura: compra.tipo_compra,
+      caja: compra.cod_factura,
+    };
+    const inventarios: Array<IProductosInventario> = [];
+    nuevaCompra.compras.forEach((itemCompra: IProductoCompra) => {
+      const inventario: IProductosInventario = {
+        descripcion: itemCompra.descripcion_producto,
         bodega: itemCompra.bodega,
-        producto: itemCompra.descripcion_producto,
         codigo_barras: itemCompra.codigo_barras,
         salidas: 0,
-        entradas: itemCompra.cantidad,
         caja: "",
+        entradas: itemCompra.cantidad,
       };
       inventarios.push(inventario);
     });
+    await GUARDAR_INVENTARIO(inventario);
     for (const item of inventarios) {
       await GUARDAR_MOVIMIENTO_INVENTARIO(item);
       await ACTUALIZAR_UNIDADES_PRODUCTO(

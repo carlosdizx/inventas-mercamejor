@@ -18,15 +18,15 @@ export const COLUMNAS = [
 ];
 
 export interface ICompra {
-  documento_proveedor: number | null | "";
+  documento_proveedor: number;
   nombres_proveedor: string;
   apellidos_proveedor: string;
-  fecha_documento: Date | string | null;
+  fecha_documento: Date;
   cod_factura: string;
   tipo_compra: string;
   tipo_pago: string;
-  fecha_pago: Date | string | null;
-  fecha_llegada_producto: Date | string | null;
+  fecha_pago: Date;
+  fecha_llegada_producto: Date;
   compras: IProductoCompra[];
   subtotal: number;
   descuento: number;

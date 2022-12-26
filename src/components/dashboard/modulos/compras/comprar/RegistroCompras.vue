@@ -45,7 +45,7 @@
               >
                 <v-text-field
                   label="Fecha de Compra"
-                  v-model="compra.fecha_documento"
+                  v-model="fecha_documento"
                   :error-messages="errors"
                   type="date"
                   outlined
@@ -118,7 +118,7 @@
               <v-text-field
                 label="Fecha de pago"
                 type="date"
-                v-model="compra.fecha_pago"
+                v-model="fecha_pago"
                 outlined
                 dense
               ></v-text-field>
@@ -127,7 +127,7 @@
               <v-text-field
                 label="Fecha de llegada del producto"
                 type="date"
-                v-model="compra.fecha_llegada_producto"
+                v-model="fecha_llegada_producto"
                 outlined
                 dense
               ></v-text-field>
@@ -219,10 +219,11 @@ import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
 import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { Compra, EstadoCompra } from "@/interfaces/Compra";
-import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { ICompra, EstadoCompra } from "@/models/Compra";
+import { IProductoCompra } from "@/models/ProductoCompra";
 import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
+import { getFechaDesdeInput } from "@/generals/formats";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -232,18 +233,23 @@ export default Vue.extend({
   },
   props: {
     compraAnterior: {
-      type: Object as PropType<Compra>,
+      type: Object as PropType<ICompra>,
     },
     idcompraanterior: String,
   },
   data() {
     return {
       columnas: COLUMNAS,
-      compra: {} as Compra,
+      compra: {} as ICompra,
       tiposDocumento: ["Compra", "Pedido"],
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
       eliminarDatos: false,
+      fecha_documento: "",
+      fecha_pago: "",
+      fecha_llegada_producto: "",
+      created_at: "",
+      updated_at: "",
     };
   },
   computed: {
@@ -290,13 +296,13 @@ export default Vue.extend({
       this.compra.nombres_proveedor = nombres;
       this.compra.apellidos_proveedor = apellidos;
     },
-    actualizarProductos(productos: ProductoCompra[]) {
-      const productoss: Array<ProductoCompra> = productos;
+    actualizarProductos(productos: IProductoCompra[]) {
+      const productoss: Array<IProductoCompra> = productos;
       this.compra.compras = productoss;
-      const compra: Compra = {
+      const compra: ICompra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: this.compra.documento_proveedor || "",
+        documento_proveedor: this.compra.documento_proveedor || 0,
         nombres_proveedor: this.compra.nombres_proveedor || "",
         apellidos_proveedor: this.compra.apellidos_proveedor || "",
         fecha_documento: this.compra.fecha_documento || "",
@@ -330,6 +336,13 @@ export default Vue.extend({
         Number(this.compra.impuesto);
     },
     async registrarCompra() {
+      this.compra.created_at = new Date();
+      this.compra.updated_at = new Date();
+      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
+      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
+      this.compra.fecha_llegada_producto = getFechaDesdeInput(
+        this.fecha_llegada_producto
+      );
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -351,6 +364,13 @@ export default Vue.extend({
       });
     },
     async actualizarCompa() {
+      this.compra.created_at = new Date();
+      this.compra.updated_at = new Date();
+      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
+      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
+      this.compra.fecha_llegada_producto = getFechaDesdeInput(
+        this.fecha_llegada_producto
+      );
       Swal.fire({
         title: "¿Esta seguro de Actualizar esta compra?",
         showDenyButton: true,
@@ -381,22 +401,25 @@ export default Vue.extend({
       this.compra.apellidos_proveedor = prov.apellidos;
     },
     limpiarCompra() {
-      const compra: Compra = {
-        documento_proveedor: "",
+      this.fecha_documento = new Date().toISOString().slice(0, 10);
+      this.fecha_pago = new Date().toISOString().slice(0, 10);
+      this.fecha_llegada_producto = new Date().toISOString().slice(0, 10);
+      const compra: ICompra = {
+        documento_proveedor: 0,
         nombres_proveedor: "",
         apellidos_proveedor: "",
-        fecha_documento: new Date().toISOString().slice(0, 10),
         cod_factura: "",
         tipo_compra: "",
         tipo_pago: "",
-        fecha_pago: "",
-        fecha_llegada_producto: "",
         compras: [],
         subtotal: 0,
         descuento: 0,
         impuesto: 0,
         total: 0,
         estado: EstadoCompra.APROBADO,
+        fecha_documento: new Date(),
+        fecha_pago: new Date(),
+        fecha_llegada_producto: new Date(),
         created_at: new Date(),
         updated_at: new Date(),
       };

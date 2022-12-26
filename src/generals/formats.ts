@@ -30,7 +30,7 @@ export const tipo_dato = async (valor: any) => {
   return aux;
 };
 
-export const getFechaDesdeInput = (stringfecha: string) => {
+export const getFechaDesdeInput = (stringfecha: string | null): Date => {
   if (stringfecha) {
     const datosFecha: string[] = stringfecha.split("-");
     return new Date(
@@ -39,6 +39,6 @@ export const getFechaDesdeInput = (stringfecha: string) => {
       Number(datosFecha[2])
     );
   } else {
-    return "";
+    return new Date();
   }
 };
