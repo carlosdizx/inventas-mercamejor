@@ -190,19 +190,6 @@
               >
             </v-col>
           </v-row>
-          <v-row class="mr-5 ml-5" v-if="compraAnterior">
-            <v-col>
-              <v-btn
-                @click="actualizarCompa()"
-                :disabled="validarRegistro"
-                x-large
-                dark
-                class="color_a mb-3"
-                block
-                >Actualizar Compra</v-btn
-              >
-            </v-col>
-          </v-row>
         </v-card-text>
       </v-form>
       <v-col v-if="!invalid">.</v-col>
@@ -221,7 +208,7 @@ import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCo
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { ICompra, EstadoCompra } from "@/models/Compra";
 import { IProductoCompra } from "@/models/ProductoCompra";
-import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
+import { REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito } from "@/generals/Constantes";
@@ -355,38 +342,6 @@ export default Vue.extend({
         if (
           result.isConfirmed &&
           (await REGISTRAR_NUEVA_COMPRA({ ...this.compra }))
-        ) {
-          this.eliminarDatos = !this.eliminarDatos;
-          this.limpiarCompra();
-          const observer: any = this.$refs.observer;
-          if (observer) {
-            observer.reset();
-          }
-        }
-      });
-    },
-    async actualizarCompa() {
-      this.compra.created_at = new Date();
-      this.compra.updated_at = new Date();
-      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
-      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
-      this.compra.fecha_llegada_producto = getFechaDesdeInput(
-        this.fecha_llegada_producto
-      );
-      Swal.fire({
-        title: "¿Esta seguro de Actualizar esta compra?",
-        showDenyButton: true,
-        confirmButtonText: "Actualizar",
-        confirmButtonColor: "green",
-        denyButtonText: `No!`,
-      }).then(async (result) => {
-        if (
-          result.isConfirmed &&
-          (await ACTUALIZAR_COMPRA(
-            { ...this.compra },
-            this.compraAnterior,
-            this.idcompraanterior
-          ))
         ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();

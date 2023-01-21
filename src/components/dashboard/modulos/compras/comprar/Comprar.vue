@@ -13,16 +13,9 @@
       >
         Consultar Compras
       </v-btn>
-      <v-btn
-        @click="opcion = 3"
-        :class="opcion === 3 ? `success ml-1` : 'ml-1'"
-      >
-        Actualizar Compras
-      </v-btn>
     </div>
     <RegistroCompras v-if="opcion === 1" />
     <ConsultarCompras v-if="opcion === 2" />
-    <ActualizarCompras v-if="opcion === 3" />
   </div>
 </template>
 
@@ -31,11 +24,10 @@ import Vue from "vue";
 
 import RegistroCompras from "@/components/dashboard/modulos/compras/comprar/RegistroCompras.vue";
 import ConsultarCompras from "@/components/dashboard/modulos/compras/comprar/ConsultarCompras.vue";
-import ActualizarCompras from "@/components/dashboard/modulos/compras/comprar/ActualizarCompras.vue";
 
 export default Vue.extend({
   name: "Cajas",
-  components: { RegistroCompras, ConsultarCompras, ActualizarCompras },
+  components: { RegistroCompras, ConsultarCompras },
   data: () => ({
     opcion: 1,
     registro: true,
