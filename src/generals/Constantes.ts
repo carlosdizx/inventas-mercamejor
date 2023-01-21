@@ -13,7 +13,7 @@ export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];
 
 export const TIPOS_VENTA = ["Contado", "Credito"];
 
-export enum ETiposVenta {
+export enum ETiposContadoCredito {
   CONTADO = "Contado",
   CREDITO = "Credito",
 }

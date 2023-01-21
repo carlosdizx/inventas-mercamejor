@@ -224,6 +224,7 @@ import { IProductoCompra } from "@/models/ProductoCompra";
 import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
+import { ETiposContadoCredito } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -317,6 +318,7 @@ export default Vue.extend({
         estado: EstadoCompra.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
+        caja: "",
       };
       this.compra = compra;
       this.calcularSubtotal();
@@ -324,7 +326,7 @@ export default Vue.extend({
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.compra.compras.forEach((com: any) => {
+      this.compra.compras.forEach((com: IProductoCompra) => {
         subtototal += Number(com.subtotal);
       });
       this.compra.subtotal = subtototal;
@@ -409,7 +411,7 @@ export default Vue.extend({
         nombres_proveedor: "",
         apellidos_proveedor: "",
         cod_factura: "",
-        tipo_compra: "",
+        tipo_compra: ETiposContadoCredito.CONTADO,
         tipo_pago: "",
         compras: [],
         subtotal: 0,
@@ -422,6 +424,7 @@ export default Vue.extend({
         fecha_llegada_producto: new Date(),
         created_at: new Date(),
         updated_at: new Date(),
+        caja: "",
       };
       this.compra = compra;
     },

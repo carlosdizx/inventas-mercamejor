@@ -1,4 +1,4 @@
-import { ETiposVenta } from "@/generals/Constantes";
+import { ETiposContadoCredito } from "@/generals/Constantes";
 
 export interface IInventario {
   fecha_factura: Date;
@@ -7,7 +7,8 @@ export interface IInventario {
   cedula_nit: number;
   nombres: string;
   apellidos: string;
-  tipo_factura: ETiposVenta;
+  caja: string;
+  tipo_factura: ETiposContadoCredito;
   productos: IProductosInventario[];
 }
 
@@ -17,5 +18,4 @@ export interface IProductosInventario {
   codigo_barras: number;
   descripcion: string;
   bodega: string;
-  caja: string;
 }
