@@ -18,7 +18,7 @@
               <th class="text-left">Actividad</th>
             </tr>
           </thead>
-          <tbody class="dark">
+          <tbody class="dark" v-if="!anular">
             <tr>
               <td>
                 <v-text-field
@@ -121,7 +121,7 @@
               <td>{{ item.impuesto }}</td>
               <td>{{ item.descuento }}</td>
               <td>{{ item.subtotal }}</td>
-              <td>
+              <td v-if="!anular">
                 <v-btn
                   @click="seleccionarCompraEditar(item, index)"
                   color="white"
@@ -167,7 +167,7 @@ import { CARGAR_INFORMACION } from "@/services/crud";
 
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
-import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { IProductoCompra } from "@/models/ProductoCompra";
 
 import Swal from "sweetalert2";
 
@@ -179,16 +179,17 @@ export default Vue.extend({
   },
   props: {
     compras: {
-      type: Array as () => Array<ProductoCompra>,
+      type: Array as () => Array<IProductoCompra>,
     },
     eliminarDatos: Boolean,
+    anular: Boolean,
   },
   data: () => ({
     columnas: COLUMNAS,
-    productos: [] as ProductoCompra[],
+    productos: [] as IProductoCompra[],
     productosPorGanancia: [],
-    productoNuevo: {} as ProductoCompra,
-    compraEditar: {} as ProductoCompra,
+    productoNuevo: {} as IProductoCompra,
+    compraEditar: {} as IProductoCompra,
     bodegasDisponibles: [{}],
     productosDisponibles: [{}],
     mostrarEditarCompra: false,
@@ -225,8 +226,8 @@ export default Vue.extend({
       this.productosDisponibles = res;
     },
     agregarProducto() {
-      const product: ProductoCompra = { ...this.productoNuevo };
-      const nuevosProductos: ProductoCompra[] = this.productos;
+      const product: IProductoCompra = { ...this.productoNuevo };
+      const nuevosProductos: IProductoCompra[] = this.productos;
       nuevosProductos.push(product);
       this.productos = nuevosProductos;
       this.$emit("enviarProductos", this.productos);
@@ -248,7 +249,7 @@ export default Vue.extend({
       });
     },
     resetNuevoProducto() {
-      const producto: ProductoCompra = {
+      const producto: IProductoCompra = {
         codigo_barras: null,
         descripcion_producto: "",
         bodega: this.productoNuevo.bodega || "",
@@ -311,7 +312,7 @@ export default Vue.extend({
       }
     },
     seleccionaProducto(product: any): void {
-      const productoNuevo: ProductoCompra = {
+      const productoNuevo: IProductoCompra = {
         codigo_barras: product.codigo_barras,
         descripcion_producto: product.nombre,
         bodega: this.productoNuevo.bodega,
@@ -324,7 +325,7 @@ export default Vue.extend({
       };
       this.productoNuevo = productoNuevo;
     },
-    seleccionarCompraEditar(compra: ProductoCompra, index: number) {
+    seleccionarCompraEditar(compra: IProductoCompra, index: number) {
       this.mostrarEditarCompra = true;
       this.editarCompraIndice = index;
       this.compraEditar = compra;
@@ -340,7 +341,7 @@ export default Vue.extend({
     this.listarProductos();
     this.resetNuevoProducto();
     if (this.compras) {
-      const nuevasCompras: Array<ProductoCompra> = this.compras;
+      const nuevasCompras: Array<IProductoCompra> = this.compras;
       this.productos = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {

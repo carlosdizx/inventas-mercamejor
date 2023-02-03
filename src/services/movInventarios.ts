@@ -12,6 +12,9 @@ const coleccion = "inventarios";
 export const GUARDAR_INVENTARIO = async (inventario: IInventario) =>
   await GUARDAR(coleccion, inventario);
 
+export const GUARDAR_MOVIMIENTO_INVENTARIO = async (inventario: IInventario) =>
+  await GUARDAR(coleccion, inventario);
+
 export const BORRAR_MOVIMIENTO_INVENTARIO = async (idInventario: string) =>
   await ELIMINAR(coleccion, idInventario);
 

@@ -3,13 +3,14 @@
     <v-card-title class="mr-5 ml-5" v-if="compraAnterior === undefined"
       >Registrar compra</v-card-title
     >
-    <v-card-title class="mr-5 ml-5" v-else>Actualizar compra</v-card-title>
+    <v-card-title class="mr-5 ml-5" v-else>Anular compra</v-card-title>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
       <v-form>
         <v-card-text>
           <v-row class="mr-5 ml-5">
             <v-col cols="5">
               <v-text-field
+                :disabled="anular"
                 label="NIT/Cédula proveedor"
                 v-model="compra.documento_proveedor"
                 @input="buscarProveedor()"
@@ -17,7 +18,7 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="1" class="mt-2">
+            <v-col cols="1" :class="anular ? 'mt-2' : 'mt-4'" v-if="!anular">
               <BuscarElemento
                 @getItem="seleccionarProveedor"
                 icon="mdi-lead-pencil"
@@ -28,6 +29,7 @@
             </v-col>
             <v-col cols="6">
               <v-text-field
+                :disabled="anular"
                 label="Nombre del proveedor"
                 v-model="nombresProveedor"
                 readonly
@@ -44,6 +46,7 @@
                 rules="required"
               >
                 <v-text-field
+                  :disabled="anular"
                   label="Fecha de Compra"
                   v-model="fecha_documento"
                   :error-messages="errors"
@@ -60,6 +63,7 @@
                 rules="required"
               >
                 <v-select
+                  :disabled="anular"
                   label="Tipo de Compra"
                   v-model="compra.tipo_compra"
                   :error-messages="errors"
@@ -78,6 +82,7 @@
                     rules="required"
                   >
                     <v-text-field
+                      :disabled="anular"
                       type="number"
                       label="Número de Factura"
                       v-model="compra.cod_factura"
@@ -105,6 +110,7 @@
                 rules="required"
               >
                 <v-select
+                  :disabled="anular"
                   label="Tipo de Pago"
                   v-model="compra.tipo_pago"
                   :error-messages="errors"
@@ -116,6 +122,7 @@
             </v-col>
             <v-col>
               <v-text-field
+                :disabled="anular"
                 label="Fecha de pago"
                 type="date"
                 v-model="fecha_pago"
@@ -125,6 +132,7 @@
             </v-col>
             <v-col>
               <v-text-field
+                :disabled="anular"
                 label="Fecha de llegada del producto"
                 type="date"
                 v-model="fecha_llegada_producto"
@@ -135,6 +143,7 @@
           </v-row>
 
           <TablaCompras
+            :anular="anular"
             :compras="compra.compras"
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
@@ -143,6 +152,7 @@
           <v-row class="mr-5 ml-5">
             <v-col>
               <v-text-field
+                :disabled="anular"
                 label="Subtotal"
                 readonly
                 v-model.number="compra.subtotal"
@@ -153,6 +163,7 @@
 
             <v-col>
               <v-text-field
+                :disabled="anular"
                 @input="calcularTotal()"
                 label="Descuento"
                 v-model.number="compra.descuento"
@@ -164,6 +175,7 @@
 
             <v-col>
               <v-text-field
+                :disabled="anular"
                 label="Impuesto"
                 @input="calcularTotal()"
                 v-model.number="compra.impuesto"
@@ -190,6 +202,19 @@
               >
             </v-col>
           </v-row>
+          <v-row class="mr-5 ml-5" v-if="compraAnterior">
+            <v-col>
+              <v-btn
+                @click="actualizarCompa()"
+                :disabled="validarRegistro"
+                x-large
+                dark
+                class="color_a mb-3"
+                block
+                >Anular Compra</v-btn
+              >
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-form>
       <v-col v-if="!invalid">.</v-col>
@@ -208,7 +233,7 @@ import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCo
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { ICompra, EstadoCompra } from "@/models/Compra";
 import { IProductoCompra } from "@/models/ProductoCompra";
-import { REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
+import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito } from "@/generals/Constantes";
@@ -224,6 +249,7 @@ export default Vue.extend({
       type: Object as PropType<ICompra>,
     },
     idcompraanterior: String,
+    anular: Boolean,
   },
   data() {
     return {
@@ -342,6 +368,38 @@ export default Vue.extend({
         if (
           result.isConfirmed &&
           (await REGISTRAR_NUEVA_COMPRA({ ...this.compra }))
+        ) {
+          this.eliminarDatos = !this.eliminarDatos;
+          this.limpiarCompra();
+          const observer: any = this.$refs.observer;
+          if (observer) {
+            observer.reset();
+          }
+        }
+      });
+    },
+    async actualizarCompa() {
+      this.compra.created_at = new Date();
+      this.compra.updated_at = new Date();
+      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
+      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
+      this.compra.fecha_llegada_producto = getFechaDesdeInput(
+        this.fecha_llegada_producto
+      );
+      Swal.fire({
+        title: "¿Esta seguro de Actualizar esta compra?",
+        showDenyButton: true,
+        confirmButtonText: "Actualizar",
+        confirmButtonColor: "green",
+        denyButtonText: `No!`,
+      }).then(async (result) => {
+        if (
+          result.isConfirmed &&
+          (await ACTUALIZAR_COMPRA(
+            { ...this.compra },
+            this.compraAnterior,
+            this.idcompraanterior
+          ))
         ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();

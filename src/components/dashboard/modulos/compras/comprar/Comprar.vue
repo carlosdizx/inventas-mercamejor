@@ -13,9 +13,21 @@
       >
         Consultar Compras
       </v-btn>
+      <v-btn
+        @click="opcion = 3"
+        :color="
+          opcion === 3
+            ? `error
+               ml-1 `
+            : 'ml-1'
+        "
+      >
+        Anular Compra
+      </v-btn>
     </div>
     <RegistroCompras v-if="opcion === 1" />
     <ConsultarCompras v-if="opcion === 2" />
+    <AnularCompra v-if="opcion === 3" />
   </div>
 </template>
 
@@ -24,10 +36,11 @@ import Vue from "vue";
 
 import RegistroCompras from "@/components/dashboard/modulos/compras/comprar/RegistroCompras.vue";
 import ConsultarCompras from "@/components/dashboard/modulos/compras/comprar/ConsultarCompras.vue";
+import AnularCompra from "@/components/dashboard/modulos/compras/comprar/AnularCompra.vue";
 
 export default Vue.extend({
   name: "Cajas",
-  components: { RegistroCompras, ConsultarCompras },
+  components: { RegistroCompras, ConsultarCompras, AnularCompra },
   data: () => ({
     opcion: 1,
     registro: true,
