@@ -1,10 +1,7 @@
+import { ACTUALIZAR } from "./crud";
 import { ETiposContadoCredito } from "./../generals/Constantes";
-import {
-  BORRAR_MOVIMIENTO_INVENTARIO,
-  BUSCAR_MOVIMIENTOS_INVENTARIO,
-  GUARDAR_INVENTARIO,
-} from "./movInventarios";
-import { EDITAR, GUARDAR, LISTAR_IN } from "@/services/crud";
+import { GUARDAR_INVENTARIO } from "./movInventarios";
+import { GUARDAR, LISTAR_IN } from "@/services/crud";
 import { ICompra } from "@/models/Compra";
 import Swal from "sweetalert2";
 import { IInventario, IProductosInventario } from "@/models/Inventarios";
@@ -13,12 +10,7 @@ import {
   ICuentaPorPagar,
   EstadoCuentaPorPagar,
 } from "@/models/CuentasPorPagar";
-import {
-  ACTUALIZAR_CUENTA_PAGAR,
-  BUSCAR_CUENTA_POR_PAGAR,
-  ELIMINAR_CUENTA_PORPAGAR,
-  REGISTRAR_NUEVA_CUENTAPORPAGAR,
-} from "@/services/cuentasxpagar";
+import { REGISTRAR_NUEVA_CUENTAPORPAGAR } from "@/services/cuentasxpagar";
 import { IProductoCompra } from "@/models/ProductoCompra";
 
 const coleccionCompras = "compras";
@@ -62,7 +54,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       }),
     };
     await GUARDAR_INVENTARIO(inventario);
-    if (compra.tipo_pago === ETiposContadoCredito.CONTADO) {
+    if (compra.tipo_pago === ETiposContadoCredito.CREDITO) {
       const cuentaPorPagar: ICuentaPorPagar = {
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -75,9 +67,9 @@ export const REGISTRAR_NUEVA_COMPRA = async (
         valor_debido: Number(compra.total),
         estado: EstadoCuentaPorPagar.PENDIENTE,
       };
-      await GUARDAR("cuentas_por_pagar", cuentaPorPagar);
+      await REGISTRAR_NUEVA_CUENTAPORPAGAR(cuentaPorPagar);
     }
-    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS(compra);
+    await ACTUALIZAR_UNIDADES(compra);
     await Swal.fire({
       title: "Compra registrada con éxito",
       icon: "success",
@@ -96,23 +88,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (
   }
 };
 
-const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES = async (
-  cod_factura: string
-): Promise<void> => {
-  const movInventarios = await BUSCAR_MOVIMIENTOS_INVENTARIO(cod_factura);
-  for (const movimientoInv of movInventarios) {
-    await ACTUALIZAR_UNIDADES_PRODUCTO(
-      movimientoInv.codigo_barras,
-      movimientoInv.entradas,
-      "RESTAR"
-    );
-    await BORRAR_MOVIMIENTO_INVENTARIO(movimientoInv);
-  }
-};
-
-const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
-  nuevaCompra: ICompra
-): Promise<void> => {
+const ACTUALIZAR_UNIDADES = async (nuevaCompra: ICompra): Promise<void> => {
   for (const itemCompra of nuevaCompra.compras) {
     await ACTUALIZAR_UNIDADES_PRODUCTO(
       Number(itemCompra.codigo_barras),
@@ -122,96 +98,6 @@ const ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS = async (
   }
 };
 
-export const ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA = async (
-  nuevaCompra: ICompra,
-  compraAnterior: ICompra,
-  codFactura: string
-): Promise<void> => {
-  if (
-    nuevaCompra.tipo_pago === "Credito" &&
-    compraAnterior.tipo_pago === "Credito"
-  ) {
-    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(
-      compraAnterior.cod_factura
-    );
-    const nuevaCuentaPagar: ICuentaPorPagar = {
-      updatedAt: new Date(),
-      createdAt: cuentaAnterior.cuenta.createdAt,
-      fecha_compra: nuevaCompra.fecha_documento,
-      cedula_proveedor: nuevaCompra.documento_proveedor,
-      nombres_proveedor: nuevaCompra.nombres_proveedor,
-      apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-      codigo_factura: codFactura,
-      valor_total: Number(nuevaCompra.total),
-      valor_debido:
-        nuevaCompra.total -
-        (cuentaAnterior.cuenta.valor_total -
-          cuentaAnterior.cuenta.valor_debido),
-      estado: cuentaAnterior.cuenta.estado,
-    };
-    await ACTUALIZAR_CUENTA_PAGAR(cuentaAnterior.id, nuevaCuentaPagar);
-  } else if (
-    nuevaCompra.tipo_pago === "Credito" &&
-    compraAnterior.tipo_pago === "Contado"
-  ) {
-    const nuevaCuentaPagar: ICuentaPorPagar = {
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      fecha_compra: nuevaCompra.fecha_documento,
-      cedula_proveedor: nuevaCompra.documento_proveedor,
-      nombres_proveedor: nuevaCompra.nombres_proveedor,
-      apellidos_proveedor: nuevaCompra.apellidos_proveedor,
-      codigo_factura: codFactura,
-      valor_total: Number(nuevaCompra.total),
-      valor_debido: Number(nuevaCompra.total),
-      estado: EstadoCuentaPorPagar.PENDIENTE,
-    };
-    await REGISTRAR_NUEVA_CUENTAPORPAGAR(nuevaCuentaPagar);
-  } else if (
-    nuevaCompra.tipo_pago === "Contado" &&
-    compraAnterior.tipo_pago === "Credito"
-  ) {
-    const cuentaAnterior = await BUSCAR_CUENTA_POR_PAGAR(
-      compraAnterior.cod_factura
-    );
-    await ELIMINAR_CUENTA_PORPAGAR({
-      ...cuentaAnterior.cuenta,
-      id: cuentaAnterior.id,
-    });
-  }
-};
-
-export const ACTUALIZAR_COMPRA = async (
-  nuevaCompra: ICompra,
-  compraAnterior: ICompra,
-  idCompra: string
-): Promise<boolean> => {
-  const numeroDeFacturaNuevo = "C-" + nuevaCompra.cod_factura;
-  const isNumFacturaAnterior =
-    numeroDeFacturaNuevo === compraAnterior.cod_factura;
-  if (
-    isNumFacturaAnterior ||
-    (!isNumFacturaAnterior &&
-      !(await IS_NUM_FACTURA_EXISTE(numeroDeFacturaNuevo)))
-  ) {
-    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_ANTERIORES(
-      compraAnterior.cod_factura
-    );
-    await ACTUALIZAR_MOVIMIENTOS_INVENTARIO_NUEVOS({ ...nuevaCompra });
-    await ACTUALIZAR_CUENTAS_PAGAR_NUMFACTURA(
-      nuevaCompra,
-      compraAnterior,
-      numeroDeFacturaNuevo
-    );
-    await EDITAR(coleccionCompras, idCompra, nuevaCompra);
-    return true;
-  } else {
-    await Swal.fire({
-      title: "Número de factura ya existe",
-      icon: "warning",
-      timer: 1000,
-      showConfirmButton: false,
-    });
-    return false;
-  }
+export const ANULAR_COMPRA = async (idCompra: string): Promise<void> => {
+  await ACTUALIZAR(coleccionCompras, idCompra, { estado: "Cancelado" });
 };

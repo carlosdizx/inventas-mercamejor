@@ -204,13 +204,7 @@
           </v-row>
           <v-row class="mr-5 ml-5" v-if="compraAnterior">
             <v-col>
-              <v-btn
-                @click="actualizarCompa()"
-                :disabled="validarRegistro"
-                x-large
-                dark
-                class="color_a mb-3"
-                block
+              <v-btn @click="anularCompar()" x-large dark color="gray" block
                 >Anular Compra</v-btn
               >
             </v-col>
@@ -233,7 +227,7 @@ import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCo
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { ICompra, EstadoCompra } from "@/models/Compra";
 import { IProductoCompra } from "@/models/ProductoCompra";
-import { ACTUALIZAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
+import { ANULAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito } from "@/generals/Constantes";
@@ -378,29 +372,17 @@ export default Vue.extend({
         }
       });
     },
-    async actualizarCompa() {
-      this.compra.created_at = new Date();
-      this.compra.updated_at = new Date();
-      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
-      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
-      this.compra.fecha_llegada_producto = getFechaDesdeInput(
-        this.fecha_llegada_producto
-      );
+    async anularCompar() {
       Swal.fire({
-        title: "¿Esta seguro de Actualizar esta compra?",
+        title: "¿Esta seguro de Anular esta compra?",
         showDenyButton: true,
-        confirmButtonText: "Actualizar",
-        confirmButtonColor: "green",
+        confirmButtonText: "Anular",
+        confirmButtonColor: "red",
         denyButtonText: `No!`,
+        denyButtonColor: "gray",
       }).then(async (result) => {
-        if (
-          result.isConfirmed &&
-          (await ACTUALIZAR_COMPRA(
-            { ...this.compra },
-            this.compraAnterior,
-            this.idcompraanterior
-          ))
-        ) {
+        if (result.isConfirmed) {
+          await ANULAR_COMPRA(this.idcompraanterior);
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
