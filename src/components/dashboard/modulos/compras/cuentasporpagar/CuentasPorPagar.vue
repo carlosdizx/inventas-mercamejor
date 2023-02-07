@@ -48,8 +48,8 @@
             <tbody v-if="idCuentaPorPagar !== ''">
               <tr>
                 <td>{{ cuentaPorPagar.cedula_proveedor }}</td>
-                <td>{{ cuentaPorPagar.nombres_proveedor }}</td>
-                <td>{{ cuentaPorPagar.apellidos_proveedor }}</td>
+                <td>{{ cuentaPorPagar.nom_proveedor }}</td>
+                <td>{{ cuentaPorPagar.ape_proveedor }}</td>
                 <td>{{ cuentaPorPagar.codigo_factura }}</td>
                 <td>
                   <v-text-field v-model.number="valorAbono"></v-text-field>
@@ -77,7 +77,7 @@ import Vue from "vue";
 
 import {
   COLUMNAS,
-  CuentaPorPagar,
+  ICuentaPorPagar,
   EstadoCuentaPorPagar,
 } from "@/models/CuentasPorPagar";
 import { MovCuentaPorPagar } from "@/models/MovCuentasPorPagar";
@@ -91,7 +91,7 @@ export default Vue.extend({
     mostrar: false,
     columnas: COLUMNAS,
     fechaRegistro: "",
-    cuentaPorPagar: {} as CuentaPorPagar,
+    cuentaPorPagar: {} as ICuentaPorPagar,
     idCuentaPorPagar: "",
     valorAbono: 0,
   }),
@@ -112,7 +112,7 @@ export default Vue.extend({
       this.idCuentaPorPagar = item.id;
     },
     async realizarAbono() {
-      const nuevaCuentaPorPagar: CuentaPorPagar = {
+      const nuevaCuentaPorPagar: ICuentaPorPagar = {
         ...this.cuentaPorPagar,
         updatedAt: new Date(),
       };

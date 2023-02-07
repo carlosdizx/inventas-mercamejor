@@ -27,13 +27,13 @@ export const CONSULTAR_COMPRAS: any = async (
     const products: any = compra.compras;
     if (provIncial !== "") {
       if (
-        compra.documento_proveedor >= Number(provIncial) &&
-        compra.documento_proveedor <= Number(provFinal)
+        compra.doc_proveedor >= Number(provIncial) &&
+        compra.doc_proveedor <= Number(provFinal)
       ) {
         products.forEach((product: any) => {
           const datDompra = {
             created_at: compra.created_at,
-            documento_proveedor: compra.documento_proveedor,
+            doc_proveedor: compra.doc_proveedor,
             nombre_proveedor: compra.nombre_proveedor,
             cod_factura: compra.cod_factura,
             tipo_compra: compra.tipo_compra,
@@ -57,7 +57,7 @@ export const CONSULTAR_COMPRAS: any = async (
       products.forEach((product: any) => {
         const datDompra = {
           created_at: compra.created_at,
-          documento_proveedor: compra.documento_proveedor,
+          doc_proveedor: compra.doc_proveedor,
           nombre_proveedor: compra.nombre_proveedor,
           cod_factura: compra.cod_factura,
           tipo_compra: compra.tipo_compra,

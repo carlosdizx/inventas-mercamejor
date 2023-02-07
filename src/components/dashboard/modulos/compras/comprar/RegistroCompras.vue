@@ -12,7 +12,7 @@
               <v-text-field
                 :disabled="anular"
                 label="NIT/Cédula proveedor"
-                v-model="compra.documento_proveedor"
+                v-model="compra.doc_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -48,7 +48,7 @@
                 <v-text-field
                   :disabled="anular"
                   label="Fecha de Compra"
-                  v-model="fecha_documento"
+                  v-model="fec_documento"
                   :error-messages="errors"
                   type="date"
                   outlined
@@ -135,7 +135,7 @@
                 :disabled="anular"
                 label="Fecha de llegada del producto"
                 type="date"
-                v-model="fecha_llegada_producto"
+                v-model="fecha_llegada"
                 outlined
                 dense
               ></v-text-field>
@@ -230,7 +230,7 @@ import { IProductoCompra } from "@/models/ProductoCompra";
 import { ANULAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
-import { ETiposContadoCredito } from "@/generals/Constantes";
+import { ETiposContadoCredito, PREF_COMPRA } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -253,9 +253,9 @@ export default Vue.extend({
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
       eliminarDatos: false,
-      fecha_documento: "",
+      fec_documento: "",
       fecha_pago: "",
-      fecha_llegada_producto: "",
+      fecha_llegada: "",
       created_at: "",
       updated_at: "",
     };
@@ -265,7 +265,7 @@ export default Vue.extend({
       let val = false;
       if (
         this.compra.cod_factura === "" ||
-        !this.compra.fecha_documento ||
+        !this.compra.fec_documento ||
         !this.compra.tipo_pago ||
         !this.compra.tipo_compra ||
         this.compra.total < this.compra.descuento - this.compra.impuesto ||
@@ -279,9 +279,8 @@ export default Vue.extend({
     },
     nombresProveedor() {
       let nombres = "Proveedores Varios";
-      if (this.compra.nombres_proveedor) {
-        nombres =
-          this.compra.nombres_proveedor + " " + this.compra.apellidos_proveedor;
+      if (this.compra.nom_proveedor) {
+        nombres = this.compra.nom_proveedor + " " + this.compra.ape_proveedor;
       }
       return nombres;
     },
@@ -296,13 +295,13 @@ export default Vue.extend({
       let nombres = "";
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
-        if (this.compra.documento_proveedor === prov.documento) {
+        if (this.compra.doc_proveedor === prov.documento) {
           nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
       });
-      this.compra.nombres_proveedor = nombres;
-      this.compra.apellidos_proveedor = apellidos;
+      this.compra.nom_proveedor = nombres;
+      this.compra.ape_proveedor = apellidos;
     },
     actualizarProductos(productos: IProductoCompra[]) {
       const productoss: Array<IProductoCompra> = productos;
@@ -310,15 +309,15 @@ export default Vue.extend({
       const compra: ICompra = {
         descuento: 0,
         impuesto: 0,
-        documento_proveedor: this.compra.documento_proveedor || 0,
-        nombres_proveedor: this.compra.nombres_proveedor || "",
-        apellidos_proveedor: this.compra.apellidos_proveedor || "",
-        fecha_documento: this.compra.fecha_documento || "",
+        doc_proveedor: this.compra.doc_proveedor || 0,
+        nom_proveedor: this.compra.nom_proveedor || "",
+        ape_proveedor: this.compra.ape_proveedor || "",
+        fec_documento: this.compra.fec_documento || "",
         cod_factura: this.compra.cod_factura,
         tipo_compra: this.compra.tipo_compra,
         tipo_pago: this.compra.tipo_pago,
         fecha_pago: this.compra.fecha_pago || "",
-        fecha_llegada_producto: this.compra.fecha_llegada_producto || "",
+        fecha_llegada: this.compra.fecha_llegada || "",
         compras: productos,
         subtotal: 0,
         total: 0,
@@ -347,11 +346,10 @@ export default Vue.extend({
     async registrarCompra() {
       this.compra.created_at = new Date();
       this.compra.updated_at = new Date();
-      this.compra.fecha_documento = getFechaDesdeInput(this.fecha_documento);
+      this.compra.fec_documento = getFechaDesdeInput(this.fec_documento);
       this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
-      this.compra.fecha_llegada_producto = getFechaDesdeInput(
-        this.fecha_llegada_producto
-      );
+      this.compra.fecha_llegada = getFechaDesdeInput(this.fecha_llegada);
+      this.compra.cod_factura = PREF_COMPRA + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -393,18 +391,18 @@ export default Vue.extend({
       });
     },
     seleccionarProveedor(prov: any) {
-      this.compra.documento_proveedor = prov.documento;
-      this.compra.nombres_proveedor = prov.nombres;
-      this.compra.apellidos_proveedor = prov.apellidos;
+      this.compra.doc_proveedor = prov.documento;
+      this.compra.nom_proveedor = prov.nombres;
+      this.compra.ape_proveedor = prov.apellidos;
     },
     limpiarCompra() {
-      this.fecha_documento = new Date().toISOString().slice(0, 10);
+      this.fec_documento = new Date().toISOString().slice(0, 10);
       this.fecha_pago = new Date().toISOString().slice(0, 10);
-      this.fecha_llegada_producto = new Date().toISOString().slice(0, 10);
+      this.fecha_llegada = new Date().toISOString().slice(0, 10);
       const compra: ICompra = {
-        documento_proveedor: 0,
-        nombres_proveedor: "",
-        apellidos_proveedor: "",
+        doc_proveedor: 0,
+        nom_proveedor: "",
+        ape_proveedor: "",
         cod_factura: "",
         tipo_compra: ETiposContadoCredito.CONTADO,
         tipo_pago: "",
@@ -414,9 +412,9 @@ export default Vue.extend({
         impuesto: 0,
         total: 0,
         estado: EstadoCompra.APROBADO,
-        fecha_documento: new Date(),
+        fec_documento: new Date(),
         fecha_pago: new Date(),
-        fecha_llegada_producto: new Date(),
+        fecha_llegada: new Date(),
         created_at: new Date(),
         updated_at: new Date(),
         caja: "",

@@ -1,5 +1,5 @@
 import { ACTUALIZAR } from "./crud";
-import { ETiposContadoCredito } from "./../generals/Constantes";
+import { ETiposContadoCredito, PREF_COMPRA } from "./../generals/Constantes";
 import { GUARDAR_INVENTARIO } from "./movInventarios";
 import { GUARDAR, LISTAR_IN } from "@/services/crud";
 import { ICompra } from "@/models/Compra";
@@ -31,16 +31,16 @@ export const IS_NUM_FACTURA_EXISTE = async (
 export const REGISTRAR_NUEVA_COMPRA = async (
   compra: ICompra
 ): Promise<boolean> => {
-  const numeroDeFactura = "C-" + compra.cod_factura;
+  const numeroDeFactura = PREF_COMPRA + compra.cod_factura;
   if (!(await IS_NUM_FACTURA_EXISTE(numeroDeFactura))) {
     await GUARDAR(coleccionCompras, compra);
     const inventario: IInventario = {
-      fecha_factura: compra.fecha_documento,
+      fecha_factura: compra.fec_documento,
       created_at: new Date(),
       updated_at: new Date(),
-      cedula_nit: compra.documento_proveedor,
-      nombres: compra.nombres_proveedor,
-      apellidos: compra.apellidos_proveedor,
+      cedula_nit: compra.doc_proveedor,
+      nombres: compra.nom_proveedor,
+      apellidos: compra.ape_proveedor,
       tipo_factura: compra.tipo_compra,
       caja: compra.caja,
       productos: compra.compras.map((pCompra: IProductoCompra) => {
@@ -58,10 +58,10 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       const cuentaPorPagar: ICuentaPorPagar = {
         createdAt: new Date(),
         updatedAt: new Date(),
-        fecha_compra: compra.fecha_documento,
-        cedula_proveedor: compra.documento_proveedor,
-        nombres_proveedor: compra.nombres_proveedor,
-        apellidos_proveedor: compra.apellidos_proveedor,
+        fecha_compra: compra.fec_documento,
+        cedula_proveedor: compra.doc_proveedor,
+        nom_proveedor: compra.nom_proveedor,
+        ape_proveedor: compra.ape_proveedor,
         codigo_factura: numeroDeFactura,
         valor_total: Number(compra.total),
         valor_debido: Number(compra.total),
