@@ -12,7 +12,7 @@
               <v-text-field
                 :disabled="anular"
                 label="NIT/Cédula proveedor"
-                v-model="compra.doc_proveedor"
+                v-model="doc_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
@@ -253,6 +253,7 @@ export default Vue.extend({
       tiposPagos: ["Contado", "Credito"],
       proveedores: [""],
       eliminarDatos: false,
+      doc_proveedor: "",
       fec_documento: "",
       fecha_pago: "",
       fecha_llegada: "",
@@ -295,7 +296,7 @@ export default Vue.extend({
       let nombres = "";
       let apellidos = "";
       this.proveedores.forEach((prov: any) => {
-        if (this.compra.doc_proveedor === prov.documento) {
+        if (this.doc_proveedor === prov.documento) {
           nombres = prov.nombres;
           apellidos = prov.apellidos;
         }
@@ -349,7 +350,6 @@ export default Vue.extend({
       this.compra.fec_documento = getFechaDesdeInput(this.fec_documento);
       this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
       this.compra.fecha_llegada = getFechaDesdeInput(this.fecha_llegada);
-      this.compra.cod_factura = PREF_COMPRA + this.compra.cod_factura;
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -391,6 +391,7 @@ export default Vue.extend({
       });
     },
     seleccionarProveedor(prov: any) {
+      this.doc_proveedor = prov.documento;
       this.compra.doc_proveedor = prov.documento;
       this.compra.nom_proveedor = prov.nombres;
       this.compra.ape_proveedor = prov.apellidos;
