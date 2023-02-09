@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 import { IVenta } from "@/models/Venta";
+import { REGISTRAR_NUEVA_VENTA } from "@/services/ventas";
 
 export default Vue.extend({
   name: "Ventas",
@@ -49,7 +50,7 @@ export default Vue.extend({
         });
       }
     },
-    async generarFactura(datos_cliente: IVenta) {
+    async generarFactura(venta: IVenta) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;
@@ -59,11 +60,14 @@ export default Vue.extend({
           return;
         }
         await factura.asignarValores(
-          datos_cliente,
+          venta,
           datos.darItemsFactura(),
           consecutivo
         );
         factura.cambiarEstado();
+        console.log("productos", productos);
+        venta.ventas = { ...productos };
+        await REGISTRAR_NUEVA_VENTA({ ...venta });
       } else {
         await Swal.fire({
           title: "Sin productos",

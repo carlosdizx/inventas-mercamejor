@@ -46,8 +46,8 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       productos: compra.compras.map((pCompra: IProductoCompra) => {
         return {
           bodega: pCompra.bodega,
-          codigo_barras: pCompra.codigo_barras,
-          descripcion: pCompra.descripcion_producto,
+          codigo_barras: pCompra.cod_barras,
+          descripcion: pCompra.descripcion,
           entradas: pCompra.cantidad,
           salidas: 0,
         } as IProductosInventario;
@@ -91,7 +91,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (
 const ACTUALIZAR_UNIDADES = async (nuevaCompra: ICompra): Promise<void> => {
   for (const itemCompra of nuevaCompra.compras) {
     await ACTUALIZAR_UNIDADES_PRODUCTO(
-      Number(itemCompra.codigo_barras),
+      Number(itemCompra.cod_barras),
       itemCompra.cantidad,
       "ADICIONAR"
     );

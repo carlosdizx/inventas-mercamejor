@@ -26,7 +26,7 @@
                   dense
                   outlined
                   counter
-                  v-model="venta.documento"
+                  v-model="venta.doc_cliente"
                   @focusout="buscarCliente()"
                   :error-messages="errors"
                   autofocus
@@ -40,7 +40,7 @@
                 dense
                 outlined
                 counter
-                :value="`${venta.nombres + ' ' + venta.apellidos}`"
+                :value="`${venta.nom_cliente + ' ' + venta.ape_cliente}`"
                 readonly
                 disabled
               />
@@ -60,14 +60,14 @@
                   solo
                   outlined
                   dense
-                  v-model="venta.tipo_venta"
+                  v-model="venta.tipo_compra"
                   :error-messages="errors"
                 />
               </validation-provider>
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-if="venta.tipo_venta === 'Credito'"
+                v-if="venta.tipo_compra === 'Credito'"
                 label="Fecha de pago"
                 prepend-icon="mdi-numeric"
                 type="date"
@@ -124,10 +124,10 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ETiposVenta, TIPOS_VENTA } from "@/generals/Constantes";
+import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
-import { IVenta } from "@/models/Venta";
+import { IEstadoVenta, IVenta } from "@/models/Venta";
 import {
   FECHA_TO_STRING_INPUT,
   STRINT_TO_FECHA,
@@ -139,15 +139,26 @@ export default Vue.extend({
   data: () => ({
     codigo_barras: null,
     venta: {
-      documento: "2222222",
-      nombres: "Clientes varios",
-      apellidos: "",
-      tipo_venta: ETiposVenta.CONTADO,
+      doc_cliente: 2222222,
+      nom_cliente: "Clientes varios",
+      ape_cliente: "",
+      tipo_venta: ETiposContadoCredito.CONTADO,
       fecha_pago: new Date(),
       subtotal: 0,
       descuento: 0,
       total: 0,
       productos: [],
+      caja: "",
+      cod_factura: "",
+      created_at: new Date(),
+      fec_documento: new Date(),
+      fecha_llegada: new Date(),
+      impuesto: 0,
+      tipo_compra: ETiposContadoCredito.CONTADO,
+      tipo_pago: "",
+      updated_at: new Date(),
+      ventas: [],
+      estado: IEstadoVenta.APROBADO,
     } as IVenta,
     fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
@@ -161,14 +172,14 @@ export default Vue.extend({
     },
     async buscarCliente() {
       const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(
-        this.venta.documento
+        this.venta.doc_cliente
       );
       this.cambiarCliente(resultado);
     },
     cambiarCliente(cliente: any) {
-      this.venta.documento = cliente.documento;
-      this.venta.apellidos = cliente.apellidos;
-      this.venta.nombres = cliente.nombres;
+      this.venta.doc_cliente = cliente.documento;
+      this.venta.ape_cliente = cliente.apellidos;
+      this.venta.nom_cliente = cliente.nombres;
     },
     buscarProducto() {
       this.$emit("codigo_barras", this.codigo_barras);
@@ -180,15 +191,15 @@ export default Vue.extend({
       this.resetDatosVenta();
     },
     resetDatosVenta() {
-      this.venta.documento = "2222222";
-      this.venta.nombres = "Clientes varios";
-      this.venta.apellidos = "";
-      this.venta.tipo_venta = ETiposVenta.CONTADO;
+      this.venta.doc_cliente = 2222222;
+      this.venta.nom_cliente = "Clientes varios";
+      this.venta.ape_cliente = "";
+      this.venta.tipo_compra = ETiposContadoCredito.CONTADO;
       this.venta.fecha_pago = new Date();
       this.venta.subtotal = 0;
       this.venta.descuento = 0;
       this.venta.total = 0;
-      this.venta.productos = [];
+      this.venta.ventas = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
   },

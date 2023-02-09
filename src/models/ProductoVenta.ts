@@ -1,4 +1,4 @@
-export interface IProductoCompra {
+export interface IProductoVenta {
   cod_barras: number;
   descripcion: string;
   bodega: string;
