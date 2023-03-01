@@ -1,16 +1,21 @@
+import { ETiposContadoCredito } from "@/generals/Constantes";
+
 export interface IInventario {
-  fecha_factura: Date | string | null;
+  fecha_factura: Date;
   created_at: Date;
   updated_at: Date;
-  codigo_barras: number | null;
-  cedula_nit: number | null | "";
+  cedula_nit: number;
   nombres: string;
   apellidos: string;
-  tipo_factura: string;
-  bodega: string;
   caja: string;
-  producto: string;
-  documento: string;
+  tipo_factura: ETiposContadoCredito;
+  productos: IProductosInventario[];
+}
+
+export interface IProductosInventario {
   entradas: number;
   salidas: number;
+  codigo_barras: number;
+  descripcion: string;
+  bodega: string;
 }

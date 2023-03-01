@@ -1,7 +1,7 @@
 export const COLUMNAS = [
   { text: "Documento Proveedor", value: "cedula_proveedor" },
-  { text: "Nombres Proveedor", value: "nombres_proveedor" },
-  { text: "Apellidos Proveedor", value: "apellidos_proveedor" },
+  { text: "Nombres Proveedor", value: "nom_proveedor" },
+  { text: "Apellidos Proveedor", value: "ape_proveedor" },
   { text: "Fecha de compra", value: "fecha_compra" },
   { text: "Fecha de creación de factura", value: "createdAt" },
   { text: "Fecha de Actualizacion", value: "updatedAt" },
@@ -25,7 +25,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-account",
     type: 1,
     format: "text",
-    name: "nombres_proveedor",
+    name: "nom_proveedor",
     model: "",
     rules: "required|min:1|max:25",
   },
@@ -34,7 +34,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-account",
     type: 1,
     format: "text",
-    name: "apellidos_proveedor",
+    name: "ape_proveedor",
     model: "",
     rules: "required|min:1|max:25",
   },
@@ -84,11 +84,11 @@ export const CAMPOS = [
   },
 ];
 
-export interface CuentaPorPagar {
-  fecha_compra: Date | string | null;
-  cedula_proveedor: number | "" | null;
-  nombres_proveedor: string;
-  apellidos_proveedor: string;
+export interface ICuentaPorPagar {
+  fecha_compra: Date;
+  cedula_proveedor: number;
+  nom_proveedor: string;
+  ape_proveedor: string;
   codigo_factura: string;
   valor_total: number;
   valor_debido: number;

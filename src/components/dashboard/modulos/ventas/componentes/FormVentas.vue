@@ -26,8 +26,8 @@
                   dense
                   outlined
                   counter
-                  v-model="venta.documento_cliente"
-                  @focusout="buscarCliente(venta.documento_cliente)"
+                  v-model="venta.doc_cliente"
+                  @focusout="buscarCliente()"
                   :error-messages="errors"
                   autofocus
                 />
@@ -40,7 +40,7 @@
                 dense
                 outlined
                 counter
-                v-model="venta.nombre_cliente"
+                :value="`${venta.nom_cliente + ' ' + venta.ape_cliente}`"
                 readonly
                 disabled
               />
@@ -60,14 +60,14 @@
                   solo
                   outlined
                   dense
-                  v-model="venta.tipo_venta"
+                  v-model="venta.tipo_compra"
                   :error-messages="errors"
                 />
               </validation-provider>
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-if="venta.tipo_venta === 'Credito'"
+                v-if="venta.tipo_compra === 'Credito'"
                 label="Fecha de pago"
                 prepend-icon="mdi-numeric"
                 type="date"
@@ -75,7 +75,7 @@
                 outlined
                 clearable
                 counter
-                v-model="venta.fecha_pago"
+                v-model="fecha_pago"
               />
             </v-col>
           </v-row>
@@ -89,8 +89,8 @@
                 outlined
                 clearable
                 counter
-                v-model="codigo_barras"
-                v-on:keyup.enter="buscarProducto(codigo_barras)"
+                v-model.number="codigo_barras"
+                @input="buscarProducto()"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
               />
@@ -98,9 +98,7 @@
             <v-col cols="6">
               <v-chip :color="enfoque ? 'success' : 'red'">
                 {{ enfoque ? "" : "Pistola no posicionada" }}
-                <v-icon>
-                  {{ enfoque ? "mdi-barcode-scan" : "mdi-barcode-scan" }}
-                </v-icon>
+                <v-icon>mdi-barcode-scan</v-icon>
               </v-chip>
             </v-col>
           </v-row>
@@ -111,7 +109,7 @@
                 block
                 large
                 :disabled="invalid"
-                @click="enviarDatos"
+                @click="registrarVenta"
               >
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>
@@ -126,9 +124,14 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { TIPOS_VENTA } from "@/generals/Constantes";
+import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
+import { IEstadoVenta, IVenta } from "@/models/Venta";
+import {
+  FECHA_TO_STRING_INPUT,
+  STRINT_TO_FECHA,
+} from "@/generals/procesamientos";
 
 export default Vue.extend({
   name: "FormVentas",
@@ -136,14 +139,30 @@ export default Vue.extend({
   data: () => ({
     codigo_barras: null,
     venta: {
-      documento_cliente: 2222222,
-      nombre_cliente: "Clientes varios",
-      tipo_venta: "Contado",
-      fecha_pago: null,
-    },
+      doc_cliente: 2222222,
+      nom_cliente: "Clientes varios",
+      ape_cliente: "",
+      tipo_venta: ETiposContadoCredito.CONTADO,
+      fecha_pago: new Date(),
+      subtotal: 0,
+      descuento: 0,
+      total: 0,
+      productos: [],
+      caja: "",
+      cod_factura: "",
+      created_at: new Date(),
+      fec_documento: new Date(),
+      fecha_llegada: new Date(),
+      impuesto: 0,
+      tipo_compra: ETiposContadoCredito.CONTADO,
+      tipo_pago: "",
+      updated_at: new Date(),
+      ventas: [],
+      estado: IEstadoVenta.APROBADO,
+    } as IVenta,
+    fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
-    cliente: { nombres: "Clientes", apellidos: "varios", documento: 2222222 },
     enfoque: false,
   }),
   methods: {
@@ -151,28 +170,37 @@ export default Vue.extend({
       const dialog: any = this.$refs.DialogClientes;
       dialog.cambiarEstado();
     },
-    async buscarCliente(documento: any) {
-      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(documento);
+    async buscarCliente() {
+      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(
+        this.venta.doc_cliente
+      );
       this.cambiarCliente(resultado);
     },
     cambiarCliente(cliente: any) {
-      this.cliente = cliente;
-      this.venta.documento_cliente = cliente.documento;
-      this.venta.nombre_cliente = cliente.nombres + " " + cliente.apellidos;
+      this.venta.doc_cliente = cliente.documento;
+      this.venta.ape_cliente = cliente.apellidos;
+      this.venta.nom_cliente = cliente.nombres;
     },
-    buscarProducto(valor: any) {
-      this.$emit("codigo_barras", valor);
+    buscarProducto() {
+      this.$emit("codigo_barras", this.codigo_barras);
       this.codigo_barras = null;
     },
-    enviarDatos() {
-      const datos = {
-        documento_cliente: this.venta.documento_cliente,
-        nombre_cliente: this.venta.nombre_cliente,
-        tipo_factura: this.venta.tipo_venta,
-        tipo: "venta",
-        fecha_pago: this.venta.fecha_pago,
-      };
-      this.$emit("datos_cliente", datos);
+    registrarVenta() {
+      this.venta.fecha_pago = STRINT_TO_FECHA(this.fecha_pago);
+      this.$emit("datos_cliente", this.venta);
+      this.resetDatosVenta();
+    },
+    resetDatosVenta() {
+      this.venta.doc_cliente = 2222222;
+      this.venta.nom_cliente = "Clientes varios";
+      this.venta.ape_cliente = "";
+      this.venta.tipo_compra = ETiposContadoCredito.CONTADO;
+      this.venta.fecha_pago = new Date();
+      this.venta.subtotal = 0;
+      this.venta.descuento = 0;
+      this.venta.total = 0;
+      this.venta.ventas = [];
+      this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
   },
 });

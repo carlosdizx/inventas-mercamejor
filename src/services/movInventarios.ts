@@ -9,6 +9,9 @@ import {
 
 const coleccion = "inventarios";
 
+export const GUARDAR_INVENTARIO = async (inventario: IInventario) =>
+  await GUARDAR(coleccion, inventario);
+
 export const GUARDAR_MOVIMIENTO_INVENTARIO = async (inventario: IInventario) =>
   await GUARDAR(coleccion, inventario);
 

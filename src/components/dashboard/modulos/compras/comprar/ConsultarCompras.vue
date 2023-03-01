@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="mr-5 ml-5">Consultar compras</v-card-title>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form @submit.prevent="crearCuenta">
+        <v-form>
           <v-card-text>
             <v-row class="ml-6 mr-6">
               <v-col>
@@ -150,8 +150,10 @@ export default Vue.extend({
       this.datos = res;
     },
   },
-  async created() {
+  created() {
     this.datos = [];
+    this.rangoFechaInicial = new Date().toISOString().slice(0, 10);
+    this.rangoFechaFinal = new Date().toISOString().slice(0, 10);
   },
 });
 </script>

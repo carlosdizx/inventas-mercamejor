@@ -14,9 +14,11 @@ import FormVentas from "@/components/dashboard/modulos/ventas/componentes/FormVe
 import ListadoItems from "@/components/dashboard/modulos/ventas/componentes/ListadoItems.vue";
 import Factura from "@/components/generals/Factura.vue";
 import Vue from "vue";
-import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import Swal from "sweetalert2";
+import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
+import { IVenta } from "@/models/Venta";
+import { REGISTRAR_NUEVA_VENTA } from "@/services/ventas";
 
 export default Vue.extend({
   name: "Ventas",
@@ -32,12 +34,13 @@ export default Vue.extend({
       const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
       if (producto) {
         const listado: any = this.$refs.ListadoItems;
-        listado.agregarProducto(producto);
-        this.audio.src = this.add;
-        await this.audio.play();
+        const form: any = this.$refs.FormVentas;
+        listado.agregarProducto(producto.producto);
+        // this.audio.src = this.add;
+        // await this.audio.play();
       } else {
-        this.audio.src = this.notFound;
-        await this.audio.play();
+        // this.audio.src = this.notFound;
+        // await this.audio.play();
 
         await Swal.fire({
           title: "Producto no encontrado",
@@ -47,7 +50,7 @@ export default Vue.extend({
         });
       }
     },
-    async generarFactura(datos_cliente: any) {
+    async generarFactura(venta: IVenta) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;
@@ -57,11 +60,14 @@ export default Vue.extend({
           return;
         }
         await factura.asignarValores(
-          datos_cliente,
+          venta,
           datos.darItemsFactura(),
           consecutivo
         );
         factura.cambiarEstado();
+        console.log("productos", productos);
+        venta.ventas = { ...productos };
+        await REGISTRAR_NUEVA_VENTA({ ...venta });
       } else {
         await Swal.fire({
           title: "Sin productos",

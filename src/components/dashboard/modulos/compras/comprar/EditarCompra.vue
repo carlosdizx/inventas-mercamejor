@@ -101,7 +101,7 @@
 <script lang="ts">
 import Vue, { PropType } from "vue";
 
-import { ProductoCompra } from "@/interfaces/ProductoCompra";
+import { IProductoCompra } from "@/models/ProductoCompra";
 import { REDONDEAR } from "@/generals/procesamientos";
 
 export default Vue.extend({
@@ -110,12 +110,12 @@ export default Vue.extend({
     mostrar: Boolean,
     indexElement: Number,
     compraAnterior: {
-      type: Object as PropType<ProductoCompra>,
+      type: Object as PropType<IProductoCompra>,
     },
     bodegasDisponibles: Array,
   },
   data: () => ({
-    compra: {} as ProductoCompra,
+    compra: {} as IProductoCompra,
     porGanancia: 0,
   }),
   computed: {

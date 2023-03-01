@@ -165,7 +165,16 @@ export const ASIGNAR_ITEMS_DASHBOARD = (lista: any[], rol: any) => {
   return lista;
 };
 
-export const REDONDEAR = (num: number, exp: number) => {
+export const REDONDEAR = (num: number, exp: number): number => {
   const pow = Math.pow(10, Math.abs(exp));
   return exp > 0 ? Math.round(num * pow) / pow : Math.round(num / pow) * pow;
+};
+
+export const FECHA_TO_STRING_INPUT = (date: Date): string => {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
+export const STRINT_TO_FECHA = (date: string): Date => {
+  const array = date.split("-");
+  return new Date(Number(array[0]), Number(array[1]) - 1, Number(array[2]));
 };

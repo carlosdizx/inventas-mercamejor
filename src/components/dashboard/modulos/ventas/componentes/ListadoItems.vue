@@ -118,19 +118,19 @@ export default Vue.extend({
     descuento_adicional: 0,
   }),
   methods: {
-    async agregarProducto(producto: Producto) {
-      const agregado = await YA_LISTADO(this.filas, producto);
-      const pv: ProductoVenta = new ProductoVenta(
-        producto.codigo_barras,
-        producto.nombre,
+    async agregarProducto(productoNuevo: Producto) {
+      const agregado = await YA_LISTADO(this.filas, productoNuevo);
+      const producto: ProductoVenta = new ProductoVenta(
+        productoNuevo.codigo_barras,
+        productoNuevo.nombre,
         1,
-        producto.precio_unitario_venta,
-        producto.descuento
+        productoNuevo.precio_unitario_venta,
+        productoNuevo.descuento
       );
       if (agregado) {
-        this.filas = AGREGAR_PRODUCTO(this.filas, producto);
+        this.filas = AGREGAR_PRODUCTO(this.filas, productoNuevo);
       } else {
-        this.filas.push(pv);
+        this.filas.push(producto);
       }
       await this.calcularValores();
     },

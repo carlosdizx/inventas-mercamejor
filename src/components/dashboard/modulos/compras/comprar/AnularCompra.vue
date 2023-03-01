@@ -24,6 +24,7 @@
       </div>
     </v-dialog>
     <RegistroCompras
+      :anular="true"
       :compraAnterior="compra"
       :idcompraanterior="idCompraAnterior"
       v-if="Object.keys(compra).length !== 0"
@@ -39,7 +40,7 @@ import { CAMPOS, VALIDACIONES } from "@/models/Producto";
 import { COLUMNAS } from "@/models/Compra";
 
 import Vue from "vue";
-import { Compra } from "@/interfaces/Compra";
+import { ICompra } from "@/models/Compra";
 
 export default Vue.extend({
   name: "Productos",
@@ -50,7 +51,7 @@ export default Vue.extend({
     validaciones: VALIDACIONES,
     datosUsuario: {},
     mostrar: true,
-    compra: {} as Compra,
+    compra: {} as ICompra,
     idCompraAnterior: "",
   }),
   methods: {
