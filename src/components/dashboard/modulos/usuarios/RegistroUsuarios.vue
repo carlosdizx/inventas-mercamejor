@@ -59,6 +59,25 @@
               <v-col>
                 <validation-provider
                   v-slot="{ errors }"
+                  name="Tipo de Documento"
+                  outlined
+                  dense
+                  rules="required|min:5|max:50"
+                >
+                  <v-select
+                    v-model="datosUsuario.tipoDocumento"
+                    label="Tipo de Documento"
+                    outlined
+                    dense
+                    :items="documentosDisponibles"
+                    :error-messages="errors"
+                    type="text"
+                  ></v-select>
+                </validation-provider>
+              </v-col>
+              <v-col>
+                <validation-provider
+                  v-slot="{ errors }"
                   name="Número de Documento"
                   outlined
                   dense
@@ -259,17 +278,20 @@ import { REGISTRO_USUARIO } from "@/services/auth";
 import Swal from "sweetalert2";
 import { REGISTRAR_DATOS_USUARIO } from "@/services/usuarios";
 import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
+import { TIPOS_DOCUMENTO } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
   data: () => ({
     rolesDisponibles: ROLES,
+    documentosDisponibles: TIPOS_DOCUMENTO,
     generosDisponibles: GENEROS,
     estadosDisponible: ESTADOS_USUARIO,
     datosUsuario: {
       rol: "Empleado",
       nombres: "",
       apellidos: "",
+      tipoDocumento: "",
       documento: "",
       celular: "",
       genero: "",
@@ -349,6 +371,7 @@ export default Vue.extend({
       this.datosUsuario.rol = "";
       this.datosUsuario.nombres = "";
       this.datosUsuario.apellidos = "";
+      this.datosUsuario.tipoDocumento = "";
       this.datosUsuario.documento = "";
       this.datosUsuario.celular = "";
       this.datosUsuario.genero = "";
