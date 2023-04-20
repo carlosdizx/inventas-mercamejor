@@ -12,6 +12,7 @@ import {
 } from "@/models/CuentasPorPagar";
 import { REGISTRAR_NUEVA_CUENTAPORPAGAR } from "@/services/cuentasxpagar";
 import { IProductoCompra } from "@/models/ProductoCompra";
+import { DocumentData } from "firebase/firestore";
 
 const coleccionCompras = "compras";
 
@@ -20,7 +21,7 @@ export const IS_NUM_FACTURA_EXISTE = async (
 ): Promise<boolean> => {
   let existe = false;
   const res = await LISTAR_IN(coleccionCompras, "cod_factura", codigoFactura);
-  res.forEach((val: any) => {
+  res.forEach((val: DocumentData) => {
     if (val.exists) {
       existe = true;
     }

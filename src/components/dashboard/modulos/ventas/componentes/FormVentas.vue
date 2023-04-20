@@ -132,6 +132,7 @@ import {
   FECHA_TO_STRING_INPUT,
   STRINT_TO_FECHA,
 } from "@/generals/procesamientos";
+import { IProductoVenta } from "@/models/ProductoVenta";
 
 export default Vue.extend({
   name: "FormVentas",
@@ -147,7 +148,6 @@ export default Vue.extend({
       subtotal: 0,
       descuento: 0,
       total: 0,
-      productos: [],
       caja: "",
       cod_factura: "",
       created_at: new Date(),
@@ -157,7 +157,7 @@ export default Vue.extend({
       tipo_compra: ETiposContadoCredito.CONTADO,
       tipo_pago: "",
       updated_at: new Date(),
-      ventas: [],
+      ventas: [] as Array<IProductoVenta>,
       estado: IEstadoVenta.APROBADO,
     } as IVenta,
     fecha_pago: FECHA_TO_STRING_INPUT(new Date()),

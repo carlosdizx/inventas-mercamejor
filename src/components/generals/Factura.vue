@@ -78,7 +78,7 @@ export default Vue.extend({
     nombre_cliente: "",
     documento_cliente: "",
     caja: "@@@@@@_1",
-    productos: [],
+    productos: [] as Array<ProductoFactura>,
     consecutivo: null,
     subtotal: 0,
     descuento: 0,
