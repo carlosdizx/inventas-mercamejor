@@ -23,11 +23,11 @@
               <td>
                 <v-text-field
                   @input="buscarProducto()"
-                  v-model.number="productoNuevo.codigo_barras"
+                  v-model.number="productoNuevo.cod_barras"
                 ></v-text-field>
               </td>
               <td>
-                {{ productoNuevo.descripcion_producto }}
+                {{ productoNuevo.descripcion }}
               </td>
               <td>
                 <v-select
@@ -48,7 +48,7 @@
                 <v-text-field
                   @input="calcularGananciaPrecioCompra()"
                   type="number"
-                  v-model.number="productoNuevo.precio_compra"
+                  v-model.number="productoNuevo.prec_com"
                 ></v-text-field>
               </td>
               <td>
@@ -62,7 +62,7 @@
                 <v-text-field
                   @input="ingresarVenta()"
                   type="number"
-                  v-model.number="productoNuevo.precio_venta"
+                  v-model.number="productoNuevo.prec_com"
                 ></v-text-field>
               </td>
               <td>
@@ -103,21 +103,19 @@
           </tbody>
           <tbody class="pt-3">
             <tr v-for="(item, index) in productos" :key="index">
-              <td>{{ item.codigo_barras }}</td>
-              <td>{{ item.descripcion_producto }}</td>
+              <td>{{ item.cod_barras }}</td>
+              <td>{{ item.descripcion }}</td>
               <td>{{ item.bodega }}</td>
               <td>{{ item.cantidad }}</td>
-              <td>{{ item.precio_compra }}</td>
+              <td>{{ item.prec_com }}</td>
               <td>
                 {{
                   Math.trunc(
-                    ((item.precio_venta - item.precio_compra) /
-                      item.precio_compra) *
-                      100
+                    ((item.prec_ven - item.prec_com) / item.prec_com) * 100
                   )
                 }}
               </td>
-              <td>{{ item.precio_venta }}</td>
+              <td>{{ item.prec_ven }}</td>
               <td>{{ item.impuesto }}</td>
               <td>{{ item.descuento }}</td>
               <td>{{ item.subtotal }}</td>
@@ -199,16 +197,15 @@ export default Vue.extend({
   computed: {
     validarProd() {
       if (
-        !this.productoNuevo.codigo_barras ||
-        !this.productoNuevo.descripcion_producto ||
-        !this.productoNuevo.descripcion_producto ||
+        !this.productoNuevo.cod_barras ||
+        !this.productoNuevo.descripcion ||
         !this.productoNuevo.bodega ||
         this.productoNuevo.cantidad < 1 ||
-        this.productoNuevo.precio_compra < 1 ||
-        this.productoNuevo.precio_venta < 1 ||
+        this.productoNuevo.prec_com < 1 ||
+        this.productoNuevo.prec_ven < 1 ||
         this.porGanancia < 0 ||
         this.productoNuevo.subtotal < 1 ||
-        this.productoNuevo.precio_venta < this.productoNuevo.precio_compra
+        this.productoNuevo.prec_ven < this.productoNuevo.prec_com
       )
         return false;
       return true;
@@ -250,12 +247,12 @@ export default Vue.extend({
     },
     resetNuevoProducto() {
       const producto: IProductoCompra = {
-        codigo_barras: null,
-        descripcion_producto: "",
+        cod_barras: 0,
+        descripcion: "",
         bodega: this.productoNuevo.bodega || "",
         cantidad: this.productoNuevo.cantidad || 1,
-        precio_compra: 0,
-        precio_venta: 0,
+        prec_com: 0,
+        prec_ven: 0,
         impuesto: 0,
         descuento: 0,
         subtotal: 0,
@@ -265,46 +262,46 @@ export default Vue.extend({
     buscarProducto() {
       let producto = "";
       this.productosDisponibles.forEach((prod: any) => {
-        if (prod.codigo_barras === Number(this.productoNuevo.codigo_barras)) {
+        if (prod.codigo_barras === Number(this.productoNuevo.cod_barras)) {
           producto = prod.nombre;
         }
       });
-      this.productoNuevo.descripcion_producto = producto;
+      this.productoNuevo.descripcion = producto;
     },
     calcularGananciaPrecioCompra() {
-      if (this.porGanancia > 0 && this.productoNuevo.precio_compra > 0) {
+      if (this.porGanancia > 0 && this.productoNuevo.prec_com > 0) {
         let precio_venta: number =
-          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
+          this.productoNuevo.prec_com * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
-        this.productoNuevo.precio_venta = precio;
+        this.productoNuevo.prec_ven = precio;
       }
       this.calcularSubtotal();
     },
     calcularSubtotal() {
       const subtotal: number =
         Number(this.productoNuevo.cantidad) *
-          Number(this.productoNuevo.precio_compra) +
+          Number(this.productoNuevo.prec_com) +
         Number(this.productoNuevo.impuesto) -
         Number(this.productoNuevo.descuento);
       this.productoNuevo.subtotal = subtotal;
     },
     ingresarGanancia() {
-      if (this.porGanancia >= 0 && this.productoNuevo.precio_compra) {
+      if (this.porGanancia >= 0 && this.productoNuevo.prec_com) {
         let precio_venta: number =
-          this.productoNuevo.precio_compra * (1 + this.porGanancia / 100);
+          this.productoNuevo.prec_com * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
-        this.productoNuevo.precio_venta = precio;
+        this.productoNuevo.prec_ven = precio;
       }
     },
     ingresarVenta() {
       if (
-        Number(this.productoNuevo.precio_venta) >=
-        Number(this.productoNuevo.precio_compra)
+        Number(this.productoNuevo.prec_ven) >=
+        Number(this.productoNuevo.prec_com)
       ) {
         const porGanancia: number =
-          ((Number(this.productoNuevo.precio_venta) -
-            Number(this.productoNuevo.precio_compra)) /
-            Number(this.productoNuevo.precio_compra)) *
+          ((Number(this.productoNuevo.prec_ven) -
+            Number(this.productoNuevo.prec_com)) /
+            Number(this.productoNuevo.prec_com)) *
           100;
         this.porGanancia = Math.trunc(porGanancia);
       } else {
@@ -313,12 +310,12 @@ export default Vue.extend({
     },
     seleccionaProducto(product: any): void {
       const productoNuevo: IProductoCompra = {
-        codigo_barras: product.codigo_barras,
-        descripcion_producto: product.nombre,
+        cod_barras: product.codigo_barras,
+        descripcion: product.nombre,
         bodega: this.productoNuevo.bodega,
         cantidad: this.productoNuevo.cantidad,
-        precio_compra: this.productoNuevo.precio_compra,
-        precio_venta: this.productoNuevo.precio_venta,
+        prec_com: this.productoNuevo.prec_com,
+        prec_ven: this.productoNuevo.prec_ven,
         impuesto: this.productoNuevo.impuesto || 0,
         descuento: this.productoNuevo.descuento || 0,
         subtotal: this.productoNuevo.subtotal,

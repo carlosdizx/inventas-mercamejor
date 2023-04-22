@@ -23,12 +23,12 @@
               <tr>
                 <th>
                   <h2>
-                    {{ compra.codigo_barras }}
+                    {{ compra.cod_barras }}
                   </h2>
                 </th>
                 <th>
                   <h2>
-                    {{ compra.descripcion_producto }}
+                    {{ compra.descripcion }}
                   </h2>
                 </th>
                 <th>
@@ -48,7 +48,7 @@
                 <th>
                   <v-text-field
                     @input="calcularGananciaPrecioCompra()"
-                    v-model.number="compra.precio_compra"
+                    v-model.number="compra.prec_com"
                   ></v-text-field>
                 </th>
 
@@ -61,7 +61,7 @@
                 <th>
                   <v-text-field
                     @input="ingresarVenta()"
-                    v-model.number="compra.precio_venta"
+                    v-model.number="compra.prec_com"
                   ></v-text-field>
                 </th>
                 <th>
@@ -121,16 +121,15 @@ export default Vue.extend({
   computed: {
     validarDatos() {
       if (
-        !this.compra.codigo_barras ||
-        !this.compra.descripcion_producto ||
-        !this.compra.descripcion_producto ||
+        !this.compra.cod_barras ||
+        !this.compra.descripcion ||
         !this.compra.bodega ||
         this.compra.cantidad < 1 ||
-        this.compra.precio_compra < 1 ||
-        this.compra.precio_venta < 1 ||
+        this.compra.prec_com < 1 ||
+        this.compra.prec_ven < 1 ||
         this.porGanancia < 0 ||
         this.compra.subtotal < 0 ||
-        this.compra.precio_venta < this.compra.precio_compra
+        this.compra.prec_ven < this.compra.prec_com
       )
         return false;
       return true;
@@ -147,37 +146,34 @@ export default Vue.extend({
       this.$emit("cancelar");
     },
     calcularGananciaPrecioCompra() {
-      if (this.porGanancia > 0 && this.compra.precio_compra > 0) {
+      if (this.porGanancia > 0 && this.compra.prec_com > 0) {
         let precio_venta: number =
-          this.compra.precio_compra * (1 + this.porGanancia / 100);
+          this.compra.prec_com * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
-        this.compra.precio_venta = precio;
+        this.compra.prec_ven = precio;
       }
       this.calcularSubtotal();
     },
     calcularSubtotal() {
       const subtotal: number =
-        this.compra.cantidad * this.compra.precio_compra -
+        this.compra.cantidad * this.compra.prec_com -
         this.compra.descuento +
         this.compra.impuesto;
       this.compra.subtotal = subtotal;
     },
     ingresarGanancia() {
-      if (this.porGanancia >= 0 && this.compra.precio_compra) {
+      if (this.porGanancia >= 0 && this.compra.prec_com) {
         let precio_venta: number =
-          this.compra.precio_compra * (1 + this.porGanancia / 100);
+          this.compra.prec_com * (1 + this.porGanancia / 100);
         let precio = REDONDEAR(precio_venta, -2);
-        this.compra.precio_venta = precio;
+        this.compra.prec_ven = precio;
       }
     },
     ingresarVenta() {
-      if (
-        Number(this.compra.precio_venta) >= Number(this.compra.precio_compra)
-      ) {
+      if (Number(this.compra.prec_ven) >= Number(this.compra.prec_com)) {
         const porGanancia: number =
-          ((Number(this.compra.precio_venta) -
-            Number(this.compra.precio_compra)) /
-            Number(this.compra.precio_compra)) *
+          ((Number(this.compra.prec_ven) - Number(this.compra.prec_com)) /
+            Number(this.compra.prec_com)) *
           100;
         this.porGanancia = Math.trunc(porGanancia);
       } else {
@@ -188,8 +184,7 @@ export default Vue.extend({
   created() {
     this.compra = { ...this.compraAnterior };
     this.porGanancia = Math.trunc(
-      ((this.compra.precio_venta - this.compra.precio_compra) /
-        this.compra.precio_compra) *
+      ((this.compra.prec_ven - this.compra.prec_com) / this.compra.prec_com) *
         100
     );
     this.calcularGananciaPrecioCompra();
