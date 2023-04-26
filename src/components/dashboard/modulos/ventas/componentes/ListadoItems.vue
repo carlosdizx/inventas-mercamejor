@@ -150,13 +150,12 @@ export default Vue.extend({
       await this.calcularValores();
     },
     darItemsFactura() {
-      const datos_factura = {
+      return {
         productos: this.filas,
         subtotal: this.subtotal,
         descuento: this.descuento,
         total: this.total,
       };
-      return datos_factura;
     },
     evaluarValorDescuento() {
       if (this.descuento_adicional > 100) {

@@ -19,6 +19,9 @@ import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 import { IVenta } from "@/models/Venta";
 import { REGISTRAR_NUEVA_VENTA } from "@/services/ventas";
+import { IProductoVenta } from "@/models/ProductoVenta";
+import { signOut } from "firebase/auth";
+import { ProductoVenta } from "@/dto/ProductoVenta";
 
 export default Vue.extend({
   name: "Ventas",
@@ -54,6 +57,21 @@ export default Vue.extend({
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
       const productos: [] = datos.darItemsFactura().productos;
+      const newProducts: IProductoVenta[] = productos.map(
+        (e: ProductoVenta) => {
+          return {
+            bodega: "",
+            cantidad: e.cantidad,
+            cod_barras: e.codigo,
+            descripcion: e.nombre,
+            descuento: e.descuento,
+            impuesto: 0,
+            prec_com: e.precio,
+            prec_ven: e.precio,
+            subtotal: e.subtotal,
+          };
+        }
+      );
       if (productos.length > 0) {
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
@@ -65,8 +83,7 @@ export default Vue.extend({
           consecutivo
         );
         factura.cambiarEstado();
-        console.log("productos", productos);
-        venta.ventas = { ...productos };
+        venta.ventas = [...newProducts];
         await REGISTRAR_NUEVA_VENTA({ ...venta });
       } else {
         await Swal.fire({
