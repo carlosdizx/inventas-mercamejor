@@ -74,6 +74,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import Swal from "sweetalert2";
 
 import {
   COLUMNAS,
@@ -100,7 +101,11 @@ export default Vue.extend({
   },
   computed: {
     validarAbonoBoton() {
-      if (this.cuentaPorPagar.valor_debido - this.valorAbono >= 0) return true;
+      if (
+        this.cuentaPorPagar.valor_debido - this.valorAbono >= 0 ||
+        this.valorAbono < 0
+      )
+        return true;
       return false;
     },
   },
@@ -112,35 +117,48 @@ export default Vue.extend({
       this.idCuentaPorPagar = item.id;
     },
     async realizarAbono() {
-      const nuevaCuentaPorPagar: ICuentaPorPagar = {
-        ...this.cuentaPorPagar,
-        updatedAt: new Date(),
-      };
-      if (nuevaCuentaPorPagar.valor_debido - this.valorAbono <= 0) {
-        nuevaCuentaPorPagar.estado = EstadoCuentaPorPagar.COMPLETADO;
-      }
-      nuevaCuentaPorPagar.valor_debido =
-        nuevaCuentaPorPagar.valor_debido - this.valorAbono;
-      const nuevoMovimiento: MovCuentaPorPagar = {
-        fecha_mov: new Date(this.fechaRegistro),
-        cedula_empleado: "",
-        nombres_empleado: "nombres",
-        apellidos_empleado: "apellidos",
-        caja: "Caja1",
-        cuenta_por_pagar: "CxP-1",
-        cruce: nuevaCuentaPorPagar.codigo_factura,
-        valor: this.valorAbono,
-        estado: EstadoCuentaPorPagar.REALIZADO,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      await EDITAR(
-        "cuentas_por_pagar",
-        this.idCuentaPorPagar,
-        nuevaCuentaPorPagar
-      );
-      await GUARDAR("mov_cuentas_por_pagar", nuevoMovimiento);
-      this.limpiarDatos();
+      Swal.fire({
+        title:
+          "¿Esta seguro que desea realizar este pago por valor de " +
+          this.valorAbono +
+          " ?",
+        showDenyButton: true,
+        confirmButtonText: "Pagar",
+        confirmButtonColor: "green",
+        denyButtonText: `No aún no!`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const nuevaCuentaPorPagar: ICuentaPorPagar = {
+            ...this.cuentaPorPagar,
+            updatedAt: new Date(),
+          };
+          if (nuevaCuentaPorPagar.valor_debido - this.valorAbono <= 0) {
+            nuevaCuentaPorPagar.estado = EstadoCuentaPorPagar.COMPLETADO;
+          }
+          nuevaCuentaPorPagar.valor_debido =
+            nuevaCuentaPorPagar.valor_debido - this.valorAbono;
+          const nuevoMovimiento: MovCuentaPorPagar = {
+            fecha_mov: new Date(this.fechaRegistro),
+            cedula_empleado: "",
+            nombres_empleado: "nombres",
+            apellidos_empleado: "apellidos",
+            caja: "Caja1",
+            cuenta_por_pagar: "CxP-1",
+            cruce: nuevaCuentaPorPagar.codigo_factura,
+            valor: this.valorAbono,
+            estado: EstadoCuentaPorPagar.REALIZADO,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          await EDITAR(
+            "cuentas_por_pagar",
+            this.idCuentaPorPagar,
+            nuevaCuentaPorPagar
+          );
+          await GUARDAR("mov_cuentas_por_pagar", nuevoMovimiento);
+          this.limpiarDatos();
+        }
+      });
     },
     limpiarDatos() {
       this.idCuentaPorPagar = "";

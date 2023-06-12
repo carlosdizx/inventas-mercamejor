@@ -51,6 +51,7 @@ export const REGISTRAR_NUEVA_VENTA = async (
       valor_total: Number(venta.total),
       valor_debido: Number(venta.total),
       estado: EstadoCuentaPorPagar.PENDIENTE,
+      pagos: [],
     };
     await REGISTRAR_NUEVA_CUENTAPORPAGAR(cuentaPorPagar);
   }

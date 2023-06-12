@@ -93,8 +93,22 @@ export interface ICuentaPorPagar {
   valor_total: number;
   valor_debido: number;
   estado: EstadoCuentaPorPagar;
+  pagos: IPagoCuentaPorPagar[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IPagoCuentaPorPagar {
+  ape_empleado: string;
+  caja: string;
+  doc_empleado: string;
+  cuenta_por_pagar: string;
+  estado: string;
+  fecha_mov: Date;
+  nombres_empleado: string;
+  update_at: Date;
+  created_at: Date;
+  monto: number;
 }
 
 export enum EstadoCuentaPorPagar {
