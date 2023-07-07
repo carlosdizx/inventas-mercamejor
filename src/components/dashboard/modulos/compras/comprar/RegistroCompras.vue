@@ -230,7 +230,7 @@ import { IProductoCompra } from "@/models/ProductoCompra";
 import { ANULAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
-import { ETiposContadoCredito, PREF_COMPRA } from "@/generals/Constantes";
+import { ETiposContadoCredito } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroCompras",

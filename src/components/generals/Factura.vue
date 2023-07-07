@@ -64,6 +64,7 @@
 </template>
 
 <script lang="ts">
+import { ProductoFactura } from "@/interfaces/ProductoFactura";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -77,7 +78,7 @@ export default Vue.extend({
     nombre_cliente: "",
     documento_cliente: "",
     caja: "@@@@@@_1",
-    productos: [{}],
+    productos: [] as Array<ProductoFactura>,
     consecutivo: null,
     subtotal: 0,
     descuento: 0,
@@ -92,7 +93,7 @@ export default Vue.extend({
       datos_movimiento: any,
       consecutivo: any
     ) {
-      const productos: any[] = [];
+      const productos: ProductoFactura[] = [];
       for (const producto of datos_movimiento.productos) {
         productos.push({
           nombre: producto.nombre,
