@@ -3,6 +3,7 @@
     <FormVentas
       v-on:codigo_barras="buscarProducto($event)"
       v-on:datos_cliente="generarFactura($event)"
+      ref="FormVentas"
     />
     <ListadoItems ref="ListadoItems" />
     <Factura ref="Factura" />
@@ -35,16 +36,17 @@ export default Vue.extend({
   methods: {
     async buscarProducto(codigo_barras: number) {
       const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
+      const itemVentas: any = this.$refs.FormVentas;
       if (producto) {
         const listado: any = this.$refs.ListadoItems;
-        const form: any = this.$refs.FormVentas;
         listado.agregarProducto(producto.producto);
+        itemVentas.resetProduct();
         // this.audio.src = this.add;
         // await this.audio.play();
       } else {
         // this.audio.src = this.notFound;
         // await this.audio.play();
-
+        itemVentas.resetProduct();
         await Swal.fire({
           title: "Producto no encontrado",
           timer: 1000,

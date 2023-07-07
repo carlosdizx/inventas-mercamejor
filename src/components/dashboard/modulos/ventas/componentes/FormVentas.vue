@@ -183,6 +183,8 @@ export default Vue.extend({
     },
     buscarProducto() {
       this.$emit("codigo_barras", this.codigo_barras);
+    },
+    resetProduct() {
       this.codigo_barras = null;
     },
     registrarVenta() {
