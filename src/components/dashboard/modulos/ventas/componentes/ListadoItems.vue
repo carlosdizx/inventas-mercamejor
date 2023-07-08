@@ -106,6 +106,7 @@ export default Vue.extend({
     subtotal: 0,
     descuento: 0,
     calculadora: 0,
+    descuento_adicional: 0,
     columnas: [
       { text: "Codigo", value: "codigo" },
       { text: "Producto", value: "nombre" },
@@ -115,7 +116,6 @@ export default Vue.extend({
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [] as ProductoVenta[],
-    descuento_adicional: 0,
   }),
   methods: {
     async agregarProducto(productoNuevo: Producto) {
@@ -167,6 +167,14 @@ export default Vue.extend({
           timer: 800,
         });
       }
+    },
+    resetValues() {
+      this.filas = [];
+      this.total = 0;
+      this.subtotal = 0;
+      this.descuento = 0;
+      this.calculadora = 0;
+      this.descuento_adicional = 0;
     },
   },
   created() {
