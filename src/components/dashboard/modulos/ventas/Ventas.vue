@@ -21,7 +21,6 @@ import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 import { IVenta } from "@/models/Venta";
 import { REGISTRAR_NUEVA_VENTA } from "@/services/ventas";
 import { IProductoVenta } from "@/models/ProductoVenta";
-import { signOut } from "firebase/auth";
 import { ProductoVenta } from "@/dto/ProductoVenta";
 
 export default Vue.extend({
@@ -36,17 +35,17 @@ export default Vue.extend({
   methods: {
     async buscarProducto(codigo_barras: number) {
       const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
-      const itemVentas: any = this.$refs.FormVentas;
+      const formVentas: any = this.$refs.FormVentas;
       if (producto) {
         const listado: any = this.$refs.ListadoItems;
         listado.agregarProducto(producto.producto);
-        itemVentas.resetProduct();
+        formVentas.resetProduct();
         // this.audio.src = this.add;
         // await this.audio.play();
       } else {
         // this.audio.src = this.notFound;
         // await this.audio.play();
-        itemVentas.resetProduct();
+        formVentas.resetProduct();
         await Swal.fire({
           title: "Producto no encontrado",
           timer: 1000,
@@ -58,6 +57,7 @@ export default Vue.extend({
     async generarFactura(venta: IVenta) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ListadoItems;
+      const formVentas: any = this.$refs.FormVentas;
       const productos: [] = datos.darItemsFactura().productos;
       const newProducts: IProductoVenta[] = productos.map(
         (e: ProductoVenta) => {
@@ -87,6 +87,8 @@ export default Vue.extend({
         factura.cambiarEstado();
         venta.ventas = [...newProducts];
         await REGISTRAR_NUEVA_VENTA({ ...venta });
+        datos.resetValues();
+        formVentas.resetDatosVenta();
       } else {
         await Swal.fire({
           title: "Sin productos",
