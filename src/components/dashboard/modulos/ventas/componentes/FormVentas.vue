@@ -11,7 +11,7 @@
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form @submit.prevent="">
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <validation-provider
                 v-slot="{ errors }"
                 name="Documento del cliente"
@@ -33,7 +33,7 @@
                 />
               </validation-provider>
             </v-col>
-            <v-col color="6">
+            <v-col cols="12" md="6">
               <v-text-field
                 label="Nombre cliente"
                 prepend-icon="mdi-account"
@@ -47,7 +47,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo venta"
@@ -65,7 +65,7 @@
                 />
               </validation-provider>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-text-field
                 v-if="venta.tipo_compra === 'Credito'"
                 label="Fecha de pago"
@@ -80,7 +80,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-text-field
                 label="Codigo del producto o servicio"
                 prepend-icon="mdi-barcode-scan"
@@ -95,7 +95,7 @@
                 @focusout="enfoque = false"
               />
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <v-chip :color="enfoque ? 'success' : 'red'">
                 {{ enfoque ? "" : "Pistola no posicionada" }}
                 <v-icon>mdi-barcode-scan</v-icon>
@@ -103,7 +103,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
+            <v-col cols="12">
               <v-btn
                 color="success"
                 block
