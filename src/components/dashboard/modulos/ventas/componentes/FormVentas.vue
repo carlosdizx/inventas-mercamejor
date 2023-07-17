@@ -95,7 +95,7 @@
                 @focusout="enfoque = false"
               />
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="6" class="text-center">
               <v-chip :color="enfoque ? 'success' : 'red'">
                 {{ enfoque ? "" : "Pistola no posicionada" }}
                 <v-icon>mdi-barcode-scan</v-icon>

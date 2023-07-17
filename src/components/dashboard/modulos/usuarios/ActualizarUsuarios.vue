@@ -9,7 +9,7 @@
         <v-form class="my-2" @submit.prevent="crearCuenta">
           <v-card-text>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <v-text-field
                   label="Correo de Usuario"
                   v-model="newDatosUsuario.email"
@@ -20,7 +20,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de usuario"
@@ -38,7 +38,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" sm="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Nombres"
@@ -54,7 +54,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" sm="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Apellidos"
@@ -72,7 +72,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" sm="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Número de Documento"
@@ -88,7 +88,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" sm="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Celular"
@@ -107,7 +107,7 @@
             </v-row>
 
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Sexo"
@@ -125,7 +125,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Estado"
@@ -151,8 +151,9 @@
                 block
                 large
                 class="warning"
-                >Actualizar</v-btn
               >
+                Actualizar
+              </v-btn>
             </v-container>
           </v-card-actions>
         </v-form>
@@ -165,7 +166,7 @@
           <v-card-title class="text-h5">
             Confirmar registro de usuario
           </v-card-title>
-          <v-card-text>Esta seguro de guardar este usuario</v-card-text>
+          <v-card-text>Está seguro de guardar este usuario</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn

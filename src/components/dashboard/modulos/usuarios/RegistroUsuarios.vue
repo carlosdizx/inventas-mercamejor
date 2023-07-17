@@ -6,7 +6,7 @@
         <v-form class="my-2" @submit.prevent="crearCuenta">
           <v-card-text>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de usuario"
@@ -24,7 +24,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Nombres"
@@ -39,7 +39,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Apellidos"
@@ -56,7 +56,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" md="4">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Tipo de Documento"
@@ -75,7 +75,7 @@
                   ></v-select>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" md="4">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Número de Documento"
@@ -93,7 +93,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" md="4">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Celular"
@@ -111,7 +111,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Genero"
@@ -129,7 +129,7 @@
               </v-col>
             </v-row>
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Correo Electrónico"
@@ -145,7 +145,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Confirmar Correo"
@@ -162,9 +162,8 @@
                 </validation-provider>
               </v-col>
             </v-row>
-
             <v-row class="mr-5 ml-5">
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Contraseña"
@@ -181,7 +180,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-              <v-col>
+              <v-col cols="12" md="6">
                 <validation-provider
                   v-slot="{ errors }"
                   name="Confirmar contraseña"
@@ -198,22 +197,6 @@
                 </validation-provider>
               </v-col>
             </v-row>
-            <!-- <v-row entity="mr-5 ml-5">
-              <v-col>
-                <validation-provider
-                  v-slot="{ errors }"
-                  name="Estado del Usuario"
-                  rules="required"
-                >
-                  <v-select
-                    v-model="datosUsuario.estado"
-                    label="Estado del Usuario"
-                    :items="estadosDisponible"
-                    :error-messages="errors"
-                  ></v-select>
-                </validation-provider>
-              </v-col>
-            </v-row> -->
           </v-card-text>
           <v-card-text>
             <small>
