@@ -1,4 +1,5 @@
 export interface ProductPurchase {
+  id: string;
   cod_barras: number;
   descripcion: string;
   cantidad: number;

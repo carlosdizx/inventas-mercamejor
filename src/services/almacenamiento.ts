@@ -1,4 +1,4 @@
-import { DOWNLOAD_URL, UPLOAD_FILE } from "@/firebase/config";
+import { DOWNLOAD_URL, UPLOAD_FILE } from "@/infrastructure/driven-adapters/firebase/config/config";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const shortid = require("shortid");

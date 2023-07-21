@@ -1,6 +1,6 @@
 import { doc, setDoc, getDocs, collection, getDoc } from "firebase/firestore";
-import { FIRESTORE } from "@/firebase/config";
-import { AUTH } from "@/firebase/config";
+import { FIRESTORE } from "@/infrastructure/driven-adapters/firebase/config/config";
+import { AUTH } from "@/infrastructure/driven-adapters/firebase/config/config";
 import { EDITAR, LISTAR } from "@/services/crud";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
 

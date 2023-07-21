@@ -1,4 +1,4 @@
-import { FIRESTORE } from "./../firebase/config";
+import { FIRESTORE } from "../infrastructure/driven-adapters/firebase/config/config";
 import { collection, getDocs, query, where } from "firebase/firestore";
 
 const ref = collection(FIRESTORE, "compras");

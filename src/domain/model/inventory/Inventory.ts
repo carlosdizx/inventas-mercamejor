@@ -1,6 +1,5 @@
 export interface Inventory {
-  id: string | null;
-  date: Date;
+  id: string;
   cod_invoice: string;
   products: InventoryProduct[];
   state: EInventoryState;

@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -14,11 +13,10 @@ import {
   where,
   WhereFilterOp,
 } from "firebase/firestore";
-import { FIRESTORE } from "@/infrastructure/driven-adapters/firebase/config/config";
-import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
+import { FIRESTORE } from "@/infrastructure/firebase/config/config";
 import { tipo_dato } from "@/generals/formats";
 
-export const LISTAR = async (colection: string) => {
+export const LISTAR = async (colection: string): Promise<QuerySnapshot> => {
   const coleccion = collection(FIRESTORE, colection);
   const consulta = query(coleccion, orderBy("created_at", "desc"));
   return await getDocs(consulta);
@@ -27,39 +25,51 @@ export const LISTAR = async (colection: string) => {
 export const LISTAR_IN = async (
   colection: string,
   campo: string,
-  valor: any
-) => {
+  valor: string | number
+): Promise<QuerySnapshot> => {
   const coleccion = collection(FIRESTORE, colection);
   const consulta = query(coleccion, where(campo, "in", [valor]));
   return await getDocs(consulta);
 };
 
-export const GUARDAR = async (colection: string, datos: any) =>
-  addDoc(collection(FIRESTORE, colection), datos);
-
-export const BUSCAR = async (colection: string, id: string) =>
-  await (await getDoc(doc(FIRESTORE, colection, id))).data();
-
-export const ELIMINAR = async (colection: string, objeto: any) => {
-  const eliminacion = await deleteDoc(doc(FIRESTORE, colection, objeto.id));
-  const datosUser: any = await BUSCAR_USUARIO_ACTUAL();
-  const datosMovimiento: any = {
-    entidad: colection,
-    created_at: new Date(),
-    responsable: datosUser.nombres,
-    documento: datosUser.documento,
-    objeto: JSON.stringify(objeto),
-  };
-  datosMovimiento.accion = "Eliminó";
-  await GUARDAR("movimientos", datosMovimiento);
-  return eliminacion;
+export const GUARDAR = async <T extends DocumentData>(
+  colection: string,
+  datos: T
+): Promise<DocumentData> => {
+  delete datos.id;
+  return addDoc(collection(FIRESTORE, colection), datos);
 };
 
-export const EDITAR = async (colection: string, id: string, datos: any) =>
-  await setDoc(doc(FIRESTORE, colection, id), datos);
+export const BUSCAR = async (
+  colection: string,
+  id: string
+): Promise<DocumentData | null> => {
+  const result = await getDoc(doc(FIRESTORE, colection, id));
+  if (result.exists()) {
+    return result.data();
+  }
+  return null;
+};
 
-export const ACTUALIZAR = async (colection: string, id: string, datos: any) =>
+export const EDITAR = async <T extends DocumentData>(
+  colection: string,
+  id: string,
+  datos: T
+): Promise<T> => {
+  delete datos.id;
+  await setDoc(doc(FIRESTORE, colection, id), datos);
+  return datos;
+};
+
+export const ACTUALIZAR = async <T extends DocumentData>(
+  colection: string,
+  id: string,
+  datos: T
+): Promise<T> => {
+  delete datos.id;
   await updateDoc(doc(FIRESTORE, colection, id), datos);
+  return datos;
+};
 
 export const CARGAR_INFORMACION = async (coleccion: string) => {
   const filas: any = [];
