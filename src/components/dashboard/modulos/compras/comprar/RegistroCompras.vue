@@ -8,7 +8,7 @@
       <v-form>
         <v-card-text>
           <v-row class="mr-5 ml-5">
-            <v-col cols="5">
+            <v-col cols="12" sm="6" md="5">
               <v-text-field
                 :disabled="anular"
                 label="NIT/Cédula proveedor"
@@ -18,7 +18,7 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="1" :class="anular ? 'mt-2' : 'mt-4'" v-if="!anular">
+            <v-col cols="2" sm="12" md="1">
               <BuscarElemento
                 @getItem="seleccionarProveedor"
                 icon="mdi-lead-pencil"
@@ -27,7 +27,7 @@
                 :headers="columnas"
               />
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" sm="12" md="3">
               <v-text-field
                 :disabled="anular"
                 label="Nombre del proveedor"
@@ -39,7 +39,7 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <validation-provider
                 v-slot="{ errors }"
                 name="Fecha de Compra"
@@ -56,7 +56,7 @@
                 ></v-text-field>
               </validation-provider>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="12" sm="3">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo de Compra"
@@ -73,7 +73,7 @@
                 ></v-select>
               </validation-provider>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="12" sm="3">
               <v-row>
                 <v-col cols="8">
                   <validation-provider
@@ -103,7 +103,7 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="3">
+            <v-col cols="12" sm="4">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo de Pago"
@@ -120,7 +120,7 @@
                 ></v-select>
               </validation-provider>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 :disabled="anular"
                 label="Fecha de pago"
@@ -130,7 +130,7 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 :disabled="anular"
                 label="Fecha de llegada del producto"
@@ -150,7 +150,7 @@
           />
 
           <v-row class="mr-5 ml-5">
-            <v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 :disabled="anular"
                 label="Subtotal"
@@ -161,7 +161,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 :disabled="anular"
                 @input="calcularTotal()"
@@ -173,7 +173,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col>
+            <v-col cols="12" sm="4">
               <v-text-field
                 :disabled="anular"
                 label="Impuesto"

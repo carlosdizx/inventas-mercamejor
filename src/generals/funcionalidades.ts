@@ -64,6 +64,6 @@ export const FUNCIONES: any[] = [
     id: 17,
     tipo: 2,
     icono: "mdi-ticket-confirmation",
-    titulo: "Comrpobantes",
+    titulo: "Comprobantes",
   },
 ];
