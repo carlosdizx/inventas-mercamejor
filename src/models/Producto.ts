@@ -2,12 +2,12 @@
  Sección tabla
  */
 export const COLUMNAS: any[] = [
-  { text: "Detalle", value: "detalle" },
-  { text: "Nombre", value: "nombre" },
-  { text: "Código de barras", value: "codigo_barras" },
-  { text: "Precio de compra", value: "precio_unitario_compra" },
-  { text: "Precio de venta", value: "precio_unitario_venta" },
-  { text: "Subcategoría", value: "subcategoria" },
+  { text: "Detalle", value: "description" },
+  { text: "Nombre", value: "name" },
+  { text: "Código de barras", value: "bar_code" },
+  { text: "Precio de compra", value: "unit_price" },
+  { text: "Precio de venta", value: "sale_price" },
+  { text: "Subcategoría", value: "category" },
   { text: "Fecha edición", value: "updated_at" },
   { text: "Acciones", value: "acciones" },
 ];
