@@ -14,7 +14,7 @@ import {
   where,
   WhereFilterOp,
 } from "firebase/firestore";
-import { FIRESTORE } from "@/infrastructure/driven-adapters/firebase/config/config";
+import { FIRESTORE } from "@/infrastructure/firebase/config/config";
 import { BUSCAR_USUARIO_ACTUAL } from "@/services/usuarios";
 import { tipo_dato } from "@/generals/formats";
 

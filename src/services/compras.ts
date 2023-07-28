@@ -1,10 +1,9 @@
 import { ACTUALIZAR } from "./crud";
 import { ETiposContadoCredito, PREF_COMPRA } from "./../generals/Constantes";
-import { GUARDAR_INVENTARIO } from "./movInventarios";
 import { GUARDAR, LISTAR_IN } from "@/services/crud";
 import { ICompra } from "@/models/Compra";
 import Swal from "sweetalert2";
-import { IInventario, IProductosInventario } from "@/models/Inventarios";
+import { EInventoryState, Inventory } from "@/models/Inventarios";
 import { ACTUALIZAR_UNIDADES_PRODUCTO } from "@/UseCases/ProductosUseCases";
 import {
   ICuentaPorPagar,
@@ -35,26 +34,24 @@ export const REGISTRAR_NUEVA_COMPRA = async (
   const numeroDeFactura = PREF_COMPRA + compra.cod_factura;
   if (!(await IS_NUM_FACTURA_EXISTE(numeroDeFactura))) {
     await GUARDAR(coleccionCompras, compra);
-    const inventario: IInventario = {
-      fecha_factura: compra.fec_documento,
+    const inventario: Inventory = {
+      id: "",
+      cod_invoice: compra.cod_factura,
+      date: compra.fecha_llegada,
+      products: compra.compras.map((pCompra: IProductoCompra) => {
+        return {
+          input: pCompra.cantidad,
+          output: 0,
+          bar_code: pCompra.cod_barras,
+          store: pCompra.bodega,
+          description: pCompra.descripcion,
+        };
+      }),
       created_at: new Date(),
       updated_at: new Date(),
-      cedula_nit: compra.doc_proveedor,
-      nombres: compra.nom_proveedor,
-      apellidos: compra.ape_proveedor,
-      tipo_factura: compra.tipo_compra,
-      caja: compra.caja,
-      productos: compra.compras.map((pCompra: IProductoCompra) => {
-        return {
-          bodega: pCompra.bodega,
-          codigo_barras: pCompra.cod_barras,
-          descripcion: pCompra.descripcion,
-          entradas: pCompra.cantidad,
-          salidas: 0,
-        } as IProductosInventario;
-      }),
+      state: EInventoryState.APROBADO,
     };
-    await GUARDAR_INVENTARIO(inventario);
+    //await GUARDAR_INVENTARIO(inventario);
     if (compra.tipo_pago === ETiposContadoCredito.CREDITO) {
       const cuentaPorPagar: ICuentaPorPagar = {
         createdAt: new Date(),
