@@ -1,6 +1,6 @@
-import { ETiposContadoCredito } from "@/domain/model/constants/Constants";
 import { EInventoryState, Inventory } from "@/domain/model/inventory/Inventory";
-import { Purchase } from "@/domain/model/purchase/Purchase";
+import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { EPayTypePurchase, Purchase } from "@/domain/model/purchase/Purchase";
 import { SAVE_INVENTORY } from "@/infrastructure/firebase/adapter/inventory/inventoryAdapter";
 
 const ZERO = 0;
@@ -11,17 +11,17 @@ export const SAVE_INVENTORY_FROM_SALE = async (
   const newInventory: Inventory = {
     id: purchase.id,
     cod_invoice: purchase.cod_purchase,
-    products: purchase.sales.map((sale) => {
+    products: purchase.sales.map((sale: ProductPurchase) => {
       return {
-        bar_code: sale.cod_barras,
-        description: sale.descripcion,
-        input: sale.cantidad,
+        description: sale.description,
+        input: sale.amount,
         output: ZERO,
+        bar_code: sale.bar_code,
         store: "",
       };
     }),
     state:
-      purchase.type_pay === ETiposContadoCredito.CONTADO
+      purchase.type_pay === EPayTypePurchase.CONTADO
         ? EInventoryState.APROBADO
         : EInventoryState.CANCELADO,
     created_at: new Date(),

@@ -1,4 +1,4 @@
-import { EDITAR, LISTAR_IN } from "../../template/basicOperations";
+import { UPDATE, LISTAR_IN } from "../../template/basicOperations";
 import { BAR_CODE, AmountProduct } from "@/domain/model/product/Product";
 
 const productCollection = "products";
@@ -10,7 +10,7 @@ export const UPDATE_AMOUNT_PRODUCT = async (
   const updatedType: AmountProduct = {
     amount,
   };
-  await EDITAR(productCollection, idProduct, updatedType);
+  await UPDATE(productCollection, idProduct, updatedType);
 };
 
 export const FIND_PRODUCT_BY_BAR_CODE = async (codigo: number) => {

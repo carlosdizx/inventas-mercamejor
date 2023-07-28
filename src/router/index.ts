@@ -4,7 +4,7 @@ import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { AUTH } from "@/infrastructure/driven-adapters/firebase/config/config";
+import { AUTH } from "@/infrastructure/firebase/config/config";
 
 import Swal from "sweetalert2";
 

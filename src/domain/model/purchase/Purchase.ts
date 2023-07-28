@@ -24,3 +24,7 @@ export enum EPayTypePurchase {
   CONTADO = "Contado",
   CREDITO = "Credito",
 }
+
+export interface NewStatePurchase {
+  state: EEstadoVenta;
+}

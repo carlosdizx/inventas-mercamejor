@@ -7,10 +7,10 @@ import {
 export const UNITS_UPDATED_FROM_PURCHASE = async (
   sale: Purchase
 ): Promise<void> => {
-  for (const itemCompra of sale.sales) {
+  for (const itemShop of sale.sales) {
     await UPDATE_UNITS_PRODUCT(
-      Number(itemCompra.cod_barras),
-      itemCompra.cantidad,
+      Number(itemShop.bar_code),
+      itemShop.amount,
       "RESTAR"
     );
   }

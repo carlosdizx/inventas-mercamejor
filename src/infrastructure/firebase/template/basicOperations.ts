@@ -16,7 +16,7 @@ import {
 import { FIRESTORE } from "@/infrastructure/firebase/config/config";
 import { tipo_dato } from "@/generals/formats";
 
-export const LISTAR = async (colection: string): Promise<QuerySnapshot> => {
+export const LIST = async (colection: string): Promise<QuerySnapshot> => {
   const coleccion = collection(FIRESTORE, colection);
   const consulta = query(coleccion, orderBy("created_at", "desc"));
   return await getDocs(consulta);
@@ -32,7 +32,7 @@ export const LISTAR_IN = async (
   return await getDocs(consulta);
 };
 
-export const GUARDAR = async <T extends DocumentData>(
+export const SAVE = async <T extends DocumentData>(
   colection: string,
   datos: T
 ): Promise<DocumentData> => {
@@ -40,7 +40,7 @@ export const GUARDAR = async <T extends DocumentData>(
   return addDoc(collection(FIRESTORE, colection), datos);
 };
 
-export const BUSCAR = async (
+export const FIND_BY_ID = async (
   colection: string,
   id: string
 ): Promise<DocumentData | null> => {
@@ -51,7 +51,7 @@ export const BUSCAR = async (
   return null;
 };
 
-export const EDITAR = async <T extends DocumentData>(
+export const SET_DATA = async <T extends DocumentData>(
   colection: string,
   id: string,
   datos: T
@@ -61,7 +61,7 @@ export const EDITAR = async <T extends DocumentData>(
   return datos;
 };
 
-export const ACTUALIZAR = async <T extends DocumentData>(
+export const UPDATE = async <T extends DocumentData>(
   colection: string,
   id: string,
   datos: T
@@ -71,9 +71,9 @@ export const ACTUALIZAR = async <T extends DocumentData>(
   return datos;
 };
 
-export const CARGAR_INFORMACION = async (coleccion: string) => {
+export const LOAD_INFORMATION = async (coleccion: string) => {
   const filas: any = [];
-  (await LISTAR(coleccion)).forEach((item) => {
+  (await LIST(coleccion)).forEach((item) => {
     const obj: any = JSON.parse(JSON.stringify(item.data()));
     obj.id = item.id;
     Object.values(obj).map(async (value: any, index: number) => {
@@ -88,7 +88,7 @@ export const CARGAR_INFORMACION = async (coleccion: string) => {
   return filas;
 };
 
-export const CONSULTA_DATOS = async (
+export const CONSULT_DATA = async (
   colection: string,
   consulta: any
 ): Promise<QuerySnapshot<DocumentData>> => {
@@ -109,7 +109,7 @@ export const CONSULTA_DATOS = async (
   return await getDocs(res);
 };
 
-export const CONSULTA_SIMPLE = async (
+export const SIMPLE_CONSULT = async (
   coleccion: string,
   propiedad: string,
   condicion: WhereFilterOp,
@@ -120,7 +120,7 @@ export const CONSULTA_SIMPLE = async (
   );
 };
 
-export const CONSULTA_COMPUESTA = async (
+export const COMPOUND_CONSULT = async (
   coleccion: string,
   propiedad: string,
   condicion: WhereFilterOp,
@@ -138,7 +138,7 @@ export const CONSULTA_COMPUESTA = async (
   );
 };
 
-export const DATOS_IN_ARRAY = (datos: any) => {
+export const DATA_IN_ARRAY = (datos: any) => {
   const filas: any[] = [];
   datos.forEach((item: any) => {
     const obj: any = JSON.parse(JSON.stringify(item.data()));

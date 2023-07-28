@@ -1,11 +1,11 @@
 export interface ProductPurchase {
   id: string;
-  cod_barras: number;
-  descripcion: string;
-  cantidad: number;
-  prec_com: number;
-  prec_ven: number;
-  impuesto: number;
-  descuento: number;
+  bar_code: number;
+  description: string;
+  amount: number;
+  price_shop: number;
+  price_purchase: number;
+  taxes: number;
+  discount: number;
   subtotal: number;
 }
