@@ -56,10 +56,10 @@
                 <v-label>{{ prov.precio_unitario_venta }}</v-label>
               </v-col>
               <v-col sm="6" md="1">
-                <v-label>{{ prov.categoria.nombre }}</v-label>
+                <v-label>{{ prov.category.name }}</v-label>
               </v-col>
               <v-col sm="6" md="1">
-                <v-label>{{ prov.subcategoria }}</v-label>
+                <v-label>{{ prov.subcategory }}</v-label>
               </v-col>
 
               <v-col sm="6" md="1" class="text-center">

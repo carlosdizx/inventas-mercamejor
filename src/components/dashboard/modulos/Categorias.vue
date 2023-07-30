@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <Tabla
-      coleccion="categorias"
+      coleccion="categories"
       titulo="categorias"
       :columnas="columnas"
       :campos_form="campos_form"
