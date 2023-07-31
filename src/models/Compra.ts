@@ -1,4 +1,4 @@
-import { ETiposContadoCredito } from "@/generals/Constantes";
+import { ETiposContadoCredito, ETypesShop } from "@/generals/Constantes";
 import { IProductoCompra } from "./ProductoCompra";
 
 export const COLUMNAS = [
@@ -27,7 +27,7 @@ export interface ICompra {
   fec_documento: Date;
   cod_factura: string;
   tipo_compra: ETiposContadoCredito;
-  tipo_pago: string;
+  tipo_pago: ETypesShop;
   fecha_pago: Date;
   fecha_llegada: Date;
   caja: string;

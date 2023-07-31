@@ -52,7 +52,7 @@ export const REGISTRAR_NUEVA_COMPRA = async (
       state: EInventoryState.APROBADO,
     };
     //await GUARDAR_INVENTARIO(inventario);
-    if (compra.tipo_pago === ETiposContadoCredito.CREDITO) {
+    if (compra.tipo_compra === ETiposContadoCredito.CREDITO) {
       const cuentaPorPagar: ICuentaPorPagar = {
         createdAt: new Date(),
         updatedAt: new Date(),

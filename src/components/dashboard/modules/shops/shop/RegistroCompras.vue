@@ -1,32 +1,33 @@
 <template>
   <v-card>
     <v-card-title class="mr-5 ml-5" v-if="compraAnterior === undefined"
-      >Registrar compra</v-card-title
+      >Registrar Compra</v-card-title
     >
-    <v-card-title class="mr-5 ml-5" v-else>Anular compra</v-card-title>
+    <v-card-title class="mr-5 ml-5" v-else>Anular Compra</v-card-title>
     <ValidationObserver ref="observer" v-slot="{ invalid }">
       <v-form>
         <v-card-text>
           <v-row class="mr-5 ml-5">
-            <v-col cols="5">
+            <v-col cols="6">
               <v-text-field
                 :disabled="anular"
                 label="NIT/Cédula proveedor"
+                append-outer-icon="mdi-magnify"
+                @click:append-outer="showClients = true"
                 v-model="doc_proveedor"
                 @input="buscarProveedor()"
                 outlined
                 dense
               ></v-text-field>
             </v-col>
-            <v-col cols="1" :class="anular ? 'mt-2' : 'mt-4'" v-if="!anular">
-              <BuscarElemento
-                @getItem="seleccionarProveedor"
-                icon="mdi-lead-pencil"
-                nombre="Proveedor"
-                :items="proveedores"
-                :headers="columnas"
-              />
-            </v-col>
+            <BuscarElemento
+              :show="showClients"
+              @getItem="seleccionarProveedor"
+              @closeElement="showClients = false"
+              nombre="Proveedores"
+              :items="proveedores"
+              :headers="columnas"
+            />
             <v-col cols="6">
               <v-text-field
                 :disabled="anular"
@@ -39,7 +40,7 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="6">
+            <v-col cols="8">
               <validation-provider
                 v-slot="{ errors }"
                 name="Fecha de Compra"
@@ -56,7 +57,7 @@
                 ></v-text-field>
               </validation-provider>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="3" v-if="false">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo de Compra"
@@ -65,7 +66,7 @@
                 <v-select
                   :disabled="anular"
                   label="Tipo de Compra"
-                  v-model="compra.tipo_compra"
+                  v-model="shop.tipo_compra"
                   :error-messages="errors"
                   :items="tiposDocumento"
                   outlined
@@ -73,7 +74,7 @@
                 ></v-select>
               </validation-provider>
             </v-col>
-            <v-col cols="3">
+            <v-col cols="4">
               <v-row>
                 <v-col cols="8">
                   <validation-provider
@@ -85,7 +86,7 @@
                       :disabled="anular"
                       type="number"
                       label="Número de Factura"
-                      v-model="compra.cod_factura"
+                      v-model="shop.cod_factura"
                       :error-messages="errors"
                       outlined
                       dense
@@ -96,14 +97,14 @@
                   <v-text-field
                     disabled
                     dense
-                    :value="'C-' + compra.cod_factura"
+                    :value="'C-' + shop.cod_factura"
                   ></v-text-field>
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="3">
+            <v-col cols="3" v-if="false">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo de Pago"
@@ -112,7 +113,7 @@
                 <v-select
                   :disabled="anular"
                   label="Tipo de Pago"
-                  v-model="compra.tipo_pago"
+                  v-model="shop.tipo_pago"
                   :error-messages="errors"
                   :items="tiposPagos"
                   outlined
@@ -120,7 +121,7 @@
                 ></v-select>
               </validation-provider>
             </v-col>
-            <v-col>
+            <v-col v-if="false">
               <v-text-field
                 :disabled="anular"
                 label="Fecha de pago"
@@ -130,7 +131,7 @@
                 dense
               ></v-text-field>
             </v-col>
-            <v-col>
+            <v-col v-if="false">
               <v-text-field
                 :disabled="anular"
                 label="Fecha de llegada del producto"
@@ -144,7 +145,7 @@
 
           <TablaCompras
             :anular="anular"
-            :compras="compra.compras"
+            :compras="shop.compras"
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
           />
@@ -155,7 +156,7 @@
                 :disabled="anular"
                 label="Subtotal"
                 readonly
-                v-model.number="compra.subtotal"
+                v-model.number="shop.subtotal"
                 outlined
                 dense
               ></v-text-field>
@@ -166,7 +167,7 @@
                 :disabled="anular"
                 @input="calcularTotal()"
                 label="Descuento"
-                v-model.number="compra.descuento"
+                v-model.number="shop.descuento"
                 type="number"
                 outlined
                 dense
@@ -178,7 +179,7 @@
                 :disabled="anular"
                 label="Impuesto"
                 @input="calcularTotal()"
-                v-model.number="compra.impuesto"
+                v-model.number="shop.impuesto"
                 type="number"
                 outlined
                 dense
@@ -187,7 +188,7 @@
           </v-row>
           <v-row class="mr-5 ml-5">
             <v-col class="text-center">
-              <h2 class="text-gray">Total: ${{ compra.total }}</h2>
+              <h2 class="text-gray">Total: ${{ shop.total }}</h2>
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5" v-if="!compraAnterior">
@@ -230,7 +231,7 @@ import { IProductoCompra } from "@/models/ProductoCompra";
 import { ANULAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
-import { ETiposContadoCredito } from "@/generals/Constantes";
+import { ETiposContadoCredito, ETypesShop } from "@/generals/Constantes";
 
 export default Vue.extend({
   name: "RegistroCompras",
@@ -248,9 +249,8 @@ export default Vue.extend({
   data() {
     return {
       columnas: COLUMNAS,
-      compra: {} as ICompra,
-      tiposDocumento: ["Compra", "Pedido"],
-      tiposPagos: ["Contado", "Credito"],
+      tiposPagos: [ETiposContadoCredito.CONTADO, ETiposContadoCredito.CREDITO],
+      tiposDocumento: [ETypesShop.COMPRA, ETypesShop.PEDIDO],
       proveedores: [""],
       eliminarDatos: false,
       doc_proveedor: "",
@@ -259,20 +259,22 @@ export default Vue.extend({
       fecha_llegada: "",
       created_at: "",
       updated_at: "",
+      shop: {} as ICompra,
+      showClients: false,
     };
   },
   computed: {
     validarRegistro() {
       let val = false;
       if (
-        this.compra.cod_factura === "" ||
-        !this.compra.fec_documento ||
-        !this.compra.tipo_pago ||
-        !this.compra.tipo_compra ||
-        this.compra.total < this.compra.descuento - this.compra.impuesto ||
-        this.compra.total <= 0 ||
-        this.compra.descuento < 0 ||
-        this.compra.impuesto < 0
+        this.shop.cod_factura === "" ||
+        !this.shop.fec_documento ||
+        !this.shop.tipo_pago ||
+        !this.shop.tipo_compra ||
+        this.shop.total < this.shop.descuento - this.shop.impuesto ||
+        this.shop.total <= 0 ||
+        this.shop.descuento < 0 ||
+        this.shop.impuesto < 0
       ) {
         val = true;
       }
@@ -280,8 +282,8 @@ export default Vue.extend({
     },
     nombresProveedor() {
       let nombres = "Proveedores Varios";
-      if (this.compra.nom_proveedor) {
-        nombres = this.compra.nom_proveedor + " " + this.compra.ape_proveedor;
+      if (this.shop.nom_proveedor) {
+        nombres = this.shop.nom_proveedor + " " + this.shop.ape_proveedor;
       }
       return nombres;
     },
@@ -301,24 +303,24 @@ export default Vue.extend({
           apellidos = prov.apellidos;
         }
       });
-      this.compra.nom_proveedor = nombres;
-      this.compra.ape_proveedor = apellidos;
+      this.shop.nom_proveedor = nombres;
+      this.shop.ape_proveedor = apellidos;
     },
     actualizarProductos(productos: IProductoCompra[]) {
       const productoss: Array<IProductoCompra> = productos;
-      this.compra.compras = productoss;
-      const compra: ICompra = {
+      this.shop.compras = productoss;
+      const shop: ICompra = {
         descuento: 0,
         impuesto: 0,
-        doc_proveedor: this.compra.doc_proveedor || 0,
-        nom_proveedor: this.compra.nom_proveedor || "",
-        ape_proveedor: this.compra.ape_proveedor || "",
-        fec_documento: this.compra.fec_documento || "",
-        cod_factura: this.compra.cod_factura,
-        tipo_compra: this.compra.tipo_compra,
-        tipo_pago: this.compra.tipo_pago,
-        fecha_pago: this.compra.fecha_pago || "",
-        fecha_llegada: this.compra.fecha_llegada || "",
+        doc_proveedor: this.shop.doc_proveedor || 0,
+        nom_proveedor: this.shop.nom_proveedor || "",
+        ape_proveedor: this.shop.ape_proveedor || "",
+        fec_documento: this.shop.fec_documento || "",
+        cod_factura: this.shop.cod_factura,
+        tipo_compra: this.shop.tipo_compra,
+        tipo_pago: this.shop.tipo_pago,
+        fecha_pago: this.shop.fecha_pago || "",
+        fecha_llegada: this.shop.fecha_llegada || "",
         compras: productos,
         subtotal: 0,
         total: 0,
@@ -327,29 +329,29 @@ export default Vue.extend({
         updated_at: new Date(),
         caja: "",
       };
-      this.compra = compra;
+      this.shop = shop;
       this.calcularSubtotal();
       this.calcularTotal();
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.compra.compras.forEach((com: IProductoCompra) => {
+      this.shop.compras.forEach((com: IProductoCompra) => {
         subtototal += Number(com.subtotal);
       });
-      this.compra.subtotal = subtototal;
+      this.shop.subtotal = subtototal;
     },
     calcularTotal() {
-      this.compra.total =
-        Number(this.compra.subtotal) -
-        Number(this.compra.descuento) +
-        Number(this.compra.impuesto);
+      this.shop.total =
+        Number(this.shop.subtotal) -
+        Number(this.shop.descuento) +
+        Number(this.shop.impuesto);
     },
     async registrarCompra() {
-      this.compra.created_at = new Date();
-      this.compra.updated_at = new Date();
-      this.compra.fec_documento = getFechaDesdeInput(this.fec_documento);
-      this.compra.fecha_pago = getFechaDesdeInput(this.fecha_pago);
-      this.compra.fecha_llegada = getFechaDesdeInput(this.fecha_llegada);
+      this.shop.created_at = new Date();
+      this.shop.updated_at = new Date();
+      this.shop.fec_documento = getFechaDesdeInput(this.fec_documento);
+      this.shop.fecha_pago = getFechaDesdeInput(this.fecha_pago);
+      this.shop.fecha_llegada = getFechaDesdeInput(this.fecha_llegada);
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -359,7 +361,7 @@ export default Vue.extend({
       }).then(async (result) => {
         if (
           result.isConfirmed &&
-          (await REGISTRAR_NUEVA_COMPRA({ ...this.compra }))
+          (await REGISTRAR_NUEVA_COMPRA({ ...this.shop }))
         ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
@@ -391,22 +393,23 @@ export default Vue.extend({
       });
     },
     seleccionarProveedor(prov: any) {
-      this.doc_proveedor = prov.documento;
-      this.compra.doc_proveedor = prov.documento;
-      this.compra.nom_proveedor = prov.nombres;
-      this.compra.ape_proveedor = prov.apellidos;
+      this.doc_proveedor = prov.doc_num;
+      this.shop.doc_proveedor = prov.doc_num;
+      this.shop.nom_proveedor = prov.names;
+      this.shop.ape_proveedor = prov.surnames;
+      this.showClients = false;
     },
     limpiarCompra() {
       this.fec_documento = new Date().toISOString().slice(0, 10);
       this.fecha_pago = new Date().toISOString().slice(0, 10);
       this.fecha_llegada = new Date().toISOString().slice(0, 10);
-      const compra: ICompra = {
+      const shop: ICompra = {
         doc_proveedor: 0,
         nom_proveedor: "",
         ape_proveedor: "",
         cod_factura: "",
-        tipo_compra: ETiposContadoCredito.CONTADO,
-        tipo_pago: "",
+        tipo_pago: ETiposContadoCredito.CONTADO,
+        tipo_compra: ETypesShop.COMPRA,
         compras: [],
         subtotal: 0,
         descuento: 0,
@@ -420,7 +423,7 @@ export default Vue.extend({
         updated_at: new Date(),
         caja: "",
       };
-      this.compra = compra;
+      this.shop = shop;
     },
   },
   created() {
@@ -431,9 +434,9 @@ export default Vue.extend({
       return false;
     });
     if (this.compraAnterior) {
-      this.compra = { ...this.compraAnterior };
-      this.compra.compras = [...this.compraAnterior.compras];
-      this.compra.cod_factura =
+      this.shop = { ...this.compraAnterior };
+      this.shop.compras = [...this.compraAnterior.compras];
+      this.shop.cod_factura =
         this.compraAnterior.cod_factura.split("-")[1] || "";
     }
   },

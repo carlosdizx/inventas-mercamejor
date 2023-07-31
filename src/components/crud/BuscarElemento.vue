@@ -1,10 +1,8 @@
 <template>
-  <v-dialog v-model="dialog">
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn icon color="white" v-bind="attrs" v-on="on" class="warning">
-        <v-icon>{{ icon }}</v-icon>
-      </v-btn>
-    </template>
+  <v-dialog v-model="show" persistent>
+    <v-btn color="red darken-4" dark @click="closeElement">
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
     <v-card class="elevation-5">
       <v-card-title>Buscar datos de {{ nombre }}</v-card-title>
       <v-card-text>
@@ -38,10 +36,9 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "BuscarElemento",
-  props: ["nombre", "items", "headers", "icon"],
+  props: ["nombre", "items", "headers", "show"],
   data() {
     return {
-      dialog: false,
       search: "",
     };
   },
@@ -61,7 +58,9 @@ export default Vue.extend({
     },
     devolverItem(item: any) {
       this.$emit("getItem", item);
-      this.dialog = false;
+    },
+    closeElement() {
+      this.$emit("closeElement");
     },
   },
 });
