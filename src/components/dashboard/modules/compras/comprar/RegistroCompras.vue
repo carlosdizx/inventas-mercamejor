@@ -223,7 +223,7 @@ import { COLUMNAS } from "@/models/Proveedor";
 
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
-import TablaCompras from "@/components/dashboard/modulos/compras/comprar/TablaCompras.vue";
+import TablaCompras from "@/components/dashboard/modules/compras/comprar/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { ICompra, EstadoCompra } from "@/models/Compra";
 import { IProductoCompra } from "@/models/ProductoCompra";

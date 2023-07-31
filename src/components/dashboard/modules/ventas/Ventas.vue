@@ -11,8 +11,8 @@
 </template>
 
 <script lang="ts">
-import FormVentas from "@/components/dashboard/modulos/ventas/componentes/FormVentas.vue";
-import ListadoItems from "@/components/dashboard/modulos/ventas/componentes/ListadoItems.vue";
+import FormVentas from "@/components/dashboard/modules/ventas/componentes/FormVentas.vue";
+import ListadoItems from "@/components/dashboard/modules/ventas/componentes/ListadoItems.vue";
 import Factura from "@/components/generals/Factura.vue";
 import Vue from "vue";
 import Swal from "sweetalert2";

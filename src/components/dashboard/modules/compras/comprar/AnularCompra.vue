@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
-import RegistroCompras from "@/components/dashboard/modulos/compras/comprar/RegistroCompras.vue";
+import RegistroCompras from "@/components/dashboard/modules/compras/comprar/RegistroCompras.vue";
 
 import { CAMPOS, VALIDACIONES } from "@/models/Producto";
 import { COLUMNAS } from "@/models/Compra";

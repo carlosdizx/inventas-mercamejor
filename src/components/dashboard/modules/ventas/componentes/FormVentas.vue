@@ -125,7 +125,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
-import DialogClientes from "@/components/dashboard/modulos/ventas/componentes/DialogClientes.vue";
+import DialogClientes from "@/components/dashboard/modules/ventas/componentes/DialogClientes.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
 import { IEstadoVenta, IVenta } from "@/models/Venta";
 import {

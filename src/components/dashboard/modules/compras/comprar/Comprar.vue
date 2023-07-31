@@ -34,9 +34,9 @@
 <script lang="ts">
 import Vue from "vue";
 
-import RegistroCompras from "@/components/dashboard/modulos/compras/comprar/RegistroCompras.vue";
-import ConsultarCompras from "@/components/dashboard/modulos/compras/comprar/ConsultarCompras.vue";
-import AnularCompra from "@/components/dashboard/modulos/compras/comprar/AnularCompra.vue";
+import RegistroCompras from "@/components/dashboard/modules/compras/comprar/RegistroCompras.vue";
+import ConsultarCompras from "@/components/dashboard/modules/compras/comprar/ConsultarCompras.vue";
+import AnularCompra from "@/components/dashboard/modules/compras/comprar/AnularCompra.vue";
 
 export default Vue.extend({
   name: "Cajas",
