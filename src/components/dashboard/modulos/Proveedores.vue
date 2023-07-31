@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <Tabla
-      coleccion="proveedores"
+      coleccion="suppliers"
       titulo="proveedores"
       :columnas="columnas"
       :campos_form="campos_form"
