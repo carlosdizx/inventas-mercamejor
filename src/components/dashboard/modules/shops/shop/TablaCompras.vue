@@ -22,8 +22,8 @@
             <tr>
               <td>
                 <v-text-field
-                  @input="buscarProducto()"
-                  v-model.number="productoNuevo.cod_barras"
+                  @input="findProduct()"
+                  v-model="barCode"
                 ></v-text-field>
               </td>
               <td>
@@ -39,28 +39,28 @@
               </td>
               <td>
                 <v-text-field
-                  @input="calcularSubtotal()"
+                  @input="calculateSubtotal()"
                   v-model.number="productoNuevo.cantidad"
                   type="number"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  @input="calcularGananciaPrecioCompra()"
+                  @input="calculateUtilitiesByShop()"
                   type="number"
                   v-model.number="productoNuevo.prec_com"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  @input="ingresarGanancia()"
+                  @input="enterGains()"
                   type="number"
                   v-model.number="porGanancia"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
-                  @input="ingresarVenta()"
+                  @input="enterSale()"
                   type="number"
                   v-model.number="productoNuevo.prec_com"
                 ></v-text-field>
@@ -69,14 +69,14 @@
                 <v-text-field
                   type="number"
                   v-model.number="productoNuevo.impuesto"
-                  @input="calcularSubtotal()"
+                  @input="calculateSubtotal()"
                 ></v-text-field>
               </td>
               <td>
                 <v-text-field
                   type="number"
                   v-model.number="productoNuevo.descuento"
-                  @input="calcularSubtotal()"
+                  @input="calculateSubtotal()"
                 ></v-text-field>
               </td>
               <td>
@@ -85,7 +85,7 @@
               <td>
                 <v-btn
                   color="white"
-                  @click="agregarProducto()"
+                  @click="addProduct()"
                   :disabled="!validarProd"
                   icon
                   class="warning ml-1"
@@ -93,7 +93,7 @@
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
                 <BuscarElemento
-                  @getItem="seleccionaProducto"
+                  @getItem="selectProduct"
                   icon="mdi-magnify"
                   :items="productosDisponibles"
                   :headers="columnas"
@@ -121,7 +121,7 @@
               <td>{{ item.subtotal }}</td>
               <td v-if="!anular">
                 <v-btn
-                  @click="seleccionarCompraEditar(item, index)"
+                  @click="selectEditShop(item, index)"
                   color="white"
                   icon
                   class="success"
@@ -132,7 +132,7 @@
                   color="white"
                   icon
                   class="error ml-1"
-                  @click="eliminarItem(index)"
+                  @click="deleteItem(index)"
                 >
                   <v-icon>mdi-trash-can-outline</v-icon>
                 </v-btn>
@@ -141,7 +141,7 @@
           </tbody>
           <EditarCompra
             v-if="mostrarEditarCompra"
-            @actualizar="actualizar"
+            @actualizar="update"
             @cancelar="mostrarEditarCompra = false"
             :compraAnterior="compraEditar"
             :mostrar="mostrarEditarCompra"
@@ -168,6 +168,7 @@ import EditarCompra from "./EditarCompra.vue";
 import { IProductoCompra } from "@/models/ProductoCompra";
 
 import Swal from "sweetalert2";
+import { Product } from "@/domain/model/product/Product";
 
 export default Vue.extend({
   name: "TablaCompras",
@@ -189,10 +190,11 @@ export default Vue.extend({
     productoNuevo: {} as IProductoCompra,
     compraEditar: {} as IProductoCompra,
     bodegasDisponibles: [{}],
-    productosDisponibles: [{}],
+    productosDisponibles: [],
     mostrarEditarCompra: false,
     editarCompraIndice: 1,
     porGanancia: 0,
+    barCode: null,
   }),
   computed: {
     validarProd() {
@@ -212,25 +214,25 @@ export default Vue.extend({
     },
   },
   methods: {
-    async listarBodegas() {
+    async listStores() {
       this.bodegasDisponibles = [];
       const res: any = await LISTAR_BODEGAS();
       res.forEach((bod: any) => this.bodegasDisponibles.unshift(bod.data()));
     },
-    async listarProductos() {
+    async listProducts() {
       this.productosDisponibles = [];
-      const res = await CARGAR_INFORMACION("productos");
+      const res = await CARGAR_INFORMACION("products");
       this.productosDisponibles = res;
     },
-    agregarProducto() {
+    addProduct() {
       const product: IProductoCompra = { ...this.productoNuevo };
       const nuevosProductos: IProductoCompra[] = this.productos;
       nuevosProductos.push(product);
       this.productos = nuevosProductos;
       this.$emit("enviarProductos", this.productos);
-      this.resetNuevoProducto();
+      this.resetNewProduct();
     },
-    eliminarItem(index: number) {
+    deleteItem(index: number) {
       Swal.fire({
         title: "¿Esta seguro de Eliminar este item?",
         showDenyButton: true,
@@ -245,7 +247,7 @@ export default Vue.extend({
         }
       });
     },
-    resetNuevoProducto() {
+    resetNewProduct() {
       const producto: IProductoCompra = {
         cod_barras: 0,
         descripcion: "",
@@ -259,25 +261,24 @@ export default Vue.extend({
       };
       this.productoNuevo = producto;
     },
-    buscarProducto() {
+    findProduct() {
       let producto = "";
-      this.productosDisponibles.forEach((prod: any) => {
-        if (prod.codigo_barras === Number(this.productoNuevo.cod_barras)) {
-          producto = prod.nombre;
+      this.productosDisponibles.forEach((prod: Product) => {
+        if (prod.bar_code == this.barCode) {
+          producto = prod.name;
         }
       });
       this.productoNuevo.descripcion = producto;
     },
-    calcularGananciaPrecioCompra() {
+    calculateUtilitiesByShop() {
       if (this.porGanancia > 0 && this.productoNuevo.prec_com > 0) {
         let precio_venta: number =
           this.productoNuevo.prec_com * (1 + this.porGanancia / 100);
-        let precio = REDONDEAR(precio_venta, -2);
-        this.productoNuevo.prec_ven = precio;
+        this.productoNuevo.prec_ven = REDONDEAR(precio_venta, -2);
       }
-      this.calcularSubtotal();
+      this.calculateSubtotal();
     },
-    calcularSubtotal() {
+    calculateSubtotal() {
       const subtotal: number =
         Number(this.productoNuevo.cantidad) *
           Number(this.productoNuevo.prec_com) +
@@ -285,7 +286,7 @@ export default Vue.extend({
         Number(this.productoNuevo.descuento);
       this.productoNuevo.subtotal = subtotal;
     },
-    ingresarGanancia() {
+    enterGains() {
       if (this.porGanancia >= 0 && this.productoNuevo.prec_com) {
         let precio_venta: number =
           this.productoNuevo.prec_com * (1 + this.porGanancia / 100);
@@ -293,7 +294,7 @@ export default Vue.extend({
         this.productoNuevo.prec_ven = precio;
       }
     },
-    ingresarVenta() {
+    enterSale() {
       if (
         Number(this.productoNuevo.prec_ven) >=
         Number(this.productoNuevo.prec_com)
@@ -308,7 +309,7 @@ export default Vue.extend({
         this.porGanancia = 0;
       }
     },
-    seleccionaProducto(product: any): void {
+    selectProduct(product: any): void {
       const productoNuevo: IProductoCompra = {
         cod_barras: product.codigo_barras,
         descripcion: product.nombre,
@@ -322,28 +323,27 @@ export default Vue.extend({
       };
       this.productoNuevo = productoNuevo;
     },
-    seleccionarCompraEditar(compra: IProductoCompra, index: number) {
+    selectEditShop(compra: IProductoCompra, index: number) {
       this.mostrarEditarCompra = true;
       this.editarCompraIndice = index;
       this.compraEditar = compra;
     },
-    actualizar(element: any) {
+    update(element: any) {
       this.mostrarEditarCompra = false;
       this.productos[element.indice] = element.compra;
       this.$emit("enviarProductos", this.productos);
     },
   },
-  created() {
-    this.listarBodegas();
-    this.listarProductos();
-    this.resetNuevoProducto();
+  created: function () {
+    this.listStores();
+    this.listProducts();
+    this.resetNewProduct();
     if (this.compras) {
       const nuevasCompras: Array<IProductoCompra> = this.compras;
       this.productos = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {
-      if (col.value !== "detalle") return true;
-      return false;
+      return col.value !== "detalle";
     });
   },
   watch: {
