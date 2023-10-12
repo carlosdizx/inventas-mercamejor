@@ -86,7 +86,7 @@
                 <v-btn
                   color="white"
                   @click="addProduct()"
-                  :disabled="!validarProd"
+                  :disabled="!validarProd && false"
                   icon
                   class="warning ml-1"
                 >
@@ -262,13 +262,12 @@ export default Vue.extend({
       this.productoNuevo = producto;
     },
     findProduct() {
-      let producto = "";
       this.productosDisponibles.forEach((prod: Product) => {
         if (prod.bar_code == this.barCode) {
-          producto = prod.name;
+          this.productoNuevo.descripcion = prod.name;
+          this.productoNuevo.cod_barras = prod.bar_code;
         }
       });
-      this.productoNuevo.descripcion = producto;
     },
     calculateUtilitiesByShop() {
       if (this.porGanancia > 0 && this.productoNuevo.prec_com > 0) {
