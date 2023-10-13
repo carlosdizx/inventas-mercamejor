@@ -149,43 +149,6 @@
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
           />
-
-          <v-row class="mr-5 ml-5">
-            <v-col>
-              <v-text-field
-                :disabled="anular"
-                label="Subtotal"
-                readonly
-                v-model.number="shop.subtotal"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field
-                :disabled="anular"
-                @input="calcularTotal()"
-                label="Descuento"
-                v-model.number="shop.descuento"
-                type="number"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-
-            <v-col>
-              <v-text-field
-                :disabled="anular"
-                label="Impuesto"
-                @input="calcularTotal()"
-                v-model.number="shop.impuesto"
-                type="number"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-          </v-row>
           <v-row class="mr-5 ml-5">
             <v-col class="text-center">
               <h2 class="text-gray">Total: ${{ shop.total }}</h2>
@@ -195,7 +158,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="validarRegistro"
+                :disabled="validarRegistro && false"
                 color="color_a mb-3"
                 x-large
                 block
