@@ -65,12 +65,12 @@ export default Vue.extend({
             id: "",
             bar_code: e.codigo,
             description: e.nombre,
-            amount: e.cantidad,
+            amount: e.getCantidad,
             price_shop: e.precio,
             price_purchase: e.precio,
             taxes: 0,
             discount: 0,
-            subtotal: e.subtotal,
+            subtotal: e.getSubtotal,
           };
         }
       );

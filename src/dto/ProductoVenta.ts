@@ -1,10 +1,10 @@
 export class ProductoVenta {
-  private readonly _codigo: number;
-  private readonly _nombre: string;
-  private _cantidad: number;
-  private readonly _precio: number;
+  private readonly bar_code: number;
+  private readonly name: string;
+  private cantidad: number;
+  private readonly sale_price: number;
   private readonly _descuento: number;
-  private _subtotal: number;
+  private subtotal: number;
 
   constructor(
     codigo: number,
@@ -13,40 +13,40 @@ export class ProductoVenta {
     precio: number,
     descuento: number
   ) {
-    this._codigo = codigo;
-    this._nombre = nombre;
-    this._cantidad = cantidad;
-    this._precio = precio;
+    this.bar_code = codigo;
+    this.name = nombre;
+    this.cantidad = cantidad;
+    this.sale_price = precio;
     this._descuento = descuento;
-    this._subtotal = precio * cantidad;
+    this.subtotal = precio * cantidad;
   }
 
-  get cantidad(): number {
-    return this._cantidad;
+  get getCantidad(): number {
+    return this.cantidad;
   }
 
-  set cantidad(value: number) {
-    this._cantidad = value;
+  set setCantidad(value: number) {
+    this.cantidad = value;
   }
 
-  get subtotal(): number {
-    return this._subtotal;
+  get getSubtotal(): number {
+    return this.subtotal;
   }
 
-  set subtotal(value: number) {
-    this._subtotal = value;
+  set setSubtotal(value: number) {
+    this.subtotal = value;
   }
 
   get codigo(): number {
-    return this._codigo;
+    return this.bar_code;
   }
 
   get nombre(): string {
-    return this._nombre;
+    return this.name;
   }
 
   get precio(): number {
-    return this._precio;
+    return this.precio;
   }
 
   get descuento(): number {

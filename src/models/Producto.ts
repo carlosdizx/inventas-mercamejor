@@ -79,7 +79,7 @@ export const CAMPOS: any[] = [
     format: "number",
     name: "amount",
     model: "",
-    rules: "required",
+    rules: "min:0",
   },
   {
     label: "Precio unitario compra",
