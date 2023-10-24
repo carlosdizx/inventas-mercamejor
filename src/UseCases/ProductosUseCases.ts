@@ -4,7 +4,7 @@ import { ProductoVenta } from "@/dto/ProductoVenta";
 import Swal from "sweetalert2";
 
 export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) => {
-  const data = await LISTAR_IN("productos", "codigo_barras", codigo);
+  const data = await LISTAR_IN("products", "bar_code", codigo);
   if (data.size === 1) {
     return {
       producto: data.docs[0].data(),
@@ -29,8 +29,8 @@ export const AGREGAR_PRODUCTO = (
 ) => {
   for (const temp of productos) {
     if (temp.codigo === producto.codigo_barras) {
-      temp.cantidad++;
-      temp.subtotal = temp.cantidad * temp.precio;
+      temp.setCantidad++;
+      temp.setSubtotal = temp.getCantidad * temp.precio;
     }
   }
   return productos;
@@ -41,8 +41,8 @@ export const TOTALIZAR_VALORES = (productos: ProductoVenta[]) => {
   let descuento = 0;
   let total = 0;
   for (const temp of productos) {
-    subtotal += temp.subtotal;
-    descuento += temp.descuento * temp.cantidad;
+    subtotal += temp.getSubtotal;
+    descuento += temp.descuento * temp.getCantidad;
     total = subtotal - descuento;
   }
   return { subtotal: subtotal, descuento: descuento, total: total };
@@ -61,10 +61,10 @@ export const CAMBIAR_CANTIDAD = async (
       showConfirmButton: false,
       icon: "error",
     });
-    return item.cantidad;
+    return item.getCantidad;
   } else {
-    item.cantidad = parse;
-    item.subtotal = item.cantidad * item.precio;
+    item.setCantidad = parse;
+    item.setSubtotal = item.getCantidad * item.precio;
     return parse;
   }
 };
