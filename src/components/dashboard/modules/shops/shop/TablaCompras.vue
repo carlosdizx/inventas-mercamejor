@@ -93,14 +93,6 @@
               <td>{{ item.subtotal }}</td>
               <td v-if="!anular">
                 <v-btn
-                  @click="selectEditShop(item, index)"
-                  color="white"
-                  icon
-                  class="success"
-                >
-                  <v-icon color="white">mdi-lead-pencil</v-icon>
-                </v-btn>
-                <v-btn
                   color="white"
                   icon
                   class="error ml-1"
@@ -197,7 +189,6 @@ export default Vue.extend({
       this.productosDisponibles = res;
     },
     addProduct() {
-      console.log(this.productoNuevo);
       const product: IProductoCompra = { ...this.productoNuevo };
       const nuevosProductos: IProductoCompra[] = this.productos;
       nuevosProductos.push(product);
@@ -232,6 +223,7 @@ export default Vue.extend({
         descuento: 0,
         subtotal: 0,
       };
+      this.barCode = null;
       this.productoNuevo = producto;
     },
     findProduct() {

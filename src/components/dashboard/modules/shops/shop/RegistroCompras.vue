@@ -258,16 +258,12 @@ export default Vue.extend({
       res.forEach((prov: any) => this.proveedores.push(prov.data()));
     },
     buscarProveedor() {
-      let nombres = "";
-      let apellidos = "";
       this.proveedores.forEach((prov: any) => {
-        if (this.doc_proveedor === prov.documento) {
-          nombres = prov.nombres;
-          apellidos = prov.apellidos;
+        if (this.doc_proveedor === prov.doc_num) {
+          this.shop.nom_proveedor = prov.names;
+          this.shop.ape_proveedor = prov.surnames;
         }
       });
-      this.shop.nom_proveedor = nombres;
-      this.shop.ape_proveedor = apellidos;
     },
     actualizarProductos(productos: IProductoCompra[]) {
       const productoss: Array<IProductoCompra> = productos;
