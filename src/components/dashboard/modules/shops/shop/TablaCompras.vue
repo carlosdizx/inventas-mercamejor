@@ -1,121 +1,126 @@
 <template>
-  <v-row class="mr-5 ml-5">
-    <v-col>
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Código</th>
-              <th class="text-left">Descripción Producto</th>
-              <th class="text-left">Cantidad</th>
-              <th class="text-left">Precio Compra</th>
-              <th class="text-left">Ganancia</th>
-              <th class="text-left">Precio Venta</th>
-              <th class="text-left">Subototal</th>
-              <th class="text-left">Actividad</th>
-            </tr>
-          </thead>
-          <tbody class="dark" v-if="!anular">
-            <tr>
-              <td>
-                <v-text-field
-                  @input="findProduct()"
-                  v-model="barCode"
-                ></v-text-field>
-              </td>
-              <td>
-                {{ productoNuevo.descripcion }}
-              </td>
-              <td>
-                <v-text-field
-                  @input="calculateSubtotal()"
-                  v-model.number="productoNuevo.cantidad"
-                  type="number"
-                ></v-text-field>
-              </td>
-              <td>
-                <v-text-field
-                  @input="calculateUtilitiesByShop()"
-                  type="number"
-                  v-model.number="productoNuevo.prec_com"
-                ></v-text-field>
-              </td>
-              <td>
-                <v-text-field
-                  @input="enterGains()"
-                  type="number"
-                  v-model.number="porGanancia"
-                ></v-text-field>
-              </td>
-              <td>
-                <v-text-field
-                  @input="enterSale()"
-                  type="number"
-                  v-model.number="productoNuevo.prec_ven"
-                ></v-text-field>
-              </td>
-              <td>
-                {{ productoNuevo.subtotal }}
-              </td>
-              <td>
-                <v-btn
-                  color="white"
-                  @click="addProduct()"
-                  :disabled="validarProd"
-                  icon
-                  class="warning ml-1"
-                >
-                  <v-icon>mdi-plus</v-icon>
-                </v-btn>
-                <BuscarElemento
-                  @getItem="selectProduct"
-                  icon="mdi-magnify"
-                  :items="productosDisponibles"
-                  :headers="columnas"
-                />
-              </td>
-            </tr>
-          </tbody>
-          <tbody class="pt-3">
-            <tr v-for="(item, index) in productos" :key="index">
-              <td>{{ item.cod_barras }}</td>
-              <td>{{ item.descripcion }}</td>
-              <td>{{ item.cantidad }}</td>
-              <td>{{ item.prec_com }}</td>
-              <td>
-                {{
-                  Math.trunc(
-                    ((item.prec_ven - item.prec_com) / item.prec_com) * 100
-                  )
-                }}
-              </td>
-              <td>{{ item.prec_ven }}</td>
-              <td>{{ item.subtotal }}</td>
-              <td v-if="!anular">
-                <v-btn
-                  color="white"
-                  icon
-                  class="error ml-1"
-                  @click="deleteItem(index)"
-                >
-                  <v-icon>mdi-trash-can-outline</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-          <EditarCompra
-            v-if="mostrarEditarCompra"
-            @actualizar="update"
-            @cancelar="mostrarEditarCompra = false"
-            :compraAnterior="compraEditar"
-            :mostrar="mostrarEditarCompra"
-            :indexElement="editarCompraIndice"
-            :bodegasDisponibles="bodegasDisponibles"
-          />
-        </template>
-      </v-simple-table>
-    </v-col>
-  </v-row>
+  <div>
+    <v-chip class="ma-2" color="red" v-if="errorCodigo">
+      Este numero de codigo ya esta registrado.
+    </v-chip>
+    <v-row class="mr-5 ml-5">
+      <v-col>
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">Código</th>
+                <th class="text-left">Descripción Producto</th>
+                <th class="text-left">Cantidad</th>
+                <th class="text-left">Precio Compra</th>
+                <th class="text-left">Ganancia</th>
+                <th class="text-left">Precio Venta</th>
+                <th class="text-left">Subototal</th>
+                <th class="text-left">Actividad</th>
+              </tr>
+            </thead>
+            <tbody class="dark" v-if="!anular">
+              <tr @keyup.enter="validarProd ? null : addProduct()">
+                <td>
+                  <v-text-field
+                    @input="findProduct()"
+                    v-model="barCode"
+                  ></v-text-field>
+                </td>
+                <td>
+                  {{ productoNuevo.descripcion }}
+                </td>
+                <td>
+                  <v-text-field
+                    @input="calculateSubtotal()"
+                    v-model.number="productoNuevo.cantidad"
+                    type="number"
+                  ></v-text-field>
+                </td>
+                <td>
+                  <v-text-field
+                    @input="calculateUtilitiesByShop()"
+                    type="number"
+                    v-model.number="productoNuevo.prec_com"
+                  ></v-text-field>
+                </td>
+                <td>
+                  <v-text-field
+                    @input="enterGains()"
+                    type="number"
+                    v-model.number="porGanancia"
+                  ></v-text-field>
+                </td>
+                <td>
+                  <v-text-field
+                    @input="enterSale()"
+                    type="number"
+                    v-model.number="productoNuevo.prec_ven"
+                  ></v-text-field>
+                </td>
+                <td>
+                  {{ productoNuevo.subtotal }}
+                </td>
+                <td>
+                  <v-btn
+                    color="white"
+                    @click="addProduct()"
+                    :disabled="validarProd"
+                    icon
+                    class="warning ml-1"
+                  >
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                  <BuscarElemento
+                    @getItem="selectProduct"
+                    icon="mdi-magnify"
+                    :items="productosDisponibles"
+                    :headers="columnas"
+                  />
+                </td>
+              </tr>
+            </tbody>
+            <tbody class="pt-3">
+              <tr v-for="(item, index) in productos" :key="index">
+                <td>{{ item.cod_barras }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.prec_com }}</td>
+                <td>
+                  {{
+                    Math.trunc(
+                      ((item.prec_ven - item.prec_com) / item.prec_com) * 100
+                    )
+                  }}
+                </td>
+                <td>{{ item.prec_ven }}</td>
+                <td>{{ item.subtotal }}</td>
+                <td v-if="!anular">
+                  <v-btn
+                    color="white"
+                    icon
+                    class="error ml-1"
+                    @click="deleteItem(index)"
+                  >
+                    <v-icon>mdi-trash-can-outline</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+            <EditarCompra
+              v-if="mostrarEditarCompra"
+              @actualizar="update"
+              @cancelar="mostrarEditarCompra = false"
+              :compraAnterior="compraEditar"
+              :mostrar="mostrarEditarCompra"
+              :indexElement="editarCompraIndice"
+              :bodegasDisponibles="bodegasDisponibles"
+            />
+          </template>
+        </v-simple-table>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script lang="ts">
@@ -170,11 +175,20 @@ export default Vue.extend({
         this.productoNuevo.prec_ven >= this.productoNuevo.prec_com &&
         this.porGanancia >= 0 &&
         this.productoNuevo.subtotal >= 1 &&
-        this.productoNuevo.prec_ven > this.productoNuevo.prec_com
+        this.productoNuevo.prec_ven > this.productoNuevo.prec_com &&
+        !this.errorCodigo
       ) {
         return false;
       }
       return true;
+    },
+    errorCodigo() {
+      if (
+        this.productos.find((producto) => producto.cod_barras == this.barCode)
+      ) {
+        return true;
+      }
+      return false;
     },
   },
   methods: {

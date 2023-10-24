@@ -142,7 +142,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-
           <TablaCompras
             :anular="anular"
             :compras="shop.compras"
@@ -158,7 +157,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="validarRegistro && false"
+                :disabled="shop.compras.length == 0"
                 color="color_a mb-3"
                 x-large
                 block
@@ -228,20 +227,19 @@ export default Vue.extend({
   },
   computed: {
     validarRegistro() {
-      let val = false;
       if (
-        this.shop.cod_factura === "" ||
-        !this.shop.fec_documento ||
-        !this.shop.tipo_pago ||
-        !this.shop.tipo_compra ||
-        this.shop.total < this.shop.descuento - this.shop.impuesto ||
-        this.shop.total <= 0 ||
-        this.shop.descuento < 0 ||
+        this.shop.compras.length <= 0 &&
+        this.shop.fec_documento &&
+        this.shop.tipo_pago &&
+        this.shop.tipo_compra &&
+        this.shop.total < this.shop.descuento - this.shop.impuesto &&
+        this.shop.total <= 0 &&
+        this.shop.descuento < 0 &&
         this.shop.impuesto < 0
       ) {
-        val = true;
+        return false;
       }
-      return val;
+      return true;
     },
     nombresProveedor() {
       let nombres = "Proveedores Varios";
