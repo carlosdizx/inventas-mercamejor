@@ -3,8 +3,6 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
-console.log(process.env.VUE_APP_API_KEY);
-
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
   authDomain: process.env.VUE_APP_AUTH_DOMAIN,

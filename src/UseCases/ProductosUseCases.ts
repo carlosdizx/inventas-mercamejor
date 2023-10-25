@@ -75,7 +75,7 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
 ): Promise<void> => {
   const producto: any = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codBarras);
-  let unidades = producto.producto.cantidad;
+  let unidades = producto.producto.amount;
   if (tipoOperacion === "ADICIONAR") {
     unidades = unidades + cantidad;
   } else if (tipoOperacion === "RESTAR") {
@@ -83,5 +83,5 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   } else {
     unidades = cantidad;
   }
-  await ACTUALIZAR("productos", producto.idProducto, { cantidad: unidades });
+  await ACTUALIZAR("products", producto.idProducto, { amount: unidades });
 };

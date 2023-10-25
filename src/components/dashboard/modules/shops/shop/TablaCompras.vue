@@ -268,7 +268,6 @@ export default Vue.extend({
       if (this.porGanancia >= 0 && this.productoNuevo.prec_com) {
         let precio_venta: number =
           this.productoNuevo.prec_com * (1 + this.porGanancia / 100);
-        console.log(precio_venta);
         this.productoNuevo.prec_ven = REDONDEAR(precio_venta, -2);
       }
     },
