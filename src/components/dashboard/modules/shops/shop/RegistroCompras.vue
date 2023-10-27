@@ -66,7 +66,7 @@
                 <v-select
                   :disabled="anular"
                   label="Tipo de Compra"
-                  v-model="shop.tipo_compra"
+                  v-model="shop.type_pay"
                   :error-messages="errors"
                   :items="tiposDocumento"
                   outlined
@@ -86,7 +86,7 @@
                       :disabled="anular"
                       type="number"
                       label="Número de Factura"
-                      v-model="shop.cod_factura"
+                      v-model="shop.cod_purchase"
                       :error-messages="errors"
                       outlined
                       dense
@@ -97,7 +97,7 @@
                   <v-text-field
                     disabled
                     dense
-                    :value="'C-' + shop.cod_factura"
+                    :value="'C-' + shop.cod_purchase"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -113,7 +113,7 @@
                 <v-select
                   :disabled="anular"
                   label="Tipo de Pago"
-                  v-model="shop.tipo_pago"
+                  v-model="shop.type_pay"
                   :error-messages="errors"
                   :items="tiposPagos"
                   outlined
@@ -144,7 +144,7 @@
           </v-row>
           <TablaCompras
             :anular="anular"
-            :compras="shop.compras"
+            :compras="shop.sales"
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
           />
@@ -157,7 +157,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="shop.compras.length == 0"
+                :disabled="shop.sales.length == 0"
                 color="color_a mb-3"
                 x-large
                 block
@@ -188,9 +188,12 @@ import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
 import TablaCompras from "@/components/dashboard/modules/shops/shop/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { ICompra, EstadoCompra } from "@/models/Compra";
-import { IProductoCompra } from "@/models/ProductoCompra";
-import { ANULAR_COMPRA, REGISTRAR_NUEVA_COMPRA } from "@/services/compras";
+import { ANULAR_COMPRA } from "@/services/compras";
+import { Purchase, EPayTypePurchase } from "@/domain/model/purchase/Purchase";
+import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { REGISTER_NEW_SALE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
+import { EEstadoVenta } from "@/domain/model/constants/Constants";
+
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito, ETypesShop } from "@/generals/Constantes";
@@ -203,7 +206,7 @@ export default Vue.extend({
   },
   props: {
     compraAnterior: {
-      type: Object as PropType<ICompra>,
+      type: Object as PropType<Purchase>,
     },
     idcompraanterior: String,
     anular: Boolean,
@@ -221,21 +224,21 @@ export default Vue.extend({
       fecha_llegada: "",
       created_at: "",
       updated_at: "",
-      shop: {} as ICompra,
+      shop: {} as Purchase,
       showClients: false,
     };
   },
   computed: {
     validarRegistro() {
       if (
-        this.shop.compras.length <= 0 &&
-        this.shop.fec_documento &&
-        this.shop.tipo_pago &&
-        this.shop.tipo_compra &&
-        this.shop.total < this.shop.descuento - this.shop.impuesto &&
+        this.shop.sales.length <= 0 &&
+        this.shop.doc_client &&
+        this.shop.type_pay &&
+        this.shop.type_pay &&
+        this.shop.total < this.shop.discount - this.shop.taxes &&
         this.shop.total <= 0 &&
-        this.shop.descuento < 0 &&
-        this.shop.impuesto < 0
+        this.shop.discount < 0 &&
+        this.shop.taxes < 0
       ) {
         return false;
       }
@@ -243,8 +246,8 @@ export default Vue.extend({
     },
     nombresProveedor() {
       let nombres = "Proveedores Varios";
-      if (this.shop.nom_proveedor) {
-        nombres = this.shop.nom_proveedor + " " + this.shop.ape_proveedor;
+      if (this.shop.nam_client) {
+        nombres = this.shop.nam_client + " " + this.shop.sur_client;
       }
       return nombres;
     },
@@ -258,33 +261,31 @@ export default Vue.extend({
     buscarProveedor() {
       this.proveedores.forEach((prov: any) => {
         if (this.doc_proveedor === prov.doc_num) {
-          this.shop.nom_proveedor = prov.names;
-          this.shop.ape_proveedor = prov.surnames;
+          this.shop.nam_client = prov.names;
+          this.shop.sur_client = prov.surnames;
         }
       });
     },
-    actualizarProductos(productos: IProductoCompra[]) {
-      const productoss: Array<IProductoCompra> = productos;
-      this.shop.compras = productoss;
-      const shop: ICompra = {
-        descuento: 0,
-        impuesto: 0,
-        doc_proveedor: this.shop.doc_proveedor || 0,
-        nom_proveedor: this.shop.nom_proveedor || "",
-        ape_proveedor: this.shop.ape_proveedor || "",
-        fec_documento: this.shop.fec_documento || "",
-        cod_factura: this.shop.cod_factura,
-        tipo_compra: this.shop.tipo_compra,
-        tipo_pago: this.shop.tipo_pago,
-        fecha_pago: this.shop.fecha_pago || "",
-        fecha_llegada: this.shop.fecha_llegada || "",
-        compras: productos,
-        subtotal: 0,
-        total: 0,
-        estado: EstadoCompra.APROBADO,
+    actualizarProductos(productos: ProductPurchase[]) {
+      const productoss: Array<ProductPurchase> = productos;
+      this.shop.sales = productoss;
+      const shop: Purchase = {
+        id: "",
+        employee: "",
+        discount: 0,
+        taxes: 0,
+        doc_client: this.shop.doc_client || 0,
+        nam_client: this.shop.nam_client || "",
+        sur_client: this.shop.sur_client || "",
         created_at: new Date(),
         updated_at: new Date(),
-        caja: "",
+        type_pay: EPayTypePurchase.CONTADO,
+        sales: productos,
+        subtotal: 0,
+        total: 0,
+        state: EEstadoVenta.APROBADO,
+        cash_register: "",
+        cod_purchase: "",
       };
       this.shop = shop;
       this.calcularSubtotal();
@@ -292,7 +293,7 @@ export default Vue.extend({
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.shop.compras.forEach((com: IProductoCompra) => {
+      this.shop.sales.forEach((com: ProductPurchase) => {
         subtototal += Number(com.subtotal);
       });
       this.shop.subtotal = subtototal;
@@ -300,15 +301,14 @@ export default Vue.extend({
     calcularTotal() {
       this.shop.total =
         Number(this.shop.subtotal) -
-        Number(this.shop.descuento) +
-        Number(this.shop.impuesto);
+        Number(this.shop.discount) +
+        Number(this.shop.taxes);
     },
     async registrarCompra() {
       this.shop.created_at = new Date();
       this.shop.updated_at = new Date();
-      this.shop.fec_documento = getFechaDesdeInput(this.fec_documento);
-      this.shop.fecha_pago = getFechaDesdeInput(this.fecha_pago);
-      this.shop.fecha_llegada = getFechaDesdeInput(this.fecha_llegada);
+      this.shop.updated_at = getFechaDesdeInput(this.fec_documento);
+      this.shop.created_at = getFechaDesdeInput(this.fecha_pago);
       Swal.fire({
         title: "¿Esta seguro de registrar esta compra?",
         showDenyButton: true,
@@ -316,10 +316,7 @@ export default Vue.extend({
         confirmButtonColor: "green",
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
-        if (
-          result.isConfirmed &&
-          (await REGISTRAR_NUEVA_COMPRA({ ...this.shop }))
-        ) {
+        if (result.isConfirmed && (await REGISTER_NEW_SALE({ ...this.shop }))) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
@@ -351,34 +348,32 @@ export default Vue.extend({
     },
     seleccionarProveedor(prov: any) {
       this.doc_proveedor = prov.doc_num;
-      this.shop.doc_proveedor = prov.doc_num;
-      this.shop.nom_proveedor = prov.names;
-      this.shop.ape_proveedor = prov.surnames;
+      this.shop.doc_client = prov.doc_num;
+      this.shop.nam_client = prov.names;
+      this.shop.sur_client = prov.surnames;
       this.showClients = false;
     },
     limpiarCompra() {
       this.fec_documento = new Date().toISOString().slice(0, 10);
       this.fecha_pago = new Date().toISOString().slice(0, 10);
       this.fecha_llegada = new Date().toISOString().slice(0, 10);
-      const shop: ICompra = {
-        doc_proveedor: 0,
-        nom_proveedor: "",
-        ape_proveedor: "",
-        cod_factura: "",
-        tipo_pago: ETypesShop.COMPRA,
-        tipo_compra: ETiposContadoCredito.CONTADO,
-        compras: [],
+      const shop: Purchase = {
+        id: "",
+        employee: "",
+        doc_client: 0,
+        nam_client: "",
+        sur_client: "",
+        cod_purchase: "",
+        type_pay: EPayTypePurchase.CONTADO,
+        sales: [],
         subtotal: 0,
-        descuento: 0,
-        impuesto: 0,
+        discount: 0,
+        taxes: 0,
         total: 0,
-        estado: EstadoCompra.APROBADO,
-        fec_documento: new Date(),
-        fecha_pago: new Date(),
-        fecha_llegada: new Date(),
+        state: EEstadoVenta.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
-        caja: "",
+        cash_register: "",
       };
       this.shop = shop;
     },
@@ -392,9 +387,9 @@ export default Vue.extend({
     });
     if (this.compraAnterior) {
       this.shop = { ...this.compraAnterior };
-      this.shop.compras = [...this.compraAnterior.compras];
-      this.shop.cod_factura =
-        this.compraAnterior.cod_factura.split("-")[1] || "";
+      this.shop.sales = [...this.compraAnterior.sales];
+      this.shop.cod_purchase =
+        this.compraAnterior.cod_purchase.split("-")[1] || "";
     }
   },
 });

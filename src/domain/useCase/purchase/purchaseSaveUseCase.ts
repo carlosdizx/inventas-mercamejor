@@ -14,10 +14,10 @@ import { EEstadoVenta } from "@/domain/model/constants/Constants";
 
 export const REGISTER_NEW_SALE = async (sale: Purchase): Promise<boolean> => {
   await SAVE_PURCHASE(sale);
-  await SAVE_INVENTORY_FROM_SALE(sale);
-  if (sale.type_pay === EPayTypePurchase.CREDITO) {
-    SAVE_BILL_TO_PAY(sale);
-  }
+  //await SAVE_INVENTORY_FROM_SALE(sale);
+  //if (sale.type_pay === EPayTypePurchase.CREDITO) {
+  //  SAVE_BILL_TO_PAY(sale);
+  //}
   await UNITS_UPDATED_FROM_PURCHASE(sale);
   return true;
 };

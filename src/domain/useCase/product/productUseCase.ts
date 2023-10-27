@@ -9,20 +9,24 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
 ): Promise<void> => {
   for (const itemShop of sale.sales) {
     await UPDATE_UNITS_PRODUCT(
+      "ADICIONAR",
       Number(itemShop.bar_code),
       itemShop.amount,
-      "RESTAR"
+      itemShop.price_shop,
+      itemShop.price_purchase
     );
   }
 };
 
 export const UPDATE_UNITS_PRODUCT = async (
+  tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR",
   barCode: number,
   amount: number,
-  tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
+  unitPrice: number,
+  salePrice: number
 ): Promise<void> => {
-  const producto: any = await FIND_PRODUCT_BY_BAR_CODE(barCode);
-  let totalUnits = producto.producto.cantidad;
+  const product: any = await FIND_PRODUCT_BY_BAR_CODE(barCode);
+  let totalUnits = product.product.amount;
   if (tipoOperacion === "ADICIONAR") {
     totalUnits = totalUnits + amount;
   } else if (tipoOperacion === "RESTAR") {
@@ -30,5 +34,5 @@ export const UPDATE_UNITS_PRODUCT = async (
   } else {
     totalUnits = amount;
   }
-  await UPDATE_AMOUNT_PRODUCT(producto.id, totalUnits);
+  await UPDATE_AMOUNT_PRODUCT(product.id, totalUnits, unitPrice, salePrice);
 };

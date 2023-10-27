@@ -60,18 +60,18 @@ export default Vue.extend({
       const formVentas: any = this.$refs.FormVentas;
       const productos: [] = datos.darItemsFactura().productos;
       const newProducts: ProductPurchase[] = productos.map(
-        (e: ProductoVenta) => {
+        (e: ProductPurchase) => {
           return {
             id: "",
-            bar_code: e.codigo,
-            description: e.nombre,
-            amount: e.getCantidad,
-            price_shop: e.precio,
-            price_purchase: e.precio,
+            bar_code: e.bar_code,
+            name: e.name,
+            amount: e.amount,
+            price_shop: e.price_shop,
+            price_purchase: e.price_purchase,
             taxes: 0,
             discount: 0,
-            subtotal: e.getSubtotal,
-          };
+            subtotal: e.subtotal,
+          } as ProductPurchase;
         }
       );
       if (productos.length > 0) {

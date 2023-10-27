@@ -1,3 +1,8 @@
+import { LISTAR_IN } from "@/services/crud";
+import { DocumentData } from "firebase/firestore";
+
+const coleccionCompras = "shops";
+
 export const IS_NUM_FACTURA_EXISTE = async (
   codigoFactura: string
 ): Promise<boolean> => {

@@ -10,8 +10,8 @@ export interface Inventory {
 export interface InventoryProduct {
   input: number;
   output: number;
-  bar_code: number;
-  description: string;
+  bar_code: string;
+  name: string;
   store: string;
 }
 

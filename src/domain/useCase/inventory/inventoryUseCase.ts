@@ -1,5 +1,6 @@
 import { EInventoryState, Inventory } from "@/domain/model/inventory/Inventory";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { InventoryProduct } from "@/domain/model/inventory/Inventory";
 import { EPayTypePurchase, Purchase } from "@/domain/model/purchase/Purchase";
 import { SAVE_INVENTORY } from "@/infrastructure/firebase/adapter/inventory/inventoryAdapter";
 
@@ -13,12 +14,12 @@ export const SAVE_INVENTORY_FROM_SALE = async (
     cod_invoice: purchase.cod_purchase,
     products: purchase.sales.map((sale: ProductPurchase) => {
       return {
-        description: sale.description,
         input: sale.amount,
         output: ZERO,
         bar_code: sale.bar_code,
+        name: sale.name,
         store: "",
-      };
+      } as InventoryProduct;
     }),
     state:
       purchase.type_pay === EPayTypePurchase.CONTADO

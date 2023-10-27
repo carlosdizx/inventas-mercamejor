@@ -96,8 +96,8 @@ import {
   TOTALIZAR_VALORES,
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
-import { Producto } from "@/entity/Producto";
-import { ProductoVenta } from "@/dto/ProductoVenta";
+import { Product } from "@/domain/model/product/Product";
+import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 
 export default Vue.extend({
   name: "ListadoItems",
@@ -114,20 +114,24 @@ export default Vue.extend({
       { text: "Precio*uni", value: "sale_price" },
       { text: "Subtotal", value: "subtotal" },
     ],
-    filas: [] as ProductoVenta[],
+    filas: [] as ProductPurchase[],
   }),
   methods: {
-    async agregarProducto(productoNuevo: Producto) {
-      const agregado = await YA_LISTADO(this.filas, productoNuevo);
-      const producto: ProductoVenta = new ProductoVenta(
-        productoNuevo.codigo_barras,
-        productoNuevo.nombre,
-        1,
-        productoNuevo.precio_unitario_venta,
-        productoNuevo.descuento
-      );
+    async agregarProducto(newProduct: Product) {
+      const agregado = YA_LISTADO(this.filas, newProduct);
+      const producto: ProductPurchase = {
+        id: newProduct.id,
+        bar_code: newProduct.bar_code,
+        name: newProduct.description,
+        amount: 1,
+        price_shop: newProduct.unit_price,
+        price_purchase: newProduct.sale_price,
+        taxes: 0,
+        discount: 0,
+        subtotal: newProduct.sale_price,
+      };
       if (agregado) {
-        this.filas = AGREGAR_PRODUCTO(this.filas, productoNuevo);
+        this.filas = AGREGAR_PRODUCTO(this.filas, newProduct);
       } else {
         this.filas.push(producto);
       }
@@ -140,7 +144,10 @@ export default Vue.extend({
       this.total = valores.total;
       this.calculadora = this.calculadora * 1;
     },
-    async cambiarCantidadProducto(valor: number | string, item: ProductoVenta) {
+    async cambiarCantidadProducto(
+      valor: number | string,
+      item: ProductPurchase
+    ) {
       if (valor == 0) {
         this.filas = this.filas.filter((producto) => producto !== item);
         return;

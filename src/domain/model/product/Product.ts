@@ -12,6 +12,8 @@ export interface Product {
 }
 
 export const BAR_CODE = "bar_code";
-export interface AmountProduct {
+export interface UpdatedProduct {
   amount: number;
+  unit_price: number;
+  sale_price: number;
 }
