@@ -231,7 +231,7 @@ export default Vue.extend({
   computed: {
     validarRegistro() {
       if (
-        this.shop.sales.length <= 0 &&
+        this.shop.shops.length <= 0 &&
         this.shop.doc_client &&
         this.shop.type_pay &&
         this.shop.type_pay &&
@@ -268,7 +268,7 @@ export default Vue.extend({
     },
     actualizarProductos(productos: ProductPurchase[]) {
       const productoss: Array<ProductPurchase> = productos;
-      this.shop.sales = productoss;
+      this.shop.shops = productoss;
       const shop: Purchase = {
         id: "",
         employee: "",
@@ -280,7 +280,7 @@ export default Vue.extend({
         created_at: new Date(),
         updated_at: new Date(),
         type_pay: EPayTypePurchase.CONTADO,
-        sales: productos,
+        shops: productos,
         subtotal: 0,
         total: 0,
         state: EEstadoVenta.APROBADO,
@@ -293,7 +293,7 @@ export default Vue.extend({
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.shop.sales.forEach((com: ProductPurchase) => {
+      this.shop.shops.forEach((com: ProductPurchase) => {
         subtototal += Number(com.subtotal);
       });
       this.shop.subtotal = subtototal;
@@ -365,7 +365,7 @@ export default Vue.extend({
         sur_client: "",
         cod_purchase: "",
         type_pay: EPayTypePurchase.CONTADO,
-        sales: [],
+        shops: [],
         subtotal: 0,
         discount: 0,
         taxes: 0,
@@ -387,7 +387,7 @@ export default Vue.extend({
     });
     if (this.compraAnterior) {
       this.shop = { ...this.compraAnterior };
-      this.shop.sales = [...this.compraAnterior.sales];
+      this.shop.shops = [...this.compraAnterior.shops];
       this.shop.cod_purchase =
         this.compraAnterior.cod_purchase.split("-")[1] || "";
     }

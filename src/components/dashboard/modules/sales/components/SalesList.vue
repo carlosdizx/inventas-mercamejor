@@ -1,8 +1,8 @@
 <template>
   <v-card>
     <Tabla
-      coleccion="ventas"
-      titulo="Ventas"
+      coleccion="sales"
+      titulo="Sales"
       :columnas="columnas"
       no-crear
       no-editar
@@ -15,7 +15,7 @@ import Tabla from "@/components/crud/Tabla.vue";
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "Ventas",
+  name: "SalesList",
   components: {
     Tabla,
   },

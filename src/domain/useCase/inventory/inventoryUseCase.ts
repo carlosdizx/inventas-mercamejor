@@ -12,7 +12,7 @@ export const SAVE_INVENTORY_FROM_SALE = async (
   const newInventory: Inventory = {
     id: purchase.id,
     cod_invoice: purchase.cod_purchase,
-    products: purchase.sales.map((sale: ProductPurchase) => {
+    products: purchase.shops.map((sale: ProductPurchase) => {
       return {
         input: sale.amount,
         output: ZERO,

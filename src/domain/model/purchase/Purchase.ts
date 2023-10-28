@@ -14,7 +14,7 @@ export interface Purchase {
   total: number;
   taxes: number;
   discount: number;
-  sales: ProductPurchase[];
+  shops: ProductPurchase[];
   state: EEstadoVenta;
   created_at: Date;
   updated_at: Date;

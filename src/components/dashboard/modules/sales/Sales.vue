@@ -84,7 +84,7 @@ export default Vue.extend({
           consecutivo
         );
         factura.cambiarEstado();
-        purchase.sales = [...newProducts];
+        purchase.shops = [...newProducts];
         await REGISTER_NEW_SALE({ ...purchase });
         datos.resetValues();
         formVentas.resetDatosVenta();

@@ -7,7 +7,7 @@ import {
 export const UNITS_UPDATED_FROM_PURCHASE = async (
   sale: Purchase
 ): Promise<void> => {
-  for (const itemShop of sale.sales) {
+  for (const itemShop of sale.shops) {
     await UPDATE_UNITS_PRODUCT(
       "ADICIONAR",
       Number(itemShop.bar_code),
