@@ -23,7 +23,7 @@ import { CAMPOS, VALIDACIONES } from "@/models/Cliente";
 import Vue from "vue";
 
 export default Vue.extend({
-  name: "DialogClientes",
+  name: "DialogClients",
   components: { Tabla },
   data: () => ({
     dialog_list: false,

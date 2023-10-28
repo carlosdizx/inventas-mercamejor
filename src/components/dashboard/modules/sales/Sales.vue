@@ -1,31 +1,30 @@
 <template>
   <v-container>
-    <FormVentas
+    <SalesForm
       v-on:codigo_barras="buscarProducto($event)"
       v-on:datos_cliente="generarFactura($event)"
-      ref="FormVentas"
+      ref="SalesForm"
     />
-    <ListadoItems ref="ListadoItems" />
+    <ItemsList ref="ItemsList" />
     <Factura ref="Factura" />
   </v-container>
 </template>
 
 <script lang="ts">
-import FormVentas from "@/components/dashboard/modules/ventas/componentes/FormVentas.vue";
-import ListadoItems from "@/components/dashboard/modules/ventas/componentes/ListadoItems.vue";
+import SalesForm from "@/components/dashboard/modules/sales/components/SalesForm.vue";
+import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList.vue";
 import Factura from "@/components/generals/Factura.vue";
 import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
-import { ProductoVenta } from "@/dto/ProductoVenta";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
 import { Purchase } from "@/domain/model/purchase/Purchase";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 
 export default Vue.extend({
-  name: "Ventas",
-  components: { FormVentas, ListadoItems, Factura },
+  name: "Sales",
+  components: { SalesForm, ItemsList, Factura },
   data: () => ({
     productos: [],
     audio: new Audio(),
@@ -35,9 +34,9 @@ export default Vue.extend({
   methods: {
     async buscarProducto(codigo_barras: number) {
       const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
-      const formVentas: any = this.$refs.FormVentas;
+      const formVentas: any = this.$refs.SalesForm;
       if (producto) {
-        const listado: any = this.$refs.ListadoItems;
+        const listado: any = this.$refs.ItemsList;
         listado.agregarProducto(producto.producto);
         formVentas.resetProduct();
         // this.audio.src = this.add;
@@ -56,8 +55,8 @@ export default Vue.extend({
     },
     async generarFactura(purchase: Purchase) {
       const factura: any = this.$refs.Factura;
-      const datos: any = this.$refs.ListadoItems;
-      const formVentas: any = this.$refs.FormVentas;
+      const datos: any = this.$refs.ItemsList;
+      const formVentas: any = this.$refs.SalesForm;
       const productos: [] = datos.darItemsFactura().productos;
       const newProducts: ProductPurchase[] = productos.map(
         (e: ProductPurchase) => {

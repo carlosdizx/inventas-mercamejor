@@ -3,10 +3,7 @@
     <v-card-text>
       <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
     </v-card-text>
-    <DialogClientes
-      v-on:cliente="cambiarCliente($event)"
-      ref="DialogClientes"
-    />
+    <DialogClients v-on:cliente="cambiarCliente($event)" ref="DialogClients" />
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form @submit.prevent="">
@@ -125,7 +122,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
-import DialogClientes from "@/components/dashboard/modules/ventas/componentes/DialogClientes.vue";
+import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
 import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
 import { IEstadoVenta, IVenta } from "@/models/Venta";
 import {
@@ -135,8 +132,8 @@ import {
 import { IProductoVenta } from "@/models/ProductoVenta";
 
 export default Vue.extend({
-  name: "FormVentas",
-  components: { DialogClientes },
+  name: "SalesForm",
+  components: { DialogClients },
   data: () => ({
     codigo_barras: null,
     venta: {
@@ -167,7 +164,7 @@ export default Vue.extend({
   }),
   methods: {
     abrirDialogoLisadoClientes() {
-      const dialog: any = this.$refs.DialogClientes;
+      const dialog: any = this.$refs.DialogClients;
       dialog.cambiarEstado();
     },
     async buscarCliente() {

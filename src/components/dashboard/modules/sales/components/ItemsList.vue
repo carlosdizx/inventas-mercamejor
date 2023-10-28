@@ -100,7 +100,7 @@ import { Product } from "@/domain/model/product/Product";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 
 export default Vue.extend({
-  name: "ListadoItems",
+  name: "ItemsList",
   data: () => ({
     total: 0,
     subtotal: 0,
