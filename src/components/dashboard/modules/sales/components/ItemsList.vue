@@ -110,8 +110,8 @@ export default Vue.extend({
     columnas: [
       { text: "Codigo", value: "bar_code" },
       { text: "Producto", value: "name" },
-      { text: "Cantidad", value: "cantidad" },
-      { text: "Precio*uni", value: "sale_price" },
+      { text: "Cantidad", value: "amount" },
+      { text: "Precio*uni", value: "price_purchase" },
       { text: "Subtotal", value: "subtotal" },
     ],
     filas: [] as ProductPurchase[],
@@ -122,7 +122,7 @@ export default Vue.extend({
       const producto: ProductPurchase = {
         id: newProduct.id,
         bar_code: newProduct.bar_code,
-        name: newProduct.description,
+        name: newProduct.name,
         amount: 1,
         price_shop: newProduct.unit_price,
         price_purchase: newProduct.sale_price,
