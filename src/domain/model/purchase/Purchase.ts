@@ -3,9 +3,9 @@ import { EEstadoVenta } from "../constants/Constants";
 
 export interface Purchase {
   id: string;
-  doc_client: number;
-  nam_client: string;
-  sur_client: string;
+  doc_supp: number;
+  nam_supp: string;
+  sur_supp: string;
   cod_purchase: string;
   type_pay: EPayTypePurchase;
   cash_register: string;

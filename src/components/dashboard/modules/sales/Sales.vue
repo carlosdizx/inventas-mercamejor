@@ -18,7 +18,7 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
-import { REGISTER_NEW_SALE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
+import { REGISTER_NEW_PURCHASE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
 import { Purchase } from "@/domain/model/purchase/Purchase";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 
@@ -85,7 +85,7 @@ export default Vue.extend({
         );
         factura.cambiarEstado();
         purchase.shops = [...newProducts];
-        await REGISTER_NEW_SALE({ ...purchase });
+        await REGISTER_NEW_PURCHASE({ ...purchase });
         datos.resetValues();
         formVentas.resetDatosVenta();
       } else {

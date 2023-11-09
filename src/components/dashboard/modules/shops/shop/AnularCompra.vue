@@ -9,7 +9,7 @@
     <v-dialog v-model="mostrar">
       <v-card>
         <Tabla
-          coleccion="compras"
+          coleccion="purchases"
           titulo="Compras"
           :columnas="columnas"
           :campos_form="campos_form"

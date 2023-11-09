@@ -40,7 +40,24 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="8">
+            <v-col cols="4">
+              <validation-provider
+                v-slot="{ errors }"
+                name="Tipo de Pago"
+                rules="required "
+              >
+                <v-select
+                  :disabled="anular"
+                  label="Tipo de Pago"
+                  v-model="shop.type_pay"
+                  :error-messages="errors"
+                  :items="tiposPagos"
+                  outlined
+                  dense
+                ></v-select>
+              </validation-provider>
+            </v-col>
+            <v-col cols="4">
               <validation-provider
                 v-slot="{ errors }"
                 name="Fecha de Compra"
@@ -55,23 +72,6 @@
                   outlined
                   dense
                 ></v-text-field>
-              </validation-provider>
-            </v-col>
-            <v-col cols="3" v-if="false">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo de Compra"
-                rules="required"
-              >
-                <v-select
-                  :disabled="anular"
-                  label="Tipo de Compra"
-                  v-model="shop.type_pay"
-                  :error-messages="errors"
-                  :items="tiposDocumento"
-                  outlined
-                  dense
-                ></v-select>
               </validation-provider>
             </v-col>
             <v-col cols="4">
@@ -104,23 +104,6 @@
             </v-col>
           </v-row>
           <v-row class="mr-5 ml-5">
-            <v-col cols="3" v-if="false">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo de Pago"
-                rules="required"
-              >
-                <v-select
-                  :disabled="anular"
-                  label="Tipo de Pago"
-                  v-model="shop.type_pay"
-                  :error-messages="errors"
-                  :items="tiposPagos"
-                  outlined
-                  dense
-                ></v-select>
-              </validation-provider>
-            </v-col>
             <v-col v-if="false">
               <v-text-field
                 :disabled="anular"
@@ -144,7 +127,7 @@
           </v-row>
           <TablaCompras
             :anular="anular"
-            :compras="shop.sales"
+            :compras="shop.shops"
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
           />
@@ -157,7 +140,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="shop.sales.length == 0"
+                :disabled="shop.shops.length == 0"
                 color="color_a mb-3"
                 x-large
                 block
@@ -188,10 +171,12 @@ import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
 import TablaCompras from "@/components/dashboard/modules/shops/shop/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { ANULAR_COMPRA } from "@/services/compras";
 import { Purchase, EPayTypePurchase } from "@/domain/model/purchase/Purchase";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
-import { REGISTER_NEW_SALE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
+import {
+  REGISTER_NEW_PURCHASE,
+  CANCEL_PURCHASE,
+} from "@/domain/useCase/purchase/purchaseSaveUseCase";
 import { EEstadoVenta } from "@/domain/model/constants/Constants";
 
 import Swal from "sweetalert2";
@@ -232,7 +217,7 @@ export default Vue.extend({
     validarRegistro() {
       if (
         this.shop.shops.length <= 0 &&
-        this.shop.doc_client &&
+        this.shop.doc_supp &&
         this.shop.type_pay &&
         this.shop.type_pay &&
         this.shop.total < this.shop.discount - this.shop.taxes &&
@@ -246,8 +231,8 @@ export default Vue.extend({
     },
     nombresProveedor() {
       let nombres = "Proveedores Varios";
-      if (this.shop.nam_client) {
-        nombres = this.shop.nam_client + " " + this.shop.sur_client;
+      if (this.shop.nam_supp) {
+        nombres = this.shop.nam_supp + " " + this.shop.sur_supp;
       }
       return nombres;
     },
@@ -261,8 +246,8 @@ export default Vue.extend({
     buscarProveedor() {
       this.proveedores.forEach((prov: any) => {
         if (this.doc_proveedor === prov.doc_num) {
-          this.shop.nam_client = prov.names;
-          this.shop.sur_client = prov.surnames;
+          this.shop.nam_supp = prov.names;
+          this.shop.sur_supp = prov.surnames;
         }
       });
     },
@@ -274,9 +259,9 @@ export default Vue.extend({
         employee: "",
         discount: 0,
         taxes: 0,
-        doc_client: this.shop.doc_client || 0,
-        nam_client: this.shop.nam_client || "",
-        sur_client: this.shop.sur_client || "",
+        doc_supp: this.shop.doc_supp || 0,
+        nam_supp: this.shop.nam_supp || "",
+        sur_supp: this.shop.sur_supp || "",
         created_at: new Date(),
         updated_at: new Date(),
         type_pay: EPayTypePurchase.CONTADO,
@@ -316,7 +301,10 @@ export default Vue.extend({
         confirmButtonColor: "green",
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
-        if (result.isConfirmed && (await REGISTER_NEW_SALE({ ...this.shop }))) {
+        if (
+          result.isConfirmed &&
+          (await REGISTER_NEW_PURCHASE({ ...this.shop }))
+        ) {
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
@@ -336,7 +324,7 @@ export default Vue.extend({
         denyButtonColor: "gray",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await ANULAR_COMPRA(this.idcompraanterior);
+          await CANCEL_PURCHASE(this.idcompraanterior);
           this.eliminarDatos = !this.eliminarDatos;
           this.limpiarCompra();
           const observer: any = this.$refs.observer;
@@ -348,9 +336,9 @@ export default Vue.extend({
     },
     seleccionarProveedor(prov: any) {
       this.doc_proveedor = prov.doc_num;
-      this.shop.doc_client = prov.doc_num;
-      this.shop.nam_client = prov.names;
-      this.shop.sur_client = prov.surnames;
+      this.shop.doc_supp = prov.doc_num;
+      this.shop.nam_supp = prov.names;
+      this.shop.sur_supp = prov.surnames;
       this.showClients = false;
     },
     limpiarCompra() {
@@ -360,9 +348,9 @@ export default Vue.extend({
       const shop: Purchase = {
         id: "",
         employee: "",
-        doc_client: 0,
-        nam_client: "",
-        sur_client: "",
+        doc_supp: 0,
+        nam_supp: "",
+        sur_supp: "",
         cod_purchase: "",
         type_pay: EPayTypePurchase.CONTADO,
         shops: [],
