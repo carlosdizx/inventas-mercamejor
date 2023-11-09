@@ -1,5 +1,5 @@
 import { ProductPurchase } from "../productpurchase/ProductPurchase";
-import { EEstadoVenta } from "../constants/Constants";
+import { EEstatePurchase, EPayTypePurchase } from "../constants/Constants";
 
 export interface Purchase {
   id: string;
@@ -15,16 +15,11 @@ export interface Purchase {
   taxes: number;
   discount: number;
   shops: ProductPurchase[];
-  state: EEstadoVenta;
+  state: EEstatePurchase;
   created_at: Date;
   updated_at: Date;
 }
 
-export enum EPayTypePurchase {
-  CONTADO = "Contado",
-  CREDITO = "Credito",
-}
-
 export interface NewStatePurchase {
-  state: EEstadoVenta;
+  state: EEstatePurchase;
 }

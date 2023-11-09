@@ -1,15 +1,16 @@
 import { Purchase } from "@/domain/model/purchase/Purchase";
+import { Sale } from "@/domain/model/sale/Sale";
 import {
   FIND_PRODUCT_BY_BAR_CODE,
   UPDATE_AMOUNT_PRODUCT,
 } from "@/infrastructure/firebase/adapter/product/productAdapter";
 
 export const UNITS_UPDATED_FROM_PURCHASE = async (
-  sale: Purchase
+  purchase: Purchase
 ): Promise<void> => {
-  for (const itemShop of sale.shops) {
+  for (const itemShop of purchase.shops) {
     await UPDATE_UNITS_PRODUCT(
-      "ADICIONAR",
+      "ADD",
       Number(itemShop.bar_code),
       itemShop.amount,
       itemShop.price_shop,
@@ -18,8 +19,20 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
   }
 };
 
+export const UNITS_UPDATED_FROM_SALE = async (sale: Sale): Promise<void> => {
+  for (const itemShop of sale.sales) {
+    await UPDATE_UNITS_PRODUCT(
+      "LESS",
+      Number(itemShop.bar_code),
+      itemShop.amount,
+      itemShop.shop_price,
+      itemShop.sale_price
+    );
+  }
+};
+
 export const UPDATE_UNITS_PRODUCT = async (
-  tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR",
+  tipoOperacion: "ADD" | "LESS" | "ASINGN",
   barCode: number,
   amount: number,
   unitPrice: number,
@@ -27,9 +40,9 @@ export const UPDATE_UNITS_PRODUCT = async (
 ): Promise<void> => {
   const product: any = await FIND_PRODUCT_BY_BAR_CODE(barCode);
   let totalUnits = product.product.amount;
-  if (tipoOperacion === "ADICIONAR") {
+  if (tipoOperacion === "ADD") {
     totalUnits = totalUnits + amount;
-  } else if (tipoOperacion === "RESTAR") {
+  } else if (tipoOperacion === "LESS") {
     totalUnits = totalUnits - amount;
   } else {
     totalUnits = amount;

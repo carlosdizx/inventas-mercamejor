@@ -1,25 +1,25 @@
-export interface IVenta {
-  doc_cliente: number;
-  nom_cliente: string;
-  ape_cliente: string;
-  fec_documento: Date;
-  cod_factura: string;
-  tipo_compra: ETiposContadoCredito;
-  tipo_pago: string;
-  fecha_pago: Date;
-  fecha_llegada: Date;
+import { EEstateSale, EPayTypePurchase } from "../constants/Constants";
+import { ProductSale } from "../productsale/ProductSale";
+
+export interface Sale {
+  doc_client: number;
+  nam_client: string;
+  sur_client: string;
+  cod_invoice: string;
+  shop_type: EPayTypePurchase;
+  pay_type: string;
+  pay_date: Date;
   caja: string;
-  ventas: IProductoVenta[];
+  sales: ProductSale[];
   subtotal: number;
-  descuento: number;
-  impuesto: number;
+  discount: number;
+  taxes: number;
   total: number;
-  estado: ESaleState;
+  state: EEstateSale;
   created_at: Date;
   updated_at: Date;
 }
 
-export enum ESaleState {
-  APROBADO = "Aprobado",
-  CANCELADO = "Cancelado",
+export interface NewStateSale {
+  state: EEstateSale;
 }

@@ -1,29 +1,25 @@
+import { Sale, NewStateSale } from "@/domain/model/sale/Sale";
 import {
-  EPayTypePurchase,
-  NewStatePurchase,
-  Purchase,
-} from "@/domain/model/purchase/Purchase";
-import {
-  SAVE_PURCHASE,
-  UPDATE_PURCHASE,
-} from "@/infrastructure/firebase/adapter/purchase/purchaseAdapter";
+  SAVE_SALE,
+  UPDATE_SALE,
+} from "@/infrastructure/firebase/adapter/sale/saleAdapter";
 import { SAVE_INVENTORY_FROM_SALE } from "../inventory/inventoryUseCase";
 import { SAVE_BILL_TO_PAY } from "../billtopay/billToPayUseCase";
-import { UNITS_UPDATED_FROM_PURCHASE } from "../product/productUseCase";
-import { EEstadoVenta } from "@/domain/model/constants/Constants";
+import { UNITS_UPDATED_FROM_SALE } from "../product/productUseCase";
+import { EEstateSale } from "@/domain/model/constants/Constants";
 
-export const REGISTER_NEW_SALE = async (shop: Purchase): Promise<boolean> => {
-  await SAVE_PURCHASE(shop);
-  //await SAVE_INVENTORY_FROM_SALE(shop);
+export const REGISTER_NEW_SALE = async (sale: Sale): Promise<boolean> => {
+  await SAVE_SALE(sale);
+  await SAVE_INVENTORY_FROM_SALE(sale);
   //if (shop.type_pay === EPayTypePurchase.CREDITO) {
   //  SAVE_BILL_TO_PAY(shop);
   //}
-  await UNITS_UPDATED_FROM_PURCHASE(shop);
+  await UNITS_UPDATED_FROM_SALE(sale);
   return true;
 };
 
 export const CANCEL_SALE = async (idPurchase: string): Promise<void> => {
-  await UPDATE_PURCHASE(idPurchase, {
-    state: EEstadoVenta.CANCELADO,
-  } as NewStatePurchase);
+  await UPDATE_SALE(idPurchase, {
+    state: EEstateSale.CANCELADO,
+  } as NewStateSale);
 };

@@ -171,13 +171,16 @@ import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
 
 import TablaCompras from "@/components/dashboard/modules/shops/shop/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
-import { Purchase, EPayTypePurchase } from "@/domain/model/purchase/Purchase";
+import { Purchase } from "@/domain/model/purchase/Purchase";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 import {
   REGISTER_NEW_PURCHASE,
   CANCEL_PURCHASE,
 } from "@/domain/useCase/purchase/purchaseSaveUseCase";
-import { EEstadoVenta } from "@/domain/model/constants/Constants";
+import {
+  EEstatePurchase,
+  EPayTypePurchase,
+} from "@/domain/model/constants/Constants";
 
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
@@ -268,7 +271,7 @@ export default Vue.extend({
         shops: productos,
         subtotal: 0,
         total: 0,
-        state: EEstadoVenta.APROBADO,
+        state: EEstatePurchase.APROBADO,
         cash_register: "",
         cod_purchase: "",
       };
@@ -358,7 +361,7 @@ export default Vue.extend({
         discount: 0,
         taxes: 0,
         total: 0,
-        state: EEstadoVenta.APROBADO,
+        state: EEstatePurchase.APROBADO,
         created_at: new Date(),
         updated_at: new Date(),
         cash_register: "",
