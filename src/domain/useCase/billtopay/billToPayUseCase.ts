@@ -16,6 +16,5 @@ export const SAVE_BILL_TO_PAY = async (sale: Purchase): Promise<BillToPay> => {
     create_at: new Date(),
     update_at: new Date(),
   };
-  console.log(newBillToPay);
   return SAVE_Bill_TO_PAY(newBillToPay);
 };

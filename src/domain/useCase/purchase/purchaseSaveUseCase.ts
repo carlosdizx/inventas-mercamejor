@@ -18,7 +18,6 @@ export const REGISTER_NEW_PURCHASE = async (
   await SAVE_PURCHASE(shop);
   await SAVE_INVENTORY_FROM_PURCHASE(shop);
   if (shop.type_pay === EPayTypePurchase.CREDITO) {
-    console.log("type credito");
     SAVE_BILL_TO_PAY(shop);
   }
   await UNITS_UPDATED_FROM_PURCHASE(shop);

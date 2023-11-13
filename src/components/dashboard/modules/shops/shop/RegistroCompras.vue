@@ -44,14 +44,14 @@
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo de Pago"
-                rules="required "
+                rules="required"
               >
                 <v-select
                   :disabled="anular"
                   label="Tipo de Pago"
                   v-model="shop.type_pay"
                   :error-messages="errors"
-                  :items="tiposPagos"
+                  :items="payTypes"
                   outlined
                   dense
                 ></v-select>
@@ -202,7 +202,7 @@ export default Vue.extend({
   data() {
     return {
       columnas: COLUMNAS,
-      tiposPagos: [ETiposContadoCredito.CONTADO, ETiposContadoCredito.CREDITO],
+      payTypes: [EPayTypePurchase.CONTADO, EPayTypePurchase.CREDITO],
       tiposDocumento: [ETypesShop.COMPRA, ETypesShop.PEDIDO],
       proveedores: [""],
       eliminarDatos: false,
@@ -267,7 +267,7 @@ export default Vue.extend({
         sur_supp: this.shop.sur_supp || "",
         created_at: new Date(),
         updated_at: new Date(),
-        type_pay: EPayTypePurchase.CONTADO,
+        type_pay: this.shop.type_pay,
         shops: productos,
         subtotal: 0,
         total: 0,
