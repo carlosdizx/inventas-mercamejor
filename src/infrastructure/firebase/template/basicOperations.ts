@@ -22,7 +22,7 @@ export const LIST = async (colection: string): Promise<QuerySnapshot> => {
   return await getDocs(consulta);
 };
 
-export const LISTAR_IN = async (
+export const LIST_IN = async (
   colection: string,
   campo: string,
   valor: string | number

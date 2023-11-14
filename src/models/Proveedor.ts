@@ -1,4 +1,4 @@
-import { GENEROS, TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
+import { GENDERS, TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
 
 /**
  Sección tabla
@@ -93,7 +93,7 @@ export const CAMPOS = [
     type: 6,
     multiple: false,
     solo: true,
-    items: GENEROS,
+    items: GENDERS,
     format: "text",
     name: "gender",
     model: "",

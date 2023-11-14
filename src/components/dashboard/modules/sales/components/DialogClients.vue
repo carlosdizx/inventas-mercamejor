@@ -28,9 +28,10 @@ export default Vue.extend({
   data: () => ({
     dialog_list: false,
     columnas: [
-      { text: "Nombres", value: "nombres" },
-      { text: "Apellidos", value: "apellidos" },
-      { text: "Documento", value: "documento" },
+      { text: "Nombres", value: "names" },
+      { text: "Apellidos", value: "surnames" },
+      { text: "Documento", value: "doc_num" },
+      { text: "Dirección", value: "address" },
       { text: "Selección", value: "seleccion" },
     ],
     campos_form: CAMPOS,
@@ -42,6 +43,8 @@ export default Vue.extend({
       this.$emit("dialog", this.dialog_list);
     },
     cambiarCliente(cliente: any) {
+      console.log("cambiar cliente");
+      console.log(cliente);
       this.cambiarEstado();
       this.$emit("cliente", cliente);
     },

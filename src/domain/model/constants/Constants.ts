@@ -18,7 +18,11 @@ export enum EPayTypeSale {
   CREDITO = "Credito",
 }
 
-export const GENEROS = ["Masculino", "Femenino", "Otro"];
+export enum GENDERS {
+  MALE = "Masculino",
+  FEMALE = "Femenino",
+  OTHER = "Otro",
+}
 
 export const TIPOS_DOCUMENTO = [
   "Cédula de ciudadania",

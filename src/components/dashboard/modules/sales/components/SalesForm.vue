@@ -123,13 +123,14 @@
 import Vue from "vue";
 import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
-import { BUSCAR_CLIENTE_POR_DOCUMENTO } from "@/UseCases/ClienteUseCases";
+import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
 import { IEstadoVenta, IVenta } from "@/models/Venta";
 import {
   FECHA_TO_STRING_INPUT,
   STRINT_TO_FECHA,
 } from "@/generals/procesamientos";
 import { IProductoVenta } from "@/models/ProductoVenta";
+import { Client } from "@/domain/model/client/Client";
 
 export default Vue.extend({
   name: "SalesForm",
@@ -137,7 +138,7 @@ export default Vue.extend({
   data: () => ({
     codigo_barras: null,
     venta: {
-      doc_cliente: 2222222,
+      doc_cliente: "2222222",
       nom_cliente: "Clientes varios",
       ape_cliente: "",
       tipo_venta: ETiposContadoCredito.CONTADO,
@@ -168,15 +169,15 @@ export default Vue.extend({
       dialog.cambiarEstado();
     },
     async buscarCliente() {
-      const resultado = await BUSCAR_CLIENTE_POR_DOCUMENTO(
-        this.venta.doc_cliente
-      );
-      this.cambiarCliente(resultado);
+      const resultado = await FIND_CLIENT_BY_DOCUMENT(this.venta.doc_cliente);
+      if (resultado) {
+        this.cambiarCliente(resultado);
+      }
     },
-    cambiarCliente(cliente: any) {
-      this.venta.doc_cliente = cliente.documento;
-      this.venta.ape_cliente = cliente.apellidos;
-      this.venta.nom_cliente = cliente.nombres;
+    cambiarCliente(client: Client) {
+      this.venta.doc_cliente = client.doc_num;
+      this.venta.ape_cliente = client.surnames;
+      this.venta.nom_cliente = client.names;
     },
     buscarProducto() {
       this.$emit("codigo_barras", this.codigo_barras);
@@ -190,7 +191,7 @@ export default Vue.extend({
       this.resetDatosVenta();
     },
     resetDatosVenta() {
-      this.venta.doc_cliente = 2222222;
+      this.venta.doc_cliente = "2222222";
       this.venta.nom_cliente = "Clientes varios";
       this.venta.ape_cliente = "";
       this.venta.tipo_compra = ETiposContadoCredito.CONTADO;

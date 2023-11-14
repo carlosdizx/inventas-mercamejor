@@ -1,4 +1,4 @@
-import { SAVE } from "../../template/basicOperations";
+import { SAVE } from "@/infrastructure/firebase/template/basicOperations";
 import { BillToPay } from "@/domain/model/billtopay/BillToPay";
 
 const billToPayCollection = "bill_to_pays";

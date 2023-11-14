@@ -1,5 +1,5 @@
 import { Inventory } from "@/domain/model/inventory/Inventory";
-import { SAVE } from "../../template/basicOperations";
+import { SAVE } from "@/infrastructure/firebase/template/basicOperations";
 
 const inventoryCollection = "inventories";
 

@@ -1,6 +1,9 @@
 import { NewStatePurchase } from "@/domain/model/purchase/Purchase";
 import { Sale } from "@/domain/model/sale/Sale";
-import { SAVE, UPDATE } from "../../template/basicOperations";
+import {
+  SAVE,
+  UPDATE,
+} from "@/infrastructure/firebase/template/basicOperations";
 
 const purchaseCollection = "sales";
 
