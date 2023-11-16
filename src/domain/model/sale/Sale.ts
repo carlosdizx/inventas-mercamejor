@@ -2,14 +2,14 @@ import { EEstateSale, EPayTypePurchase } from "../constants/Constants";
 import { ProductSale } from "../productsale/ProductSale";
 
 export interface Sale {
-  doc_client: number;
+  doc_client: string;
   nam_client: string;
   sur_client: string;
   cod_invoice: string;
   shop_type: EPayTypePurchase;
   pay_type: string;
   pay_date: Date;
-  caja: string;
+  box: string;
   sales: ProductSale[];
   subtotal: number;
   discount: number;

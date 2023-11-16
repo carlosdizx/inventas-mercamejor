@@ -23,7 +23,7 @@
                   dense
                   outlined
                   counter
-                  v-model="venta.doc_cliente"
+                  v-model="sale.doc_client"
                   @focusout="buscarCliente()"
                   :error-messages="errors"
                   autofocus
@@ -37,7 +37,7 @@
                 dense
                 outlined
                 counter
-                :value="`${venta.nom_cliente + ' ' + venta.ape_cliente}`"
+                :value="`${sale.nam_client + ' ' + sale.sur_client}`"
                 readonly
                 disabled
               />
@@ -57,14 +57,14 @@
                   solo
                   outlined
                   dense
-                  v-model="venta.tipo_compra"
+                  v-model="sale.shop_type"
                   :error-messages="errors"
                 />
               </validation-provider>
             </v-col>
             <v-col cols="6">
               <v-text-field
-                v-if="venta.tipo_compra === 'Credito'"
+                v-if="sale.shop_type === 'Credito'"
                 label="Fecha de pago"
                 prepend-icon="mdi-numeric"
                 type="date"
@@ -86,7 +86,7 @@
                 outlined
                 clearable
                 counter
-                v-model.number="codigo_barras"
+                v-model.number="bar_code"
                 @input="buscarProducto()"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
@@ -121,43 +121,44 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ETiposContadoCredito, TIPOS_VENTA } from "@/generals/Constantes";
+import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
 import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
-import { IEstadoVenta, IVenta } from "@/models/Venta";
+import { Sale } from "@/domain/model/sale/Sale";
 import {
   FECHA_TO_STRING_INPUT,
   STRINT_TO_FECHA,
 } from "@/generals/procesamientos";
-import { IProductoVenta } from "@/models/ProductoVenta";
 import { Client } from "@/domain/model/client/Client";
+import {
+  EEstateSale,
+  EPayTypePurchase,
+} from "@/domain/model/constants/Constants";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
   name: "SalesForm",
   components: { DialogClients },
   data: () => ({
-    codigo_barras: null,
-    venta: {
-      doc_cliente: "2222222",
-      nom_cliente: "Clientes varios",
-      ape_cliente: "",
-      tipo_venta: ETiposContadoCredito.CONTADO,
-      fecha_pago: new Date(),
+    bar_code: null,
+    sale: {
+      doc_client: "2222222",
+      nam_client: "Clientes varios",
+      sur_client: "",
+      cod_invoice: "",
+      shop_type: EPayTypePurchase.CONTADO,
+      pay_type: "",
+      pay_date: new Date(),
+      box: "",
+      sales: [] as Array<ProductSale>,
       subtotal: 0,
-      descuento: 0,
+      discount: 0,
+      taxes: 0,
       total: 0,
-      caja: "",
-      cod_factura: "",
+      state: EEstateSale.APROBADO,
       created_at: new Date(),
-      fec_documento: new Date(),
-      fecha_llegada: new Date(),
-      impuesto: 0,
-      tipo_compra: ETiposContadoCredito.CONTADO,
-      tipo_pago: "",
       updated_at: new Date(),
-      ventas: [] as Array<IProductoVenta>,
-      estado: IEstadoVenta.APROBADO,
-    } as IVenta,
+    } as Sale,
     fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
@@ -169,37 +170,37 @@ export default Vue.extend({
       dialog.cambiarEstado();
     },
     async buscarCliente() {
-      const resultado = await FIND_CLIENT_BY_DOCUMENT(this.venta.doc_cliente);
+      const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
       if (resultado) {
         this.cambiarCliente(resultado);
       }
     },
     cambiarCliente(client: Client) {
-      this.venta.doc_cliente = client.doc_num;
-      this.venta.ape_cliente = client.surnames;
-      this.venta.nom_cliente = client.names;
+      this.sale.doc_client = client.doc_num;
+      this.sale.sur_client = client.surnames;
+      this.sale.nam_client = client.names;
     },
     buscarProducto() {
-      this.$emit("codigo_barras", this.codigo_barras);
+      this.$emit("codigo_barras", this.bar_code);
     },
     resetProduct() {
-      this.codigo_barras = null;
+      this.bar_code = null;
     },
     registrarVenta() {
-      this.venta.fecha_pago = STRINT_TO_FECHA(this.fecha_pago);
-      this.$emit("datos_cliente", this.venta);
+      this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
+      this.$emit("datos_cliente", this.sale);
       this.resetDatosVenta();
     },
     resetDatosVenta() {
-      this.venta.doc_cliente = "2222222";
-      this.venta.nom_cliente = "Clientes varios";
-      this.venta.ape_cliente = "";
-      this.venta.tipo_compra = ETiposContadoCredito.CONTADO;
-      this.venta.fecha_pago = new Date();
-      this.venta.subtotal = 0;
-      this.venta.descuento = 0;
-      this.venta.total = 0;
-      this.venta.ventas = [];
+      this.sale.doc_client = "2222222";
+      this.sale.nam_client = "Clientes varios";
+      this.sale.sur_client = "";
+      this.sale.shop_type = EPayTypePurchase.CONTADO;
+      this.sale.pay_date = new Date();
+      this.sale.subtotal = 0;
+      this.sale.discount = 0;
+      this.sale.total = 0;
+      this.sale.sales = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
   },

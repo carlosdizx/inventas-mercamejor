@@ -15,7 +15,7 @@ export const SAVE_INVENTORY_FROM_PURCHASE = async (
   const newInventory: Inventory = {
     id: purchase.id,
     cod_invoice: purchase.cod_purchase,
-    products: purchase.shops.map((sale: ProductPurchase) => {
+    products: purchase.sales.map((sale: ProductPurchase) => {
       return {
         input: sale.amount,
         output: ZERO,

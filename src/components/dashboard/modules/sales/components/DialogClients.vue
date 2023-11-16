@@ -43,8 +43,6 @@ export default Vue.extend({
       this.$emit("dialog", this.dialog_list);
     },
     cambiarCliente(cliente: any) {
-      console.log("cambiar cliente");
-      console.log(cliente);
       this.cambiarEstado();
       this.$emit("cliente", cliente);
     },

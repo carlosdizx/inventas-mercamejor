@@ -74,6 +74,8 @@ export default Vue.extend({
         }
       );
       if (productos.length > 0) {
+        purchase.sales = [...newProducts];
+        await REGISTER_NEW_PURCHASE({ ...purchase });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;
@@ -84,8 +86,6 @@ export default Vue.extend({
           consecutivo
         );
         factura.cambiarEstado();
-        purchase.shops = [...newProducts];
-        await REGISTER_NEW_PURCHASE({ ...purchase });
         datos.resetValues();
         formVentas.resetDatosVenta();
       } else {

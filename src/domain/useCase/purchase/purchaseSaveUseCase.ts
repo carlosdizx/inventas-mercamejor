@@ -13,14 +13,14 @@ import {
 import { NewStatePurchase } from "@/domain/model/purchase/Purchase";
 
 export const REGISTER_NEW_PURCHASE = async (
-  shop: Purchase
+  sale: Purchase
 ): Promise<boolean> => {
-  await SAVE_PURCHASE(shop);
-  await SAVE_INVENTORY_FROM_PURCHASE(shop);
-  if (shop.type_pay === EPayTypePurchase.CREDITO) {
-    SAVE_BILL_TO_PAY(shop);
+  await SAVE_PURCHASE(sale);
+  await SAVE_INVENTORY_FROM_PURCHASE(sale);
+  if (sale.type_pay === EPayTypePurchase.CREDITO) {
+    SAVE_BILL_TO_PAY(sale);
   }
-  await UNITS_UPDATED_FROM_PURCHASE(shop);
+  await UNITS_UPDATED_FROM_PURCHASE(sale);
   return true;
 };
 

@@ -127,7 +127,7 @@
           </v-row>
           <TablaCompras
             :anular="anular"
-            :compras="shop.shops"
+            :compras="shop.sales"
             @enviarProductos="actualizarProductos"
             :eliminarDatos="eliminarDatos"
           />
@@ -140,7 +140,7 @@
             <v-col>
               <v-btn
                 @click="registrarCompra()"
-                :disabled="shop.shops.length == 0"
+                :disabled="shop.sales.length == 0"
                 color="color_a mb-3"
                 x-large
                 block
@@ -219,7 +219,7 @@ export default Vue.extend({
   computed: {
     validarRegistro() {
       if (
-        this.shop.shops.length <= 0 &&
+        this.shop.sales.length <= 0 &&
         this.shop.doc_supp &&
         this.shop.type_pay &&
         this.shop.type_pay &&
@@ -256,7 +256,7 @@ export default Vue.extend({
     },
     actualizarProductos(productos: ProductPurchase[]) {
       const productoss: Array<ProductPurchase> = productos;
-      this.shop.shops = productoss;
+      this.shop.sales = productoss;
       const shop: Purchase = {
         id: "",
         employee: "",
@@ -268,7 +268,7 @@ export default Vue.extend({
         created_at: new Date(),
         updated_at: new Date(),
         type_pay: this.shop.type_pay,
-        shops: productos,
+        sales: productos,
         subtotal: 0,
         total: 0,
         state: EEstatePurchase.APROBADO,
@@ -281,7 +281,7 @@ export default Vue.extend({
     },
     calcularSubtotal() {
       let subtototal = 0;
-      this.shop.shops.forEach((com: ProductPurchase) => {
+      this.shop.sales.forEach((com: ProductPurchase) => {
         subtototal += Number(com.subtotal);
       });
       this.shop.subtotal = subtototal;
@@ -356,7 +356,7 @@ export default Vue.extend({
         sur_supp: "",
         cod_purchase: "",
         type_pay: EPayTypePurchase.CONTADO,
-        shops: [],
+        sales: [],
         subtotal: 0,
         discount: 0,
         taxes: 0,
@@ -378,7 +378,7 @@ export default Vue.extend({
     });
     if (this.compraAnterior) {
       this.shop = { ...this.compraAnterior };
-      this.shop.shops = [...this.compraAnterior.shops];
+      this.shop.sales = [...this.compraAnterior.sales];
       this.shop.cod_purchase =
         this.compraAnterior.cod_purchase.split("-")[1] || "";
     }
