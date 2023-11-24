@@ -1,4 +1,4 @@
-import { EEstateSale, EPayTypePurchase } from "../constants/Constants";
+import { EEstateSale, EPayTypeSale } from "../constants/Constants";
 import { ProductSale } from "../productsale/ProductSale";
 
 export interface Sale {
@@ -6,7 +6,7 @@ export interface Sale {
   nam_client: string;
   sur_client: string;
   cod_invoice: string;
-  shop_type: EPayTypePurchase;
+  shop_type: EPayTypeSale;
   pay_type: string;
   pay_date: Date;
   box: string;

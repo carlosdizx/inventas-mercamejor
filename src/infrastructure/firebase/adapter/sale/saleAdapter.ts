@@ -1,5 +1,4 @@
-import { NewStatePurchase } from "@/domain/model/purchase/Purchase";
-import { Sale } from "@/domain/model/sale/Sale";
+import { NewStateSale, Sale } from "@/domain/model/sale/Sale";
 import {
   SAVE,
   UPDATE,
@@ -7,14 +6,14 @@ import {
 
 const purchaseCollection = "sales";
 
-export const SAVE_SALE = async (purchase: Sale): Promise<Sale> => {
-  await SAVE(purchaseCollection, purchase);
-  return purchase;
+export const SAVE_SALE = async (sale: Sale): Promise<Sale> => {
+  await SAVE(purchaseCollection, sale);
+  return sale;
 };
 
 export const UPDATE_SALE = async (
   idPurchase: string,
-  newState: NewStatePurchase
-): Promise<NewStatePurchase> => {
+  newState: NewStateSale
+): Promise<NewStateSale> => {
   return await UPDATE(purchaseCollection, idPurchase, newState);
 };

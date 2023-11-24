@@ -1,42 +1,45 @@
-import { LISTAR_IN, ACTUALIZAR } from "@/services/crud";
+import {
+  LIST_IN,
+  UPDATE,
+} from "@/infrastructure/firebase/template/basicOperations";
 import { Product } from "@/domain/model/product/Product";
-import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 import Swal from "sweetalert2";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
-export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) => {
-  const data = await LISTAR_IN("products", "bar_code", codigo);
+export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (
+  codigo: number
+): Promise<Product | null> => {
+  const data = await LIST_IN("products", "bar_code", codigo);
   if (data.size === 1) {
-    return {
-      producto: data.docs[0].data(),
-      idProducto: data.docs[0].id,
-    };
+    const product = data.docs[0].data() as Product;
+    product.id = data.docs[0].id;
+    return product;
   } else {
     return null;
   }
 };
 
 export const YA_LISTADO = (
-  productos: ProductPurchase[],
+  productos: ProductSale[],
   producto: Product
 ): boolean =>
-  productos.filter(
-    (temp: ProductPurchase) => temp.bar_code === producto.bar_code
-  ).length === 1;
+  productos.filter((temp: ProductSale) => temp.bar_code === producto.bar_code)
+    .length === 1;
 
 export const AGREGAR_PRODUCTO = (
-  productos: ProductPurchase[],
+  productos: ProductSale[],
   producto: Product
-): ProductPurchase[] => {
+): ProductSale[] => {
   for (const temp of productos) {
     if (temp.bar_code === producto.bar_code) {
       temp.amount++;
-      temp.subtotal = temp.amount * temp.price_purchase;
+      temp.subtotal = temp.amount * temp.sale_price;
     }
   }
   return productos;
 };
 
-export const TOTALIZAR_VALORES = (productos: ProductPurchase[]) => {
+export const TOTALIZAR_VALORES = (productos: ProductSale[]) => {
   let subtotal = 0;
   let descuento = 0;
   let total = 0;
@@ -50,7 +53,7 @@ export const TOTALIZAR_VALORES = (productos: ProductPurchase[]) => {
 
 export const CAMBIAR_CANTIDAD = async (
   valor: number | string,
-  item: ProductPurchase
+  item: ProductSale
 ) => {
   const parse = parseInt(valor.toString());
   if (isNaN(parse)) {
@@ -64,7 +67,7 @@ export const CAMBIAR_CANTIDAD = async (
     return item.amount;
   } else {
     item.amount = parse;
-    item.subtotal = item.amount * item.price_purchase;
+    item.subtotal = item.amount * item.sale_price;
     return parse;
   }
 };
@@ -72,7 +75,7 @@ export const CAMBIAR_CANTIDAD = async (
 export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   codBarras: number,
   cantidad: number,
-  
+
   tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
 ): Promise<void> => {
   const producto: any = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codBarras);
@@ -84,5 +87,5 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   } else {
     unidades = cantidad;
   }
-  await ACTUALIZAR("products", producto.idProducto, { amount: unidades });
+  await UPDATE("products", producto.idProducto, { amount: unidades });
 };

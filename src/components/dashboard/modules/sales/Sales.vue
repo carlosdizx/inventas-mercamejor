@@ -18,9 +18,10 @@ import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
-import { REGISTER_NEW_PURCHASE } from "@/domain/useCase/purchase/purchaseSaveUseCase";
-import { Purchase } from "@/domain/model/purchase/Purchase";
+import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
+import { Sale } from "@/domain/model/sale/Sale";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
   name: "Sales",
@@ -37,7 +38,7 @@ export default Vue.extend({
       const formVentas: any = this.$refs.SalesForm;
       if (producto) {
         const listado: any = this.$refs.ItemsList;
-        listado.agregarProducto(producto.producto);
+        listado.agregarProducto(producto);
         formVentas.resetProduct();
         // this.audio.src = this.add;
         // await this.audio.play();
@@ -53,35 +54,32 @@ export default Vue.extend({
         });
       }
     },
-    async generarFactura(purchase: Purchase) {
+    async generarFactura(sale: Sale) {
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ItemsList;
       const formVentas: any = this.$refs.SalesForm;
       const productos: [] = datos.darItemsFactura().productos;
-      const newProducts: ProductPurchase[] = productos.map(
-        (e: ProductPurchase) => {
-          return {
-            id: "",
-            bar_code: e.bar_code,
-            name: e.name,
-            amount: e.amount,
-            price_shop: e.price_shop,
-            price_purchase: e.price_purchase,
-            taxes: 0,
-            discount: 0,
-            subtotal: e.subtotal,
-          } as ProductPurchase;
-        }
-      );
+      const newProducts: ProductSale[] = productos.map((e: ProductSale) => {
+        return {
+          bar_code: e.bar_code,
+          name: e.name,
+          amount: e.amount,
+          shop_price: e.shop_price,
+          sale_price: e.sale_price,
+          taxes: 0,
+          discount: 0,
+          subtotal: e.subtotal,
+        } as ProductSale;
+      });
       if (productos.length > 0) {
-        purchase.sales = [...newProducts];
-        await REGISTER_NEW_PURCHASE({ ...purchase });
+        sale.sales = [...newProducts];
+        await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;
         }
         await factura.asignarValores(
-          purchase,
+          sale,
           datos.darItemsFactura(),
           consecutivo
         );

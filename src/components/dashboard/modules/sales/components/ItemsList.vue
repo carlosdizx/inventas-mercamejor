@@ -67,7 +67,7 @@
         </v-row>
       </v-form>
     </v-card-text>
-    <v-data-table :headers="columnas" :items="filas">
+    <v-data-table :headers="columnas" :items="sales">
       <template v-slot:item.cantidad="{ item }">
         <v-edit-dialog>
           {{ item.cantidad }}
@@ -97,7 +97,7 @@ import {
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
 import { Product } from "@/domain/model/product/Product";
-import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
   name: "ItemsList",
@@ -114,42 +114,40 @@ export default Vue.extend({
       { text: "Precio*uni", value: "price_purchase" },
       { text: "Subtotal", value: "subtotal" },
     ],
-    filas: [] as ProductPurchase[],
+    sales: [] as ProductSale[],
   }),
   methods: {
-    async agregarProducto(newProduct: Product) {
-      const agregado = YA_LISTADO(this.filas, newProduct);
-      const producto: ProductPurchase = {
-        id: newProduct.id,
-        bar_code: newProduct.bar_code,
-        name: newProduct.name,
+    async agregarProducto(product: Product) {
+      const agregado = YA_LISTADO(this.sales, product);
+      const producto: ProductSale = {
+        bar_code: product.bar_code,
+        name: product.name,
         amount: 1,
-        price_shop: newProduct.unit_price,
-        price_purchase: newProduct.sale_price,
+        shop_price: product.unit_price,
+        sale_price: product.sale_price,
         taxes: 0,
         discount: 0,
-        subtotal: newProduct.sale_price,
+        subtotal: product.sale_price,
       };
       if (agregado) {
-        this.filas = AGREGAR_PRODUCTO(this.filas, newProduct);
+        this.sales = AGREGAR_PRODUCTO(this.sales, product);
       } else {
-        this.filas.push(producto);
+        this.sales.push(producto);
       }
       await this.calcularValores();
     },
     async calcularValores() {
-      const valores = TOTALIZAR_VALORES(this.filas);
+      const valores = TOTALIZAR_VALORES(this.sales);
       this.subtotal = valores.subtotal;
       this.descuento = valores.descuento;
       this.total = valores.total;
       this.calculadora = this.calculadora * 1;
     },
-    async cambiarCantidadProducto(
-      valor: number | string,
-      item: ProductPurchase
-    ) {
+    async cambiarCantidadProducto(valor: number | string, item: ProductSale) {
       if (valor == 0) {
-        this.filas = this.filas.filter((producto) => producto !== item);
+        this.sales = this.sales.filter(
+          (producto) => producto.bar_code !== item.bar_code
+        );
         return;
       }
       await CAMBIAR_CANTIDAD(valor, item);
@@ -157,7 +155,7 @@ export default Vue.extend({
     },
     darItemsFactura() {
       return {
-        productos: this.filas,
+        productos: this.sales,
         subtotal: this.subtotal,
         descuento: this.descuento,
         total: this.total,
@@ -175,7 +173,7 @@ export default Vue.extend({
       }
     },
     resetValues() {
-      this.filas = [];
+      this.sales = [];
       this.total = 0;
       this.subtotal = 0;
       this.descuento = 0;
@@ -184,7 +182,7 @@ export default Vue.extend({
     },
   },
   created() {
-    this.filas = [];
+    this.sales = [];
   },
 });
 </script>
