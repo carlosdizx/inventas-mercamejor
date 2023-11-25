@@ -1,0 +1,1 @@
+export SAVE_NEW_TRANSACTION = (docClient: string, ) 
