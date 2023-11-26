@@ -109,15 +109,19 @@ export const CONSULT_DATA = async (
   return await getDocs(res);
 };
 
-export const SIMPLE_CONSULT = async (
+export const FIND_BY_QUERY = async (
   coleccion: string,
-  propiedad: string,
-  condicion: WhereFilterOp,
-  valor: string | number
-): Promise<QuerySnapshot<DocumentData>> => {
-  return await getDocs(
-    query(collection(FIRESTORE, coleccion), where(propiedad, condicion, valor))
+  propierty: string,
+  condition: WhereFilterOp,
+  value: string | number
+): Promise<DocumentData | null> => {
+  const res = await getDocs(
+    query(collection(FIRESTORE, coleccion), where(propierty, condition, value))
   );
+  if (!res.empty) {
+    return res.docs[0].data();
+  }
+  return null;
 };
 
 export const COMPOUND_CONSULT = async (

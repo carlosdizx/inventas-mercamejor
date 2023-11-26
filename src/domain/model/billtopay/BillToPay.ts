@@ -1,12 +1,9 @@
 export interface BillToPay {
   id: string;
-  doc_supp: number;
+  doc_supp: string;
   nam_supp: string;
   sur_supp: string;
-  cod_purchase: string;
-  total: number;
-  debt_value: number;
-  pays: Payment[];
+  value: number;
   state: EBillToPayState;
   create_at: Date;
   update_at: Date;
@@ -32,4 +29,10 @@ export enum EBillToPayState {
 export enum EbillToPayMovState {
   COMPLETADO = "Completado",
   CANCELADO = "Cancelado",
+}
+
+export const DOC_SUPP = "doc_supp";
+
+export interface IUpdateMountPay {
+  value: number;
 }

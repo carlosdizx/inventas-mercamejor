@@ -3,7 +3,7 @@ import { EEstatePurchase, EPayTypePurchase } from "../constants/Constants";
 
 export interface Purchase {
   id: string;
-  doc_supp: number;
+  doc_supp: string;
   nam_supp: string;
   sur_supp: string;
   cod_purchase: string;
