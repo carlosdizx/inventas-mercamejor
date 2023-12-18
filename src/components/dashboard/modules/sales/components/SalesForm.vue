@@ -130,10 +130,7 @@ import {
   STRINT_TO_FECHA,
 } from "@/generals/procesamientos";
 import { Client } from "@/domain/model/client/Client";
-import {
-  EEstateSale,
-  EPayTypePurchase,
-} from "@/domain/model/constants/Constants";
+import { EEstateSale, EPayTypeSale } from "@/domain/model/constants/Constants";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
@@ -146,7 +143,7 @@ export default Vue.extend({
       nam_client: "Clientes varios",
       sur_client: "",
       cod_invoice: "",
-      shop_type: EPayTypePurchase.CONTADO,
+      shop_type: EPayTypeSale.CONTADO,
       pay_type: "",
       pay_date: new Date(),
       box: "",
@@ -195,7 +192,7 @@ export default Vue.extend({
       this.sale.doc_client = "2222222";
       this.sale.nam_client = "Clientes varios";
       this.sale.sur_client = "";
-      this.sale.shop_type = EPayTypePurchase.CONTADO;
+      this.sale.shop_type = EPayTypeSale.CONTADO;
       this.sale.pay_date = new Date();
       this.sale.subtotal = 0;
       this.sale.discount = 0;

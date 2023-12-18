@@ -20,7 +20,6 @@ import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
 import { Sale } from "@/domain/model/sale/Sale";
-import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
@@ -58,7 +57,7 @@ export default Vue.extend({
       const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ItemsList;
       const formVentas: any = this.$refs.SalesForm;
-      const productos: [] = datos.darItemsFactura().productos;
+      const productos: ProductSale[] = datos.darItemsFactura().productos;
       const newProducts: ProductSale[] = productos.map((e: ProductSale) => {
         return {
           bar_code: e.bar_code,
@@ -73,6 +72,16 @@ export default Vue.extend({
       });
       if (productos.length > 0) {
         sale.sales = [...newProducts];
+        let subtotal = 0;
+        let descuento = 0;
+        let total = 0;
+        for (const temp of productos) {
+          subtotal += temp.subtotal;
+          descuento += temp.discount * temp.amount;
+          total = subtotal - descuento;
+        }
+        sale.total = total;
+        sale.subtotal = total;
         await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {

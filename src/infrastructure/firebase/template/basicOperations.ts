@@ -66,6 +66,7 @@ export const UPDATE = async <T extends DocumentData>(
   id: string,
   datos: T
 ): Promise<T> => {
+  console.log(datos + " " + colection + " " + id);
   delete datos.id;
   await updateDoc(doc(FIRESTORE, colection, id), datos);
   return datos;
@@ -119,7 +120,7 @@ export const FIND_BY_QUERY = async (
     query(collection(FIRESTORE, coleccion), where(propierty, condition, value))
   );
   if (!res.empty) {
-    return res.docs[0].data();
+    return res.docs[0];
   }
   return null;
 };

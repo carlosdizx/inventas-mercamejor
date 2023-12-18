@@ -262,7 +262,7 @@ export default Vue.extend({
         employee: "",
         discount: 0,
         taxes: 0,
-        doc_supp: this.shop.doc_supp || 0,
+        doc_supp: this.shop.doc_supp || "",
         nam_supp: this.shop.nam_supp || "",
         sur_supp: this.shop.sur_supp || "",
         created_at: new Date(),
@@ -351,7 +351,7 @@ export default Vue.extend({
       const shop: Purchase = {
         id: "",
         employee: "",
-        doc_supp: 0,
+        doc_supp: "",
         nam_supp: "",
         sur_supp: "",
         cod_purchase: "",

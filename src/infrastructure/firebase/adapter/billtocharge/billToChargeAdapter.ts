@@ -17,7 +17,7 @@ export const SAVE_NEW_BILL_TO_CHARGE = async (sale: Sale): Promise<void> => {
   const res = await FIND_BILL_TO_CHARGE(sale.doc_client);
   if (res) {
     const updateAmount: IUpdateMountCharge = {
-      value: sale.total,
+      value: res.value + sale.total,
     };
     await UPDATE(billToPayCollection, res.id, updateAmount);
   } else {
@@ -45,7 +45,10 @@ export const FIND_BILL_TO_CHARGE = async (
     docClient
   );
   if (res) {
-    return res as BillToCharge;
+    return {
+      ...res.data(),
+      id: res.id,
+    } as BillToCharge;
   } else {
     return null;
   }
