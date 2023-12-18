@@ -35,6 +35,19 @@ export const SAVE_NEW_BILL_TO_CHARGE = async (sale: Sale): Promise<void> => {
   }
 };
 
+export const PAYMENTE_BILL_TO_CHARGE = async (
+  docClient: string,
+  value: number
+): Promise<void> => {
+  const res = await FIND_BILL_TO_CHARGE(docClient);
+  if (res) {
+    const updateAmount: IUpdateMountCharge = {
+      value: res.value - value,
+    };
+    await UPDATE(billToPayCollection, res.id, updateAmount);
+  }
+};
+
 export const FIND_BILL_TO_CHARGE = async (
   docClient: string
 ): Promise<BillToCharge | null> => {
