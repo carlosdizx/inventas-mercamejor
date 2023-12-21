@@ -104,7 +104,7 @@ export const CAMPOS = [
 export const COMPRAS_CONSULTA = [
   { text: "Fecha de Creación", valu: "created_at" },
   { text: "Descripción de producto", value: "descripcion_producto" },
-  { text: "Documento proveedor", value: "documento_proveedor" },
+  { text: "Documento proveedor", value: "doc_proveedor" },
   { text: "Nombre del proveedor", value: "nombre_proveedor" },
   { text: "Código del factura", value: "cod_factura" },
   { text: "Tipo de compra", value: "tipo_compra" },

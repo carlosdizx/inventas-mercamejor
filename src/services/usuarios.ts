@@ -1,14 +1,6 @@
-import {
-  doc,
-  setDoc,
-  updateDoc,
-  getDocs,
-  collection,
-  getDoc,
-} from "firebase/firestore";
-import { FIRESTORE } from "@/firebase/config";
-import { AUTH } from "@/firebase/config";
-import { BUSCAR, EDITAR, LISTAR } from "@/services/crud";
+import { doc, setDoc, getDocs, collection, getDoc } from "firebase/firestore";
+import { FIRESTORE, AUTH } from "@/infrastructure/firebase/config/config";
+import { EDITAR, LISTAR } from "@/services/crud";
 import { OBTENER_CORREO_CUENTA_ACTUAL } from "@/services/auth";
 
 const coleccion = "usuarios";

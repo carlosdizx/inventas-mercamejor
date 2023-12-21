@@ -56,7 +56,6 @@ export default Vue.extend({
       try {
         await INICIAR_SESION(this.email, this.passwd);
       } catch (e) {
-        console.log(e);
         await NOTIFICAR_ERROR(e.code);
       }
     },

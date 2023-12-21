@@ -1,16 +1,22 @@
-export interface IInventario {
-  fecha_factura: Date | string | null;
+export interface Inventory {
+  id: string | null;
+  date: Date;
+  cod_invoice: string;
+  products: InventoryProduct[];
+  state: EInventoryState;
   created_at: Date;
   updated_at: Date;
-  codigo_barras: number | null;
-  cedula_nit: number | null | "";
-  nombres: string;
-  apellidos: string;
-  tipo_factura: string;
-  bodega: string;
-  caja: string;
-  producto: string;
-  documento: string;
-  entradas: number;
-  salidas: number;
+}
+
+export interface InventoryProduct {
+  input: number;
+  output: number;
+  bar_code: number;
+  description: string;
+  store: string;
+}
+
+export enum EInventoryState {
+  APROBADO = "Aprobado",
+  CANCELADO = "Cancelado",
 }

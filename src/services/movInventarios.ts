@@ -1,4 +1,3 @@
-import { IInventario } from "./../models/Inventarios";
 import {
   CONSULTA_SIMPLE,
   DATOS_IN_ARRAY,
@@ -9,7 +8,10 @@ import {
 
 const coleccion = "inventarios";
 
-export const GUARDAR_MOVIMIENTO_INVENTARIO = async (inventario: IInventario) =>
+export const GUARDAR_INVENTARIO = async (inventario: any) =>
+  await GUARDAR(coleccion, inventario);
+
+export const GUARDAR_MOVIMIENTO_INVENTARIO = async (inventario: any) =>
   await GUARDAR(coleccion, inventario);
 
 export const BORRAR_MOVIMIENTO_INVENTARIO = async (idInventario: string) =>
@@ -17,7 +19,7 @@ export const BORRAR_MOVIMIENTO_INVENTARIO = async (idInventario: string) =>
 
 export const ACTUALIZAR_MOVIMIENTO_INVENTARIO = async (
   idInventario: string,
-  datos: IInventario
+  datos: any
 ) => await EDITAR(coleccion, idInventario, datos);
 
 export const BUSCAR_MOVIMIENTOS_INVENTARIO = async (nFactura: string) => {

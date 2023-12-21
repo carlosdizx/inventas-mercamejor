@@ -114,7 +114,7 @@ export const FUNCIONES_DASHBOARD: any[] = [
       {
         id: 16,
         icono: "mdi-ticket-confirmation",
-        titulo: "Comrpobantes",
+        titulo: "Comprobantes",
         roles: ["Admin", "Empleado"],
       },
     ],

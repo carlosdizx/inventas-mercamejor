@@ -1,48 +1,51 @@
-import { LISTAR_IN, ACTUALIZAR } from "@/services/crud";
-import { Producto } from "@/entity/Producto";
-import { ProductoVenta } from "@/dto/ProductoVenta";
+import {
+  LIST_IN,
+  UPDATE,
+} from "@/infrastructure/firebase/template/basicOperations";
+import { Product } from "@/domain/model/product/Product";
 import Swal from "sweetalert2";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
-export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) => {
-  const data = await LISTAR_IN("productos", "codigo_barras", codigo);
+export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (
+  codigo: number
+): Promise<Product | null> => {
+  const data = await LIST_IN("products", "bar_code", codigo);
   if (data.size === 1) {
-    return {
-      producto: data.docs[0].data(),
-      idProducto: data.docs[0].id,
-    };
+    const product = data.docs[0].data() as Product;
+    product.id = data.docs[0].id;
+    return product;
   } else {
     return null;
   }
 };
 
-export const YA_LISTADO = async (
-  productos: ProductoVenta[],
-  producto: Producto
-) =>
-  productos.filter(
-    (temp: ProductoVenta) => temp.codigo === producto.codigo_barras
-  ).length === 1;
+export const YA_LISTADO = (
+  productos: ProductSale[],
+  producto: Product
+): boolean =>
+  productos.filter((temp: ProductSale) => temp.bar_code === producto.bar_code)
+    .length === 1;
 
 export const AGREGAR_PRODUCTO = (
-  productos: ProductoVenta[],
-  producto: Producto
-) => {
+  productos: ProductSale[],
+  producto: Product
+): ProductSale[] => {
   for (const temp of productos) {
-    if (temp.codigo === producto.codigo_barras) {
-      temp.cantidad++;
-      temp.subtotal = temp.cantidad * temp.precio;
+    if (temp.bar_code === producto.bar_code) {
+      temp.amount++;
+      temp.subtotal = temp.amount * temp.sale_price;
     }
   }
   return productos;
 };
 
-export const TOTALIZAR_VALORES = (productos: ProductoVenta[]) => {
+export const TOTALIZAR_VALORES = (productos: ProductSale[]) => {
   let subtotal = 0;
   let descuento = 0;
   let total = 0;
   for (const temp of productos) {
     subtotal += temp.subtotal;
-    descuento += temp.descuento * temp.cantidad;
+    descuento += temp.discount * temp.amount;
     total = subtotal - descuento;
   }
   return { subtotal: subtotal, descuento: descuento, total: total };
@@ -50,7 +53,7 @@ export const TOTALIZAR_VALORES = (productos: ProductoVenta[]) => {
 
 export const CAMBIAR_CANTIDAD = async (
   valor: number | string,
-  item: ProductoVenta
+  item: ProductSale
 ) => {
   const parse = parseInt(valor.toString());
   if (isNaN(parse)) {
@@ -61,10 +64,10 @@ export const CAMBIAR_CANTIDAD = async (
       showConfirmButton: false,
       icon: "error",
     });
-    return item.cantidad;
+    return item.amount;
   } else {
-    item.cantidad = parse;
-    item.subtotal = item.cantidad * item.precio;
+    item.amount = parse;
+    item.subtotal = item.amount * item.sale_price;
     return parse;
   }
 };
@@ -72,10 +75,11 @@ export const CAMBIAR_CANTIDAD = async (
 export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   codBarras: number,
   cantidad: number,
+
   tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
 ): Promise<void> => {
   const producto: any = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codBarras);
-  let unidades = producto.producto.cantidad;
+  let unidades = producto.producto.amount;
   if (tipoOperacion === "ADICIONAR") {
     unidades = unidades + cantidad;
   } else if (tipoOperacion === "RESTAR") {
@@ -83,5 +87,5 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   } else {
     unidades = cantidad;
   }
-  await ACTUALIZAR("productos", producto.idProducto, { cantidad: unidades });
+  await UPDATE("products", producto.idProducto, { amount: unidades });
 };

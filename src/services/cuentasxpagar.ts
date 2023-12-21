@@ -1,4 +1,4 @@
-import { CuentaPorPagar } from "./../models/CuentasPorPagar";
+import { ICuentaPorPagar } from "./../models/CuentasPorPagar";
 import {
   ACTUALIZAR,
   CONSULTA_SIMPLE,
@@ -27,18 +27,18 @@ export const BUSCAR_CUENTA_POR_PAGAR = async (
 
 export const ACTUALIZAR_CUENTA_PAGAR = async (
   idCuentaPagar: string,
-  nuevaCuenta: CuentaPorPagar
+  nuevaCuenta: ICuentaPorPagar
 ): Promise<void> =>
   await ACTUALIZAR(coleccionCuentas, idCuentaPagar, nuevaCuenta);
 
 export const REGISTRAR_NUEVA_CUENTAPORPAGAR = async (
-  nuevaCuenta: CuentaPorPagar
+  nuevaCuenta: ICuentaPorPagar
 ): Promise<void> => {
   await GUARDAR(coleccionCuentas, nuevaCuenta);
 };
 
 export const ELIMINAR_CUENTA_PORPAGAR = async (
-  compra: CuentaPorPagar
+  compra: ICuentaPorPagar
 ): Promise<void> => {
   await ELIMINAR(coleccionCuentas, compra);
 };

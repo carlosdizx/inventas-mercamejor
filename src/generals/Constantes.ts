@@ -12,3 +12,15 @@ export const ROLES = ["Empleado", "Admin"]; //"Admin"],
 export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];
 
 export const TIPOS_VENTA = ["Contado", "Credito"];
+
+export const PREF_COMPRA = "C-";
+
+export enum ETiposContadoCredito {
+  CONTADO = "Contado",
+  CREDITO = "Credito",
+}
+
+export enum ETypesShop {
+  COMPRA = "Compra",
+  PEDIDO = "Pedido",
+}
