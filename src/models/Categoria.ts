@@ -3,7 +3,7 @@ Sección tabla
  */
 export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
-  { text: "Nombre", value: "nombre" },
+  { text: "Nombre", value: "name" },
   { text: "Acciones", value: "acciones" },
 ];
 
@@ -27,7 +27,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-cube",
     type: 1,
     format: "text",
-    name: "nombre",
+    name: "name",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -36,12 +36,12 @@ export const CAMPOS = [
     prepend_icon: "mdi-cube",
     type: 2,
     items: [],
-    name: "subcategorias",
-    llave: "nombre",
+    name: "subcategories",
+    llave: "subcategories",
     model: "",
     multiple: true,
     rules: "required",
   },
 ];
 
-export const VALIDACIONES = [{ tipo: 2, nombres: ["nombre"] }];
+export const VALIDACIONES = [{ tipo: 2, nombres: ["name"] }];

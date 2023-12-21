@@ -1,21 +1,22 @@
-import { ETiposContadoCredito } from "@/generals/Constantes";
-
-export interface IInventario {
-  fecha_factura: Date;
+export interface Inventory {
+  id: string | null;
+  date: Date;
+  cod_invoice: string;
+  products: InventoryProduct[];
+  state: EInventoryState;
   created_at: Date;
   updated_at: Date;
-  cedula_nit: number;
-  nombres: string;
-  apellidos: string;
-  caja: string;
-  tipo_factura: ETiposContadoCredito;
-  productos: IProductosInventario[];
 }
 
-export interface IProductosInventario {
-  entradas: number;
-  salidas: number;
-  codigo_barras: number;
-  descripcion: string;
-  bodega: string;
+export interface InventoryProduct {
+  input: number;
+  output: number;
+  bar_code: number;
+  description: string;
+  store: string;
+}
+
+export enum EInventoryState {
+  APROBADO = "Aprobado",
+  CANCELADO = "Cancelado",
 }

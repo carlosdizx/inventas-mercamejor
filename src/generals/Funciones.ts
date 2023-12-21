@@ -2,15 +2,15 @@ import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
 import { Empresa } from "@/entity/Empresa";
 import Swal from "sweetalert2";
 
-export const LISTAR_CATEGORIAS = async () => await LISTAR("categorias");
+export const LISTAR_CATEGORIAS = async () => await LISTAR("categories");
 
-export const LISTAR_SUBCATEGORIAS = async () => await LISTAR("subcategorias");
+export const LISTAR_SUBCATEGORIAS = async () => await LISTAR("subcategories");
 
 export const LISTAR_MARCAS = async () => await LISTAR("marcas");
 
 export const LISTAR_BODEGAS = async () => await LISTAR("bodegas");
 
-export const LISTAR_PROVEDOORES = async () => await LISTAR("proveedores");
+export const LISTAR_PROVEDOORES = async () => await LISTAR("suppliers");
 
 export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (codigo: number) =>
   await LISTAR_IN("productos", "codigo_barras", codigo);

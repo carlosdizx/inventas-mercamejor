@@ -2,12 +2,11 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithEmailAndPassword,
-  updateProfile,
   signOut,
   deleteUser,
 } from "firebase/auth";
-import { AUTH } from "@/firebase/config";
-import { APK } from "@/firebase/config";
+import { AUTH } from "@/infrastructure/firebase/config/config";
+import { APK } from "@/infrastructure/firebase/config/config";
 
 const URL_SING_UP = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${APK}`;
 

@@ -12,7 +12,7 @@
     <Comprar v-if="item === 1" />
     <Proveedores v-if="item === 2" />
     <CuentasOpcion v-if="item === 3" />
-    <Ventas v-if="item === 4" />
+    <Sales v-if="item === 4" />
     <Clientes v-if="item === 5" />
     <Productos v-if="item === 7" />
     <Bodegas v-if="item === 8" />
@@ -31,21 +31,21 @@
 import Vue from "vue";
 import Toolbar from "@/components/generals/Toolbar.vue";
 import NavDrawer from "@/components/dashboard/NavDrawer.vue";
-import Comprar from "@/components/dashboard/modulos/compras/comprar/Comprar.vue";
-import RegistroUsuarios from "@/components/dashboard/modulos/usuarios/RegistroUsuarios.vue";
-import ActualizarUsuarios from "@/components/dashboard/modulos/usuarios/ActualizarUsuarios.vue";
-import Categorias from "@/components/dashboard/modulos/Categorias.vue";
-import Cajas from "@/components/dashboard/modulos/usuarios/Cajas.vue";
-import Bodegas from "@/components/dashboard/modulos/Bodegas.vue";
-import Marcas from "@/components/dashboard/modulos/Marcas.vue";
-import Movimientos from "@/components/dashboard/modulos/Movimientos.vue";
-import Productos from "@/components/dashboard/modulos/Productos.vue";
-import Proveedores from "@/components/dashboard/modulos/Proveedores.vue";
-import Comprobantes from "@/components/dashboard/modulos/Comprobantes.vue";
-import Clientes from "@/components/dashboard/modulos/Clientes.vue";
-import CuentasOpcion from "@/components/dashboard/modulos/compras/cuentasporpagar/CuentasOpcion.vue";
-import Ventas from "@/components/dashboard/modulos/ventas/Ventas.vue";
-import CuadreCuentas from "@/components/dashboard/modulos/cuandre_cuentas/CuadreCuentas.vue";
+import Comprar from "@/components/dashboard/modules/shops/shop/Comprar.vue";
+import RegistroUsuarios from "@/components/dashboard/modules/usuarios/RegistroUsuarios.vue";
+import ActualizarUsuarios from "@/components/dashboard/modules/usuarios/ActualizarUsuarios.vue";
+import Categorias from "@/components/dashboard/modules/Categorias.vue";
+import Cajas from "@/components/dashboard/modules/usuarios/Cajas.vue";
+import Bodegas from "@/components/dashboard/modules/Bodegas.vue";
+import Marcas from "@/components/dashboard/modules/Marcas.vue";
+import Movimientos from "@/components/dashboard/modules/Movimientos.vue";
+import Productos from "@/components/dashboard/modules/Productos.vue";
+import Proveedores from "@/components/dashboard/modules/Proveedores.vue";
+import Comprobantes from "@/components/dashboard/modules/Comprobantes.vue";
+import Clientes from "@/components/dashboard/modules/Clientes.vue";
+import CuentasOpcion from "@/components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue";
+import Sales from "@/components/dashboard/modules/sales/Sales.vue";
+import CuadreCuentas from "@/components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue";
 export default Vue.extend({
   name: "Dashboard",
   components: {
@@ -64,7 +64,7 @@ export default Vue.extend({
     Comprobantes,
     Clientes,
     CuentasOpcion,
-    Ventas,
+    Sales,
     CuadreCuentas,
   },
   data: () => ({

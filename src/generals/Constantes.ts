@@ -19,3 +19,8 @@ export enum ETiposContadoCredito {
   CONTADO = "Contado",
   CREDITO = "Credito",
 }
+
+export enum ETypesShop {
+  COMPRA = "Compra",
+  PEDIDO = "Pedido",
+}

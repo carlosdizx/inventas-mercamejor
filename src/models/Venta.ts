@@ -2,7 +2,7 @@ import { IProductoVenta } from "./ProductoVenta";
 import { ETiposContadoCredito } from "@/generals/Constantes";
 
 export interface IVenta {
-  doc_cliente: number;
+  doc_cliente: string;
   nom_cliente: string;
   ape_cliente: string;
   fec_documento: Date;

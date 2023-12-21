@@ -1,17 +1,18 @@
-import { GENEROS, TIPOS_DOCUMENTO } from "@/generals/Constantes";
+import { GENDERS, TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
 
 /**
  Sección tabla
  */
 export const COLUMNAS = [
   { text: "Detalle", value: "detalle" },
-  { text: "Nombres", value: "nombres" },
-  { text: "Apellidos", value: "apellidos" },
-  { text: "Documento", value: "documento" },
-  { text: "Celular", value: "celular" },
-  { text: "Correo", value: "correo" },
-  { text: "Direccion", value: "direccion" },
-  { text: "Genero", value: "genero" },
+  { text: "Nombres", value: "names" },
+  { text: "Apellidos", value: "surnames" },
+  { text: "Tipo Documento", value: "doc_type" },
+  { text: "Número Documento", value: "doc_num" },
+  { text: "Celular", value: "phone" },
+  { text: "Correo", value: "email" },
+  { text: "Direccion", value: "address" },
+  { text: "Genero", value: "gender" },
   { text: "Acciones", value: "acciones" },
 ];
 
@@ -25,7 +26,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-account",
     type: 1,
     format: "text",
-    name: "nombres",
+    name: "names",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -34,7 +35,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-account",
     type: 1,
     format: "text",
-    name: "apellidos",
+    name: "surnames",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -46,7 +47,7 @@ export const CAMPOS = [
     solo: true,
     items: TIPOS_DOCUMENTO,
     format: "text",
-    name: "tipo_documento",
+    name: "doc_type",
     model: "",
     rules: "required",
   },
@@ -55,7 +56,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-card-account-details",
     type: 1,
     format: "text",
-    name: "documento",
+    name: "doc_num",
     model: "",
     rules: "required|min:6|max:20",
   },
@@ -63,8 +64,8 @@ export const CAMPOS = [
     label: "Celular",
     prepend_icon: "mdi-phone",
     type: 1,
-    format: "number",
-    name: "celular",
+    format: "text",
+    name: "phone",
     model: "",
     rules: "required|min:2|max:20|numeric",
   },
@@ -73,7 +74,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-email",
     type: 1,
     format: "email",
-    name: "correo",
+    name: "email",
     model: "",
     rules: "required|email",
   },
@@ -82,7 +83,7 @@ export const CAMPOS = [
     prepend_icon: "mdi-home",
     type: 1,
     format: "text",
-    name: "direccion",
+    name: "address",
     model: "",
     rules: "required|min:1|max:50",
   },
@@ -92,15 +93,15 @@ export const CAMPOS = [
     type: 6,
     multiple: false,
     solo: true,
-    items: GENEROS,
+    items: GENDERS,
     format: "text",
-    name: "genero",
+    name: "gender",
     model: "",
     rules: "required",
   },
 ];
 
 export const VALIDACIONES = [
-  { tipo: 2, nombres: ["documento"] },
-  { tipo: 2, nombres: ["correo"] },
+  { tipo: 2, nombres: ["doc_num"] },
+  { tipo: 2, nombres: ["email"] },
 ];
