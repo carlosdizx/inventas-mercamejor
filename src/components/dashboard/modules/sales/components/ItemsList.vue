@@ -3,7 +3,7 @@
     <v-card-text>
       <v-form>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
             <v-slider
               label="Descuento adicional"
               max="100"
@@ -33,7 +33,7 @@
               outlined
               :value="total - (total * descuento_adicional) / 100"
             />
-            <v-col cols="6">
+            <v-col cols="12" sm="6">
               <vuetify-money
                 label="Calculadora rápida"
                 prepend-icon=""
@@ -44,14 +44,14 @@
               />
             </v-col>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
             <v-chip color="amber" class="ma-2">
               Subtotal: {{ subtotal }}
             </v-chip>
             <v-chip color="info" class="ma-2">
               Descuento: {{ descuento }}
             </v-chip>
-            <v-chip color="success" class="ma-2"> Total: {{ total }} </v-chip>
+            <v-chip color="success" class="ma-2">Total: {{ total }}</v-chip>
             <v-chip color="success" class="ma-2">
               Descuento adicional: {{ (total * descuento_adicional) / 100 }}
             </v-chip>
