@@ -66,7 +66,6 @@ export const UPDATE = async <T extends DocumentData>(
   id: string,
   datos: T
 ): Promise<T> => {
-  console.log(datos + " " + colection + " " + id);
   delete datos.id;
   await updateDoc(doc(FIRESTORE, colection, id), datos);
   return datos;
