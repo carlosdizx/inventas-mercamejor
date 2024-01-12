@@ -1,5 +1,8 @@
 import { Transaction } from "@/domain/model/transaction/Transaction";
-import { SAVE_TRANSACTION } from "@/infrastructure/firebase/adapter/transaction/transactionAdapter";
+import {
+  FIND_TRANSACTIONS_BY_DOCUMENT,
+  SAVE_TRANSACTION,
+} from "@/infrastructure/firebase/adapter/transaction/transactionAdapter";
 
 export const SAVE_NEW_TRANSACTION = async (
   transaction: Transaction
@@ -8,4 +11,8 @@ export const SAVE_NEW_TRANSACTION = async (
   return transaction;
 };
 
-//export const SAVE_NEW_MOVEMENT = async (transaction: Transaction): Promise<void>
+export const LIST_TRANSACTION_BY_CLIENT = async (
+  docClient: string
+): Promise<Transaction[]> => {
+  return await FIND_TRANSACTIONS_BY_DOCUMENT(docClient);
+};
