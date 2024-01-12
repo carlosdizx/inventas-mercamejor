@@ -124,6 +124,21 @@ export const FIND_BY_QUERY = async (
   return null;
 };
 
+export const FIND_BY_QUERY_DOCS = async (
+  coleccion: string,
+  propierty: string,
+  condition: WhereFilterOp,
+  value: string | number
+): Promise<DocumentData | null> => {
+  const res = await getDocs(
+    query(collection(FIRESTORE, coleccion), where(propierty, condition, value))
+  );
+  if (!res.empty) {
+    return res;
+  }
+  return null;
+};
+
 export const COMPOUND_CONSULT = async (
   coleccion: string,
   propiedad: string,

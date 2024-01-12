@@ -14,7 +14,7 @@
     <CuentasOpcion v-if="item === 3" />
     <Sales v-if="item === 4" />
     <Clientes v-if="item === 5" />
-    <BillToCharge v-if="item === 6" />
+    <BillToChargeOption v-if="item === 6" />
     <Productos v-if="item === 7" />
     <Bodegas v-if="item === 8" />
     <RegistroUsuarios v-if="item === 9" />
@@ -44,7 +44,7 @@ import Productos from "@/components/dashboard/modules/Productos.vue";
 import Proveedores from "@/components/dashboard/modules/Proveedores.vue";
 import Comprobantes from "@/components/dashboard/modules/Comprobantes.vue";
 import Clientes from "@/components/dashboard/modules/Clientes.vue";
-import BillToCharge from "@/components/dashboard/modules/sales/billtopay/BillToCharge.vue";
+import BillToChargeOption from "@/components/dashboard/modules/sales/billtocharge/BillToChargeOption.vue";
 import CuentasOpcion from "@/components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue";
 import Sales from "@/components/dashboard/modules/sales/Sales.vue";
 import CuadreCuentas from "@/components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue";
@@ -65,7 +65,7 @@ export default Vue.extend({
     Comprar,
     Comprobantes,
     Clientes,
-    BillToCharge,
+    BillToChargeOption,
     CuentasOpcion,
     Sales,
     CuadreCuentas,
