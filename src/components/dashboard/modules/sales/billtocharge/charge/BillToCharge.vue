@@ -1,28 +1,53 @@
 <template>
-  <div>
-    <v-text-field
-      type="string"
-      label="Ingrese Documento del cliente"
-      v-model="docClient"
-    ></v-text-field>
-    <v-btn :disabled="docClient.length < 7" @click="findClient">
-      Consultar
-    </v-btn>
-    <div>Total: {{ balance }}</div>
-    <div v-if="balance > 0">
-      <v-text-field
-        type="string"
-        label="Ingrese Valor de abono"
-        v-model="amountToPay"
-      ></v-text-field>
-      <v-btn
-        :disabled="amountToPay <= 0 || amountToPay > balance"
-        @click="makePayment"
-      >
-        Abonar
-      </v-btn>
-    </div>
-  </div>
+  <v-container fluid>
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-text-field
+          label="Ingrese Documento del cliente"
+          v-model="docClient"
+          outlined
+          dense
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-btn :disabled="docClient.length < 7" @click="findClient" block>
+          Consultar
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="balance > 0" justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <div>Total: {{ balance }}</div>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="balance > 0" justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-text-field
+          label="Ingrese Valor de abono"
+          v-model="amountToPay"
+          outlined
+          dense
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="balance > 0" justify="center">
+      <v-col cols="12" md="8" lg="6">
+        <v-btn
+          :disabled="amountToPay <= 0 || amountToPay > balance"
+          @click="makePayment"
+          block
+        >
+          Abonar
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">
