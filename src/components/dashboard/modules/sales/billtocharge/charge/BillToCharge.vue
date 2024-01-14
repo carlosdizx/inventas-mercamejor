@@ -56,6 +56,7 @@ import {
   PAYMENT_BILL_TO_PAY,
 } from "@/domain/useCase/billtocharge/billToChargeUseCase";
 import Vue from "vue";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "BillToCharge",
@@ -71,8 +72,20 @@ export default Vue.extend({
       this.amountToPay = balance;
     },
     async makePayment() {
-      await PAYMENT_BILL_TO_PAY(this.docClient, this.amountToPay);
-      this.findClient();
+      await Swal.fire({
+        title: "Seguro quiere continuar?",
+        showDenyButton: true,
+        confirmButtonText: "Si",
+        denyButtonText: `No`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Pagado!", "", "success");
+          PAYMENT_BILL_TO_PAY(this.docClient, this.amountToPay);
+          this.findClient();
+        } else if (result.isDenied) {
+          Swal.fire("No se realizo el pago", "", "info");
+        }
+      });
     },
   },
 });
