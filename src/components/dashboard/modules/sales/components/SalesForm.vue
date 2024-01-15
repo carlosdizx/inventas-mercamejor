@@ -170,7 +170,6 @@ export default Vue.extend({
     registrarVenta() {
       this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
       this.$emit("datos_cliente", this.sale);
-      this.print();
       this.resetDatosVenta();
     },
     resetDatosVenta() {
@@ -184,32 +183,6 @@ export default Vue.extend({
       this.sale.total = 0;
       this.sale.sales = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
-    },
-    print() {
-      const ventanaImpresion = window.open("", "_blank");
-      if (ventanaImpresion) {
-        const contenidoImprimir = `
-          <html>
-            <head>
-              <title>Impresión</title>
-            </head>
-            <body>
-              <h1>${this.sale.subtotal}</h1>
-              <h1>Gracias por su compra</h1>
-              <h1>Los esperamos de vuelta</h1>
-            </body>
-          </html>
-        `;
-        ventanaImpresion.document.write("<html><head><title>Impresión</title>");
-        ventanaImpresion.document.write("</head><body>");
-        ventanaImpresion.document.write(contenidoImprimir);
-        ventanaImpresion.document.write("</body></html>");
-        ventanaImpresion.document.close();
-        ventanaImpresion.print();
-        ventanaImpresion.close();
-      } else {
-        console.error("No se pudo abrir la ventana de impresión");
-      }
     },
   },
 });

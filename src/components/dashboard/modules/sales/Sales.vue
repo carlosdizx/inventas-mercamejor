@@ -21,6 +21,7 @@ import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
 import { Sale } from "@/domain/model/sale/Sale";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { generatePageToPrint } from "./components/SalesFunction";
 
 export default Vue.extend({
   name: "Sales",
@@ -81,6 +82,7 @@ export default Vue.extend({
         }
         sale.total = total;
         sale.subtotal = total;
+        this.print({ ...sale });
         await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
@@ -96,6 +98,24 @@ export default Vue.extend({
           timer: 800,
           showConfirmButton: false,
         });
+      }
+    },
+    print(sale: Sale) {
+      const ventanaImpresion = window.open("", "_blank");
+      if (ventanaImpresion) {
+        const contenidoImprimir = generatePageToPrint(
+          sale,
+          "Autoservicio la econommia"
+        );
+        ventanaImpresion.document.write("<html><head><title>Impresión</title>");
+        ventanaImpresion.document.write("</head><body>");
+        ventanaImpresion.document.write(contenidoImprimir);
+        ventanaImpresion.document.write("</body></html>");
+        ventanaImpresion.document.close();
+        ventanaImpresion.print();
+        ventanaImpresion.close();
+      } else {
+        console.error("No se pudo abrir la ventana de impresión");
       }
     },
   },
