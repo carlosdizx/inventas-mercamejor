@@ -67,23 +67,25 @@
         </v-row>
       </v-form>
     </v-card-text>
-    <v-data-table :headers="columnas" :items="sales">
-      <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog>
-          {{ item.cantidad }}
-          <template v-slot:input>
-            <v-text-field
-              @keydown.enter="
-                cambiarCantidadProducto($event.target.value, item)
-              "
-              label="Editar"
-              type="number"
-              counter
-            />
-          </template>
-        </v-edit-dialog>
-      </template>
-    </v-data-table>
+    <v-container class="d-flex justify-center align-center">
+      <v-data-table :headers="columnas" :items="sales">
+        <template v-slot:item.cantidad="{ item }">
+          <v-edit-dialog>
+            {{ item.cantidad }}
+            <template v-slot:input>
+              <v-text-field
+                @keydown.enter="
+                  cambiarCantidadProducto($event.target.value, item)
+                "
+                label="Editar"
+                type="number"
+                counter
+              />
+            </template>
+          </v-edit-dialog>
+        </template>
+      </v-data-table>
+    </v-container>
   </div>
 </template>
 
@@ -108,7 +110,6 @@ export default Vue.extend({
     calculadora: 0,
     descuento_adicional: 0,
     columnas: [
-      { text: "Codigo", value: "bar_code" },
       { text: "Producto", value: "name" },
       { text: "Cantidad", value: "amount" },
       { text: "Precio*uni", value: "price_purchase" },

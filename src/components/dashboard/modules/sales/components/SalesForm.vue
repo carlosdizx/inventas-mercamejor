@@ -81,6 +81,14 @@
               />
             </v-col>
           </v-row>
+          <v-row v-if="!enfoque">
+            <v-col class="text-center">
+              <v-chip color="red">
+                Pistola no posicionada -
+                <v-icon>mdi-barcode-scan</v-icon>
+              </v-chip>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="12">
               <v-btn
