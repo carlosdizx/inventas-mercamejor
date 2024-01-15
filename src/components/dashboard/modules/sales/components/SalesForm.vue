@@ -8,7 +8,7 @@
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form @submit.prevent="">
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <validation-provider
                 v-slot="{ errors }"
                 name="Documento del cliente"
@@ -30,7 +30,7 @@
                 />
               </validation-provider>
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <v-text-field
                 label="Nombre cliente"
                 prepend-icon="mdi-account"
@@ -42,9 +42,7 @@
                 disabled
               />
             </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <validation-provider
                 v-slot="{ errors }"
                 name="Tipo venta"
@@ -62,24 +60,16 @@
                 />
               </validation-provider>
             </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-if="sale.shop_type === 'Credito'"
-                label="Fecha de pago"
-                prepend-icon="mdi-numeric"
-                type="date"
-                dense
-                outlined
-                clearable
-                counter
-                v-model="fecha_pago"
-              />
-            </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col>
               <v-text-field
-                label="Codigo del producto o servicio"
+                :color="enfoque ? 'success' : 'red'"
+                :label="
+                  enfoque
+                    ? 'Codigo del producto o servicio'
+                    : 'Codigo del producto o servicio (Pistola no posicionada)'
+                "
                 prepend-icon="mdi-barcode-scan"
                 type="number"
                 dense
@@ -91,12 +81,6 @@
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
               />
-            </v-col>
-            <v-col cols="12" md="6" class="text-center">
-              <v-chip :color="enfoque ? 'success' : 'red'">
-                {{ enfoque ? "" : "Pistola no posicionada" }}
-                <v-icon>mdi-barcode-scan</v-icon>
-              </v-chip>
             </v-col>
           </v-row>
           <v-row>
