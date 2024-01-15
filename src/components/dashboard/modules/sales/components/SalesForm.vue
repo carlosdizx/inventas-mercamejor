@@ -7,60 +7,58 @@
     <v-card-text>
       <ValidationObserver ref="observer" v-slot="{ invalid }">
         <v-form @submit.prevent="">
-          <v-row>
-            <v-col cols="12" md="4">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Documento del cliente"
-                rules="required|min:6|max:20"
-              >
-                <v-text-field
-                  label="Documento de identidad"
-                  prepend-icon="mdi-card-account-details"
-                  append-outer-icon="mdi-magnify"
-                  @click:append-outer="abrirDialogoLisadoClientes"
-                  clearable
-                  dense
-                  outlined
-                  counter
-                  v-model="sale.doc_client"
-                  @focusout="buscarCliente()"
-                  :error-messages="errors"
-                  autofocus
-                />
-              </validation-provider>
-            </v-col>
-            <v-col cols="12" md="4">
+          <v-col>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Documento del cliente"
+              rules="required|min:6|max:20"
+            >
               <v-text-field
-                label="Nombre cliente"
-                prepend-icon="mdi-account"
+                label="Documento de identidad"
+                prepend-icon="mdi-card-account-details"
+                append-outer-icon="mdi-magnify"
+                @click:append-outer="abrirDialogoLisadoClientes"
+                clearable
                 dense
                 outlined
                 counter
-                :value="`${sale.nam_client + ' ' + sale.sur_client}`"
-                readonly
-                disabled
+                v-model="sale.doc_client"
+                @focusout="buscarCliente()"
+                :error-messages="errors"
+                autofocus
               />
-            </v-col>
-            <v-col cols="12" md="4">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo venta"
-                rules="required"
-              >
-                <v-select
-                  prepend-icon="mdi-home"
-                  :items="tipos_venta"
-                  label="Tipos de venta"
-                  solo
-                  outlined
-                  dense
-                  v-model="sale.shop_type"
-                  :error-messages="errors"
-                />
-              </validation-provider>
-            </v-col>
-          </v-row>
+            </validation-provider>
+          </v-col>
+          <v-col>
+            <v-text-field
+              label="Nombre cliente"
+              prepend-icon="mdi-account"
+              dense
+              outlined
+              counter
+              :value="`${sale.nam_client + ' ' + sale.sur_client}`"
+              readonly
+              disabled
+            />
+          </v-col>
+          <v-col>
+            <validation-provider
+              v-slot="{ errors }"
+              name="Tipo venta"
+              rules="required"
+            >
+              <v-select
+                prepend-icon="mdi-home"
+                :items="tipos_venta"
+                label="Tipos de venta"
+                solo
+                outlined
+                dense
+                v-model="sale.shop_type"
+                :error-messages="errors"
+              />
+            </validation-provider>
+          </v-col>
           <v-row>
             <v-col>
               <v-text-field

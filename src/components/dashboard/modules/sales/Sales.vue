@@ -1,19 +1,27 @@
 <template>
   <v-container>
-    <SalesForm
-      v-on:codigo_barras="buscarProducto($event)"
-      v-on:datos_cliente="generarFactura($event)"
-      ref="SalesForm"
-    />
-    <ItemsList ref="ItemsList" />
-    <Factura ref="Factura" />
+    <v-row>
+      <v-col cols="12" md="6">
+        <SalesForm
+          v-on:codigo_barras="buscarProducto($event)"
+          v-on:datos_cliente="generarFactura($event)"
+          ref="SalesForm"
+        />
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-row>
+          <v-col>
+            <ItemsList ref="ItemsList" />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script lang="ts">
 import SalesForm from "@/components/dashboard/modules/sales/components/SalesForm.vue";
 import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList.vue";
-import Factura from "@/components/generals/Factura.vue";
 import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
@@ -25,7 +33,7 @@ import { generatePageToPrint } from "./components/SalesFunction";
 
 export default Vue.extend({
   name: "Sales",
-  components: { SalesForm, ItemsList, Factura },
+  components: { SalesForm, ItemsList },
   data: () => ({
     productos: [],
     audio: new Audio(),

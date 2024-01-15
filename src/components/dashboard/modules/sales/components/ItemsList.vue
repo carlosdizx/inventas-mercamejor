@@ -3,7 +3,7 @@
     <v-card-text>
       <v-form>
         <v-row>
-          <v-col cols="12" sm="6">
+          <!-- <v-col cols="12" sm="6">
             <v-slider
               label="Descuento adicional"
               max="100"
@@ -43,9 +43,9 @@
                 v-model="calculadora"
               />
             </v-col>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-chip color="amber" class="ma-2">
+          </v-col>  -->
+          <v-col>
+            <!-- <v-chip color="xamber" class="ma-2">
               Subtotal: {{ subtotal }}
             </v-chip>
             <v-chip color="info" class="ma-2">
@@ -54,7 +54,7 @@
             <v-chip color="success" class="ma-2">Total: {{ total }}</v-chip>
             <v-chip color="success" class="ma-2">
               Descuento adicional: {{ (total * descuento_adicional) / 100 }}
-            </v-chip>
+            </v-chip> -->
             <v-alert
               outlined
               dark
