@@ -39,7 +39,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="transaction in transactions" :key="transaction.id">
+                <tr v-for="transaction in sortedTransactions" :key="transaction.id">
                   <td class="text-center">{{ transaction.document }}</td>
                   <td
                     :class="{
@@ -77,6 +77,14 @@ export default Vue.extend({
     docClient: "",
     transactions: [] as Array<Transaction>,
   }),
+  computed: {
+    sortedTransactions() {
+      this.transactions.sort((a, b) => b.updated_at.seconds - a.updated_at.seconds);
+      return this.transactions.slice().sort((a, b) => {
+        return b.updated_at.seconds - a.updated_at.seconds;
+      });
+    },
+  },
   methods: {
     async findTransactionsByClient() {
       this.transactions = await LIST_TRANSACTION_BY_CLIENT(this.docClient);
