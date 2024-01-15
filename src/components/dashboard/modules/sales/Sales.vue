@@ -54,7 +54,6 @@ export default Vue.extend({
       }
     },
     async generarFactura(sale: Sale) {
-      const factura: any = this.$refs.Factura;
       const datos: any = this.$refs.ItemsList;
       const formVentas: any = this.$refs.SalesForm;
       const productos: ProductSale[] = datos.darItemsFactura().productos;
@@ -87,12 +86,6 @@ export default Vue.extend({
         if (typeof consecutivo === "boolean") {
           return;
         }
-        await factura.asignarValores(
-          sale,
-          datos.darItemsFactura(),
-          consecutivo
-        );
-        factura.cambiarEstado();
         datos.resetValues();
         formVentas.resetDatosVenta();
       } else {
