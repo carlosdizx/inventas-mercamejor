@@ -39,7 +39,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="transaction in transactions" :key="transaction.id">
+                <tr
+                  v-for="transaction in transactionsOrderByDesc"
+                  :key="transaction.id"
+                >
                   <td class="text-center">{{ transaction.document }}</td>
                   <td
                     :class="{
@@ -53,7 +56,7 @@
 
                   <td class="text-center">{{ transaction.amount }}</td>
                   <td class="text-center">
-                    {{ formatDate(transaction.updated_at.seconds) }}
+                    {{ transaction.updated_at.toLocaleString() }}
                   </td>
                   <td class="text-center">{{ transaction.reference }}</td>
                 </tr>
@@ -91,6 +94,16 @@ export default Vue.extend({
     formatDate(timestamp: number): string {
       const date = new Date(timestamp * 1000);
       return date.toLocaleString();
+    },
+  },
+  computed: {
+    transactionsOrderByDesc() {
+      return this.transactions
+        .slice()
+        .sort(
+          (a: Transaction, b: Transaction) =>
+            b.created_at.getTime() - a.created_at.getTime()
+        );
     },
   },
 });
