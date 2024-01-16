@@ -49,7 +49,7 @@
             >
               <v-select
                 prepend-icon="mdi-home"
-                :items="tipos_venta"
+                :items="posicionFiltrada"
                 label="Tipos de venta"
                 solo
                 outlined
@@ -203,6 +203,15 @@ export default Vue.extend({
       this.sale.total = 0;
       this.sale.sales = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
+    },
+  },
+  computed: {
+    posicionFiltrada() {
+      if (this.sale.nam_client == "Clientes varios") {
+        return [this.tipos_venta[0]];
+      } else {
+        return this.tipos_venta;
+      }
     },
   },
 });
