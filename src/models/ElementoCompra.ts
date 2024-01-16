@@ -102,20 +102,10 @@ export const CAMPOS = [
 ];
 
 export const COMPRAS_CONSULTA = [
-  { text: "Fecha de Creación", valu: "created_at" },
-  { text: "Descripción de producto", value: "descripcion_producto" },
-  { text: "Documento proveedor", value: "doc_proveedor" },
-  { text: "Nombre del proveedor", value: "nombre_proveedor" },
-  { text: "Código del factura", value: "cod_factura" },
-  { text: "Tipo de compra", value: "tipo_compra" },
-  { text: "Tipo de pago", value: "tipo_pago" },
-  { text: "Fecha de pago", value: "fecha_pago" },
-  { text: "Fecha de llegada del producto", value: "fecha_llegada_producto" },
-  { text: "Código de Barras", value: "codigo_barras" },
-  { text: "Bódega", value: "bodega" },
-  { text: "Precio de compra", value: "precio_compra" },
-  { text: "Precio de venta", value: "precio_venta" },
-  { text: "Impuesto", value: "impuesto" },
-  { text: "Descuento", value: "descuento" },
-  { text: "Subtotal", value: "subtotal" },
+  { text: "Fecha de Creación", value: "created_at" },
+  { text: "Documento proveedor", value: "doc_supp" },
+  { text: "Nombre del proveedor", value: "nam_supp" },
+  { text: "Apellidos del proveedor", value: "sur_supp" },
+  { text: "Tipo de compra", value: "type_pay" },
+  { text: "Total", value: "total" },
 ];

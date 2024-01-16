@@ -25,7 +25,7 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row class="ml-6 mr-6">
+            <!-- <v-row class="ml-6 mr-6">
               <v-col>
                 <validation-provider type="date" name="Fecha de Compra">
                   <v-text-field
@@ -48,7 +48,7 @@
                   ></v-text-field>
                 </validation-provider>
               </v-col>
-            </v-row>
+            </v-row> -->
             <v-row class="mr-5 ml-5">
               <v-col>
                 <v-btn
@@ -102,6 +102,7 @@
 </template>
 
 <script lang="ts">
+import { Purchase } from "@/domain/model/purchase/Purchase";
 import { COMPRAS_CONSULTA } from "@/models/ElementoCompra";
 import { CONSULTAR_COMPRAS } from "@/services/consultas";
 import Vue from "vue";
@@ -116,7 +117,7 @@ export default Vue.extend({
     rangoProveedorInicial: "",
     rangoProveedorFinal: "",
     search: "",
-    datos: [""],
+    datos: [] as Array<Purchase>,
   }),
   computed: {
     validarFormulario() {
@@ -142,18 +143,22 @@ export default Vue.extend({
     async buscarCompras() {
       const res = await CONSULTAR_COMPRAS(
         this.rangoFechaInicial,
-        this.rangoFechaFinal,
-        this.rangoProveedorInicial,
-        this.rangoProveedorFinal
+        this.rangoFechaFinal
       );
       this.dialog = true;
       this.datos = res;
     },
   },
   created() {
-    this.datos = [];
-    this.rangoFechaInicial = new Date().toISOString().slice(0, 10);
-    this.rangoFechaFinal = new Date().toISOString().slice(0, 10);
+    const dateNow = new Date();
+    const dateYesterday = new Date();
+    dateNow.setHours(dateNow.getHours() - 5);
+    dateYesterday.setHours(dateYesterday.getHours() - 5);
+
+    dateNow.setDate(dateNow.getDate() - 1);
+
+    this.rangoFechaInicial = dateNow.toISOString().slice(0, 10);
+    this.rangoFechaFinal = dateYesterday.toISOString().slice(0, 10);
   },
 });
 </script>
