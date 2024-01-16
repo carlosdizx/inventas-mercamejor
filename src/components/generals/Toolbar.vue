@@ -18,7 +18,7 @@
         <v-icon>{{ btn.icon }}</v-icon>
       </v-btn>
     </router-link>
-    <v-btn v-if="permitirLogout" icon @click="logout()">
+    <v-btn class="d-none" v-if="true" icon @click="logout()">
       <v-icon>mdi-logout</v-icon>
     </v-btn>
   </v-toolbar>
@@ -49,13 +49,17 @@ export default Vue.extend({
       this.$emit("cambiarEstadoNavDrawer");
     },
     async logout() {
-      await LOGOUT();
       await Swal.fire({
-        title: "Sessión cerrada",
-        timer: 1500,
-        icon: "info",
+        title: "Seguro quieres salir?",
+        showCancelButton: true,
+        confirmButtonText: "Salir",
+        denyButtonText: `Permanecer aqui`,
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          LOGOUT();
+        }
       });
-      this.$router.go(0);
     },
   },
 });
