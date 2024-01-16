@@ -70,6 +70,7 @@
 import { Transaction } from "@/domain/model/transaction/Transaction";
 import { LIST_TRANSACTION_BY_CLIENT } from "@/domain/useCase/transactionUseCase/transactionUseCase";
 import Vue from "vue";
+import Swal from "sweetalert2";
 
 export default Vue.extend({
   name: "BillToCharge",
@@ -80,6 +81,12 @@ export default Vue.extend({
   methods: {
     async findTransactionsByClient() {
       this.transactions = await LIST_TRANSACTION_BY_CLIENT(this.docClient);
+      if (this.transactions.length === 0) {
+        Swal.fire({
+          title: "Este cliente no tiene registros",
+          icon: "error",
+        });
+      }
     },
     formatDate(timestamp: number): string {
       const date = new Date(timestamp * 1000);
