@@ -57,38 +57,38 @@ export const FUNCIONES_DASHBOARD: any[] = [
         titulo: "Productos",
         roles: ["Admin", "Empleado"],
       },
-      {
-        id: 8,
-        icono: "mdi-warehouse",
-        titulo: "Bodegas",
-        roles: ["Admin", "Empleado"],
-      },
+      // {
+      //   id: 8,
+      //   icono: "mdi-warehouse",
+      //   titulo: "Bodegas",
+      //   roles: ["Admin", "Empleado"],
+      // },
     ],
   },
-  {
-    titulo: "Modulo de usuarios",
-    roles: ["Admin"],
-    items: [
-      {
-        id: 9,
-        icono: "mdi-account-multiple",
-        titulo: "Registrar empleados",
-        roles: ["Admin"],
-      },
-      {
-        id: 10,
-        icono: "mdi-account-multiple",
-        titulo: "Actualizar empleados",
-        roles: ["Admin"],
-      },
-      {
-        id: 11,
-        icono: "mdi-account-multiple",
-        titulo: "Cajas",
-        roles: ["Admin"],
-      },
-    ],
-  },
+  // {
+  //   titulo: "Modulo de usuarios",
+  //   roles: ["Admin"],
+  //   items: [
+  //     {
+  //       id: 9,
+  //       icono: "mdi-account-multiple",
+  //       titulo: "Registrar empleados",
+  //       roles: ["Admin"],
+  //     },
+  //     {
+  //       id: 10,
+  //       icono: "mdi-account-multiple",
+  //       titulo: "Actualizar empleados",
+  //       roles: ["Admin"],
+  //     },
+  //     {
+  //       id: 11,
+  //       icono: "mdi-account-multiple",
+  //       titulo: "Cajas",
+  //       roles: ["Admin"],
+  //     },
+  //   ],
+  // },
   {
     titulo: "Otros",
     roles: ["Admin", "Empleado"],
@@ -105,30 +105,30 @@ export const FUNCIONES_DASHBOARD: any[] = [
         titulo: "Marcas de productos",
         roles: ["Admin", "Empleado"],
       },
-      {
-        id: 15,
-        icono: "mdi-clock",
-        titulo: "Movimientos",
-        roles: ["Admin"],
-      },
-      {
-        id: 16,
-        icono: "mdi-ticket-confirmation",
-        titulo: "Comprobantes",
-        roles: ["Admin", "Empleado"],
-      },
+      // {
+      //   id: 15,
+      //   icono: "mdi-clock",
+      //   titulo: "Movimientos",
+      //   roles: ["Admin"],
+      // },
+      // {
+      //   id: 16,
+      //   icono: "mdi-ticket-confirmation",
+      //   titulo: "Comprobantes",
+      //   roles: ["Admin", "Empleado"],
+      // },
     ],
   },
-  {
-    titulo: "Cuadre Cuentas",
-    roles: ["Admin", "Empleado"],
-    items: [
-      {
-        id: 17,
-        icono: "mdi-home",
-        titulo: "Cuadre Cuentas",
-        roles: ["Admin", "Empleado"],
-      },
-    ],
-  },
+  // {
+  //   titulo: "Cuadre Cuentas",
+  //   roles: ["Admin", "Empleado"],
+  //   items: [
+  //     {
+  //       id: 17,
+  //       icono: "mdi-home",
+  //       titulo: "Cuadre Cuentas",
+  //       roles: ["Admin", "Empleado"],
+  //     },
+  //   ],
+  // },
 ];

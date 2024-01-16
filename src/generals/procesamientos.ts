@@ -88,7 +88,7 @@ export async function PROCESAR_FORMULARIO(
     });
     datosMovimiento.accion = "Registró";
     datosMovimiento.objeto = JSON.stringify(datos);
-    await GUARDAR("movimientos", datosMovimiento);
+    //await GUARDAR("movimientos", datosMovimiento);
   } else {
     await EDITAR(coleccion, item.id, datos);
     await Swal.fire({
@@ -101,7 +101,7 @@ export async function PROCESAR_FORMULARIO(
     datosMovimiento.accion = "Editó";
     datosMovimiento.objeto_edit = JSON.stringify(item);
     datosMovimiento.objeto = JSON.stringify(datos);
-    await GUARDAR("movimientos", datosMovimiento);
+    //await GUARDAR("movimientos", datosMovimiento);
   }
   campos.forEach((campo: any) => {
     if (campo.type === 10) {
