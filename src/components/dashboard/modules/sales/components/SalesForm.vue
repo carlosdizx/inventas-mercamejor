@@ -81,14 +81,6 @@
               />
             </v-col>
           </v-row>
-          <v-row v-if="!enfoque">
-            <v-col class="text-center">
-              <v-chip color="red">
-                Pistola no posicionada -
-                <v-icon>mdi-barcode-scan</v-icon>
-              </v-chip>
-            </v-col>
-          </v-row>
           <v-row>
             <v-col cols="12">
               <v-btn
@@ -103,6 +95,14 @@
               </v-btn>
             </v-col>
           </v-row>
+          <v-row v-if="!enfoque">
+            <v-col class="text-center">
+              <v-chip color="red">
+                Pistola no posicionada -
+                <v-icon>mdi-barcode-scan</v-icon>
+              </v-chip>
+            </v-col>
+          </v-row>
         </v-form>
       </ValidationObserver>
     </v-card-text>
@@ -111,6 +111,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import Swal from "sweetalert2";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
 import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
@@ -174,9 +175,22 @@ export default Vue.extend({
       this.bar_code = null;
     },
     registrarVenta() {
-      this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
-      this.$emit("datos_cliente", this.sale);
-      this.resetDatosVenta();
+      Swal.fire({
+        title: "Registrar venta?",
+        text: "La venta se registrara como confirmada!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Registrar!",
+        cancelButtonText: `Cancelar!`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
+          this.$emit("datos_cliente", this.sale);
+          this.resetDatosVenta();
+        }
+      });
     },
     resetDatosVenta() {
       this.sale.doc_client = "2222222";
