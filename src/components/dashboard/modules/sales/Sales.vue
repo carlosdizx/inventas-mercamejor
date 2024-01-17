@@ -4,6 +4,7 @@
       <v-col cols="12" md="6">
         <SalesForm
           v-on:codigo_barras="buscarProducto($event)"
+          v-on:wihtout_product_register="registerProduct($event)"
           v-on:datos_cliente="generarFactura($event)"
           ref="SalesForm"
         />
@@ -62,6 +63,13 @@ export default Vue.extend({
         });
       }
     },
+    registerProduct(product: any) {
+      const listado: any = this.$refs.ItemsList;
+      const formVentas: any = this.$refs.SalesForm;
+
+      listado.addProductNotRegister(product);
+      formVentas.resetProductNotRegister();
+    },
     async generarFactura(sale: Sale) {
       const datos: any = this.$refs.ItemsList;
       const formVentas: any = this.$refs.SalesForm;
@@ -92,6 +100,7 @@ export default Vue.extend({
         sale.subtotal = total;
         this.print({ ...sale });
         await REGISTER_NEW_SALE({ ...sale });
+        console.log({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;

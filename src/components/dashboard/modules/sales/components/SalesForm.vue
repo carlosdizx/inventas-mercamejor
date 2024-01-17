@@ -15,7 +15,6 @@
             >
               <v-text-field
                 label="Documento de identidad"
-                prepend-icon="mdi-card-account-details"
                 append-outer-icon="mdi-magnify"
                 @click:append-outer="abrirDialogoLisadoClientes"
                 clearable
@@ -78,6 +77,35 @@
                 @keyup.enter="buscarProducto()"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-text-field
+                label="Digite precio de producto"
+                prepend-icon="mdi-currency-usd"
+                clearable
+                dense
+                outlined
+                counter
+                type="number"
+                v-model="productNotRegister.price"
+                @keyup.enter="registerSaleNotProduct"
+                autofocus
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                label="Digite Descripción"
+                clearable
+                dense
+                outlined
+                counter
+                type="string"
+                v-model="productNotRegister.description"
+                @keyup.enter="registerSaleNotProduct"
+                autofocus
               />
             </v-col>
           </v-row>
@@ -147,6 +175,10 @@ export default Vue.extend({
       created_at: new Date(),
       updated_at: new Date(),
     } as Sale,
+    productNotRegister: {
+      price: null,
+      description: "",
+    },
     fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
     tipos_venta: TIPOS_VENTA,
     dialog_list: false,
@@ -158,9 +190,15 @@ export default Vue.extend({
       dialog.cambiarEstado();
     },
     async buscarCliente() {
-      const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
-      if (resultado) {
-        this.cambiarCliente(resultado);
+      if (this.sale.doc_client) {
+        const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
+        if (resultado) {
+          this.cambiarCliente(resultado);
+        } else {
+          this.sale.doc_client = "2222222";
+          this.sale.sur_client = "Clientes varios";
+          this.sale.nam_client = "";
+        }
       }
     },
     cambiarCliente(client: Client) {
@@ -171,8 +209,17 @@ export default Vue.extend({
     buscarProducto() {
       this.$emit("codigo_barras", this.bar_code);
     },
+    registerSaleNotProduct() {
+      if (this.productNotRegister.price !== null) {
+        this.$emit("wihtout_product_register", this.productNotRegister);
+      }
+    },
     resetProduct() {
       this.bar_code = null;
+    },
+    resetProductNotRegister() {
+      this.productNotRegister.description = "";
+      this.productNotRegister.price = null;
     },
     registrarVenta() {
       Swal.fire({

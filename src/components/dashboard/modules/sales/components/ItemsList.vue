@@ -112,7 +112,7 @@ export default Vue.extend({
     columnas: [
       { text: "Producto", value: "name" },
       { text: "Cantidad", value: "amount" },
-      { text: "Precio*uni", value: "price_sale" },
+      { text: "Precio*uni", value: "sale_price" },
       { text: "Subtotal", value: "subtotal" },
     ],
     sales: [] as ProductSale[],
@@ -136,6 +136,20 @@ export default Vue.extend({
         this.sales.push(producto);
       }
       await this.calcularValores();
+    },
+    addProductNotRegister(productNotRegister: any) {
+      const producto: ProductSale = {
+        bar_code: "",
+        name: productNotRegister.description,
+        amount: 0,
+        shop_price: 0,
+        sale_price: Number(productNotRegister.price),
+        taxes: 0,
+        discount: 0,
+        subtotal: Number(productNotRegister.price),
+      };
+      this.sales.push(producto);
+      this.calcularValores();
     },
     async calcularValores() {
       const valores = TOTALIZAR_VALORES(this.sales);

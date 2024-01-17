@@ -21,13 +21,15 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
 
 export const UNITS_UPDATED_FROM_SALE = async (sale: Sale): Promise<void> => {
   for (const itemShop of sale.sales) {
-    await UPDATE_UNITS_PRODUCT(
-      "LESS",
-      Number(itemShop.bar_code),
-      itemShop.amount,
-      itemShop.shop_price,
-      itemShop.sale_price
-    );
+    if (itemShop.bar_code !== "") {
+      await UPDATE_UNITS_PRODUCT(
+        "LESS",
+        Number(itemShop.bar_code),
+        itemShop.amount,
+        itemShop.shop_price,
+        itemShop.sale_price
+      );
+    }
   }
 };
 
