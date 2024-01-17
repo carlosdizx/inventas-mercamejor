@@ -94,7 +94,7 @@
                     )
                   }}
                 </td>
-                <td>{{ item.price_shop }}</td>
+                <td>{{ item.price_sale }}</td>
                 <td>{{ item.subtotal }}</td>
                 <td v-if="!anular">
                   <v-btn
