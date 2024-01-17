@@ -112,7 +112,7 @@ export default Vue.extend({
     columnas: [
       { text: "Producto", value: "name" },
       { text: "Cantidad", value: "amount" },
-      { text: "Precio*uni", value: "price_purchase" },
+      { text: "Precio*uni", value: "price_sale" },
       { text: "Subtotal", value: "subtotal" },
     ],
     sales: [] as ProductSale[],

@@ -14,7 +14,7 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
       Number(itemShop.bar_code),
       itemShop.amount,
       itemShop.price_shop,
-      itemShop.price_purchase
+      itemShop.price_sale
     );
   }
 };
