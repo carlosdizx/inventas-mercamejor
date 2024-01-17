@@ -3,18 +3,18 @@ import {
   SAVE_SALE,
   UPDATE_SALE,
 } from "@/infrastructure/firebase/adapter/sale/saleAdapter";
-//import { SAVE_INVENTORY_FROM_SALE } from "../inventory/inventoryUseCase";
-//import { UNITS_UPDATED_FROM_SALE } from "../product/productUseCase";
+import { SAVE_INVENTORY_FROM_SALE } from "../inventory/inventoryUseCase";
+import { UNITS_UPDATED_FROM_SALE } from "../product/productUseCase";
 import { EEstateSale, EPayTypeSale } from "@/domain/model/constants/Constants";
 import { SAVE_NEW_BILL_TO_CHARGE } from "@/infrastructure/firebase/adapter/billtocharge/billToChargeAdapter";
 
 export const REGISTER_NEW_SALE = async (sale: Sale): Promise<boolean> => {
   await SAVE_SALE(sale);
-  //await SAVE_INVENTORY_FROM_SALE(sale);
+  await SAVE_INVENTORY_FROM_SALE(sale);
   if (sale.shop_type === EPayTypeSale.CREDITO) {
     await SAVE_NEW_BILL_TO_CHARGE(sale);
   }
-  //await UNITS_UPDATED_FROM_SALE(sale);
+  await UNITS_UPDATED_FROM_SALE(sale);
   return true;
 };
 
