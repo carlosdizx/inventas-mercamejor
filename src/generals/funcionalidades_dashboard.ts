@@ -35,12 +35,18 @@ export const FUNCIONES_DASHBOARD: any[] = [
       },
       {
         id: 5,
+        icono: "mdi-cash-plus",
+        titulo: "Consultar Ventas",
+        roles: ["Admin", "Empleado"],
+      },
+      {
+        id: 6,
         icono: "mdi-account-group",
         titulo: "Clientes",
         roles: ["Admin", "Empleado"],
       },
       {
-        id: 6,
+        id: 7,
         icono: "mdi-cash-plus",
         titulo: "Cuentas por cobrar",
         roles: ["Admin", "Empleado"],
@@ -52,13 +58,13 @@ export const FUNCIONES_DASHBOARD: any[] = [
     roles: ["Admin", "Empleado"],
     items: [
       {
-        id: 7,
+        id: 8,
         icono: "mdi-shape-plus",
         titulo: "Productos",
         roles: ["Admin", "Empleado"],
       },
       // {
-      //   id: 8,
+      //   id: 9,
       //   icono: "mdi-warehouse",
       //   titulo: "Bodegas",
       //   roles: ["Admin", "Empleado"],
@@ -70,19 +76,19 @@ export const FUNCIONES_DASHBOARD: any[] = [
   //   roles: ["Admin"],
   //   items: [
   //     {
-  //       id: 9,
+  //       id: 10,
   //       icono: "mdi-account-multiple",
   //       titulo: "Registrar empleados",
   //       roles: ["Admin"],
   //     },
   //     {
-  //       id: 10,
+  //       id: 11,
   //       icono: "mdi-account-multiple",
   //       titulo: "Actualizar empleados",
   //       roles: ["Admin"],
   //     },
   //     {
-  //       id: 11,
+  //       id: 12,
   //       icono: "mdi-account-multiple",
   //       titulo: "Cajas",
   //       roles: ["Admin"],

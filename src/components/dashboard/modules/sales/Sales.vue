@@ -100,7 +100,6 @@ export default Vue.extend({
         sale.subtotal = total;
         this.print({ ...sale });
         await REGISTER_NEW_SALE({ ...sale });
-        console.log({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;

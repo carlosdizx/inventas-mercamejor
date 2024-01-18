@@ -5,7 +5,7 @@
     </v-card-text>
     <DialogClients v-on:cliente="cambiarCliente($event)" ref="DialogClients" />
     <v-card-text>
-      <ValidationObserver ref="observer" v-slot="{ invalid }">
+      <ValidationObserver ref="observer">
         <v-form @submit.prevent="">
           <v-col>
             <validation-provider
@@ -22,9 +22,8 @@
                 outlined
                 counter
                 v-model="sale.doc_client"
-                @focusout="buscarCliente()"
+                @input="buscarCliente()"
                 :error-messages="errors"
-                autofocus
               />
             </validation-provider>
           </v-col>
@@ -53,7 +52,7 @@
                 solo
                 outlined
                 dense
-                v-model="sale.shop_type"
+                v-model="sale.sale_type"
                 :error-messages="errors"
               />
             </validation-provider>
@@ -83,7 +82,7 @@
           <v-row>
             <v-col>
               <v-text-field
-                label="Digite precio de producto"
+                label="Digite precio"
                 prepend-icon="mdi-currency-usd"
                 clearable
                 dense
@@ -92,7 +91,6 @@
                 type="number"
                 v-model="productNotRegister.price"
                 @keyup.enter="registerSaleNotProduct"
-                autofocus
               />
             </v-col>
             <v-col>
@@ -105,19 +103,12 @@
                 type="string"
                 v-model="productNotRegister.description"
                 @keyup.enter="registerSaleNotProduct"
-                autofocus
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col cols="12">
-              <v-btn
-                color="success"
-                block
-                large
-                :disabled="invalid"
-                @click="registrarVenta"
-              >
+              <v-btn color="success" block large @click="registrarVenta">
                 Registrar venta
                 <v-icon>mdi-currency-usd</v-icon>
               </v-btn>
@@ -158,11 +149,11 @@ export default Vue.extend({
   data: () => ({
     bar_code: null,
     sale: {
-      doc_client: "2222222",
+      doc_client: "",
       nam_client: "Clientes varios",
       sur_client: "",
       cod_invoice: "",
-      shop_type: EPayTypeSale.CONTADO,
+      sale_type: EPayTypeSale.CONTADO,
       pay_type: "",
       pay_date: new Date(),
       box: "",
@@ -195,7 +186,6 @@ export default Vue.extend({
         if (resultado) {
           this.cambiarCliente(resultado);
         } else {
-          this.sale.doc_client = "2222222";
           this.sale.sur_client = "Clientes varios";
           this.sale.nam_client = "";
         }
@@ -243,7 +233,7 @@ export default Vue.extend({
       this.sale.doc_client = "2222222";
       this.sale.nam_client = "Clientes varios";
       this.sale.sur_client = "";
-      this.sale.shop_type = EPayTypeSale.CONTADO;
+      this.sale.sale_type = EPayTypeSale.CONTADO;
       this.sale.pay_date = new Date();
       this.sale.subtotal = 0;
       this.sale.discount = 0;
@@ -254,7 +244,7 @@ export default Vue.extend({
   },
   computed: {
     posicionFiltrada() {
-      if (this.sale.nam_client == "Clientes varios") {
+      if (this.sale.nam_client === "Clientes varios") {
         return [this.tipos_venta[0]];
       } else {
         return this.tipos_venta;
