@@ -53,6 +53,8 @@
               :items="sales"
               item-key="id"
               class="elevation-1"
+              sort-by="created_at"
+              sort-asc="created_at"
             >
               <template v-slot:top>
                 <v-text-field

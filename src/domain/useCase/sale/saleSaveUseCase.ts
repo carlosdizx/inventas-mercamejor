@@ -30,9 +30,9 @@ export const CONSULT_SALES = async (
   fechaFinal: string
 ): Promise<Sale[]> => {
   const fecIni = new Date(fechaInicial);
-  fecIni.setHours(fecIni.getHours() - 5);
+  fecIni.setHours(fecIni.getHours() + 5);
   const fecFin = new Date(fechaFinal);
-  fecFin.setHours(fecFin.getHours() - 5);
+  fecFin.setHours(fecFin.getHours() + 5);
 
   fecIni.setDate(fecIni.getDate() + 1);
   fecFin.setDate(fecFin.getDate() + 1);

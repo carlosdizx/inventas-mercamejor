@@ -4,6 +4,7 @@ import {
   UPDATE,
   CONSULT_DATA,
 } from "@/infrastructure/firebase/template/basicOperations";
+import { Timestamp } from "firebase/firestore";
 import { TIMESTAP_TO_DATE } from "../../Utilities";
 
 const purchaseCollection = "sales";
@@ -26,8 +27,8 @@ export const FIND_SALES = async (
 ): Promise<Sale[]> => {
   const sales = [] as Array<Sale>;
   const query = await CONSULT_DATA(purchaseCollection, [
-    ["created_at", ">=", initialDate],
-    ["created_at", "<=", finalDate],
+    ["created_at", ">=", Timestamp.fromDate(initialDate)],
+    ["created_at", "<=", Timestamp.fromDate(finalDate)],
   ]);
   if (!query.empty) {
     query.forEach((a) => {
