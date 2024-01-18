@@ -37,7 +37,7 @@ export const CAMPOS: any[] = [
     label: "Codigo de barras",
     prepend_icon: "mdi-barcode-scan",
     type: 1,
-    format: "number",
+    format: "text",
     name: "bar_code",
     model: "",
   },

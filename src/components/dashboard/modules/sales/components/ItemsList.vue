@@ -98,7 +98,7 @@ import {
   TOTALIZAR_VALORES,
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
-import { Product } from "@/domain/model/product/Product";
+import { ProductToList } from "@/domain/model/product/Product";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
@@ -118,7 +118,7 @@ export default Vue.extend({
     sales: [] as ProductSale[],
   }),
   methods: {
-    async agregarProducto(product: Product) {
+    async agregarProducto(product: ProductToList) {
       const agregado = YA_LISTADO(this.sales, product);
       const producto: ProductSale = {
         bar_code: product.bar_code,

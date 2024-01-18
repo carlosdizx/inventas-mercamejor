@@ -72,7 +72,7 @@
                 outlined
                 clearable
                 counter
-                v-model.number="bar_code"
+                v-model="bar_code"
                 @keyup.enter="buscarProducto()"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"

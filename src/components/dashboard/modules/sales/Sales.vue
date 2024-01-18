@@ -26,24 +26,28 @@ import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList
 import Vue from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
-import { BUSCAR_PRODUCTOS_CODIGO_BARRAS } from "@/UseCases/ProductosUseCases";
+import { CONSULT_ALL_PRODUCT } from "@/UseCases/ProductosUseCases";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
 import { Sale } from "@/domain/model/sale/Sale";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 import { generatePageToPrint } from "./components/SalesFunction";
+import { ProductToList } from "@/domain/model/product/Product";
 
 export default Vue.extend({
   name: "Sales",
   components: { SalesForm, ItemsList },
   data: () => ({
     productos: [],
+    productsDatabase: [] as Array<ProductToList>,
     audio: new Audio(),
     add: require("@/assets/audios/add_product.mp3"),
     notFound: require("@/assets/audios/not_found_product.mp3"),
   }),
   methods: {
-    async buscarProducto(codigo_barras: number) {
-      const producto = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codigo_barras * 1);
+    async buscarProducto(codigo_barras: string) {
+      const producto = this.productsDatabase.find(
+        (p: ProductToList) => p.bar_code === codigo_barras
+      );
       const formVentas: any = this.$refs.SalesForm;
       if (producto) {
         const listado: any = this.$refs.ItemsList;
@@ -134,6 +138,9 @@ export default Vue.extend({
         console.error("No se pudo abrir la ventana de impresión");
       }
     },
+  },
+  async created() {
+    this.productsDatabase = await CONSULT_ALL_PRODUCT();
   },
 });
 </script>

@@ -11,7 +11,7 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
   for (const itemShop of purchase.sales) {
     await UPDATE_UNITS_PRODUCT(
       "ADD",
-      Number(itemShop.bar_code),
+      itemShop.bar_code,
       itemShop.amount,
       itemShop.price_shop,
       itemShop.price_sale
@@ -24,7 +24,7 @@ export const UNITS_UPDATED_FROM_SALE = async (sale: Sale): Promise<void> => {
     if (itemShop.bar_code !== "") {
       await UPDATE_UNITS_PRODUCT(
         "LESS",
-        Number(itemShop.bar_code),
+        itemShop.bar_code,
         itemShop.amount,
         itemShop.shop_price,
         itemShop.sale_price
@@ -35,7 +35,7 @@ export const UNITS_UPDATED_FROM_SALE = async (sale: Sale): Promise<void> => {
 
 export const UPDATE_UNITS_PRODUCT = async (
   tipoOperacion: "ADD" | "LESS" | "ASINGN",
-  barCode: number,
+  barCode: string,
   amount: number,
   unitPrice: number,
   salePrice: number
