@@ -44,11 +44,9 @@
         </v-form>
         <v-col v-if="!invalid">.</v-col>
       </ValidationObserver>
-      {{ sales }}
       <v-dialog v-model="dialog" persistent>
         <v-card class="elevation-5">
-          <v-card-title>Resultado de busqueda Compras</v-card-title>
-          <h3>Saldo Total ventas: {{ getTotalSales }}</h3>
+          <v-card-title>Saldo Total ventas: {{ getTotalSales }}</v-card-title>
           <v-card-text>
             <v-data-table
               :headers="headers"
