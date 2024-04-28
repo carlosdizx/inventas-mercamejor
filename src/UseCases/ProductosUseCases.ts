@@ -2,9 +2,10 @@ import {
   LIST_IN,
   UPDATE,
 } from "@/infrastructure/firebase/template/basicOperations";
-import { Product } from "@/domain/model/product/Product";
+import { Product, ProductToList } from "@/domain/model/product/Product";
 import Swal from "sweetalert2";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { GET_ALL_PRODUCTS } from "@/infrastructure/firebase/adapter/product/productAdapter";
 
 export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (
   codigo: number
@@ -21,14 +22,14 @@ export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (
 
 export const YA_LISTADO = (
   productos: ProductSale[],
-  producto: Product
+  producto: ProductToList
 ): boolean =>
   productos.filter((temp: ProductSale) => temp.bar_code === producto.bar_code)
     .length === 1;
 
 export const AGREGAR_PRODUCTO = (
   productos: ProductSale[],
-  producto: Product
+  producto: ProductToList
 ): ProductSale[] => {
   for (const temp of productos) {
     if (temp.bar_code === producto.bar_code) {
@@ -75,7 +76,6 @@ export const CAMBIAR_CANTIDAD = async (
 export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
   codBarras: number,
   cantidad: number,
-
   tipoOperacion: "ADICIONAR" | "RESTAR" | "ASIGNAR"
 ): Promise<void> => {
   const producto: any = await BUSCAR_PRODUCTOS_CODIGO_BARRAS(codBarras);
@@ -88,4 +88,8 @@ export const ACTUALIZAR_UNIDADES_PRODUCTO = async (
     unidades = cantidad;
   }
   await UPDATE("products", producto.idProducto, { amount: unidades });
+};
+
+export const CONSULT_ALL_PRODUCT = async (): Promise<ProductToList[]> => {
+  return GET_ALL_PRODUCTS();
 };

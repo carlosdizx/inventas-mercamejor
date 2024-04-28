@@ -4,7 +4,7 @@ export interface ProductPurchase {
   name: string;
   amount: number;
   price_shop: number;
-  price_purchase: number;
+  price_sale: number;
   taxes: number;
   discount: number;
   subtotal: number;

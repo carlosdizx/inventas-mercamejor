@@ -6,7 +6,7 @@ export interface Sale {
   nam_client: string;
   sur_client: string;
   cod_invoice: string;
-  shop_type: EPayTypeSale;
+  sale_type: EPayTypeSale;
   pay_type: string;
   pay_date: Date;
   box: string;

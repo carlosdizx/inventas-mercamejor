@@ -1,3 +1,5 @@
+import { EPayTypeSale } from "@/domain/model/constants/Constants";
+
 export const TIPOS_DOCUMENTO = [
   "Cédula de ciudadania",
   "Cédula de extrangería",
@@ -11,7 +13,7 @@ export const ROLES = ["Empleado", "Admin"]; //"Admin"],
 
 export const ESTADOS_USUARIO = ["Habilitado", "Desabilitado"];
 
-export const TIPOS_VENTA = ["Contado", "Credito"];
+export const TIPOS_VENTA = [EPayTypeSale.CONTADO, EPayTypeSale.CREDITO];
 
 export const PREF_COMPRA = "C-";
 

@@ -13,13 +13,14 @@
     <Proveedores v-if="item === 2" />
     <CuentasOpcion v-if="item === 3" />
     <Sales v-if="item === 4" />
-    <Clientes v-if="item === 5" />
-    <BillToChargeOption v-if="item === 6" />
-    <Productos v-if="item === 7" />
-    <Bodegas v-if="item === 8" />
-    <RegistroUsuarios v-if="item === 9" />
-    <ActualizarUsuarios v-if="item === 10" />
-    <Cajas v-if="item === 11" />
+    <ConsultSales v-if="item === 5" />
+    <Clientes v-if="item === 6" />
+    <BillToChargeOption v-if="item === 7" />
+    <Productos v-if="item === 8" />
+    <Bodegas v-if="item === 9" />
+    <RegistroUsuarios v-if="item === 10" />
+    <ActualizarUsuarios v-if="item === 11" />
+    <Cajas v-if="item === 12" />
     <Categorias v-if="item === 13" />
     <Marcas v-if="item === 14" />
     <Movimientos v-if="item === 15" />
@@ -47,6 +48,7 @@ import Clientes from "@/components/dashboard/modules/Clientes.vue";
 import BillToChargeOption from "@/components/dashboard/modules/sales/billtocharge/BillToChargeOption.vue";
 import CuentasOpcion from "@/components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue";
 import Sales from "@/components/dashboard/modules/sales/Sales.vue";
+import ConsultSales from "@/components/dashboard/modules/sales/consultsales/ConsultSales.vue";
 import CuadreCuentas from "@/components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue";
 export default Vue.extend({
   name: "Dashboard",
@@ -68,12 +70,13 @@ export default Vue.extend({
     BillToChargeOption,
     CuentasOpcion,
     Sales,
+    ConsultSales,
     CuadreCuentas,
   },
   data: () => ({
     item: 0,
     navigation: true,
-    nombre: "Mercamejor",
+    nombre: "Autoservio la Economia - Vicente Tobar",
     botones: [],
   }),
   methods: {

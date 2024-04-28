@@ -3,7 +3,7 @@
     <v-card-text>
       <v-form>
         <v-row>
-          <v-col cols="12" sm="6">
+          <!-- <v-col cols="12" sm="6">
             <v-slider
               label="Descuento adicional"
               max="100"
@@ -43,9 +43,9 @@
                 v-model="calculadora"
               />
             </v-col>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-chip color="amber" class="ma-2">
+          </v-col>  -->
+          <v-col>
+            <!-- <v-chip color="xamber" class="ma-2">
               Subtotal: {{ subtotal }}
             </v-chip>
             <v-chip color="info" class="ma-2">
@@ -54,7 +54,7 @@
             <v-chip color="success" class="ma-2">Total: {{ total }}</v-chip>
             <v-chip color="success" class="ma-2">
               Descuento adicional: {{ (total * descuento_adicional) / 100 }}
-            </v-chip>
+            </v-chip> -->
             <v-alert
               outlined
               dark
@@ -67,23 +67,25 @@
         </v-row>
       </v-form>
     </v-card-text>
-    <v-data-table :headers="columnas" :items="sales">
-      <template v-slot:item.cantidad="{ item }">
-        <v-edit-dialog>
-          {{ item.cantidad }}
-          <template v-slot:input>
-            <v-text-field
-              @keydown.enter="
-                cambiarCantidadProducto($event.target.value, item)
-              "
-              label="Editar"
-              type="number"
-              counter
-            />
-          </template>
-        </v-edit-dialog>
-      </template>
-    </v-data-table>
+    <v-container class="d-flex justify-center align-center">
+      <v-data-table :headers="columnas" :items="sales">
+        <template v-slot:item.cantidad="{ item }">
+          <v-edit-dialog>
+            {{ item.cantidad }}
+            <template v-slot:input>
+              <v-text-field
+                @keydown.enter="
+                  cambiarCantidadProducto($event.target.value, item)
+                "
+                label="Editar"
+                type="number"
+                counter
+              />
+            </template>
+          </v-edit-dialog>
+        </template>
+      </v-data-table>
+    </v-container>
   </div>
 </template>
 
@@ -96,7 +98,7 @@ import {
   TOTALIZAR_VALORES,
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
-import { Product } from "@/domain/model/product/Product";
+import { ProductToList } from "@/domain/model/product/Product";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default Vue.extend({
@@ -108,16 +110,15 @@ export default Vue.extend({
     calculadora: 0,
     descuento_adicional: 0,
     columnas: [
-      { text: "Codigo", value: "bar_code" },
       { text: "Producto", value: "name" },
       { text: "Cantidad", value: "amount" },
-      { text: "Precio*uni", value: "price_purchase" },
+      { text: "Precio*uni", value: "sale_price" },
       { text: "Subtotal", value: "subtotal" },
     ],
     sales: [] as ProductSale[],
   }),
   methods: {
-    async agregarProducto(product: Product) {
+    async agregarProducto(product: ProductToList) {
       const agregado = YA_LISTADO(this.sales, product);
       const producto: ProductSale = {
         bar_code: product.bar_code,
@@ -135,6 +136,20 @@ export default Vue.extend({
         this.sales.push(producto);
       }
       await this.calcularValores();
+    },
+    addProductNotRegister(productNotRegister: any) {
+      const producto: ProductSale = {
+        bar_code: "",
+        name: productNotRegister.description,
+        amount: 0,
+        shop_price: 0,
+        sale_price: Number(productNotRegister.price),
+        taxes: 0,
+        discount: 0,
+        subtotal: Number(productNotRegister.price),
+      };
+      this.sales.push(producto);
+      this.calcularValores();
     },
     async calcularValores() {
       const valores = TOTALIZAR_VALORES(this.sales);

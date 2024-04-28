@@ -36,8 +36,8 @@ export const FIND_TRANSACTIONS_BY_DOCUMENT = async (
         type: data.type,
         amount: data.amount,
         reference: data.reference,
-        created_at: data.created_at,
-        updated_at: data.updated_at,
+        created_at: new Date(data.created_at.seconds * 1000),
+        updated_at: new Date(data.updated_at.seconds * 1000),
       } as Transaction;
       transactions.push(newTrx);
     });

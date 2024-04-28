@@ -55,7 +55,7 @@
                   <v-text-field
                     @input="enterSale()"
                     type="number"
-                    v-model.number="productoNuevo.price_purchase"
+                    v-model.number="productoNuevo.price_sale"
                   ></v-text-field>
                 </td>
                 <td>
@@ -89,13 +89,12 @@
                 <td>
                   {{
                     Math.trunc(
-                      ((item.price_purchase - item.price_shop) /
-                        item.price_shop) *
+                      ((item.price_sale - item.price_shop) / item.price_shop) *
                         100
                     )
                   }}
                 </td>
-                <td>{{ item.price_shop }}</td>
+                <td>{{ item.price_sale }}</td>
                 <td>{{ item.subtotal }}</td>
                 <td v-if="!anular">
                   <v-btn
@@ -175,10 +174,10 @@ export default Vue.extend({
         this.productoNuevo.name !== "" &&
         this.productoNuevo.amount >= 1 &&
         this.productoNuevo.price_shop >= 1 &&
-        this.productoNuevo.price_purchase >= this.productoNuevo.price_shop &&
+        this.productoNuevo.price_sale >= this.productoNuevo.price_shop &&
         this.porGanancia >= 0 &&
         this.productoNuevo.subtotal >= 1 &&
-        this.productoNuevo.price_purchase > this.productoNuevo.price_shop &&
+        this.productoNuevo.price_sale > this.productoNuevo.price_shop &&
         !this.errorCodigo
       ) {
         return false;
@@ -235,7 +234,7 @@ export default Vue.extend({
         name: "",
         amount: this.productoNuevo.amount || 1,
         price_shop: 0,
-        price_purchase: 0,
+        price_sale: 0,
         taxes: 0,
         discount: 0,
         subtotal: 0,
@@ -248,6 +247,7 @@ export default Vue.extend({
         if (prod.bar_code == this.barCode) {
           this.productoNuevo.name = prod.name;
           this.productoNuevo.bar_code = prod.bar_code;
+          this.productoNuevo.price_sale = prod.sale_price;
         }
       });
     },
@@ -255,7 +255,7 @@ export default Vue.extend({
       if (this.porGanancia > 0 && this.productoNuevo.price_shop > 0) {
         let precio_venta: number =
           this.productoNuevo.price_shop * (1 + this.porGanancia / 100);
-        this.productoNuevo.price_purchase = REDONDEAR(precio_venta, -2);
+        this.productoNuevo.price_sale = REDONDEAR(precio_venta, -2);
       }
       this.calculateSubtotal();
     },
@@ -271,16 +271,16 @@ export default Vue.extend({
       if (this.porGanancia >= 0 && this.productoNuevo.price_shop) {
         let precio_venta: number =
           this.productoNuevo.price_shop * (1 + this.porGanancia / 100);
-        this.productoNuevo.price_purchase = REDONDEAR(precio_venta, -2);
+        this.productoNuevo.price_sale = REDONDEAR(precio_venta, -2);
       }
     },
     enterSale() {
       if (
-        Number(this.productoNuevo.price_purchase) >=
+        Number(this.productoNuevo.price_sale) >=
         Number(this.productoNuevo.price_shop)
       ) {
         const porGanancia: number =
-          ((Number(this.productoNuevo.price_purchase) -
+          ((Number(this.productoNuevo.price_sale) -
             Number(this.productoNuevo.price_shop)) /
             Number(this.productoNuevo.price_shop)) *
           100;
@@ -296,7 +296,7 @@ export default Vue.extend({
         name: product.name,
         amount: this.productoNuevo.amount,
         price_shop: this.productoNuevo.price_shop,
-        price_purchase: this.productoNuevo.price_purchase,
+        price_sale: this.productoNuevo.price_sale,
         taxes: this.productoNuevo.taxes || 0,
         discount: this.productoNuevo.discount || 0,
         subtotal: this.productoNuevo.subtotal,

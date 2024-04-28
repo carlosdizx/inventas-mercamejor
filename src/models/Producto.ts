@@ -37,10 +37,9 @@ export const CAMPOS: any[] = [
     label: "Codigo de barras",
     prepend_icon: "mdi-barcode-scan",
     type: 1,
-    format: "number",
+    format: "text",
     name: "bar_code",
     model: "",
-    rules: "required|min:2|max:30",
   },
   {
     label: "Nombre",
@@ -129,5 +128,4 @@ export const CAMPOS: any[] = [
 
 export const VALIDACIONES = [
   { tipo: 1, nombres: ["unit_price", "sale_price"] },
-  { tipo: 2, nombres: ["bar_code"] },
 ];

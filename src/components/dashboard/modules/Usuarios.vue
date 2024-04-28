@@ -11,7 +11,7 @@
     </v-alert>
     <Tabla
       class="my-2"
-      coleccion="usuarios"
+      coleccion="users"
       titulo="usuarios"
       :columnas="columnas"
       :campos_form="campos_form"

@@ -1,4 +1,4 @@
-export interface  ProductSale {
+export interface ProductSale {
   bar_code: string;
   name: string;
   amount: number;

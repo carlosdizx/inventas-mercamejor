@@ -11,29 +11,31 @@ export const UNITS_UPDATED_FROM_PURCHASE = async (
   for (const itemShop of purchase.sales) {
     await UPDATE_UNITS_PRODUCT(
       "ADD",
-      Number(itemShop.bar_code),
+      itemShop.bar_code,
       itemShop.amount,
       itemShop.price_shop,
-      itemShop.price_purchase
+      itemShop.price_sale
     );
   }
 };
 
 export const UNITS_UPDATED_FROM_SALE = async (sale: Sale): Promise<void> => {
   for (const itemShop of sale.sales) {
-    await UPDATE_UNITS_PRODUCT(
-      "LESS",
-      Number(itemShop.bar_code),
-      itemShop.amount,
-      itemShop.shop_price,
-      itemShop.sale_price
-    );
+    if (itemShop.bar_code !== "") {
+      await UPDATE_UNITS_PRODUCT(
+        "LESS",
+        itemShop.bar_code,
+        itemShop.amount,
+        itemShop.shop_price,
+        itemShop.sale_price
+      );
+    }
   }
 };
 
 export const UPDATE_UNITS_PRODUCT = async (
   tipoOperacion: "ADD" | "LESS" | "ASINGN",
-  barCode: number,
+  barCode: string,
   amount: number,
   unitPrice: number,
   salePrice: number
