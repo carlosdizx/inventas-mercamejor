@@ -76,7 +76,7 @@ export default Vue.extend({
   data: () => ({
     item: 0,
     navigation: true,
-    nombre: "Mercamejor",
+    nombre: "Autoservio la Economia - Vicente Tobar",
     botones: [],
   }),
   methods: {
