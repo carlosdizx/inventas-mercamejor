@@ -30,7 +30,7 @@ import { CONSULT_ALL_PRODUCT } from "@/UseCases/ProductosUseCases";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
 import { Sale } from "@/domain/model/sale/Sale";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
-import { generatePageToPrint } from "./components/SalesFunction";
+import { generatePageToPrint } from "@/components/dashboard/modules/sales/components/SalesFunction";
 import { ProductToList } from "@/domain/model/product/Product";
 
 export default Vue.extend({
