@@ -18,7 +18,7 @@
         <v-icon>{{ btn.icon }}</v-icon>
       </v-btn>
     </router-link>
-    <v-btn class="d-none" v-if="true" icon @click="logout()">
+    <v-btn icon @click="logout()">
       <v-icon>mdi-logout</v-icon>
     </v-btn>
   </v-toolbar>
