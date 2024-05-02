@@ -261,13 +261,13 @@ import { REGISTRO_USUARIO } from "@/services/auth";
 import Swal from "sweetalert2";
 import { REGISTRAR_DATOS_USUARIO } from "@/services/usuarios";
 import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
-import { TIPOS_DOCUMENTO } from "@/generals/Constantes";
+import { TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
 
 export default Vue.extend({
   name: "RegistroUsuarios",
   data: () => ({
     rolesDisponibles: ROLES,
-    documentosDisponibles: TIPOS_DOCUMENTO,
+    documentosDisponibles: [TIPOS_DOCUMENTO.CC, TIPOS_DOCUMENTO.CELULAR],
     generosDisponibles: GENEROS,
     estadosDisponible: ESTADOS_USUARIO,
     datosUsuario: {

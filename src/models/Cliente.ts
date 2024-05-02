@@ -1,4 +1,5 @@
-import { GENEROS, TIPOS_DOCUMENTO } from "@/generals/Constantes";
+import { GENEROS } from "@/generals/Constantes";
+import { TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
 
 /**
  Sección tabla
@@ -25,7 +26,7 @@ export const CAMPOS = [
     type: 6,
     multiple: false,
     solo: true,
-    items: TIPOS_DOCUMENTO,
+    items: [TIPOS_DOCUMENTO.CELULAR, TIPOS_DOCUMENTO.CC],
     name: "doc_type",
     model: "",
     rules: "required",
