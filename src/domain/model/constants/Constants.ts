@@ -24,9 +24,7 @@ export enum GENDERS {
   OTHER = "Otro",
 }
 
-export const TIPOS_DOCUMENTO = [
-  "Cédula de ciudadania",
-  "Cédula de extrangería",
-  "Pasaporte",
-  "Tarjeta de identidad",
-];
+export enum TIPOS_DOCUMENTO {
+  CELULAR = "Celular",
+  CC = "Cédula de ciudadania"
+}

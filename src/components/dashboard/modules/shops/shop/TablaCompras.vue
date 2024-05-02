@@ -28,12 +28,12 @@
                   ></v-text-field>
                 </td>
                 <td>
-                  {{ productoNuevo.name }}
+                  {{ newProduct.name }}
                 </td>
                 <td>
                   <v-text-field
                     @input="calculateSubtotal()"
-                    v-model.number="productoNuevo.amount"
+                    v-model.number="newProduct.amount"
                     type="number"
                   ></v-text-field>
                 </td>
@@ -41,25 +41,25 @@
                   <v-text-field
                     @input="calculateUtilitiesByShop()"
                     type="number"
-                    v-model.number="productoNuevo.price_shop"
+                    v-model.number="newProduct.price_shop"
                   ></v-text-field>
                 </td>
                 <td>
                   <v-text-field
                     @input="enterGains()"
                     type="number"
-                    v-model.number="porGanancia"
+                    v-model.number="percentGain"
                   ></v-text-field>
                 </td>
                 <td>
                   <v-text-field
                     @input="enterSale()"
                     type="number"
-                    v-model.number="productoNuevo.price_sale"
+                    v-model.number="newProduct.price_sale"
                   ></v-text-field>
                 </td>
                 <td>
-                  {{ productoNuevo.subtotal }}
+                  {{ newProduct.subtotal }}
                 </td>
                 <td>
                   <v-btn
@@ -74,14 +74,14 @@
                   <BuscarElemento
                     @getItem="selectProduct"
                     icon="mdi-magnify"
-                    :items="productosDisponibles"
+                    :items="availableProducts"
                     :headers="columnas"
                   />
                 </td>
               </tr>
             </tbody>
             <tbody class="pt-3">
-              <tr v-for="(item, index) in productos" :key="index">
+              <tr v-for="(item, index) in products" :key="index">
                 <td>{{ item.bar_code }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.amount }}</td>
@@ -109,13 +109,13 @@
               </tr>
             </tbody>
             <EditarCompra
-              v-if="mostrarEditarCompra"
+              v-if="showEditPurchase"
               @actualizar="update"
-              @cancelar="mostrarEditarCompra = false"
-              :compraAnterior="compraEditar"
-              :mostrar="mostrarEditarCompra"
-              :indexElement="editarCompraIndice"
-              :bodegasDisponibles="bodegasDisponibles"
+              @cancelar="showEditPurchase = false"
+              :compraAnterior="shopEdit"
+              :mostrar="showEditPurchase"
+              :indexElement="editPurchaseIndex"
+              :wareHouse="wareHouse"
             />
           </template>
         </v-simple-table>
@@ -156,28 +156,27 @@ export default Vue.extend({
   },
   data: () => ({
     columnas: COLUMNAS,
-    productos: [] as ProductPurchase[],
-    productosPorGanancia: [],
-    productoNuevo: {} as ProductPurchase,
-    compraEditar: {} as IProductoCompra,
-    bodegasDisponibles: [{}],
-    productosDisponibles: [],
-    mostrarEditarCompra: false,
-    editarCompraIndice: 1,
-    porGanancia: 0,
+    products: [] as ProductPurchase[],
+    newProduct: {} as ProductPurchase,
+    shopEdit: {} as IProductoCompra,
+    wareHouse: [{}],
+    availableProducts: [],
+    showEditPurchase: false,
+    editPurchaseIndex: 1,
+    percentGain: 0,
     barCode: null,
   }),
   computed: {
     validarProd() {
       if (
-        this.productoNuevo.bar_code.toString().length >= 9 &&
-        this.productoNuevo.name !== "" &&
-        this.productoNuevo.amount >= 1 &&
-        this.productoNuevo.price_shop >= 1 &&
-        this.productoNuevo.price_sale >= this.productoNuevo.price_shop &&
-        this.porGanancia >= 0 &&
-        this.productoNuevo.subtotal >= 1 &&
-        this.productoNuevo.price_sale > this.productoNuevo.price_shop &&
+        this.newProduct.bar_code.toString().length >= 9 &&
+        this.newProduct.name !== "" &&
+        this.newProduct.amount >= 1 &&
+        this.newProduct.price_shop >= 1 &&
+        this.newProduct.price_sale >= this.newProduct.price_shop &&
+        this.percentGain >= 0 &&
+        this.newProduct.subtotal >= 1 &&
+        this.newProduct.price_sale > this.newProduct.price_shop &&
         !this.errorCodigo
       ) {
         return false;
@@ -185,9 +184,7 @@ export default Vue.extend({
       return true;
     },
     errorCodigo() {
-      if (
-        this.productos.find((producto) => producto.bar_code == this.barCode)
-      ) {
+      if (this.products.find((producto) => producto.bar_code == this.barCode)) {
         return true;
       }
       return false;
@@ -195,21 +192,21 @@ export default Vue.extend({
   },
   methods: {
     async listStores() {
-      this.bodegasDisponibles = [];
+      this.wareHouse = [];
       const res: any = await LISTAR_BODEGAS();
-      res.forEach((bod: any) => this.bodegasDisponibles.unshift(bod.data()));
+      res.forEach((bod: any) => this.wareHouse.unshift(bod.data()));
     },
     async listProducts() {
-      this.productosDisponibles = [];
+      this.availableProducts = [];
       const res = await CARGAR_INFORMACION("products");
-      this.productosDisponibles = res;
+      this.availableProducts = res;
     },
     addProduct() {
-      const product: ProductPurchase = { ...this.productoNuevo };
-      const nuevosProductos: ProductPurchase[] = this.productos;
+      const product: ProductPurchase = { ...this.newProduct };
+      const nuevosProductos: ProductPurchase[] = this.products;
       nuevosProductos.push(product);
-      this.productos = nuevosProductos;
-      this.$emit("enviarProductos", this.productos);
+      this.products = nuevosProductos;
+      this.$emit("enviarProductos", this.products);
       this.resetNewProduct();
     },
     deleteItem(index: number) {
@@ -222,8 +219,8 @@ export default Vue.extend({
         denyButtonText: `Cancelar`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          this.productos.splice(index, 1);
-          this.$emit("enviarProductos", this.productos);
+          this.products.splice(index, 1);
+          this.$emit("enviarProductos", this.products);
         }
       });
     },
@@ -232,7 +229,7 @@ export default Vue.extend({
         id: "",
         bar_code: "",
         name: "",
-        amount: this.productoNuevo.amount || 1,
+        amount: this.newProduct.amount || 1,
         price_shop: 0,
         price_sale: 0,
         taxes: 0,
@@ -240,78 +237,82 @@ export default Vue.extend({
         subtotal: 0,
       };
       this.barCode = null;
-      this.productoNuevo = producto;
+      this.newProduct = producto;
     },
     findProduct() {
-      this.productosDisponibles.forEach((prod: Product) => {
+      this.availableProducts.forEach((prod: Product) => {
         if (prod.bar_code == this.barCode) {
-          this.productoNuevo.name = prod.name;
-          this.productoNuevo.bar_code = prod.bar_code;
-          this.productoNuevo.price_sale = prod.sale_price;
+          console.log(prod);
+          this.newProduct.name = prod.name;
+          this.newProduct.bar_code = prod.bar_code;
+          this.newProduct.price_sale = prod.sale_price;
+          this.newProduct.price_shop = prod.unit_price;
+          this.percentGain = REDONDEAR(
+            ((prod.sale_price - prod.unit_price) / prod.sale_price) * 100,
+            0
+          );
         }
       });
     },
     calculateUtilitiesByShop() {
-      if (this.porGanancia > 0 && this.productoNuevo.price_shop > 0) {
+      if (this.percentGain > 0 && this.newProduct.price_shop > 0) {
         let precio_venta: number =
-          this.productoNuevo.price_shop * (1 + this.porGanancia / 100);
-        this.productoNuevo.price_sale = REDONDEAR(precio_venta, -2);
+          this.newProduct.price_shop * (1 + this.percentGain / 100);
+        this.newProduct.price_sale = REDONDEAR(precio_venta, -2);
       }
       this.calculateSubtotal();
     },
     calculateSubtotal() {
       const subtotal: number =
-        Number(this.productoNuevo.amount) *
-          Number(this.productoNuevo.price_shop) +
-        Number(this.productoNuevo.taxes) -
-        Number(this.productoNuevo.discount);
-      this.productoNuevo.subtotal = subtotal;
+        Number(this.newProduct.amount) * Number(this.newProduct.price_shop) +
+        Number(this.newProduct.taxes) -
+        Number(this.newProduct.discount);
+      this.newProduct.subtotal = subtotal;
     },
     enterGains() {
-      if (this.porGanancia >= 0 && this.productoNuevo.price_shop) {
+      if (this.percentGain >= 0 && this.newProduct.price_shop) {
         let precio_venta: number =
-          this.productoNuevo.price_shop * (1 + this.porGanancia / 100);
-        this.productoNuevo.price_sale = REDONDEAR(precio_venta, -2);
+          this.newProduct.price_shop * (1 + this.percentGain / 100);
+        this.newProduct.price_sale = REDONDEAR(precio_venta, -2);
       }
     },
     enterSale() {
       if (
-        Number(this.productoNuevo.price_sale) >=
-        Number(this.productoNuevo.price_shop)
+        Number(this.newProduct.price_sale) >= Number(this.newProduct.price_shop)
       ) {
-        const porGanancia: number =
-          ((Number(this.productoNuevo.price_sale) -
-            Number(this.productoNuevo.price_shop)) /
-            Number(this.productoNuevo.price_shop)) *
+        const percentGain: number =
+          ((Number(this.newProduct.price_sale) -
+            Number(this.newProduct.price_shop)) /
+            Number(this.newProduct.price_shop)) *
           100;
-        this.porGanancia = Math.trunc(porGanancia);
+        this.percentGain = Math.trunc(percentGain);
       } else {
-        this.porGanancia = 0;
+        this.percentGain = 0;
       }
     },
     selectProduct(product: ProductPurchase): void {
-      const productoNuevo: ProductPurchase = {
+      const newProduct: ProductPurchase = {
         id: product.id,
         bar_code: product.bar_code,
         name: product.name,
-        amount: this.productoNuevo.amount,
-        price_shop: this.productoNuevo.price_shop,
-        price_sale: this.productoNuevo.price_sale,
-        taxes: this.productoNuevo.taxes || 0,
-        discount: this.productoNuevo.discount || 0,
-        subtotal: this.productoNuevo.subtotal,
+        amount: this.newProduct.amount,
+        price_shop: this.newProduct.price_shop,
+        price_sale: this.newProduct.price_sale,
+        taxes: this.newProduct.taxes || 0,
+        discount: this.newProduct.discount || 0,
+        subtotal: this.newProduct.subtotal,
       };
-      this.productoNuevo = productoNuevo;
+      this.newProduct = newProduct;
     },
     selectEditShop(compra: IProductoCompra, index: number) {
-      this.mostrarEditarCompra = true;
-      this.editarCompraIndice = index;
-      this.compraEditar = compra;
+      this.showEditPurchase = true;
+      this.editPurchaseIndex = index;
+      this.shopEdit = compra;
     },
     update(element: any) {
-      this.mostrarEditarCompra = false;
-      this.productos[element.indice] = element.compra;
-      this.$emit("enviarProductos", this.productos);
+      this.showEditPurchase = false;
+      this.products[element.indice] = element.compra;
+      this.$emit("enviarProductos", this.products);
     },
   },
   created: function () {
@@ -320,7 +321,7 @@ export default Vue.extend({
     this.resetNewProduct();
     if (this.compras) {
       const nuevasCompras: Array<ProductPurchase> = this.compras;
-      this.productos = nuevasCompras;
+      this.products = nuevasCompras;
     }
     this.columnas = this.columnas.filter((col: any) => {
       return col.value !== "detalle";
@@ -328,7 +329,7 @@ export default Vue.extend({
   },
   watch: {
     eliminarDatos() {
-      this.productos = [];
+      this.products = [];
     },
   },
 });

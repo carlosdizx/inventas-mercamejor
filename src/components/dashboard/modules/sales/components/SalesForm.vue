@@ -22,7 +22,7 @@
                 outlined
                 counter
                 v-model="sale.doc_client"
-                @input="buscarCliente()"
+                @keyup.enter="buscarCliente()"
                 :error-messages="errors"
               />
             </validation-provider>
@@ -181,11 +181,15 @@ export default Vue.extend({
       dialog.cambiarEstado();
     },
     async buscarCliente() {
+      console.log("buscar");
       if (this.sale.doc_client) {
         const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
+        console.log(resultado);
         if (resultado) {
           this.cambiarCliente(resultado);
         } else {
+          Swal.fire("Cliente no encontrado");
+          this.sale.doc_client = "";
           this.sale.sur_client = "Clientes varios";
           this.sale.nam_client = "";
         }
