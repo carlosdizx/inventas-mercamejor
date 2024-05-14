@@ -46,7 +46,7 @@ export const CAMPOS = [
     type: 6,
     multiple: false,
     solo: true,
-    items: TIPOS_DOCUMENTO,
+    items: [TIPOS_DOCUMENTO.CC, TIPOS_DOCUMENTO.CELULAR, TIPOS_DOCUMENTO.NIT],
     format: "text",
     name: "doc_type",
     model: "",

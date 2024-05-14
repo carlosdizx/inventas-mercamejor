@@ -4,7 +4,6 @@
 export const COLUMNAS: any[] = [
   { text: "Código de barras", value: "bar_code" },
   { text: "Nombre", value: "name" },
-  { text: "Detalle", value: "description" },
   { text: "Total unidades", value: "amount" },
   { text: "Precio de compra", value: "unit_price" },
   { text: "Precio de venta", value: "sale_price" },
@@ -49,15 +48,6 @@ export const CAMPOS: any[] = [
     name: "name",
     model: "",
     rules: "required|min:2|max:50",
-  },
-  {
-    label: "Descripción del producto",
-    prepend_icon: "mdi-cube",
-    type: 1,
-    format: "text",
-    name: "description",
-    model: "",
-    rules: "required|min:2|max:200",
   },
   {
     label: "Marca",

@@ -26,5 +26,6 @@ export enum GENDERS {
 
 export enum TIPOS_DOCUMENTO {
   CELULAR = "Celular",
-  CC = "Cédula de ciudadania"
+  CC = "Cédula de ciudadania",
+  NIT = "NIT",
 }
