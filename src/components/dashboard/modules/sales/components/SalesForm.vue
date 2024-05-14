@@ -229,6 +229,13 @@ export default Vue.extend({
         if (result.isConfirmed) {
           this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
           this.$emit("datos_cliente", this.sale);
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "La venta se registro exitosamente",
+            showConfirmButton: false,
+            timer: 800,
+          });
           this.resetDatosVenta();
         }
       });
