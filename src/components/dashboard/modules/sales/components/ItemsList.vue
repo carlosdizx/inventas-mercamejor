@@ -59,9 +59,14 @@
               outlined
               dark
               color="success darken-2"
-              class="mx-auto text-center"
+              class="mx-auto text-h3 text-center"
             >
-              Precio final: $ {{ total - (total * descuento_adicional) / 100 }}
+              Precio final: $
+              {{
+                (total - (total * descuento_adicional) / 100)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+              }}
             </v-alert>
           </v-col>
         </v-row>
@@ -78,7 +83,7 @@
                   cambiarCantidadProducto($event.target.value, item)
                 "
                 label="Editar"
-                type="number"
+                ype="number"
                 counter
               />
             </template>
