@@ -60,6 +60,7 @@
           <v-row>
             <v-col>
               <v-text-field
+                ref="barcodeField"
                 :color="enfoque ? 'success' : 'red'"
                 :label="
                   enfoque
@@ -175,6 +176,15 @@ export default Vue.extend({
     dialog_list: false,
     enfoque: false,
   }),
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.$refs.barcodeField) {
+          (this.$refs.barcodeField as HTMLInputElement).focus();
+        }
+      }, 100);
+    });
+  },
   methods: {
     abrirDialogoLisadoClientes() {
       const dialog: any = this.$refs.DialogClients;
@@ -264,5 +274,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped></style>
