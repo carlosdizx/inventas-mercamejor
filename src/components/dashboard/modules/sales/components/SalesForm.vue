@@ -176,15 +176,6 @@ export default Vue.extend({
     dialog_list: false,
     enfoque: false,
   }),
-  mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.$refs.barcodeField) {
-          (this.$refs.barcodeField as HTMLInputElement).focus();
-        }
-      }, 100);
-    });
-  },
   methods: {
     abrirDialogoLisadoClientes() {
       const dialog: any = this.$refs.DialogClients;
@@ -263,6 +254,15 @@ export default Vue.extend({
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
   },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.$refs.barcodeField) {
+          (this.$refs.barcodeField as HTMLInputElement).focus();
+        }
+      }, 100);
+    });
+  },
   computed: {
     posicionFiltrada() {
       if (this.sale.nam_client === "Clientes varios") {
@@ -274,3 +274,5 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style scoped></style>
