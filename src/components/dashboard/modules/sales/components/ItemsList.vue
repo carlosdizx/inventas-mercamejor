@@ -68,6 +68,9 @@
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
               }}
             </v-alert>
+            <v-btn v-if="total > 0" color="red" @click="resetValues">
+              Reiniciar Venta
+            </v-btn>
           </v-col>
         </v-row>
       </v-form>
@@ -199,6 +202,7 @@ export default Vue.extend({
       this.descuento = 0;
       this.calculadora = 0;
       this.descuento_adicional = 0;
+      this.$emit("reset_venta");
     },
   },
   created() {
@@ -206,5 +210,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped></style>

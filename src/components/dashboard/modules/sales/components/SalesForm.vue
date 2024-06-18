@@ -238,6 +238,13 @@ export default Vue.extend({
             timer: 800,
           });
           this.resetDatosVenta();
+          this.$nextTick(() => {
+            setTimeout(() => {
+              if (this.$refs.barcodeField) {
+                (this.$refs.barcodeField as HTMLInputElement).focus();
+              }
+            }, 100);
+          });
         }
       });
     },
@@ -252,6 +259,15 @@ export default Vue.extend({
       this.sale.total = 0;
       this.sale.sales = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
+    },
+    focusBarcodeField() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.$refs.barcodeField) {
+            (this.$refs.barcodeField as HTMLInputElement).focus();
+          }
+        }, 100);
+      });
     },
   },
   mounted() {
@@ -274,5 +290,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped></style>
