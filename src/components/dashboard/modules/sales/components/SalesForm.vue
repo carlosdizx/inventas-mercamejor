@@ -60,6 +60,7 @@
           <v-row>
             <v-col>
               <v-text-field
+                ref="barcodeField"
                 :color="enfoque ? 'success' : 'red'"
                 :label="
                   enfoque
@@ -237,6 +238,13 @@ export default Vue.extend({
             timer: 800,
           });
           this.resetDatosVenta();
+          this.$nextTick(() => {
+            setTimeout(() => {
+              if (this.$refs.barcodeField) {
+                (this.$refs.barcodeField as HTMLInputElement).focus();
+              }
+            }, 100);
+          });
         }
       });
     },
@@ -252,6 +260,24 @@ export default Vue.extend({
       this.sale.sales = [];
       this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
     },
+    focusBarcodeField() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          if (this.$refs.barcodeField) {
+            (this.$refs.barcodeField as HTMLInputElement).focus();
+          }
+        }, 100);
+      });
+    },
+  },
+  mounted() {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (this.$refs.barcodeField) {
+          (this.$refs.barcodeField as HTMLInputElement).focus();
+        }
+      }, 100);
+    });
   },
   computed: {
     posicionFiltrada() {
@@ -264,5 +290,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style scoped></style>
