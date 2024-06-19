@@ -12,7 +12,7 @@
       <v-col cols="12" md="6">
         <v-row>
           <v-col>
-            <ItemsList ref="ItemsList" />
+            <ItemsList ref="ItemsList" @reset_venta="focusBarcodeField" />
           </v-col>
         </v-row>
       </v-col>
@@ -137,6 +137,10 @@ export default Vue.extend({
       } else {
         console.error("No se pudo abrir la ventana de impresión");
       }
+    },
+    focusBarcodeField() {
+      const formVentas: any = this.$refs.SalesForm;
+      formVentas.focusBarcodeField();
     },
   },
   async created() {

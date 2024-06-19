@@ -28,7 +28,7 @@ export const UPDATE_AMOUNT_PRODUCT = async (
 
 export const FIND_PRODUCT_BY_BAR_CODE = async (codigo: string) => {
   const data = await LIST_IN(productCollection, BAR_CODE, codigo);
-  if (data.size === 1) {
+  if (data.size > 0) {
     return {
       product: data.docs[0].data(),
       id: data.docs[0].id,
