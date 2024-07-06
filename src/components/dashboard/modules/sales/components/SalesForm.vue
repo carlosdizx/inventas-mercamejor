@@ -74,15 +74,17 @@
                 clearable
                 counter
                 v-model="bar_code"
-                @keyup.enter="buscarProducto()"
+                @keyup.enter="buscarProducto"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
+                @keydown="handleKeyDown('barcodeField', $event)"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <v-text-field
+                ref="priceField"
                 label="Digite precio"
                 prepend-icon="mdi-currency-usd"
                 clearable
@@ -92,6 +94,7 @@
                 type="number"
                 v-model="productNotRegister.price"
                 @keyup.enter="registerSaleNotProduct"
+                @keydown="handleKeyDown('priceField', $event)"
               />
             </v-col>
             <v-col>
@@ -215,6 +218,26 @@ export default Vue.extend({
     resetProductNotRegister() {
       this.productNotRegister.description = "";
       this.productNotRegister.price = null;
+    },
+    handleKeyDown(field: string, event: KeyboardEvent) {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        if (field === "barcodeField") {
+          const priceField = this.$refs.priceField as Vue & {
+            focus: () => void;
+          };
+          if (priceField && typeof priceField.focus === "function") {
+            priceField.focus();
+          }
+        } else if (field === "priceField") {
+          const barcodeField = this.$refs.barcodeField as Vue & {
+            focus: () => void;
+          };
+          if (barcodeField && typeof barcodeField.focus === "function") {
+            barcodeField.focus();
+          }
+        }
+      }
     },
     registrarVenta() {
       Swal.fire({
