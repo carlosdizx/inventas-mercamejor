@@ -151,6 +151,7 @@ export default Vue.extend({
   name: "SalesForm",
   components: { DialogClients },
   data: () => ({
+    enterCount: 0,
     bar_code: null,
     sale: {
       doc_client: "",
@@ -220,6 +221,15 @@ export default Vue.extend({
       this.productNotRegister.price = null;
     },
     handleKeyDown(field: string, event: KeyboardEvent) {
+      if (event.key === "Enter") {
+        this.enterCount++;
+        if (this.enterCount === 2) {
+          this.buscarProducto();
+          this.enterCount = 0;
+        }
+      } else {
+        this.enterCount = 0;
+      }
       if (event.key === "Tab") {
         event.preventDefault();
         if (field === "barcodeField") {
