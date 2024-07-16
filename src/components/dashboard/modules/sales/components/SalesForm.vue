@@ -230,6 +230,16 @@ export default Vue.extend({
           this.buscarProducto();
           this.enterCount = 0;
         }
+        if (field === "priceField") {
+          setTimeout(() => {
+            const barcodeField = this.$refs.barcodeField as Vue & {
+              focus: () => void;
+            };
+            if (barcodeField && typeof barcodeField.focus === "function") {
+              barcodeField.focus();
+            }
+          }, 500);
+        }
       } else {
         this.enterCount = 0;
       }
