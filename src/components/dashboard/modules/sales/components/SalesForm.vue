@@ -89,6 +89,7 @@
                 prepend-icon="mdi-currency-usd"
                 clearable
                 dense
+                :disabled="productNotRegister.price > 99999"
                 outlined
                 counter
                 type="number"
@@ -99,6 +100,7 @@
             </v-col>
             <v-col>
               <v-text-field
+                ref="descripField"
                 label="Digite Descripción"
                 clearable
                 dense
@@ -107,6 +109,7 @@
                 type="string"
                 v-model="productNotRegister.description"
                 @keyup.enter="registerSaleNotProduct"
+                @keydown="handleKeyDown('descripField', $event)"
               />
             </v-col>
           </v-row>
@@ -238,6 +241,7 @@ export default Vue.extend({
           };
           if (priceField && typeof priceField.focus === "function") {
             priceField.focus();
+            this.productNotRegister.price = null;
           }
         } else if (field === "priceField") {
           const barcodeField = this.$refs.barcodeField as Vue & {
@@ -245,6 +249,14 @@ export default Vue.extend({
           };
           if (barcodeField && typeof barcodeField.focus === "function") {
             barcodeField.focus();
+          }
+        } else if (field === "descripField") {
+          const barcodeField = this.$refs.barcodeField as Vue & {
+            focus: () => void;
+          };
+          if (barcodeField && typeof barcodeField.focus === "function") {
+            barcodeField.focus();
+            this.productNotRegister.price = null;
           }
         }
       }
