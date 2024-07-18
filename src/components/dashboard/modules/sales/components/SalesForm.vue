@@ -89,7 +89,10 @@
                 prepend-icon="mdi-currency-usd"
                 clearable
                 dense
-                :disabled="productNotRegister.price > 99999"
+                :disabled="
+                  productNotRegister.price != null &&
+                  productNotRegister.price > 999999
+                "
                 outlined
                 counter
                 type="number"
