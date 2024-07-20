@@ -74,28 +74,36 @@
                 clearable
                 counter
                 v-model="bar_code"
-                @keyup.enter="buscarProducto()"
+                @keyup.enter="buscarProducto"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
+                @keydown="handleKeyDown('barcodeField', $event)"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <v-text-field
+                ref="priceField"
                 label="Digite precio"
                 prepend-icon="mdi-currency-usd"
                 clearable
                 dense
+                :disabled="
+                  productNotRegister.price != null &&
+                  productNotRegister.price > 999999
+                "
                 outlined
                 counter
                 type="number"
                 v-model="productNotRegister.price"
                 @keyup.enter="registerSaleNotProduct"
+                @keydown="handleKeyDown('priceField', $event)"
               />
             </v-col>
             <v-col>
               <v-text-field
+                ref="descripField"
                 label="Digite Descripción"
                 clearable
                 dense
@@ -104,6 +112,7 @@
                 type="string"
                 v-model="productNotRegister.description"
                 @keyup.enter="registerSaleNotProduct"
+                @keydown="handleKeyDown('descripField', $event)"
               />
             </v-col>
           </v-row>
@@ -148,6 +157,7 @@ export default Vue.extend({
   name: "SalesForm",
   components: { DialogClients },
   data: () => ({
+    enterCount: 0,
     bar_code: null,
     sale: {
       doc_client: "",
@@ -215,6 +225,54 @@ export default Vue.extend({
     resetProductNotRegister() {
       this.productNotRegister.description = "";
       this.productNotRegister.price = null;
+    },
+    handleKeyDown(field: string, event: KeyboardEvent) {
+      if (event.key === "Enter") {
+        this.enterCount++;
+        if (this.enterCount === 2) {
+          this.buscarProducto();
+          this.enterCount = 0;
+        }
+        if (field === "priceField") {
+          setTimeout(() => {
+            const barcodeField = this.$refs.barcodeField as Vue & {
+              focus: () => void;
+            };
+            if (barcodeField && typeof barcodeField.focus === "function") {
+              barcodeField.focus();
+            }
+          }, 500);
+        }
+      } else {
+        this.enterCount = 0;
+      }
+      if (event.key === "Tab") {
+        event.preventDefault();
+        if (field === "barcodeField") {
+          const priceField = this.$refs.priceField as Vue & {
+            focus: () => void;
+          };
+          if (priceField && typeof priceField.focus === "function") {
+            priceField.focus();
+            this.productNotRegister.price = null;
+          }
+        } else if (field === "priceField") {
+          const barcodeField = this.$refs.barcodeField as Vue & {
+            focus: () => void;
+          };
+          if (barcodeField && typeof barcodeField.focus === "function") {
+            barcodeField.focus();
+          }
+        } else if (field === "descripField") {
+          const barcodeField = this.$refs.barcodeField as Vue & {
+            focus: () => void;
+          };
+          if (barcodeField && typeof barcodeField.focus === "function") {
+            barcodeField.focus();
+            this.productNotRegister.price = null;
+          }
+        }
+      }
     },
     registrarVenta() {
       Swal.fire({
