@@ -20,7 +20,6 @@ const billToPayCollection = "bill_to_charge";
 
 export const SAVE_NEW_BILL_TO_CHARGE = async (sale: Sale): Promise<void> => {
   const res = await FIND_BILL_TO_CHARGE(sale.doc_client);
-  console.log("res");
   const newTransaction: Transaction = {
     document: sale.doc_client,
     amount: sale.total,

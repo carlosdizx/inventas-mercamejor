@@ -242,7 +242,6 @@ export default Vue.extend({
     findProduct() {
       this.availableProducts.forEach((prod: Product) => {
         if (prod.bar_code == this.barCode) {
-          console.log(prod);
           this.newProduct.name = prod.name;
           this.newProduct.bar_code = prod.bar_code;
           this.newProduct.price_sale = prod.sale_price;

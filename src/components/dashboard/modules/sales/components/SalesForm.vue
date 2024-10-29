@@ -192,10 +192,8 @@ export default Vue.extend({
       dialog.cambiarEstado();
     },
     async buscarCliente() {
-      console.log("buscar");
       if (this.sale.doc_client) {
         const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
-        console.log(resultado);
         if (resultado) {
           this.cambiarCliente(resultado);
         } else {
@@ -327,6 +325,12 @@ export default Vue.extend({
         }, 100);
       });
     },
+    handleKeyPress(event: KeyboardEvent) {
+      if (event.key === "F1") {
+        event.preventDefault();
+        this.$emit("save_sale_without_factura", this.sale);
+      }
+    },
   },
   mounted() {
     this.$nextTick(() => {
@@ -336,6 +340,7 @@ export default Vue.extend({
         }
       }, 100);
     });
+    window.addEventListener("keydown", this.handleKeyPress);
   },
   computed: {
     posicionFiltrada() {
@@ -345,6 +350,9 @@ export default Vue.extend({
         return this.tipos_venta;
       }
     },
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.handleKeyPress);
   },
 });
 </script>
