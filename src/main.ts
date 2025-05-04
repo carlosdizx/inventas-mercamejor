@@ -1,13 +1,13 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
-import "@babel/polyfill";
-import "roboto-fontface/css/roboto/roboto-fontface.css";
-import "@mdi/font/css/materialdesignicons.css";
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import vuetify from './plugins/vuetify';
+import '@babel/polyfill';
+import 'roboto-fontface/css/roboto/roboto-fontface.css';
+import '@mdi/font/css/materialdesignicons.css';
 // ---------------------- REGLAS VALIDACIÓN CAMPOS ----------------------
-import { extend, ValidationObserver, ValidationProvider } from "vee-validate";
+import { configure, ValidationObserver, ValidationProvider } from 'vee-validate';
 import {
   digits,
   email,
@@ -15,44 +15,58 @@ import {
   min,
   required,
   numeric,
-} from "vee-validate/dist/rules";
+} from 'vee-validate/dist/rules';
 
-Vue.component("ValidationObserver", ValidationObserver);
-Vue.component("ValidationProvider", ValidationProvider);
-
-extend("digits", {
-  ...digits,
-  message: "{_field_}: Se necesita {length} digitos. ({_value_})",
-});
-extend("required", {
-  ...required,
-  message: "{_field_}: no puede estar vacio, o es un valor errado",
-});
-extend("max", {
-  ...max,
-  message: "{_field_}: cantidad de caracteres superada, maximo {length}",
-});
-extend("min", {
-  ...min,
-  message: "{_field_}: requiere mas caracteres, minimo {length}",
-});
-extend("email", {
-  ...email,
-  message: "Correo con formato incorrecto",
-});
-extend("numeric", {
-  ...numeric,
-  message: "Numero incorrecto",
+// Configuración de vee-validate
+configure({
+  validateOnBlur: true,
+  validateOnChange: true,
+  validateOnInput: true,
+  validateOnModelUpdate: true,
 });
 
-Vue.config.productionTip = false;
+// Registro de reglas
+const rules = {
+  digits,
+  email,
+  max,
+  min,
+  required,
+  numeric,
+};
 
-import VuetifyMoney from "@/plugins/vuetify-money";
-Vue.use(VuetifyMoney);
+Object.keys(rules).forEach(rule => {
+  configure({
+    [rule]: {
+      ...rules[rule],
+      message: (field, params) => {
+        const messages = {
+          digits: `${field}: Se necesita ${params.length} digitos.`,
+          required: `${field}: no puede estar vacio, o es un valor errado`,
+          max: `${field}: cantidad de caracteres superada, maximo ${params.length}`,
+          min: `${field}: requiere mas caracteres, minimo ${params.length}`,
+          email: 'Correo con formato incorrecto',
+          numeric: 'Numero incorrecto',
+        };
+        return messages[rule];
+      },
+    },
+  });
+});
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
+// Importación y configuración de plugins adicionales
+import VuetifyMoney from '@/plugins/vuetify-money';
+
+const app = createApp(App);
+
+// Registro de componentes globales
+app.component('ValidationObserver', ValidationObserver);
+app.component('ValidationProvider', ValidationProvider);
+
+// Uso de plugins
+app.use(router);
+app.use(store);
+app.use(vuetify);
+app.use(VuetifyMoney);
+
+app.mount('#app');

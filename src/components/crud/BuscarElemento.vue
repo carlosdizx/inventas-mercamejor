@@ -33,35 +33,55 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
-  name: "BuscarElemento",
-  props: ["nombre", "items", "headers", "show"],
-  data() {
-    return {
-      search: "",
-    };
+import { defineComponent, ref } from 'vue';
+
+export default defineComponent({
+  name: 'BuscarElemento',
+  props: {
+    nombre: {
+      type: String,
+      required: true
+    },
+    items: {
+      type: Array,
+      required: true
+    },
+    headers: {
+      type: Array,
+      required: true
+    },
+    show: {
+      type: Boolean,
+      required: true
+    }
   },
-  methods: {
-    filterFind(value: any, search: string): boolean {
-      if (typeof value === "string" && typeof search === "string") {
+  emits: ['getItem', 'closeElement'],
+  setup(props: any, { emit }: any) {
+    const search = ref('');
+
+    const filterFind = (value: any, search: string): boolean => {
+      if (typeof value === 'string' && typeof search === 'string') {
         if (search.trim().length !== 0) {
-          return (
-            value
-              .toString()
-              .toLocaleUpperCase()
-              .indexOf(search.toUpperCase()) !== -1
-          );
+          return value.toString().toLocaleUpperCase().indexOf(search.toUpperCase()) !== -1;
         }
       }
       return false;
-    },
-    devolverItem(item: any) {
-      this.$emit("getItem", item);
-    },
-    closeElement() {
-      this.$emit("closeElement");
-    },
-  },
+    };
+
+    const devolverItem = (item: any) => {
+      emit('getItem', item);
+    };
+
+    const closeElement = () => {
+      emit('closeElement');
+    };
+
+    return {
+      search,
+      filterFind,
+      devolverItem,
+      closeElement
+    };
+  }
 });
 </script>
