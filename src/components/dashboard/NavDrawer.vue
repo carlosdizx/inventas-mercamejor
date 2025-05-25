@@ -1,38 +1,36 @@
 <template>
-  <v-navigation-drawer v-model="nav" relative app>
-    <v-list shaped dense>
-      <v-list-item-group>
-        <ListadoFunciones v-on:item="cambiarItem($event)" />
-      </v-list-item-group>
-    </v-list>
+  <v-navigation-drawer v-model="nav" app>
+    <ListadoFunciones @item="cambiarItem" />
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import { mapState } from "vuex";
-import Vue from "vue";
+import { defineComponent, ref } from 'vue';
 import ListadoFunciones from "@/components/dashboard/ListadoFunciones.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "NavDrawer",
   components: { ListadoFunciones },
-  data: () => ({
-    element: null,
-    nav: true,
-    item: 0,
-  }),
-  computed: {
-    ...mapState(["color"]),
-  },
-  methods: {
-    cambiarEstado() {
-      this.nav = !this.nav;
-    },
-    cambiarItem(id: number) {
-      this.item = id;
-      this.$emit("item", this.item);
-    },
-  },
+  setup(props, { emit }) {
+    const nav = ref(false);
+    const item = ref(0);
+
+    const cambiarEstado = () => {
+      nav.value = !nav.value;
+    };
+
+    const cambiarItem = (id: number) => {
+      item.value = id;
+      emit("item", item.value);
+    };
+
+    return {
+      nav,
+      item,
+      cambiarEstado,
+      cambiarItem
+    };
+  }
 });
 </script>
 

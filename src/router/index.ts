@@ -1,16 +1,13 @@
 import { LOGOUT } from "./../services/auth";
 import { OBTENER_ESTADO } from "./../services/usuarios";
-import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { AUTH } from "@/infrastructure/firebase/config/config";
 
 import Swal from "sweetalert2";
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Dashboard",
@@ -35,15 +32,14 @@ const routes: Array<RouteConfig> = [
   //   component: () => import("../views/Registro.vue"),
   // },
   {
-    path: "*",
+    path: "/:pathMatch(.*)*",
     name: "PageNotFound",
     component: () => import("../views/PageNotFound.vue"),
   },
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 

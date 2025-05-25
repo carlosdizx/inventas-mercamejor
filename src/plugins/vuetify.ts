@@ -1,33 +1,35 @@
-import Vue from "vue";
-import Vuetify from "vuetify";
-import "vuetify/dist/vuetify.min.css";
-import es from "vuetify/src/locale/es";
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import 'vuetify/styles';
+import { es } from 'vuetify/locale';
 
-Vue.use(Vuetify);
-
-export default new Vuetify({
+export default createVuetify({
+  components,
+  directives,
   theme: {
-    options: {
-      customProperties: true,
-    },
+    defaultTheme: 'light',
     themes: {
       light: {
-        primary: "#007BFF",
-        secondary: "#424242",
-        accent: "#82B1FF",
-        error: "#FF5252",
-        info: "#2196F3",
-        success: "#4CAF50",
-        warning: "#FFC107",
-        color_a: "#557B83",
-        color_c: "#39AEA9",
-        color_b: "#A2D5AB",
-        color_d: "#E5EFC1",
+        colors: {
+          primary: '#007BFF',
+          secondary: '#424242',
+          accent: '#82B1FF',
+          error: '#FF5252',
+          info: '#2196F3',
+          success: '#4CAF50',
+          warning: '#FFC107',
+          color_a: '#557B83',
+          color_c: '#39AEA9',
+          color_b: '#A2D5AB',
+          color_d: '#E5EFC1',
+        },
       },
     },
   },
-  lang: {
-    locales: { es },
-    current: "es",
+  locale: {
+    locale: 'es',
+    fallback: 'es',
+    messages: { es },
   },
 });

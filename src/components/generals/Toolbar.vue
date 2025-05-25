@@ -1,68 +1,59 @@
 <template>
-  <v-toolbar dark color="color_a">
-    <v-app-bar-nav-icon
-      v-if="permitirNavdrawer"
-      @click="cambiarEstadoNavbar"
-    ></v-app-bar-nav-icon>
-    <v-toolbar-title>{{ titulo }}</v-toolbar-title>
+  <v-app-bar app :color="color">
+    <v-app-bar-nav-icon @click="cambiarEstadoNavbar"></v-app-bar-nav-icon>
+    <v-toolbar-title>Mercamejor</v-toolbar-title>
     <v-spacer></v-spacer>
-    <SelectorColor v-if="permitirColor" />
-    <router-link
-      v-for="(btn, index) of botones"
-      :key="index"
-      :to="btn.link"
-      v-slot="{ navigate }"
-      custom
-    >
-      <v-btn @click="navigate" icon>
-        <v-icon>{{ btn.icon }}</v-icon>
-      </v-btn>
-    </router-link>
-    <v-btn icon @click="logout()">
+    <SelectorColor />
+    <v-btn icon @click="showLogoutDialog = true">
       <v-icon>mdi-logout</v-icon>
     </v-btn>
-  </v-toolbar>
+
+    <!-- Diálogo de confirmación de logout -->
+    <v-dialog v-model="showLogoutDialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h5">
+          ¿Desea cerrar sesión?
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="error" variant="text" @click="showLogoutDialog = false">
+            Cancelar
+          </v-btn>
+          <v-btn color="primary" variant="text" @click="confirmLogout">
+            Si, cerrar sesión
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app-bar>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import SelectorColor from "@/components/generals/SelectorColor.vue";
-import { mapState } from "vuex";
 import { LOGOUT } from "@/services/auth";
-import Swal from "sweetalert2";
 
-export default Vue.extend({
-  name: "Toolbar",
-  components: { SelectorColor },
-  props: {
-    permitirNavdrawer: Boolean,
-    permitirLogout: Boolean,
-    permitirColor: Boolean,
-    titulo: String,
-    botones: Array,
-  },
-  computed: {
-    ...mapState(["color"]),
-  },
-  methods: {
-    cambiarEstadoNavbar() {
-      this.$emit("cambiarEstadoNavDrawer");
-    },
-    async logout() {
-      await Swal.fire({
-        title: "Seguro quieres salir?",
-        showCancelButton: true,
-        confirmButtonText: "Salir",
-        denyButtonText: `Permanecer aqui`,
-      }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
-        if (result.isConfirmed) {
-          LOGOUT();
-        }
-      });
-    },
-  },
-});
+const store = useStore();
+const router = useRouter();
+const showLogoutDialog = ref(false);
+
+const color = store.state.color;
+
+const cambiarEstadoNavbar = () => {
+  emit('cambiarEstadoNavDrawer');
+};
+
+const confirmLogout = async () => {
+  await LOGOUT();
+  showLogoutDialog.value = false;
+  router.push("/inicioSesion");
+};
+
+const emit = defineEmits<{
+  (e: 'cambiarEstadoNavDrawer'): void
+}>();
 </script>
 
 <style scoped></style>
