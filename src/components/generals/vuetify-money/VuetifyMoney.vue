@@ -24,11 +24,11 @@
   </div>
 </template>
 
-<script>
-import Vue from "vue";
+<script lang="ts">
+import { defineComponent } from 'vue'
 
-export default Vue.extend({
-  model: { prop: "value", event: "input" },
+export default defineComponent({
+  name: 'VuetifyMoney',
   props: {
     value: {
       type: [String, Number],
@@ -88,51 +88,46 @@ export default Vue.extend({
     },
     valueOptions: {
       type: Object,
-      default: function () {
-        return {
-          min: 0,
-          minEvent: "SetValueMin",
-        };
-      },
+      default: () => ({
+        min: 0,
+        minEvent: "SetValueMin",
+      }),
     },
     options: {
       type: Object,
-      default: function () {
-        return {
-          locale: "es-CO",
-          prefix: "",
-          suffix: "$",
-          length: 11,
-          precision: 0,
-        };
-      },
+      default: () => ({
+        locale: "es-CO",
+        prefix: "",
+        suffix: "$",
+        length: 11,
+        precision: 0,
+      }),
     },
     properties: {
       type: Object,
-      default: function () {
-        return {};
-      },
+      default: () => ({}),
     },
     prependIcon: {
       type: String,
       default: "mdi-cash",
     },
   },
-  data: () => ({}),
+  emits: ['update:value', 'input'],
   computed: {
     cmpValue: {
-      get: function () {
+      get() {
         return this.value !== null && this.value !== ""
           ? this.humanFormat(this.value.toString())
           : this.valueWhenIsEmpty;
       },
-      set: function (newValue) {
-        this.$emit("input", this.machineFormat(newValue));
+      set(newValue) {
+        this.$emit('update:value', this.machineFormat(newValue));
+        this.$emit('input', this.machineFormat(newValue));
       },
     },
   },
   methods: {
-    humanFormat: function (number) {
+    humanFormat(number) {
       if (isNaN(number)) {
         number = "";
       } else {
@@ -177,7 +172,7 @@ export default Vue.extend({
         $event.preventDefault();
       }
     },
-    cleanNumber: function (value) {
+    cleanNumber(value) {
       let result = "";
       if (value) {
         let flag = false;
@@ -199,40 +194,15 @@ export default Vue.extend({
       return result;
     },
     isInteger(value) {
-      let result = false;
-      if (Number.isInteger(parseInt(value))) {
-        result = true;
-      }
-      return result;
+      return /^\d+$/.test(value);
     },
     targetLength() {
-      if (
-        Number(this.cleanNumber(this.value).length) >=
-        Number(this.options.length)
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      return (
+        this.cleanNumber(this.cmpValue).length >= parseInt(this.options.length)
+      );
     },
     onBlur() {
-      if (
-        this.value.length === 0 ||
-        parseFloat(this.value) <= this.valueOptions.min
-      )
-        this.$emit(
-          this.valueOptions.minEvent || "SetValueMin",
-          this.valueOptions.min
-        );
-
-      if (
-        this.valueOptions.max &&
-        parseFloat(this.value) >= this.valueOptions.max
-      )
-        this.$emit(
-          this.valueOptions.maxEvent || "SetValueMax",
-          this.valueOptions.max
-        );
+      this.$emit("blur", this.cmpValue);
     },
   },
 });

@@ -74,42 +74,55 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent, ref } from 'vue'
 import Swal from "sweetalert2";
 
-export default Vue.extend({
+export default defineComponent({
   name: "UserCredentials",
-  data: () => ({
-    mostrarPassword: false,
-    correo: "",
-    pass1: "",
-    pass2: "",
-    cargando: false,
-  }),
-  methods: {
-    async crearCuenta() {
-      this.cargando = !this.cargando;
-      if (this.pass1.trim() === this.pass2.trim()) this.cambiarEtapa(3);
-      else
+  emits: ['etapa', 'credenciales', 'registrar'],
+  setup(props, { emit }) {
+    const mostrarPassword = ref(false)
+    const correo = ref("")
+    const pass1 = ref("")
+    const pass2 = ref("")
+    const cargando = ref(false)
+
+    const crearCuenta = async () => {
+      cargando.value = !cargando.value
+      if (pass1.value.trim() === pass2.value.trim()) {
+        cambiarEtapa(3)
+      } else {
         await Swal.fire({
           timer: 1500,
           title: "Las contraseñas no coinciden",
           icon: "error",
           showConfirmButton: false,
-        });
-      this.cargando = !this.cargando;
-    },
-    cambiarEtapa(etapa: number) {
-      this.$emit("etapa", etapa);
+        })
+      }
+      cargando.value = !cargando.value
+    }
+
+    const cambiarEtapa = (etapa: number) => {
+      emit("etapa", etapa)
       const credenciales = {
-        correo: this.correo,
-        password: this.pass1,
-      };
-      this.$emit("credenciales", credenciales);
-      this.$emit("registrar");
-    },
-  },
-});
+        correo: correo.value,
+        password: pass1.value,
+      }
+      emit("credenciales", credenciales)
+      emit("registrar")
+    }
+
+    return {
+      mostrarPassword,
+      correo,
+      pass1,
+      pass2,
+      cargando,
+      crearCuenta,
+      cambiarEtapa
+    }
+  }
+})
 </script>
 
 <style scoped></style>

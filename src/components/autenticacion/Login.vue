@@ -35,31 +35,39 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
+import { defineComponent, ref } from 'vue'
 import { INICIAR_SESION } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Login",
-  data: () => ({
-    validacion: true,
-    showPass: false,
-    email: "",
-    passwd: "",
-  }),
-  methods: {
-    mostrarPassword(): boolean {
-      return (this.showPass = !this.showPass);
-    },
-    async loginUser() {
+  setup() {
+    const validacion = ref(true)
+    const showPass = ref(false)
+    const email = ref("")
+    const passwd = ref("")
+
+    const mostrarPassword = () => {
+      showPass.value = !showPass.value
+    }
+
+    const loginUser = async () => {
       try {
-        await INICIAR_SESION(this.email, this.passwd);
+        await INICIAR_SESION(email.value, passwd.value)
       } catch (e) {
-        await NOTIFICAR_ERROR(e.code);
+        await NOTIFICAR_ERROR(e.code)
       }
-    },
-  },
+    }
+
+    return {
+      validacion,
+      showPass,
+      email,
+      passwd,
+      mostrarPassword,
+      loginUser
+    }
+  }
 });
 </script>
 

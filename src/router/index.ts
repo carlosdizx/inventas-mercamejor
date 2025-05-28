@@ -39,28 +39,41 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   const esRequerida = to.matched.some((ruta) => ruta.meta.requiereAuth);
-  onAuthStateChanged(AUTH, async (user) => {
-    const estado = await OBTENER_ESTADO();
-    if (esRequerida && !user) {
-      next("inicioSesion");
-    } else if (!esRequerida && user) {
-      next("/");
-    } else if (estado === "Desabilitado") {
-      await Swal.fire({
-        title: "No tiene acceso",
-        icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
-      });
-      await LOGOUT();
-      next("inicioSesion");
-    } else next();
+
+  return new Promise((resolve) => {
+    onAuthStateChanged(AUTH, async (user) => {
+      try {
+        const estado = await OBTENER_ESTADO();
+        
+        if (esRequerida && !user) {
+          next("inicioSesion");
+        } else if (!esRequerida && user) {
+          next("/");
+        } else if (estado === "Desabilitado") {
+          await Swal.fire({
+            title: "No tiene acceso",
+            icon: "success",
+            timer: 1000,
+            showConfirmButton: false,
+          });
+          await LOGOUT();
+          next("inicioSesion");
+        } else {
+          next();
+        }
+        resolve(true);
+      } catch (error) {
+        console.error('Error en la navegación:', error);
+        next("inicioSesion");
+        resolve(true);
+      }
+    });
   });
 });
 

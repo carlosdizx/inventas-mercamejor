@@ -3,10 +3,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from 'vue'
 import Login from "@/components/autenticacion/Login.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "InicioSesion",
   components: { Login },
 });

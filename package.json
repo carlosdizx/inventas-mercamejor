@@ -12,7 +12,6 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.12.1",
     "@mdi/font": "^7.4.47",
     "@vee-validate/rules": "^4.12.5",
     "core-js": "^3.37.0",
@@ -21,6 +20,7 @@
     "roboto-fontface": "^0.10.0",
     "shortid": "^2.2.16",
     "source-map-resolve": "^0.6.0",
+    "sweetalert2": "^11.22.0",
     "vee-validate": "^4.12.5",
     "vue": "^3.5.14",
     "vue-router": "^4.5.1",
