@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Swal from "sweetalert2";
 
 import {
@@ -86,7 +86,7 @@ import { MovCuentaPorPagar } from "@/models/MovCuentasPorPagar";
 import Tabla from "@/components/crud/Tabla.vue";
 import { EDITAR, GUARDAR } from "@/services/crud";
 
-export default Vue.extend({
+export default defineComponent({
   name: "CuentasPorPagar",
   data: () => ({
     mostrar: false,

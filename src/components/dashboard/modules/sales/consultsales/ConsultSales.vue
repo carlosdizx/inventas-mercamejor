@@ -83,9 +83,9 @@
 import { Sale } from "@/domain/model/sale/Sale";
 import { CONSULT_SALES } from "@/domain/useCase/sale/saleSaveUseCase";
 import { COLUMNAS_SALE } from "@/models/SaleModel";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ConsultSales",
   data: () => ({
     headers: COLUMNAS_SALE,

@@ -10,9 +10,7 @@
         link
         @click="enviarId(subitem.id)"
       >
-        <v-list-item-icon>
-          <v-icon>{{ subitem.icono }}</v-icon>
-        </v-list-item-icon>
+        <v-icon>{{ subitem.icono }}</v-icon>
         <v-list-item-title>{{ subitem.titulo }}</v-list-item-title>
       </v-list-item>
     </div>
@@ -20,12 +18,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { FUNCIONES_DASHBOARD } from "@/generals/funcionalidades_dashboard";
 import { ASIGNAR_ITEMS_DASHBOARD } from "@/generals/procesamientos";
 import { OBTENER_ROL } from "@/services/usuarios";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ListadoFunciones",
   data: () => ({
     lista: [{}],

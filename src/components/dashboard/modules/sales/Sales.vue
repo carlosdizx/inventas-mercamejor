@@ -24,7 +24,7 @@
 <script lang="ts">
 import SalesForm from "@/components/dashboard/modules/sales/components/SalesForm.vue";
 import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList.vue";
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { CONSULT_ALL_PRODUCT } from "@/UseCases/ProductosUseCases";
@@ -33,16 +33,18 @@ import { Sale } from "@/domain/model/sale/Sale";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 import { generatePageToPrint } from "@/components/dashboard/modules/sales/components/SalesFunction";
 import { ProductToList } from "@/domain/model/product/Product";
+import addSound from "@/assets/audios/add_product.mp3";
+import notFoundSound from "@/assets/audios/not_found_product.mp3";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Sales",
   components: { SalesForm, ItemsList },
   data: () => ({
     productos: [],
     productsDatabase: [] as Array<ProductToList>,
     audio: new Audio(),
-    add: require("@/assets/audios/add_product.mp3"),
-    notFound: require("@/assets/audios/not_found_product.mp3"),
+    add: addSound,
+    notFound: notFoundSound,
   }),
   methods: {
     async buscarProducto(codigo_barras: string) {

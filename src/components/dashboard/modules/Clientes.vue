@@ -13,10 +13,9 @@
 <script lang="ts">
 import Tabla from "@/components/crud/Tabla.vue";
 import { COLUMNAS, CAMPOS, VALIDACIONES } from "@/models/Cliente";
+import { defineComponent } from "vue";
 
-import Vue from "vue";
-
-export default Vue.extend({
+export default defineComponent({
   name: "Clientes",
   components: { Tabla },
   data: () => ({

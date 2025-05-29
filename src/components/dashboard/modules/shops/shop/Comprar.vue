@@ -32,13 +32,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
 import RegistroCompras from "@/components/dashboard/modules/shops/shop/RegistroCompras.vue";
 import ConsultarCompras from "@/components/dashboard/modules/shops/shop/ConsultarCompras.vue";
 import AnularCompra from "@/components/dashboard/modules/shops/shop/AnularCompra.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Cajas",
   components: { RegistroCompras, ConsultarCompras, AnularCompra },
   data: () => ({

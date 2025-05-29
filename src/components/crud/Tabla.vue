@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { CONSULTA_DATOS, ELIMINAR, LISTAR } from "@/services/crud";
 import Swal from "sweetalert2";
 import { tipo_dato } from "@/generals/formats";
@@ -192,7 +192,7 @@ import FormEdit from "@/components/crud/FormEdit.vue";
 import FormView from "@/components/crud/FormView.vue";
 import { mapState } from "vuex";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Tabla",
   components: { FormCreate, FormEdit, FormView },
   data: () => ({

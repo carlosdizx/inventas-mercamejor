@@ -139,7 +139,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Swal from "sweetalert2";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
@@ -153,7 +153,7 @@ import { Client } from "@/domain/model/client/Client";
 import { EEstateSale, EPayTypeSale } from "@/domain/model/constants/Constants";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
-export default Vue.extend({
+export default defineComponent({
   name: "SalesForm",
   components: { DialogClients },
   data: () => ({

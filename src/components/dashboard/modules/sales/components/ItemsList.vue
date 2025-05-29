@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Swal from "sweetalert2";
 import {
   AGREGAR_PRODUCTO,
@@ -109,7 +109,7 @@ import {
 import { ProductToList } from "@/domain/model/product/Product";
 import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ItemsList",
   data: () => ({
     total: 0,

@@ -237,14 +237,15 @@
 </template>
 
 <script>
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { VALIDAR_CAMPO, VALIDAR_COMBO } from "@/generals/validaciones";
 import {
   CAPTURAR_CAMPOS,
   PROCESAR_FORMULARIO,
 } from "@/generals/procesamientos";
 import Swal from "sweetalert2";
-export default Vue.extend({
+
+export default defineComponent({
   name: "FormEdit",
   data: () => ({
     dialog_form: false,

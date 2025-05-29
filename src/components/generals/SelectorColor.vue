@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn icon v-bind="attrs" v-on="on">
+    <template v-slot:activator="{ props }">
+      <v-btn icon v-bind="props">
         <v-icon>mdi-palette</v-icon>
       </v-btn>
     </template>
@@ -22,9 +22,9 @@
 
 <script lang="ts">
 import { mapActions, mapState } from "vuex";
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "SelectorColor",
   data: () => ({
     colores: [

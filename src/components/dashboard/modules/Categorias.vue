@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Tabla from "@/components/crud/Tabla.vue";
 import { COLUMNAS, CAMPOS, VALIDACIONES } from "@/models/Categoria";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Categorias",
   components: { Tabla },
   data: () => ({

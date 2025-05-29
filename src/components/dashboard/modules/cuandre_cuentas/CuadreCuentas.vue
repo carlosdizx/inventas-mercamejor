@@ -131,8 +131,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from "vue";
+
+export default defineComponent({
   name: "CuadreCuentas",
   data: () => ({
     items: ["caja 1", "caja 2", "", "caja n"],

@@ -39,10 +39,10 @@ import RegistroCompras from "@/components/dashboard/modules/shops/shop/RegistroC
 import { CAMPOS, VALIDACIONES } from "@/models/Producto";
 import { COLUMNAS } from "@/models/Compra";
 
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { ICompra } from "@/models/Compra";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Productos",
   components: { Tabla, RegistroCompras },
   data: () => ({

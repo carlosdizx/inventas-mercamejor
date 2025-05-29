@@ -12,11 +12,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import Tabla from "@/components/crud/Tabla.vue";
 import { COLUMNAS, CAMPOS } from "@/models/Movimiento";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Movimientos",
   components: { Tabla },
   data: () => ({
