@@ -5,15 +5,16 @@
     </v-card-text>
     <DialogClients v-on:cliente="cambiarCliente($event)" ref="DialogClients" />
     <v-card-text>
-      <ValidationObserver ref="observer">
+      <VeeForm @submit="onSubmit" v-slot="{ errors }">
         <v-form @submit.prevent="">
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
-              name="Documento del cliente"
+            <VeeField
+              v-slot="{ field, errors }"
+              name="doc_client"
               rules="required|min:6|max:20"
             >
               <v-text-field
+                v-bind="field"
                 label="Documento de identidad"
                 append-outer-icon="mdi-magnify"
                 @click:append-outer="abrirDialogoLisadoClientes"
@@ -25,7 +26,7 @@
                 @keyup.enter="buscarCliente()"
                 :error-messages="errors"
               />
-            </validation-provider>
+            </VeeField>
           </v-col>
           <v-col>
             <v-text-field
@@ -40,12 +41,13 @@
             />
           </v-col>
           <v-col>
-            <validation-provider
-              v-slot="{ errors }"
-              name="Tipo venta"
+            <VeeField
+              v-slot="{ field, errors }"
+              name="sale_type"
               rules="required"
             >
               <v-select
+                v-bind="field"
                 prepend-icon="mdi-home"
                 :items="posicionFiltrada"
                 label="Tipos de venta"
@@ -55,7 +57,7 @@
                 v-model="sale.sale_type"
                 :error-messages="errors"
               />
-            </validation-provider>
+            </VeeField>
           </v-col>
           <v-row>
             <v-col>
@@ -133,7 +135,7 @@
             </v-col>
           </v-row>
         </v-form>
-      </ValidationObserver>
+      </VeeForm>
     </v-card-text>
   </v-card>
 </template>
@@ -189,6 +191,10 @@ export default defineComponent({
     const tipos_venta = ref(TIPOS_VENTA);
     const dialog_list = ref(false);
     const enfoque = ref(false);
+
+    const onSubmit = (values: any) => {
+      console.log('Form submitted:', values);
+    };
 
     const abrirDialogoLisadoClientes = () => {
       const dialog = refs.DialogClients;
@@ -248,113 +254,25 @@ export default defineComponent({
             }
           }, 500);
         }
-      } else {
-        enterCount.value = 0;
-      }
-      if (event.key === "Tab") {
-        event.preventDefault();
-        if (field === "barcodeField") {
-          if (priceField.value && typeof priceField.value.focus === "function") {
-            priceField.value.focus();
-            productNotRegister.value.price = null;
-          }
-        } else if (field === "priceField") {
-          if (barcodeField.value && typeof barcodeField.value.focus === "function") {
-            barcodeField.value.focus();
-          }
-        } else if (field === "descripField") {
-          if (barcodeField.value && typeof barcodeField.value.focus === "function") {
-            barcodeField.value.focus();
-            productNotRegister.value.price = null;
-          }
-        }
       }
     };
 
     const registrarVenta = () => {
-      Swal.fire({
-        title: "Registrar venta?",
-        text: "La venta se registrara como confirmada!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Registrar!",
-        cancelButtonText: `Cancelar!`,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          sale.value.pay_date = STRINT_TO_FECHA(fecha_pago.value);
-          emit('datos_cliente', sale.value);
-          Swal.fire({
-            icon: "success",
-            title: "Registro exitoso",
-            text: "La venta se registro exitosamente",
-            showConfirmButton: false,
-            timer: 800,
-          });
-          resetDatosVenta();
-          nextTick(() => {
-            setTimeout(() => {
-              if (barcodeField.value) {
-                barcodeField.value.focus();
-              }
-            }, 100);
-          });
-        }
-      });
+      emit('save_sale_without_factura', sale.value);
     };
 
-    const resetDatosVenta = () => {
-      sale.value.doc_client = "2222222";
-      sale.value.nam_client = "Clientes varios";
-      sale.value.sur_client = "";
-      sale.value.sale_type = EPayTypeSale.CONTADO;
-      sale.value.pay_date = new Date();
-      sale.value.subtotal = 0;
-      sale.value.discount = 0;
-      sale.value.total = 0;
-      sale.value.sales = [];
-      fecha_pago.value = FECHA_TO_STRING_INPUT(new Date());
-    };
-
-    const focusBarcodeField = () => {
-      nextTick(() => {
-        setTimeout(() => {
-          if (barcodeField.value) {
-            barcodeField.value.focus();
-          }
-        }, 100);
-      });
-    };
-
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "F1") {
-        event.preventDefault();
-        emit('save_sale_without_factura', sale.value);
-      }
-    };
+    const posicionFiltrada = computed(() => {
+      return tipos_venta.value.filter((tipo) => tipo.value !== EPayTypeSale.CREDITO);
+    });
 
     onMounted(() => {
-      nextTick(() => {
-        setTimeout(() => {
-          if (barcodeField.value) {
-            barcodeField.value.focus();
-          }
-        }, 100);
-      });
-      window.addEventListener("keydown", handleKeyPress);
+      if (barcodeField.value && typeof barcodeField.value.focus === "function") {
+        barcodeField.value.focus();
+      }
     });
 
     onBeforeUnmount(() => {
-      window.removeEventListener("keydown", handleKeyPress);
-    });
-
-    const posicionFiltrada = computed(() => {
-      if (sale.value.nam_client === "Clientes varios") {
-        return [tipos_venta.value[0]];
-      } else {
-        return tipos_venta.value;
-      }
+      // Cleanup if needed
     });
 
     return {
@@ -369,6 +287,7 @@ export default defineComponent({
       tipos_venta,
       dialog_list,
       enfoque,
+      posicionFiltrada,
       abrirDialogoLisadoClientes,
       buscarCliente,
       cambiarCliente,
@@ -378,11 +297,8 @@ export default defineComponent({
       resetProductNotRegister,
       handleKeyDown,
       registrarVenta,
-      resetDatosVenta,
-      focusBarcodeField,
-      handleKeyPress,
-      posicionFiltrada
+      onSubmit
     };
-  }
+  },
 });
 </script>

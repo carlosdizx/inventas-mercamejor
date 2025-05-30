@@ -16,21 +16,63 @@ const routes: Array<RouteRecordRaw> = [
       requiereAuth: true,
     },
     children: [
+      // Módulo de Compras
+      {
+        path: "comprar",
+        name: "Comprar",
+        component: () => import("@/components/dashboard/modules/shops/shop/Comprar.vue"),
+      },
+      {
+        path: "proveedores",
+        name: "Proveedores",
+        component: () => import("../components/dashboard/modules/Proveedores.vue"),
+      },
+      {
+        path: "cuentas-por-pagar",
+        name: "CuentasPorPagar",
+        component: () => import("../components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue"),
+      },
+
+      // Módulo de Ventas
+      {
+        path: "vender",
+        name: "Vender",
+        component: () => import("@/components/dashboard/modules/sales/Sales.vue"),
+      },
       {
         path: "consultar-ventas",
         name: "ConsultarVentas",
-        component: () => import("../components/dashboard/modules/sales/consultsales/ConsultSales.vue"),
+        component: () => import("@/components/dashboard/modules/sales/consultsales/ConsultSales.vue"),
       },
       {
-        path: "cuadre-cuentas",
-        name: "CuadreCuentas",
+        path: "clientes",
+        name: "Clientes",
+        component: () => import("../components/dashboard/modules/Clientes.vue"),
+      },
+      {
+        path: "cuentas-por-cobrar",
+        name: "CuentasPorCobrar",
         component: () => import("../components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue"),
       },
+
+      // Módulo de Inventario
       {
         path: "productos",
         name: "Productos",
         component: () => import("../components/dashboard/modules/Productos.vue"),
       },
+      {
+        path: "bodegas",
+        name: "Bodegas",
+        component: () => import("../components/dashboard/modules/Bodegas.vue"),
+      },
+      {
+        path: "movimientos",
+        name: "Movimientos",
+        component: () => import("../components/dashboard/modules/Movimientos.vue"),
+      },
+
+      // Módulo Otros
       {
         path: "categorias",
         name: "Categorias",
@@ -42,29 +84,9 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../components/dashboard/modules/Marcas.vue"),
       },
       {
-        path: "proveedores",
-        name: "Proveedores",
-        component: () => import("../components/dashboard/modules/Proveedores.vue"),
-      },
-      {
-        path: "clientes",
-        name: "Clientes",
-        component: () => import("../components/dashboard/modules/Clientes.vue"),
-      },
-      {
-        path: "comprar",
-        name: "Comprar",
-        component: () => import("@/components/dashboard/modules/shops/shop/Comprar.vue"),
-      },
-      {
-        path: "cuentas-por-pagar",
-        name: "CuentasPorPagar",
-        component: () => import("../components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue"),
-      },
-      {
-        path: "bodegas",
-        name: "Bodegas",
-        component: () => import("../components/dashboard/modules/Bodegas.vue"),
+        path: "usuarios",
+        name: "Usuarios",
+        component: () => import("../components/dashboard/modules/Usuarios.vue"),
       }
     ]
   },

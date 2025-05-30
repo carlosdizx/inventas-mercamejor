@@ -13,6 +13,7 @@ import "@mdi/font/css/materialdesignicons.css";
 // ---------------------- REGLAS VALIDACIÓN CAMPOS ----------------------
 import { defineRule, configure } from "vee-validate";
 import { required, min, max, email, numeric, digits } from "@vee-validate/rules";
+import { Form as VeeForm, Field as VeeField, ErrorMessage } from 'vee-validate';
 
 // Register rules
 defineRule('required', required);
@@ -38,6 +39,11 @@ configure({
 });
 
 const app = createApp(App);
+
+// Register validation components globally
+app.component('VeeForm', VeeForm);
+app.component('VeeField', VeeField);
+app.component('ErrorMessage', ErrorMessage);
 
 app.use(router)
    .use(store)

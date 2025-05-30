@@ -77,20 +77,23 @@
     </v-card-text>
     <v-container class="d-flex justify-center align-center">
       <v-data-table :headers="headers" :items="items">
-        <template v-slot:item.cantidad="{ item }">
-          <v-edit-dialog>
-            {{ item.cantidad }}
-            <template v-slot:input>
-              <v-text-field
-                @keydown.enter="
-                  cambiarCantidadProducto($event.target.value, item)
-                "
-                label="Editar"
-                ype="number"
-                counter
-              />
-            </template>
-          </v-edit-dialog>
+        <template v-slot:item.amount="{ item }">
+          <v-text-field
+            v-model="item.amount"
+            type="number"
+            density="compact"
+            variant="outlined"
+            hide-details
+            @update:model-value="updateQuantity(item)"
+          />
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn
+            icon="mdi-delete"
+            color="error"
+            variant="text"
+            @click="deleteItem(item)"
+          />
         </template>
       </v-data-table>
     </v-container>
@@ -117,33 +120,47 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['update', 'delete'],
+  emits: ['update', 'delete', 'reset'],
   setup(props, { emit }) {
     const headers = ref([
-      { text: "Producto", value: "name" },
-      { text: "Cantidad", value: "quantity" },
-      { text: "Precio", value: "price" },
-      { text: "Subtotal", value: "subtotal" },
-      { text: "Acciones", value: "actions" }
+      { title: "Producto", key: "name" },
+      { title: "Cantidad", key: "amount" },
+      { title: "Precio", key: "sale_price" },
+      { title: "Subtotal", key: "subtotal" },
+      { title: "Acciones", key: "actions", sortable: false }
     ]);
+
+    const descuento_adicional = ref(0);
 
     const total = computed(() => {
       return props.items.reduce((sum, item) => sum + item.subtotal, 0);
     });
 
-    const updateItem = (index: number, item: ProductSale) => {
-      emit('update', { index, item });
+    const updateQuantity = (item: ProductSale) => {
+      if (item.amount <= 0) {
+        deleteItem(item);
+        return;
+      }
+      item.subtotal = item.amount * item.sale_price;
+      emit('update', item);
     };
 
-    const deleteItem = (index: number) => {
-      emit('delete', index);
+    const deleteItem = (item: ProductSale) => {
+      emit('delete', item);
+    };
+
+    const resetValues = () => {
+      descuento_adicional.value = 0;
+      emit('reset');
     };
 
     return {
       headers,
       total,
-      updateItem,
-      deleteItem
+      descuento_adicional,
+      updateQuantity,
+      deleteItem,
+      resetValues
     };
   },
   data: () => ({
@@ -151,7 +168,6 @@ export default defineComponent({
     subtotal: 0,
     descuento: 0,
     calculadora: 0,
-    descuento_adicional: 0,
     columnas: [
       { text: "Producto", value: "name" },
       { text: "Cantidad", value: "amount" },
@@ -229,15 +245,6 @@ export default defineComponent({
           timer: 800,
         });
       }
-    },
-    resetValues() {
-      this.sales = [];
-      this.total = 0;
-      this.subtotal = 0;
-      this.descuento = 0;
-      this.calculadora = 0;
-      this.descuento_adicional = 0;
-      this.$emit("reset_venta");
     },
   },
   created() {

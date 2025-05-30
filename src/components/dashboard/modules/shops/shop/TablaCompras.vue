@@ -5,120 +5,129 @@
     </v-chip>
     <v-row class="mr-5 ml-5">
       <v-col>
-        <v-simple-table>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th class="text-left">Código</th>
-                <th class="text-left">Descripción Producto</th>
-                <th class="text-left">Cantidad</th>
-                <th class="text-left">Precio Compra</th>
-                <th class="text-left">Ganancia</th>
-                <th class="text-left">Precio Venta</th>
-                <th class="text-left">Subototal</th>
-                <th class="text-left">Actividad</th>
-              </tr>
-            </thead>
-            <tbody class="dark" v-if="!anular">
-              <tr @keyup.enter="validarProd ? null : addProduct()">
-                <td>
-                  <v-text-field
-                    @input="findProduct()"
-                    v-model="barCode"
-                  ></v-text-field>
-                </td>
-                <td>
-                  {{ newProduct.name }}
-                </td>
-                <td>
-                  <v-text-field
-                    @input="calculateSubtotal()"
-                    v-model.number="newProduct.amount"
-                    type="number"
-                  ></v-text-field>
-                </td>
-                <td>
-                  <v-text-field
-                    @input="calculateUtilitiesByShop()"
-                    type="number"
-                    v-model.number="newProduct.price_shop"
-                  ></v-text-field>
-                </td>
-                <td>
-                  <v-text-field
-                    @input="enterGains()"
-                    type="number"
-                    v-model.number="percentGain"
-                  ></v-text-field>
-                </td>
-                <td>
-                  <v-text-field
-                    @input="enterSale()"
-                    type="number"
-                    v-model.number="newProduct.price_sale"
-                  ></v-text-field>
-                </td>
-                <td>
-                  {{ newProduct.subtotal }}
-                </td>
-                <td>
-                  <v-btn
-                    color="white"
-                    @click="addProduct()"
-                    :disabled="validarProd"
-                    icon
-                    class="warning ml-1"
-                  >
-                    <v-icon>mdi-plus</v-icon>
-                  </v-btn>
-                  <BuscarElemento
-                    @getItem="selectProduct"
-                    icon="mdi-magnify"
-                    :items="availableProducts"
-                    :headers="columnas"
-                  />
-                </td>
-              </tr>
-            </tbody>
-            <tbody class="pt-3">
-              <tr v-for="(item, index) in products" :key="index">
-                <td>{{ item.bar_code }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.amount }}</td>
-                <td>{{ item.price_shop }}</td>
-                <td>
-                  {{
-                    Math.trunc(
-                      ((item.price_sale - item.price_shop) / item.price_shop) *
-                        100
-                    )
-                  }}
-                </td>
-                <td>{{ item.price_sale }}</td>
-                <td>{{ item.subtotal }}</td>
-                <td v-if="!anular">
-                  <v-btn
-                    color="white"
-                    icon
-                    class="error ml-1"
-                    @click="deleteItem(index)"
-                  >
-                    <v-icon>mdi-trash-can-outline</v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-            <EditarCompra
-              v-if="showEditPurchase"
-              @actualizar="update"
-              @cancelar="showEditPurchase = false"
-              :compraAnterior="shopEdit"
-              :mostrar="showEditPurchase"
-              :indexElement="editPurchaseIndex"
-              :bodegasDisponibles="wareHouse"
-            />
-          </template>
-        </v-simple-table>
+        <v-table>
+          <thead>
+            <tr>
+              <th class="text-left">Código</th>
+              <th class="text-left">Descripción Producto</th>
+              <th class="text-left">Cantidad</th>
+              <th class="text-left">Precio Compra</th>
+              <th class="text-left">Ganancia</th>
+              <th class="text-left">Precio Venta</th>
+              <th class="text-left">Subototal</th>
+              <th class="text-left">Actividad</th>
+            </tr>
+          </thead>
+          <tbody class="dark" v-if="!anular">
+            <tr @keyup.enter="validarProd ? null : addProduct()">
+              <td>
+                <v-text-field
+                  @input="findProduct()"
+                  v-model="barCode"
+                ></v-text-field>
+              </td>
+              <td>
+                {{ newProduct.name }}
+              </td>
+              <td>
+                <v-text-field
+                  @input="calculateSubtotal()"
+                  v-model.number="newProduct.amount"
+                  type="number"
+                ></v-text-field>
+              </td>
+              <td>
+                <v-text-field
+                  @input="calculateUtilitiesByShop()"
+                  type="number"
+                  v-model.number="newProduct.price_shop"
+                ></v-text-field>
+              </td>
+              <td>
+                <v-text-field
+                  @input="enterGains()"
+                  type="number"
+                  v-model.number="percentGain"
+                ></v-text-field>
+              </td>
+              <td>
+                <v-text-field
+                  @input="enterSale()"
+                  type="number"
+                  v-model.number="newProduct.price_sale"
+                ></v-text-field>
+              </td>
+              <td>
+                {{ newProduct.subtotal }}
+              </td>
+              <td>
+                <v-btn
+                  color="white"
+                  @click="addProduct()"
+                  :disabled="validarProd"
+                  icon
+                  class="warning ml-1"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <v-btn
+                  color="white"
+                  @click="showBuscarProducto = true"
+                  icon
+                  class="info ml-1"
+                >
+                  <v-icon>mdi-magnify</v-icon>
+                </v-btn>
+                <BuscarElemento
+                  @getItem="selectProduct"
+                  icon="mdi-magnify"
+                  :items="availableProducts"
+                  :headers="columnas"
+                  nombre="Productos"
+                  :show="showBuscarProducto"
+                  @close="showBuscarProducto = false"
+                />
+              </td>
+            </tr>
+          </tbody>
+          <tbody class="pt-3">
+            <tr v-for="(item, index) in products" :key="index">
+              <td>{{ item.bar_code }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.amount }}</td>
+              <td>{{ item.price_shop }}</td>
+              <td>
+                {{
+                  Math.trunc(
+                    ((item.price_sale - item.price_shop) / item.price_shop) *
+                      100
+                  )
+                }}
+              </td>
+              <td>{{ item.price_sale }}</td>
+              <td>{{ item.subtotal }}</td>
+              <td v-if="!anular">
+                <v-btn
+                  color="white"
+                  icon
+                  class="error ml-1"
+                  @click="deleteItem(index)"
+                >
+                  <v-icon>mdi-trash-can-outline</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+        <EditarCompra
+          v-if="showEditPurchase"
+          @actualizar="update"
+          @cancelar="showEditPurchase = false"
+          :compraAnterior="shopEdit"
+          :mostrar="showEditPurchase"
+          :indexElement="editPurchaseIndex"
+          :bodegasDisponibles="wareHouse"
+        />
       </v-col>
     </v-row>
   </div>
@@ -137,7 +146,6 @@ import Swal from "sweetalert2";
 import { Product } from "@/domain/model/product/Product";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
 import { Store } from "@/domain/model/store/Store";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default defineComponent({
   name: "TablaCompras",
@@ -147,7 +155,7 @@ export default defineComponent({
   },
   props: {
     compras: {
-      type: Array as PropType<Array<ProductSale>>,
+      type: Array as PropType<Array<ProductPurchase>>,
       required: true
     },
     eliminarDatos: {
@@ -159,7 +167,7 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['eliminar', 'anular'],
+  emits: ['enviarProductos', 'eliminar', 'anular'],
   setup(props, { emit }) {
     const columnas = ref([
       { text: "Producto", value: "name" },
@@ -168,12 +176,17 @@ export default defineComponent({
       { text: "Subtotal", value: "subtotal" },
       { text: "Acciones", value: "acciones" },
     ]);
-    const products = ref<Array<Product>>([]);
-    const newProduct = ref({
-      product: null as Product | null,
-      quantity: 1,
-      price: 0,
-      subtotal: 0,
+    const products = ref<Array<ProductPurchase>>([]);
+    const newProduct = ref<ProductPurchase>({
+      id: '',
+      bar_code: '',
+      name: '',
+      amount: 0,
+      price_shop: 0,
+      price_sale: 0,
+      taxes: 0,
+      discount: 0,
+      subtotal: 0
     });
     const shopEdit = ref<IProductoCompra>({} as IProductoCompra);
     const wareHouse = ref<Array<Store>>([]);
@@ -183,22 +196,19 @@ export default defineComponent({
     const percentGain = ref(0);
     const barCode = ref<string | null>(null);
     const errorCodigo = ref(false);
+    const showBuscarProducto = ref(false);
 
     const validarProd = computed(() => {
-      if (
-        newProduct.value.product?.bar_code?.toString().length >= 9 &&
-        newProduct.value.product?.name !== "" &&
-        newProduct.value.quantity >= 1 &&
-        newProduct.value.price >= 1 &&
-        newProduct.value.price >= newProduct.value.price &&
+      return !(
+        newProduct.value.bar_code?.toString().length >= 9 &&
+        newProduct.value.name !== "" &&
+        newProduct.value.amount >= 1 &&
+        newProduct.value.price_shop >= 1 &&
+        newProduct.value.price_sale >= newProduct.value.price_shop &&
         percentGain.value >= 0 &&
         newProduct.value.subtotal >= 1 &&
-        newProduct.value.price > newProduct.value.price &&
         !errorCodigo.value
-      ) {
-        return false;
-      }
-      return true;
+      );
     });
 
     const loadProducts = async () => {
@@ -235,16 +245,30 @@ export default defineComponent({
       }
     };
 
+    const findProduct = () => {
+      if (barCode.value) {
+        const product = availableProducts.value.find(p => p.bar_code === barCode.value);
+        if (product) {
+          selectProduct(product);
+        }
+      }
+    };
+
     const addProduct = () => {
-      if (newProduct.value.product && newProduct.value.quantity > 0) {
-        const product = {
-          id: newProduct.value.product.id,
-          name: newProduct.value.product.name,
-          quantity: newProduct.value.quantity,
-          price: newProduct.value.price,
-          subtotal: newProduct.value.quantity * newProduct.value.price,
+      if (newProduct.value.bar_code && newProduct.value.amount > 0) {
+        const product: ProductPurchase = {
+          id: newProduct.value.id,
+          bar_code: newProduct.value.bar_code,
+          name: newProduct.value.name,
+          amount: newProduct.value.amount,
+          price_shop: newProduct.value.price_shop,
+          price_sale: newProduct.value.price_sale,
+          taxes: newProduct.value.taxes,
+          discount: newProduct.value.discount,
+          subtotal: newProduct.value.subtotal
         };
-        emit('add', product);
+        products.value.push(product);
+        emit('enviarProductos', products.value);
         resetNewProduct();
       }
     };
@@ -261,63 +285,79 @@ export default defineComponent({
         if (result.isConfirmed) {
           products.value.splice(index, 1);
           emit('eliminar', index);
+          emit('enviarProductos', products.value);
         }
       });
     };
 
     const resetNewProduct = () => {
       newProduct.value = {
-        product: null,
-        quantity: 1,
-        price: 0,
-        subtotal: 0,
+        id: '',
+        bar_code: '',
+        name: '',
+        amount: 0,
+        price_shop: 0,
+        price_sale: 0,
+        taxes: 0,
+        discount: 0,
+        subtotal: 0
       };
       barCode.value = null;
+      percentGain.value = 0;
     };
 
-    const calculateSubtotal = computed(() => {
-      if (newProduct.value.product && newProduct.value.quantity > 0) {
-        return newProduct.value.quantity * newProduct.value.price;
+    const calculateSubtotal = () => {
+      if (newProduct.value.amount > 0 && newProduct.value.price_shop > 0) {
+        newProduct.value.subtotal = newProduct.value.amount * newProduct.value.price_shop;
       }
-      return 0;
-    });
+    };
 
     const calculateUtilitiesByShop = () => {
-      if (percentGain.value > 0 && newProduct.value.price > 0) {
-        let precio_venta: number = newProduct.value.price * (1 + percentGain.value / 100);
-        let precio = REDONDEAR(precio_venta, -2);
-        newProduct.value.price = precio;
+      if (percentGain.value > 0 && newProduct.value.price_shop > 0) {
+        let precio_venta: number = newProduct.value.price_shop * (1 + percentGain.value / 100);
+        newProduct.value.price_sale = REDONDEAR(precio_venta, -2);
       }
-      newProduct.value.subtotal = calculateSubtotal.value;
+      calculateSubtotal();
     };
 
     const enterGains = () => {
-      if (percentGain.value >= 0 && newProduct.value.price > 0) {
-        let precio_venta: number = newProduct.value.price * (1 + percentGain.value / 100);
-        let precio = REDONDEAR(precio_venta, -2);
-        newProduct.value.price = precio;
+      if (percentGain.value >= 0 && newProduct.value.price_shop > 0) {
+        let precio_venta: number = newProduct.value.price_shop * (1 + percentGain.value / 100);
+        newProduct.value.price_sale = REDONDEAR(precio_venta, -2);
+        calculateSubtotal();
       }
     };
 
     const enterSale = () => {
-      if (Number(newProduct.value.price) >= Number(newProduct.value.price)) {
-        const porGanancia: number = ((Number(newProduct.value.price) - Number(newProduct.value.price)) / Number(newProduct.value.price)) * 100;
+      if (newProduct.value.price_sale >= newProduct.value.price_shop) {
+        const porGanancia: number = ((newProduct.value.price_sale - newProduct.value.price_shop) / newProduct.value.price_shop) * 100;
         percentGain.value = Math.trunc(porGanancia);
       } else {
         percentGain.value = 0;
       }
+      calculateSubtotal();
     };
 
     const selectProduct = (product: Product) => {
-      newProduct.value.product = product;
-      newProduct.value.price = product.price;
-      newProduct.value.quantity = 1;
-      newProduct.value.subtotal = calculateSubtotal.value;
+      newProduct.value = {
+        id: product.id,
+        bar_code: product.bar_code,
+        name: product.name,
+        amount: 1,
+        price_shop: product.price_shop || 0,
+        price_sale: product.price_sale || 0,
+        taxes: 0,
+        discount: 0,
+        subtotal: product.price_shop || 0
+      };
+      barCode.value = product.bar_code;
+      calculateSubtotal();
     };
 
     const update = (data: { compra: IProductoCompra; indice: number }) => {
-      products.value[data.indice] = data.compra;
+      products.value[data.indice] = data.compra as ProductPurchase;
       emit('anular', data.indice);
+      emit('enviarProductos', products.value);
       showEditPurchase.value = false;
     };
 
@@ -328,7 +368,7 @@ export default defineComponent({
     });
 
     watch(() => props.compras, (newVal) => {
-      products.value = newVal;
+      products.value = [...newVal];
     });
 
     watch(() => props.eliminarDatos, () => {
@@ -348,7 +388,9 @@ export default defineComponent({
       percentGain,
       barCode,
       errorCodigo,
+      showBuscarProducto,
       validarProd,
+      findProduct,
       addProduct,
       deleteItem,
       resetNewProduct,

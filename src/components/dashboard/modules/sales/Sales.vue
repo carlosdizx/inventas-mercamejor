@@ -13,7 +13,13 @@
       <v-col cols="12" md="6">
         <v-row>
           <v-col>
-            <ItemsList ref="ItemsList" />
+            <ItemsList 
+              :items="productos" 
+              @update="updateProduct"
+              @delete="deleteProduct"
+              @reset="resetProducts"
+              ref="ItemsList" 
+            />
           </v-col>
         </v-row>
       </v-col>
@@ -24,7 +30,7 @@
 <script lang="ts">
 import SalesForm from "@/components/dashboard/modules/sales/components/SalesForm.vue";
 import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList.vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { CONSULT_ALL_PRODUCT } from "@/UseCases/ProductosUseCases";
@@ -39,29 +45,34 @@ import notFoundSound from "@/assets/audios/not_found_product.mp3";
 export default defineComponent({
   name: "Sales",
   components: { SalesForm, ItemsList },
-  data: () => ({
-    productos: [],
-    productsDatabase: [] as Array<ProductToList>,
-    audio: new Audio(),
-    add: addSound,
-    notFound: notFoundSound,
-  }),
-  methods: {
-    async buscarProducto(codigo_barras: string) {
-      const producto = this.productsDatabase.find(
+  setup() {
+    const productos = ref<ProductSale[]>([]);
+    const productsDatabase = ref<ProductToList[]>([]);
+    const audio = new Audio();
+    const add = addSound;
+    const notFound = notFoundSound;
+
+    const buscarProducto = async (codigo_barras: string) => {
+      const producto = productsDatabase.value.find(
         (p: ProductToList) => p.bar_code === codigo_barras
       );
-      const formVentas: any = this.$refs.SalesForm;
       if (producto) {
-        const listado: any = this.$refs.ItemsList;
-        listado.agregarProducto(producto);
-        formVentas.resetProduct();
-        // this.audio.src = this.add;
-        // await this.audio.play();
+        const newProduct: ProductSale = {
+          bar_code: producto.bar_code,
+          name: producto.name,
+          amount: 1,
+          shop_price: producto.unit_price,
+          sale_price: producto.sale_price,
+          taxes: 0,
+          discount: 0,
+          subtotal: producto.sale_price,
+        };
+        productos.value.push(newProduct);
+        // audio.src = add;
+        // await audio.play();
       } else {
-        // this.audio.src = this.notFound;
-        // await this.audio.play();
-        formVentas.resetProduct();
+        // audio.src = notFound;
+        // await audio.play();
         await Swal.fire({
           title: "Producto no encontrado",
           timer: 1000,
@@ -69,50 +80,50 @@ export default defineComponent({
           showConfirmButton: false,
         });
       }
-    },
-    registerProduct(product: any) {
-      const listado: any = this.$refs.ItemsList;
-      const formVentas: any = this.$refs.SalesForm;
+    };
 
-      listado.addProductNotRegister(product);
-      formVentas.resetProductNotRegister();
-    },
-    async generarFactura(sale: Sale) {
-      const datos: any = this.$refs.ItemsList;
-      const formVentas: any = this.$refs.SalesForm;
-      const productos: ProductSale[] = datos.darItemsFactura().productos;
-      const newProducts: ProductSale[] = productos.map((e: ProductSale) => {
-        return {
-          bar_code: e.bar_code,
-          name: e.name,
-          amount: e.amount,
-          shop_price: e.shop_price,
-          sale_price: e.sale_price,
-          taxes: 0,
-          discount: 0,
-          subtotal: e.subtotal,
-        } as ProductSale;
-      });
-      if (productos.length > 0) {
-        sale.sales = [...newProducts];
-        let subtotal = 0;
-        let descuento = 0;
-        let total = 0;
-        for (const temp of productos) {
-          subtotal += temp.subtotal;
-          descuento += temp.discount * temp.amount;
-          total = subtotal - descuento;
-        }
+    const registerProduct = (product: any) => {
+      const newProduct: ProductSale = {
+        bar_code: "",
+        name: product.description,
+        amount: 1,
+        shop_price: 0,
+        sale_price: Number(product.price),
+        taxes: 0,
+        discount: 0,
+        subtotal: Number(product.price),
+      };
+      productos.value.push(newProduct);
+    };
+
+    const updateProduct = (updatedProduct: ProductSale) => {
+      const index = productos.value.findIndex(p => p.bar_code === updatedProduct.bar_code);
+      if (index !== -1) {
+        productos.value[index] = updatedProduct;
+      }
+    };
+
+    const deleteProduct = (product: ProductSale) => {
+      productos.value = productos.value.filter(p => p.bar_code !== product.bar_code);
+    };
+
+    const resetProducts = () => {
+      productos.value = [];
+    };
+
+    const generarFactura = async (sale: Sale) => {
+      if (productos.value.length > 0) {
+        sale.sales = [...productos.value];
+        const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
         sale.total = total;
         sale.subtotal = total;
-        this.print({ ...sale });
+        print({ ...sale });
         await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
           return;
         }
-        datos.resetValues();
-        formVentas.resetDatosVenta();
+        resetProducts();
       } else {
         await Swal.fire({
           title: "Sin productos",
@@ -122,33 +133,12 @@ export default defineComponent({
           showConfirmButton: false,
         });
       }
-    },
-    async saveSaleWithoutInvoice(sale: Sale) {
-      const datos: any = this.$refs.ItemsList;
-      const formVentas: any = this.$refs.SalesForm;
-      const productos: ProductSale[] = datos.darItemsFactura().productos;
-      const newProducts: ProductSale[] = productos.map((e: ProductSale) => {
-        return {
-          bar_code: e.bar_code,
-          name: e.name,
-          amount: e.amount,
-          shop_price: e.shop_price,
-          sale_price: e.sale_price,
-          taxes: 0,
-          discount: 0,
-          subtotal: e.subtotal,
-        } as ProductSale;
-      });
-      if (productos.length > 0) {
-        sale.sales = [...newProducts];
-        let subtotal = 0;
-        let descuento = 0;
-        let total = 0;
-        for (const temp of productos) {
-          subtotal += temp.subtotal;
-          descuento += temp.discount * temp.amount;
-          total = subtotal - descuento;
-        }
+    };
+
+    const saveSaleWithoutInvoice = async (sale: Sale) => {
+      if (productos.value.length > 0) {
+        sale.sales = [...productos.value];
+        const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
         sale.total = total;
         sale.subtotal = total;
         await REGISTER_NEW_SALE({ ...sale });
@@ -156,8 +146,7 @@ export default defineComponent({
         if (typeof consecutivo === "boolean") {
           return;
         }
-        datos.resetValues();
-        formVentas.resetDatosVenta();
+        resetProducts();
         await Swal.fire({
           title: "Registro exitoso",
           icon: "success",
@@ -173,8 +162,9 @@ export default defineComponent({
           showConfirmButton: false,
         });
       }
-    },
-    print(sale: Sale) {
+    };
+
+    const print = (sale: Sale) => {
       const ventanaImpresion = window.open("", "_blank");
       if (ventanaImpresion) {
         const contenidoImprimir = generatePageToPrint(
@@ -191,11 +181,27 @@ export default defineComponent({
       } else {
         console.error("No se pudo abrir la ventana de impresión");
       }
-    },
-  },
-  async created() {
-    this.productsDatabase = await CONSULT_ALL_PRODUCT();
-  },
+    };
+
+    const init = async () => {
+      productsDatabase.value = await CONSULT_ALL_PRODUCT();
+    };
+
+    init();
+
+    return {
+      productos,
+      productsDatabase,
+      buscarProducto,
+      registerProduct,
+      updateProduct,
+      deleteProduct,
+      resetProducts,
+      generarFactura,
+      saveSaleWithoutInvoice,
+      print
+    };
+  }
 });
 </script>
 

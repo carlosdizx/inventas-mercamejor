@@ -4,171 +4,148 @@
       >Registrar Compra</v-card-title
     >
     <v-card-title class="mr-5 ml-5" v-else>Anular Compra</v-card-title>
-    <ValidationObserver ref="observer" v-slot="{ invalid }">
-      <v-form>
-        <v-card-text>
-          <v-row class="mr-5 ml-5">
-            <v-col cols="6">
-              <v-text-field
-                :disabled="anular"
-                label="NIT/Cédula proveedor"
-                append-outer-icon="mdi-magnify"
-                @click:append-outer="showClients = true"
-                v-model="doc_proveedor"
-                @input="buscarProveedor()"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-            <BuscarElemento
-              :show="showClients"
-              @getItem="seleccionarProveedor"
-              @closeElement="showClients = false"
-              nombre="Proveedores"
-              :items="proveedores"
-              :headers="columnas"
-            />
-            <v-col cols="6">
-              <v-text-field
-                :disabled="anular"
-                label="Nombre del proveedor"
-                v-model="nombresProveedor"
-                readonly
-                dense
-                outlined
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row class="mr-5 ml-5">
-            <v-col cols="4">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Tipo de Pago"
-                rules="required"
-              >
-                <v-select
-                  :disabled="anular"
-                  label="Tipo de Pago"
-                  v-model="shop.type_pay"
-                  :error-messages="errors"
-                  :items="payTypes"
-                  outlined
-                  dense
-                ></v-select>
-              </validation-provider>
-            </v-col>
-            <v-col cols="4">
-              <validation-provider
-                v-slot="{ errors }"
-                name="Fecha de Compra"
-                rules="required"
-              >
+    <v-form @submit.prevent="handleSubmit(onSubmit)">
+      <v-card-text>
+        <v-row class="mr-5 ml-5">
+          <v-col cols="6">
+            <v-text-field
+              :disabled="anular"
+              label="NIT/Cédula proveedor"
+              append-outer-icon="mdi-magnify"
+              @click:append-outer="showClients = true"
+              v-model="doc_proveedor"
+              @input="buscarProveedor()"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <BuscarElemento
+            :show="showClients"
+            @getItem="seleccionarProveedor"
+            @closeElement="showClients = false"
+            nombre="Proveedores"
+            :items="proveedores"
+            :headers="columnas"
+          />
+          <v-col cols="6">
+            <v-text-field
+              :disabled="anular"
+              label="Nombre del proveedor"
+              v-model="nombresProveedor"
+              readonly
+              dense
+              outlined
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mr-5 ml-5">
+          <v-col cols="4">
+            <v-select
+              :disabled="anular"
+              label="Tipo de Pago"
+              v-model="typePay"
+              :error-messages="typePayError"
+              :items="payTypes"
+              outlined
+              dense
+            ></v-select>
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              :disabled="anular"
+              label="Fecha de Compra"
+              v-model="purchaseDate"
+              :error-messages="purchaseDateError"
+              type="date"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col cols="4">
+            <v-row>
+              <v-col cols="8">
                 <v-text-field
                   :disabled="anular"
-                  label="Fecha de Compra"
-                  v-model="fec_documento"
-                  :error-messages="errors"
-                  type="date"
+                  type="number"
+                  label="Número de Factura"
+                  v-model="invoiceNumber"
+                  :error-messages="invoiceNumberError"
                   outlined
                   dense
                 ></v-text-field>
-              </validation-provider>
-            </v-col>
-            <v-col cols="4">
-              <v-row>
-                <v-col cols="8">
-                  <validation-provider
-                    v-slot="{ errors }"
-                    name="Número de Factura"
-                    rules="required"
-                  >
-                    <v-text-field
-                      :disabled="anular"
-                      type="number"
-                      label="Número de Factura"
-                      v-model="shop.cod_purchase"
-                      :error-messages="errors"
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </validation-provider>
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    disabled
-                    dense
-                    :value="'C-' + shop.cod_purchase"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row class="mr-5 ml-5">
-            <v-col v-if="false">
-              <v-text-field
-                :disabled="anular"
-                label="Fecha de pago"
-                type="date"
-                v-model="fecha_pago"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-            <v-col v-if="false">
-              <v-text-field
-                :disabled="anular"
-                label="Fecha de llegada del producto"
-                type="date"
-                v-model="fecha_llegada"
-                outlined
-                dense
-              ></v-text-field>
-            </v-col>
-          </v-row>
-          <TablaCompras
-            :anular="anular"
-            :compras="shop.sales"
-            @enviarProductos="actualizarProductos"
-            :eliminarDatos="eliminarDatos"
-          />
-          <v-row class="mr-5 ml-5">
-            <v-col class="text-center">
-              <h2 class="text-gray">Total: ${{ shop.total }}</h2>
-            </v-col>
-          </v-row>
-          <v-row class="mr-5 ml-5" v-if="!compraAnterior">
-            <v-col>
-              <v-btn
-                @click="registrarCompra()"
-                :disabled="shop.sales.length == 0"
-                color="color_a mb-3"
-                x-large
-                block
-                >Registrar</v-btn
-              >
-            </v-col>
-          </v-row>
-          <v-row class="mr-5 ml-5" v-if="compraAnterior">
-            <v-col>
-              <v-btn @click="anularCompar()" x-large dark color="gray" block
-                >Anular Compra</v-btn
-              >
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-form>
-      <v-col v-if="!invalid">.</v-col>
-    </ValidationObserver>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  disabled
+                  dense
+                  :value="'C-' + invoiceNumber"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row class="mr-5 ml-5">
+          <v-col v-if="false">
+            <v-text-field
+              :disabled="anular"
+              label="Fecha de pago"
+              type="date"
+              v-model="fecha_pago"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+          <v-col v-if="false">
+            <v-text-field
+              :disabled="anular"
+              label="Fecha de llegada del producto"
+              type="date"
+              v-model="fecha_llegada"
+              outlined
+              dense
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <TablaCompras
+          :anular="anular"
+          :compras="shop.sales"
+          @enviarProductos="actualizarProductos"
+          :eliminarDatos="eliminarDatos"
+        />
+        <v-row class="mr-5 ml-5">
+          <v-col class="text-center">
+            <h2 class="text-gray">Total: ${{ shop.total }}</h2>
+          </v-col>
+        </v-row>
+        <v-row class="mr-5 ml-5" v-if="!compraAnterior">
+          <v-col>
+            <v-btn
+              type="submit"
+              :disabled="shop.sales.length == 0"
+              color="color_a mb-3"
+              x-large
+              block
+              >Registrar</v-btn
+            >
+          </v-col>
+        </v-row>
+        <v-row class="mr-5 ml-5" v-if="compraAnterior">
+          <v-col>
+            <v-btn @click="anularCompar()" x-large dark color="gray" block
+              >Anular Compra</v-btn
+            >
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-form>
   </v-card>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-
+import { useField, useForm } from 'vee-validate';
 import { COLUMNAS } from "@/models/Proveedor";
-
 import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-
 import TablaCompras from "@/components/dashboard/modules/shops/shop/TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { Purchase } from "@/domain/model/purchase/Purchase";
@@ -181,7 +158,6 @@ import {
   EEstatePurchase,
   EPayTypePurchase,
 } from "@/domain/model/constants/Constants";
-
 import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito, ETypesShop } from "@/generals/Constantes";
@@ -190,14 +166,42 @@ export default defineComponent({
   name: "RegistroCompras",
   components: {
     TablaCompras,
-    BuscarElemento,
+    BuscarElemento
   },
   props: {
     compraAnterior: {
       type: Object as PropType<Purchase>,
     },
-    idcompraanterior: String,
+    idcompraanterior: {
+      type: String,
+      required: false,
+      default: ''
+    },
     anular: Boolean,
+  },
+  setup(props) {
+    const { handleSubmit, resetForm } = useForm();
+    const { value: typePay, errorMessage: typePayError } = useField<EPayTypePurchase>('type_pay', 'required');
+    const { value: purchaseDate, errorMessage: purchaseDateError } = useField('purchase_date', 'required');
+    const { value: invoiceNumber, errorMessage: invoiceNumberError } = useField('invoice_number', 'required');
+
+    const onSubmit = async () => {
+      if (props.idcompraanterior) {
+        await CANCEL_PURCHASE(props.idcompraanterior);
+      }
+    };
+
+    return {
+      typePay,
+      typePayError,
+      purchaseDate,
+      purchaseDateError,
+      invoiceNumber,
+      invoiceNumberError,
+      handleSubmit,
+      resetForm,
+      onSubmit
+    };
   },
   data() {
     return {
@@ -212,7 +216,24 @@ export default defineComponent({
       fecha_llegada: "",
       created_at: "",
       updated_at: "",
-      shop: {} as Purchase,
+      shop: {
+        id: "",
+        employee: "",
+        doc_supp: "",
+        nam_supp: "",
+        sur_supp: "",
+        cod_purchase: "",
+        type_pay: EPayTypePurchase.CONTADO,
+        sales: [] as ProductPurchase[],
+        subtotal: 0,
+        discount: 0,
+        taxes: 0,
+        total: 0,
+        state: EEstatePurchase.APROBADO,
+        created_at: new Date(),
+        updated_at: new Date(),
+        cash_register: "",
+      } as Purchase,
       showClients: false,
     };
   },
@@ -318,6 +339,15 @@ export default defineComponent({
       });
     },
     async anularCompar() {
+      if (!this.idcompraanterior) {
+        Swal.fire({
+          title: "Error",
+          text: "No se puede anular la compra sin un ID válido",
+          icon: "error"
+        });
+        return;
+      }
+
       Swal.fire({
         title: "¿Esta seguro de Anular esta compra?",
         showDenyButton: true,

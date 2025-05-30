@@ -21,7 +21,7 @@
         Anular Compra
       </v-btn>
     </div>
-    <RegistroCompras v-if="currentTab === 1" />
+    <RegistroCompras v-if="currentTab === 1" :idcompraanterior="''" />
     <ConsultarCompras v-if="currentTab === 2" />
     <AnularCompra v-if="currentTab === 3" />
   </div>

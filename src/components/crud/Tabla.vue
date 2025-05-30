@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="elevation-5" :color="color">
+    <v-card class="elevation-5" color="primary">
       <v-card-title class="white--text">Listado de {{ titulo }} </v-card-title>
       <v-card-text>
         <v-data-table
@@ -80,7 +80,6 @@
           <template v-if="campos_form" v-slot:item.detalle="{ item }">
             <FormView
               :campos_form="campos_form"
-              v-if="campos_form"
               :item="item"
             />
           </template>
@@ -251,105 +250,96 @@ export default defineComponent({
   setup(props, { emit }) {
     const router = useRouter();
     const buscado = ref("");
-    const filas = ref([""]);
-
-    const filtrarPorLlave = (valor: any, buscado: any): boolean => {
-      if (typeof valor === "string" && typeof buscado === "string") {
-        if (buscado.trim().length !== 0) {
-          return (
-            valor
-              .toString()
-              .toLocaleUpperCase()
-              .indexOf(buscado.toUpperCase()) !== -1
-          );
-        }
-      }
-      return false;
-    };
+    const filas = ref([]);
+    const cargando = ref(false);
 
     const cargarInformacion = async () => {
-      filas.value = [];
-      (await LISTAR(props.coleccion)).forEach((item) => {
-        const obj: any = JSON.parse(JSON.stringify(item.data()));
-        obj.id = item.id;
-        Object.values(obj).map(async (value: any, index: number) => {
-          if (typeof value === "object" && value) {
-            value = await tipo_dato(value);
-            const key: string = Object.keys(obj)[index].toString();
-            obj[key] = value;
-          }
+      cargando.value = true;
+      try {
+        const datos = await LISTAR(props.coleccion);
+        filas.value = datos.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+      } catch (error) {
+        console.error('Error loading data:', error);
+        Swal.fire({
+          title: "Error",
+          text: "Error al cargar los datos",
+          icon: "error"
         });
-        filas.value.push(obj);
-      });
-    };
-
-    const cargarInformacionConsulta = async () => {
-      filas.value = [];
-      (await CONSULTA_DATOS(props.coleccion, props.consulta)).forEach((item) => {
-        const obj: any = JSON.parse(JSON.stringify(item.data()));
-        obj.id = item.id;
-        Object.values(obj).map(async (value: any, index: number) => {
-          if (typeof value === "object" && value) {
-            value = await tipo_dato(value);
-            const key: string = Object.keys(obj)[index].toString();
-            obj[key] = value;
-          }
-        });
-        filas.value.push(obj);
-      });
-    };
-
-    const eliminar = async (objeto: any) => {
-      Swal.fire({
-        title: "¿Desea eliminar el registro?",
-        showDenyButton: true,
-        confirmButtonText: "Eliminar",
-        confirmButtonColor: "green",
-        denyButtonText: `No aún no!`,
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          await ELIMINAR(props.coleccion, objeto);
-          filas.value = [];
-          await cargarInformacion();
-          await Swal.fire({
-            title: "Eliminado!",
-            icon: "success",
-            timer: 1000,
-            showConfirmButton: false,
-          });
-        }
-      });
-    };
-
-    const seleccionar = (objeto: any) => {
-      emit("getItem", objeto);
+      } finally {
+        cargando.value = false;
+      }
     };
 
     const forzarRecarga = () => {
-      router.go(0);
+      cargarInformacion();
     };
 
-    const enviarSeleccionado = (objeto: any) => {
-      emit("enviarSeleccionado", objeto);
+    const filtrarPorLlave = (value: any, search: string, item: any) => {
+      if (!search) return true;
+      const searchLower = search.toLowerCase();
+      return Object.keys(item).some(key => {
+        const value = item[key];
+        if (typeof value === 'string') {
+          return value.toLowerCase().includes(searchLower);
+        }
+        return false;
+      });
     };
 
-    onMounted(async () => {
-      if (!props.consulta) {
-        await cargarInformacion();
-      } else {
-        await cargarInformacionConsulta();
-      }
+    const eliminar = async (item: any) => {
+      Swal.fire({
+        title: "¿Esta seguro de Eliminar este item?",
+        showDenyButton: true,
+        confirmButtonColor: "red",
+        confirmButtonText: "Eliminar",
+        denyButtonColor: "green",
+        denyButtonText: `Cancelar`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await ELIMINAR(props.coleccion, item.id);
+            await cargarInformacion();
+            Swal.fire({
+              title: "Éxito",
+              text: "Item eliminado correctamente",
+              icon: "success"
+            });
+          } catch (error) {
+            console.error('Error deleting item:', error);
+            Swal.fire({
+              title: "Error",
+              text: "Error al eliminar el item",
+              icon: "error"
+            });
+          }
+        }
+      });
+    };
+
+    const seleccionar = (item: any) => {
+      emit('getItem', item);
+    };
+
+    const enviarSeleccionado = (item: any) => {
+      emit('enviarSeleccionado', item);
+    };
+
+    onMounted(() => {
+      cargarInformacion();
     });
 
     return {
       buscado,
       filas,
-      filtrarPorLlave,
+      cargando,
       cargarInformacion,
-      cargarInformacionConsulta,
+      forzarRecarga,
+      filtrarPorLlave,
       eliminar,
       seleccionar,
-      forzarRecarga,
       enviarSeleccionado
     };
   }
