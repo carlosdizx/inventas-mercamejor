@@ -21,12 +21,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
 import BillToCharge from "./charge/BillToCharge.vue";
 import BillToChargeList from "./list/BillToChargeList.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "BillToChargeOption",
   components: { BillToCharge, BillToChargeList },
   data: () => ({

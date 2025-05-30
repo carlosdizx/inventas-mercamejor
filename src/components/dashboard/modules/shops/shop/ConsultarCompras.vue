@@ -102,12 +102,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { Purchase } from "@/domain/model/purchase/Purchase";
 import { COMPRAS_CONSULTA } from "@/models/ElementoCompra";
 import { CONSULTAR_COMPRAS } from "@/services/consultas";
-import Vue from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ConsultarCompras",
   data: () => ({
     headers: COMPRAS_CONSULTA,

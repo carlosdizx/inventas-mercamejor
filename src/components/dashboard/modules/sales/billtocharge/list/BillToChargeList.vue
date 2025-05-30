@@ -70,12 +70,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { Transaction } from "@/domain/model/transaction/Transaction";
 import { LIST_TRANSACTION_BY_CLIENT } from "@/domain/useCase/transactionUseCase/transactionUseCase";
-import Vue from "vue";
 import Swal from "sweetalert2";
 
-export default Vue.extend({
+export default defineComponent({
   name: "BillToCharge",
   data: () => ({
     docClient: "",

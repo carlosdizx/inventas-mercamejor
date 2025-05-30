@@ -183,41 +183,77 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { CONSULTA_DATOS, ELIMINAR, LISTAR } from "@/services/crud";
-import Swal from "sweetalert2";
+import { defineComponent, ref, computed, onMounted, PropType } from 'vue';
+import { useRouter } from 'vue-router';
+import { mapState } from 'vuex';
+import FormCreate from "./FormCreate.vue";
+import FormEdit from "./FormEdit.vue";
+import FormView from "./FormView.vue";
+import { LISTAR } from "@/generals/Funciones";
+import { CONSULTA_DATOS, ELIMINAR } from "@/services/crud";
 import { tipo_dato } from "@/generals/formats";
-import FormCreate from "@/components/crud/FormCreate.vue";
-import FormEdit from "@/components/crud/FormEdit.vue";
-import FormView from "@/components/crud/FormView.vue";
-import { mapState } from "vuex";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   name: "Tabla",
   components: { FormCreate, FormEdit, FormView },
-  data: () => ({
-    buscado: "",
-    filas: [""],
-  }),
-  computed: {
-    ...mapState(["color"]),
-  },
   props: {
-    coleccion: String,
-    titulo: String,
-    columnas: Array,
-    llave: String,
-    elimacion: Boolean,
-    seleccion: Boolean,
-    campos_form: Array,
-    validaciones: Array,
-    roles: Array,
-    noCrear: Boolean,
-    NoEditar: Boolean,
-    consulta: Array,
+    coleccion: {
+      type: String,
+      required: true
+    },
+    titulo: {
+      type: String,
+      required: true
+    },
+    columnas: {
+      type: Array,
+      required: true
+    },
+    llave: {
+      type: String,
+      required: true
+    },
+    elimacion: {
+      type: Boolean,
+      default: false
+    },
+    seleccion: {
+      type: Boolean,
+      default: false
+    },
+    campos_form: {
+      type: Array,
+      default: () => []
+    },
+    validaciones: {
+      type: Array,
+      default: () => []
+    },
+    roles: {
+      type: Array,
+      default: () => []
+    },
+    noCrear: {
+      type: Boolean,
+      default: false
+    },
+    NoEditar: {
+      type: Boolean,
+      default: false
+    },
+    consulta: {
+      type: Array,
+      default: () => []
+    }
   },
-  methods: {
-    filtrarPorLlave(valor: any, buscado: any): boolean {
+  emits: ['getItem', 'enviarSeleccionado'],
+  setup(props, { emit }) {
+    const router = useRouter();
+    const buscado = ref("");
+    const filas = ref([""]);
+
+    const filtrarPorLlave = (valor: any, buscado: any): boolean => {
       if (typeof valor === "string" && typeof buscado === "string") {
         if (buscado.trim().length !== 0) {
           return (
@@ -229,10 +265,11 @@ export default defineComponent({
         }
       }
       return false;
-    },
-    async cargarInformacion() {
-      this.filas = [];
-      (await LISTAR(this.coleccion)).forEach((item) => {
+    };
+
+    const cargarInformacion = async () => {
+      filas.value = [];
+      (await LISTAR(props.coleccion)).forEach((item) => {
         const obj: any = JSON.parse(JSON.stringify(item.data()));
         obj.id = item.id;
         Object.values(obj).map(async (value: any, index: number) => {
@@ -242,12 +279,13 @@ export default defineComponent({
             obj[key] = value;
           }
         });
-        this.filas.push(obj);
+        filas.value.push(obj);
       });
-    },
-    async cargarInformacionConsulta() {
-      this.filas = [];
-      (await CONSULTA_DATOS(this.coleccion, this.consulta)).forEach((item) => {
+    };
+
+    const cargarInformacionConsulta = async () => {
+      filas.value = [];
+      (await CONSULTA_DATOS(props.coleccion, props.consulta)).forEach((item) => {
         const obj: any = JSON.parse(JSON.stringify(item.data()));
         obj.id = item.id;
         Object.values(obj).map(async (value: any, index: number) => {
@@ -257,10 +295,11 @@ export default defineComponent({
             obj[key] = value;
           }
         });
-        this.filas.push(obj);
+        filas.value.push(obj);
       });
-    },
-    async eliminar(objeto: any) {
+    };
+
+    const eliminar = async (objeto: any) => {
       Swal.fire({
         title: "¿Desea eliminar el registro?",
         showDenyButton: true,
@@ -269,9 +308,9 @@ export default defineComponent({
         denyButtonText: `No aún no!`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await ELIMINAR(this.coleccion, objeto);
-          this.filas = [];
-          await this.cargarInformacion();
+          await ELIMINAR(props.coleccion, objeto);
+          filas.value = [];
+          await cargarInformacion();
           await Swal.fire({
             title: "Eliminado!",
             icon: "success",
@@ -280,23 +319,39 @@ export default defineComponent({
           });
         }
       });
-    },
-    seleccionar(objeto: any) {
-      this.$emit("getItem", objeto);
-    },
-    forzarRecarga() {
-      this.$router.go(0);
-    },
-    enviarSeleccionado(objeto: any) {
-      this.$emit("enviarSeleccionado", objeto);
-    },
-  },
-  async created() {
-    if (!this.consulta) {
-      await this.cargarInformacion();
-    } else {
-      await this.cargarInformacionConsulta();
-    }
-  },
+    };
+
+    const seleccionar = (objeto: any) => {
+      emit("getItem", objeto);
+    };
+
+    const forzarRecarga = () => {
+      router.go(0);
+    };
+
+    const enviarSeleccionado = (objeto: any) => {
+      emit("enviarSeleccionado", objeto);
+    };
+
+    onMounted(async () => {
+      if (!props.consulta) {
+        await cargarInformacion();
+      } else {
+        await cargarInformacionConsulta();
+      }
+    });
+
+    return {
+      buscado,
+      filas,
+      filtrarPorLlave,
+      cargarInformacion,
+      cargarInformacionConsulta,
+      eliminar,
+      seleccionar,
+      forzarRecarga,
+      enviarSeleccionado
+    };
+  }
 });
 </script>

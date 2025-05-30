@@ -8,7 +8,7 @@
         v-for="(subitem, subindex) of item.items"
         :key="subindex"
         link
-        @click="enviarId(subitem.id)"
+        @click="navegarA(subitem.id)"
       >
         <v-icon>{{ subitem.icono }}</v-icon>
         <v-list-item-title>{{ subitem.titulo }}</v-list-item-title>
@@ -22,20 +22,60 @@ import { defineComponent } from "vue";
 import { FUNCIONES_DASHBOARD } from "@/generals/funcionalidades_dashboard";
 import { ASIGNAR_ITEMS_DASHBOARD } from "@/generals/procesamientos";
 import { OBTENER_ROL } from "@/services/usuarios";
+import { useRouter } from 'vue-router';
+
+interface MenuItem {
+  id: number;
+  icono: string;
+  titulo: string;
+  roles: string[];
+}
+
+interface MenuSection {
+  titulo: string;
+  roles: string[];
+  items: MenuItem[];
+}
 
 export default defineComponent({
   name: "ListadoFunciones",
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data: () => ({
-    lista: [{}],
+    lista: [] as MenuSection[],
   }),
   async created() {
     const rol = await OBTENER_ROL();
     this.lista = ASIGNAR_ITEMS_DASHBOARD(FUNCIONES_DASHBOARD, rol);
   },
   methods: {
-    enviarId(id: number) {
-      this.$emit("item", id);
-    },
+    navegarA(id: number) {
+      const rutas: { [key: number]: string } = {
+        1: '/comprar',
+        2: '/proveedores',
+        3: '/cuentas-por-pagar',
+        4: '/vender',
+        5: '/consultar-ventas',
+        6: '/clientes',
+        7: '/cuentas-por-cobrar',
+        8: '/productos',
+        9: '/categorias',
+        10: '/marcas',
+        11: '/bodegas',
+        12: '/movimientos',
+        13: '/registro-empleados',
+        14: '/actualizar-empleados',
+        15: '/cajas',
+        16: '/movimientos',
+        17: '/comprobantes'
+      };
+
+      if (rutas[id]) {
+        this.router.push(rutas[id]);
+      }
+    }
   },
 });
 </script>

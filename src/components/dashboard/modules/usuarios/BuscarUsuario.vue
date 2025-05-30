@@ -62,9 +62,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { LISTAR_EMPLEADOS } from "@/services/usuarios";
-import Vue from "vue";
-export default Vue.extend({
+export default defineComponent({
   name: "BuscarUsuario",
   data: () => ({
     dialog: false,

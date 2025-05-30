@@ -15,6 +15,58 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiereAuth: true,
     },
+    children: [
+      {
+        path: "consultar-ventas",
+        name: "ConsultarVentas",
+        component: () => import("../components/dashboard/modules/sales/consultsales/ConsultSales.vue"),
+      },
+      {
+        path: "cuadre-cuentas",
+        name: "CuadreCuentas",
+        component: () => import("../components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue"),
+      },
+      {
+        path: "productos",
+        name: "Productos",
+        component: () => import("../components/dashboard/modules/Productos.vue"),
+      },
+      {
+        path: "categorias",
+        name: "Categorias",
+        component: () => import("../components/dashboard/modules/Categorias.vue"),
+      },
+      {
+        path: "marcas",
+        name: "Marcas",
+        component: () => import("../components/dashboard/modules/Marcas.vue"),
+      },
+      {
+        path: "proveedores",
+        name: "Proveedores",
+        component: () => import("../components/dashboard/modules/Proveedores.vue"),
+      },
+      {
+        path: "clientes",
+        name: "Clientes",
+        component: () => import("../components/dashboard/modules/Clientes.vue"),
+      },
+      {
+        path: "comprar",
+        name: "Comprar",
+        component: () => import("@/components/dashboard/modules/shops/shop/Comprar.vue"),
+      },
+      {
+        path: "cuentas-por-pagar",
+        name: "CuentasPorPagar",
+        component: () => import("../components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue"),
+      },
+      {
+        path: "bodegas",
+        name: "Bodegas",
+        component: () => import("../components/dashboard/modules/Bodegas.vue"),
+      }
+    ]
   },
   {
     path: "/about",

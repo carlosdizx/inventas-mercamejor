@@ -22,11 +22,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import ActualizarCajas from "./cajas/ActualizarCajas.vue";
 import RegistroCajas from "./cajas/RegistroCajas.vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Cajas",
   components: {
     RegistroCajas,

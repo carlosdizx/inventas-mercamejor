@@ -64,10 +64,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { ProductoFactura } from "@/interfaces/ProductoFactura";
-import Vue from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Factura",
   data: () => ({
     dialog: false,

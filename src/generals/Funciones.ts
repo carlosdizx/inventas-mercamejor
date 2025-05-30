@@ -2,6 +2,9 @@ import { BUSCAR, EDITAR, LISTAR, LISTAR_IN } from "@/services/crud";
 import { Empresa } from "@/entity/Empresa";
 import Swal from "sweetalert2";
 
+// Re-export LISTAR function
+export { LISTAR };
+
 export const LISTAR_CATEGORIAS = async () => await LISTAR("categories");
 
 export const LISTAR_SUBCATEGORIAS = async () => await LISTAR("subcategories");

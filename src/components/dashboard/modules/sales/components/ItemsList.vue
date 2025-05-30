@@ -76,7 +76,7 @@
       </v-form>
     </v-card-text>
     <v-container class="d-flex justify-center align-center">
-      <v-data-table :headers="columnas" :items="sales">
+      <v-data-table :headers="headers" :items="items">
         <template v-slot:item.cantidad="{ item }">
           <v-edit-dialog>
             {{ item.cantidad }}
@@ -98,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed, PropType } from 'vue';
 import Swal from "sweetalert2";
 import {
   AGREGAR_PRODUCTO,
@@ -111,6 +111,41 @@ import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default defineComponent({
   name: "ItemsList",
+  props: {
+    items: {
+      type: Array as PropType<Array<ProductSale>>,
+      required: true
+    }
+  },
+  emits: ['update', 'delete'],
+  setup(props, { emit }) {
+    const headers = ref([
+      { text: "Producto", value: "name" },
+      { text: "Cantidad", value: "quantity" },
+      { text: "Precio", value: "price" },
+      { text: "Subtotal", value: "subtotal" },
+      { text: "Acciones", value: "actions" }
+    ]);
+
+    const total = computed(() => {
+      return props.items.reduce((sum, item) => sum + item.subtotal, 0);
+    });
+
+    const updateItem = (index: number, item: ProductSale) => {
+      emit('update', { index, item });
+    };
+
+    const deleteItem = (index: number) => {
+      emit('delete', index);
+    };
+
+    return {
+      headers,
+      total,
+      updateItem,
+      deleteItem
+    };
+  },
   data: () => ({
     total: 0,
     subtotal: 0,

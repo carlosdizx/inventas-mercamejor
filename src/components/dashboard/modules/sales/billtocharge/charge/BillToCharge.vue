@@ -51,14 +51,14 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import {
   CONSULT_BALANCE_BILL_TO_PAY,
   PAYMENT_BILL_TO_PAY,
 } from "@/domain/useCase/billtocharge/billToChargeUseCase";
-import Vue from "vue";
 import Swal from "sweetalert2";
 
-export default Vue.extend({
+export default defineComponent({
   name: "BillToCharge",
   data: () => ({
     docClient: "",

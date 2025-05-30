@@ -33,10 +33,28 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent } from 'vue';
+
+export default defineComponent({
   name: "BuscarElemento",
-  props: ["nombre", "items", "headers", "show"],
+  props: {
+    nombre: {
+      type: String,
+      required: true
+    },
+    items: {
+      type: Array,
+      required: true
+    },
+    headers: {
+      type: Array,
+      required: true
+    },
+    show: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
       search: "",

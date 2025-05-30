@@ -88,22 +88,70 @@
 </template>
 
 <script lang="ts">
-import { LISTAR_PROVEDOORES } from "@/generals/Funciones";
-import Vue from "vue";
-export default Vue.extend({
+import { defineComponent, ref, computed, onMounted, PropType } from 'vue';
+import { Product } from "@/domain/model/product/Product";
+import { LISTAR } from "@/generals/Funciones";
+
+export default defineComponent({
   name: "BuscarProductos",
-  props: ["proveedores"],
-  data: () => ({
-    dialog: false,
-  }),
-  methods: {
-    devolverUsuario(usuario: any, index: number) {
-      this.dialog = false;
-      this.$emit("devolverUsuario", {
-        usuario,
-        ident: this.proveedores[index],
-      });
-    },
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    }
   },
+  emits: ['close', 'select'],
+  setup(props, { emit }) {
+    const search = ref('');
+    const products = ref<Array<Product>>([]);
+    const loading = ref(false);
+
+    const filteredProducts = computed(() => {
+      if (!search.value) return products.value;
+      const searchLower = search.value.toLowerCase();
+      return products.value.filter(product => 
+        product.name.toLowerCase().includes(searchLower) ||
+        product.bar_code.toLowerCase().includes(searchLower)
+      );
+    });
+
+    const loadProducts = async () => {
+      loading.value = true;
+      try {
+        const productsList = await LISTAR("products");
+        products.value = productsList.map(doc => {
+          const data = doc.data() as Product;
+          data.id = doc.id;
+          return data;
+        });
+      } catch (error) {
+        console.error('Error loading products:', error);
+      } finally {
+        loading.value = false;
+      }
+    };
+
+    const selectProduct = (product: Product) => {
+      emit('select', product);
+      emit('close');
+    };
+
+    const closeDialog = () => {
+      emit('close');
+    };
+
+    onMounted(() => {
+      loadProducts();
+    });
+
+    return {
+      search,
+      products,
+      loading,
+      filteredProducts,
+      selectProduct,
+      closeDialog
+    };
+  }
 });
 </script>

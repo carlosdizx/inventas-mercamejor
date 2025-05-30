@@ -163,7 +163,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 
 import { COLUMNAS } from "@/models/Proveedor";
 
@@ -186,7 +186,7 @@ import Swal from "sweetalert2";
 import { getFechaDesdeInput } from "@/generals/formats";
 import { ETiposContadoCredito, ETypesShop } from "@/generals/Constantes";
 
-export default Vue.extend({
+export default defineComponent({
   name: "RegistroCompras",
   components: {
     TablaCompras,

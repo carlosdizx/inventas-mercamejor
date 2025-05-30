@@ -187,13 +187,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { ACTUALIZAR_USUARIO } from "@/services/usuarios";
 import Swal from "sweetalert2";
 import BuscarUsuarioVue from "./BuscarUsuario.vue";
 import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ActualizarUsuarios",
   components: { BuscarUsuarioVue },
   data: () => ({

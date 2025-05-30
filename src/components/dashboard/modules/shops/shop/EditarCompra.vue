@@ -3,7 +3,7 @@
     <v-card class="pt-3">
       <div class="text-center">
         <h1>Editar item de compra</h1>
-        <ValidationObserver ref="observer" v-slot="{ invalid }">
+        <v-form @submit.prevent="actualizarItem">
           <v-simple-table class="ml-3 mt-3">
             <thead>
               <tr>
@@ -37,43 +37,49 @@
                     :items="bodegasDisponibles"
                     item-text="nombre"
                     item-value="nombre"
+                    :rules="[v => !!v || 'La bodega es requerida']"
                   ></v-select>
                 </th>
                 <th>
                   <v-text-field
                     @input="calcularSubtotal()"
                     v-model.number="compra.cantidad"
+                    :rules="[v => v > 0 || 'La cantidad debe ser mayor a 0']"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
                     @input="calcularGananciaPrecioCompra()"
                     v-model.number="compra.prec_com"
+                    :rules="[v => v > 0 || 'El precio de compra debe ser mayor a 0']"
                   ></v-text-field>
                 </th>
-
                 <th>
                   <v-text-field
                     @input="ingresarGanancia()"
                     v-model.number="porGanancia"
+                    :rules="[v => v >= 0 || 'La ganancia no puede ser negativa']"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
                     @input="ingresarVenta()"
-                    v-model.number="compra.prec_com"
+                    v-model.number="compra.prec_ven"
+                    :rules="[v => v >= compra.prec_com || 'El precio de venta debe ser mayor o igual al de compra']"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
                     @input="calcularSubtotal()"
                     v-model.number="compra.impuesto"
+                    :rules="[v => v >= 0 || 'El impuesto no puede ser negativo']"
                   ></v-text-field>
                 </th>
                 <th>
                   <v-text-field
                     @input="calcularSubtotal()"
                     v-model.number="compra.descuento"
+                    :rules="[v => v >= 0 || 'El descuento no puede ser negativo']"
                   ></v-text-field>
                 </th>
                 <th>
@@ -86,108 +92,116 @@
           </v-simple-table>
           <v-btn class="danger" @click="cancelar()">Cancelar</v-btn>
           <v-btn
+            type="submit"
             class="success"
             :disabled="!validarDatos"
-            @click="actualizarItem()"
-            >Actualizar</v-btn
-          >
-          <v-col v-if="!invalid">.</v-col>
-        </ValidationObserver>
+          >Actualizar</v-btn>
+        </v-form>
       </div>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from "vue";
-
-import { IProductoCompra } from "@/models/ProductoCompra";
+import { defineComponent, ref, computed, onMounted, PropType } from 'vue';
+import { Product } from "@/domain/model/product/Product";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 import { REDONDEAR } from "@/generals/procesamientos";
 
-export default Vue.extend({
+export default defineComponent({
   name: "EditarCompra",
   props: {
-    mostrar: Boolean,
-    indexElement: Number,
+    mostrar: {
+      type: Boolean,
+      required: true
+    },
+    indexElement: {
+      type: Number,
+      required: true
+    },
     compraAnterior: {
-      type: Object as PropType<IProductoCompra>,
+      type: Object as PropType<ProductSale>,
+      required: true
     },
-    bodegasDisponibles: Array,
+    bodegasDisponibles: {
+      type: Array,
+      required: true
+    }
   },
-  data: () => ({
-    compra: {} as IProductoCompra,
-    porGanancia: 0,
-  }),
-  computed: {
-    validarDatos() {
+  emits: ['update', 'cancelar'],
+  setup(props, { emit }) {
+    const editedProduct = ref<ProductSale>({ ...props.compraAnterior });
+    const percentGain = ref(0);
+
+    const validarProd = computed(() => {
       if (
-        !this.compra.cod_barras ||
-        !this.compra.descripcion ||
-        !this.compra.bodega ||
-        this.compra.cantidad < 1 ||
-        this.compra.prec_com < 1 ||
-        this.compra.prec_ven < 1 ||
-        this.porGanancia < 0 ||
-        this.compra.subtotal < 0 ||
-        this.compra.prec_ven < this.compra.prec_com
-      )
+        editedProduct.value.quantity >= 1 &&
+        editedProduct.value.price >= 1 &&
+        editedProduct.value.subtotal >= 1
+      ) {
         return false;
+      }
       return true;
-    },
-  },
-  methods: {
-    actualizarItem() {
-      this.$emit("actualizar", {
-        compra: this.compra,
-        indice: this.indexElement,
-      });
-    },
-    cancelar() {
-      this.$emit("cancelar");
-    },
-    calcularGananciaPrecioCompra() {
-      if (this.porGanancia > 0 && this.compra.prec_com > 0) {
-        let precio_venta: number =
-          this.compra.prec_com * (1 + this.porGanancia / 100);
-        let precio = REDONDEAR(precio_venta, -2);
-        this.compra.prec_ven = precio;
+    });
+
+    const calculateSubtotal = () => {
+      if (editedProduct.value.quantity && editedProduct.value.price) {
+        editedProduct.value.subtotal = editedProduct.value.quantity * editedProduct.value.price;
       }
-      this.calcularSubtotal();
-    },
-    calcularSubtotal() {
-      const subtotal: number =
-        this.compra.cantidad * this.compra.prec_com -
-        this.compra.descuento +
-        this.compra.impuesto;
-      this.compra.subtotal = subtotal;
-    },
-    ingresarGanancia() {
-      if (this.porGanancia >= 0 && this.compra.prec_com) {
-        let precio_venta: number =
-          this.compra.prec_com * (1 + this.porGanancia / 100);
+    };
+
+    const calculateUtilitiesByShop = () => {
+      if (percentGain.value > 0 && editedProduct.value.price > 0) {
+        let precio_venta: number = editedProduct.value.price * (1 + percentGain.value / 100);
         let precio = REDONDEAR(precio_venta, -2);
-        this.compra.prec_ven = precio;
+        editedProduct.value.price = precio;
       }
-    },
-    ingresarVenta() {
-      if (Number(this.compra.prec_ven) >= Number(this.compra.prec_com)) {
-        const porGanancia: number =
-          ((Number(this.compra.prec_ven) - Number(this.compra.prec_com)) /
-            Number(this.compra.prec_com)) *
-          100;
-        this.porGanancia = Math.trunc(porGanancia);
+      calculateSubtotal();
+    };
+
+    const enterGains = () => {
+      if (percentGain.value >= 0 && editedProduct.value.price > 0) {
+        let precio_venta: number = editedProduct.value.price * (1 + percentGain.value / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        editedProduct.value.price = precio;
+      }
+    };
+
+    const enterSale = () => {
+      if (Number(editedProduct.value.price) >= Number(editedProduct.value.price)) {
+        const porGanancia: number = ((Number(editedProduct.value.price) - Number(editedProduct.value.price)) / Number(editedProduct.value.price)) * 100;
+        percentGain.value = Math.trunc(porGanancia);
       } else {
-        this.porGanancia = 0;
+        percentGain.value = 0;
       }
-    },
-  },
-  created() {
-    this.compra = { ...this.compraAnterior };
-    this.porGanancia = Math.trunc(
-      ((this.compra.prec_ven - this.compra.prec_com) / this.compra.prec_com) *
-        100
-    );
-    this.calcularGananciaPrecioCompra();
-  },
+    };
+
+    const updateProduct = () => {
+      emit('update', {
+        compra: editedProduct.value,
+        indice: props.indexElement
+      });
+    };
+
+    const cancelar = () => {
+      emit('cancelar');
+    };
+
+    onMounted(() => {
+      calculateSubtotal();
+    });
+
+    return {
+      editedProduct,
+      percentGain,
+      validarProd,
+      calculateSubtotal,
+      calculateUtilitiesByShop,
+      enterGains,
+      enterSale,
+      updateProduct,
+      cancelar
+    };
+  }
 });
 </script>

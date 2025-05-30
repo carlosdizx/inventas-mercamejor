@@ -139,7 +139,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
 import { TIPOS_VENTA } from "@/generals/Constantes";
 import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
@@ -156,10 +156,14 @@ import { ProductSale } from "@/domain/model/productsale/ProductSale";
 export default defineComponent({
   name: "SalesForm",
   components: { DialogClients },
-  data: () => ({
-    enterCount: 0,
-    bar_code: null,
-    sale: {
+  emits: ['codigo_barras', 'wihtout_product_register', 'datos_cliente', 'save_sale_without_factura'],
+  setup(props, { emit }) {
+    const barcodeField = ref(null);
+    const priceField = ref(null);
+    const descripField = ref(null);
+    const enterCount = ref(0);
+    const bar_code = ref(null);
+    const sale = ref({
       doc_client: "",
       nam_client: "Clientes varios",
       sur_client: "",
@@ -176,103 +180,98 @@ export default defineComponent({
       state: EEstateSale.APROBADO,
       created_at: new Date(),
       updated_at: new Date(),
-    } as Sale,
-    productNotRegister: {
+    } as Sale);
+    const productNotRegister = ref({
       price: null,
       description: "",
-    },
-    fecha_pago: FECHA_TO_STRING_INPUT(new Date()),
-    tipos_venta: TIPOS_VENTA,
-    dialog_list: false,
-    enfoque: false,
-  }),
-  methods: {
-    abrirDialogoLisadoClientes() {
-      const dialog: any = this.$refs.DialogClients;
+    });
+    const fecha_pago = ref(FECHA_TO_STRING_INPUT(new Date()));
+    const tipos_venta = ref(TIPOS_VENTA);
+    const dialog_list = ref(false);
+    const enfoque = ref(false);
+
+    const abrirDialogoLisadoClientes = () => {
+      const dialog = refs.DialogClients;
       dialog.cambiarEstado();
-    },
-    async buscarCliente() {
-      if (this.sale.doc_client) {
-        const resultado = await FIND_CLIENT_BY_DOCUMENT(this.sale.doc_client);
+    };
+
+    const buscarCliente = async () => {
+      if (sale.value.doc_client) {
+        const resultado = await FIND_CLIENT_BY_DOCUMENT(sale.value.doc_client);
         if (resultado) {
-          this.cambiarCliente(resultado);
+          cambiarCliente(resultado);
         } else {
           Swal.fire("Cliente no encontrado");
-          this.sale.doc_client = "";
-          this.sale.sur_client = "Clientes varios";
-          this.sale.nam_client = "";
+          sale.value.doc_client = "";
+          sale.value.sur_client = "Clientes varios";
+          sale.value.nam_client = "";
         }
       }
-    },
-    cambiarCliente(client: Client) {
-      this.sale.doc_client = client.doc_num;
-      this.sale.sur_client = client.surnames;
-      this.sale.nam_client = client.names;
-    },
-    buscarProducto() {
-      this.$emit("codigo_barras", this.bar_code);
-    },
-    registerSaleNotProduct() {
-      if (this.productNotRegister.price !== null) {
-        this.$emit("wihtout_product_register", this.productNotRegister);
+    };
+
+    const cambiarCliente = (client: Client) => {
+      sale.value.doc_client = client.doc_num;
+      sale.value.sur_client = client.surnames;
+      sale.value.nam_client = client.names;
+    };
+
+    const buscarProducto = () => {
+      emit('codigo_barras', bar_code.value);
+    };
+
+    const registerSaleNotProduct = () => {
+      if (productNotRegister.value.price !== null) {
+        emit('wihtout_product_register', productNotRegister.value);
       }
-    },
-    resetProduct() {
-      this.bar_code = null;
-    },
-    resetProductNotRegister() {
-      this.productNotRegister.description = "";
-      this.productNotRegister.price = null;
-    },
-    handleKeyDown(field: string, event: KeyboardEvent) {
+    };
+
+    const resetProduct = () => {
+      bar_code.value = null;
+    };
+
+    const resetProductNotRegister = () => {
+      productNotRegister.value.description = "";
+      productNotRegister.value.price = null;
+    };
+
+    const handleKeyDown = (field: string, event: KeyboardEvent) => {
       if (event.key === "Enter") {
-        this.enterCount++;
-        if (this.enterCount === 2) {
-          this.buscarProducto();
-          this.enterCount = 0;
+        enterCount.value++;
+        if (enterCount.value === 2) {
+          buscarProducto();
+          enterCount.value = 0;
         }
         if (field === "priceField") {
           setTimeout(() => {
-            const barcodeField = this.$refs.barcodeField as Vue & {
-              focus: () => void;
-            };
-            if (barcodeField && typeof barcodeField.focus === "function") {
-              barcodeField.focus();
+            if (priceField.value && typeof priceField.value.focus === "function") {
+              priceField.value.focus();
             }
           }, 500);
         }
       } else {
-        this.enterCount = 0;
+        enterCount.value = 0;
       }
       if (event.key === "Tab") {
         event.preventDefault();
         if (field === "barcodeField") {
-          const priceField = this.$refs.priceField as Vue & {
-            focus: () => void;
-          };
-          if (priceField && typeof priceField.focus === "function") {
-            priceField.focus();
-            this.productNotRegister.price = null;
+          if (priceField.value && typeof priceField.value.focus === "function") {
+            priceField.value.focus();
+            productNotRegister.value.price = null;
           }
         } else if (field === "priceField") {
-          const barcodeField = this.$refs.barcodeField as Vue & {
-            focus: () => void;
-          };
-          if (barcodeField && typeof barcodeField.focus === "function") {
-            barcodeField.focus();
+          if (barcodeField.value && typeof barcodeField.value.focus === "function") {
+            barcodeField.value.focus();
           }
         } else if (field === "descripField") {
-          const barcodeField = this.$refs.barcodeField as Vue & {
-            focus: () => void;
-          };
-          if (barcodeField && typeof barcodeField.focus === "function") {
-            barcodeField.focus();
-            this.productNotRegister.price = null;
+          if (barcodeField.value && typeof barcodeField.value.focus === "function") {
+            barcodeField.value.focus();
+            productNotRegister.value.price = null;
           }
         }
       }
-    },
-    registrarVenta() {
+    };
+
+    const registrarVenta = () => {
       Swal.fire({
         title: "Registrar venta?",
         text: "La venta se registrara como confirmada!",
@@ -284,8 +283,8 @@ export default defineComponent({
         cancelButtonText: `Cancelar!`,
       }).then((result) => {
         if (result.isConfirmed) {
-          this.sale.pay_date = STRINT_TO_FECHA(this.fecha_pago);
-          this.$emit("datos_cliente", this.sale);
+          sale.value.pay_date = STRINT_TO_FECHA(fecha_pago.value);
+          emit('datos_cliente', sale.value);
           Swal.fire({
             icon: "success",
             title: "Registro exitoso",
@@ -293,66 +292,97 @@ export default defineComponent({
             showConfirmButton: false,
             timer: 800,
           });
-          this.resetDatosVenta();
-          this.$nextTick(() => {
+          resetDatosVenta();
+          nextTick(() => {
             setTimeout(() => {
-              if (this.$refs.barcodeField) {
-                (this.$refs.barcodeField as HTMLInputElement).focus();
+              if (barcodeField.value) {
+                barcodeField.value.focus();
               }
             }, 100);
           });
         }
       });
-    },
-    resetDatosVenta() {
-      this.sale.doc_client = "2222222";
-      this.sale.nam_client = "Clientes varios";
-      this.sale.sur_client = "";
-      this.sale.sale_type = EPayTypeSale.CONTADO;
-      this.sale.pay_date = new Date();
-      this.sale.subtotal = 0;
-      this.sale.discount = 0;
-      this.sale.total = 0;
-      this.sale.sales = [];
-      this.fecha_pago = FECHA_TO_STRING_INPUT(new Date());
-    },
-    focusBarcodeField() {
-      this.$nextTick(() => {
+    };
+
+    const resetDatosVenta = () => {
+      sale.value.doc_client = "2222222";
+      sale.value.nam_client = "Clientes varios";
+      sale.value.sur_client = "";
+      sale.value.sale_type = EPayTypeSale.CONTADO;
+      sale.value.pay_date = new Date();
+      sale.value.subtotal = 0;
+      sale.value.discount = 0;
+      sale.value.total = 0;
+      sale.value.sales = [];
+      fecha_pago.value = FECHA_TO_STRING_INPUT(new Date());
+    };
+
+    const focusBarcodeField = () => {
+      nextTick(() => {
         setTimeout(() => {
-          if (this.$refs.barcodeField) {
-            (this.$refs.barcodeField as HTMLInputElement).focus();
+          if (barcodeField.value) {
+            barcodeField.value.focus();
           }
         }, 100);
       });
-    },
-    handleKeyPress(event: KeyboardEvent) {
+    };
+
+    const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === "F1") {
         event.preventDefault();
-        this.$emit("save_sale_without_factura", this.sale);
+        emit('save_sale_without_factura', sale.value);
       }
-    },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      setTimeout(() => {
-        if (this.$refs.barcodeField) {
-          (this.$refs.barcodeField as HTMLInputElement).focus();
-        }
-      }, 100);
+    };
+
+    onMounted(() => {
+      nextTick(() => {
+        setTimeout(() => {
+          if (barcodeField.value) {
+            barcodeField.value.focus();
+          }
+        }, 100);
+      });
+      window.addEventListener("keydown", handleKeyPress);
     });
-    window.addEventListener("keydown", this.handleKeyPress);
-  },
-  computed: {
-    posicionFiltrada() {
-      if (this.sale.nam_client === "Clientes varios") {
-        return [this.tipos_venta[0]];
+
+    onBeforeUnmount(() => {
+      window.removeEventListener("keydown", handleKeyPress);
+    });
+
+    const posicionFiltrada = computed(() => {
+      if (sale.value.nam_client === "Clientes varios") {
+        return [tipos_venta.value[0]];
       } else {
-        return this.tipos_venta;
+        return tipos_venta.value;
       }
-    },
-  },
-  beforeDestroy() {
-    window.removeEventListener("keydown", this.handleKeyPress);
-  },
+    });
+
+    return {
+      barcodeField,
+      priceField,
+      descripField,
+      enterCount,
+      bar_code,
+      sale,
+      productNotRegister,
+      fecha_pago,
+      tipos_venta,
+      dialog_list,
+      enfoque,
+      abrirDialogoLisadoClientes,
+      buscarCliente,
+      cambiarCliente,
+      buscarProducto,
+      registerSaleNotProduct,
+      resetProduct,
+      resetProductNotRegister,
+      handleKeyDown,
+      registrarVenta,
+      resetDatosVenta,
+      focusBarcodeField,
+      handleKeyPress,
+      posicionFiltrada
+    };
+  }
 });
 </script>

@@ -234,95 +234,121 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { VALIDAR_CAMPO, VALIDAR_COMBO } from "@/generals/validaciones";
-import {
-  CAPTURAR_CAMPOS,
-  PROCESAR_FORMULARIO,
-} from "@/generals/procesamientos";
+import { defineComponent, ref, onMounted, PropType } from 'vue';
+import { VALIDAR_COMBO, VALIDAR_CAMPO } from "@/generals/validaciones";
+import { CAPTURAR_CAMPOS, PROCESAR_FORMULARIO } from "@/generals/procesamientos";
 import Swal from "sweetalert2";
 
-export default Vue.extend({
+export default defineComponent({
   name: "FormCreate",
-  data: () => ({
-    dialog_form: false,
-    cargando: false,
-    campos: [{}],
-    datos: {
+  props: {
+    titulo: {
+      type: String,
+      required: true
+    },
+    campos_form: {
+      type: Array,
+      required: true
+    },
+    validaciones: {
+      type: Array,
+      default: () => []
+    },
+    coleccion: {
+      type: String,
+      required: true
+    }
+  },
+  emits: ['registrado'],
+  setup(props, { emit }) {
+    const observer = ref(null);
+    const dialog_form = ref(false);
+    const cargando = ref(false);
+    const campos = ref([{}]);
+    const datos = ref({
       created_at: new Date(),
       updated_at: new Date(),
-    },
-    validados: [""],
-  }),
-  props: {
-    titulo: String,
-    campos_form: Array,
-    validaciones: Array,
-    coleccion: String,
-  },
-  methods: {
-    async validarCombo(campo: any) {
+    });
+    const validados = ref([""]);
+
+    const validarCombo = async (campo: any) => {
       if (campo.validacion) {
         campo.model = await VALIDAR_COMBO(campo.model, campo.items);
         if (campo.type === 9) {
           campo.items2 = campo.model[campo.llave2];
         }
       }
-    },
-    async mensajeValidaciones() {
+    };
+
+    const mensajeValidaciones = async () => {
       let msg = "";
-      this.validados.forEach((valid) => (msg += valid + "<br/>"));
+      validados.value.forEach((valid) => (msg += valid + "<br/>"));
       return msg;
-    },
-    async preSubmit() {
-      if (this.validaciones) {
-        this.validados = [];
-        for (const validacion of this.validaciones) {
+    };
+
+    const preSubmit = async () => {
+      if (props.validaciones) {
+        validados.value = [];
+        for (const validacion of props.validaciones) {
           const resultado = await VALIDAR_CAMPO(
-            this.datos,
+            datos.value,
             validacion,
-            this.coleccion,
+            props.coleccion,
             false
           );
           if (resultado !== "") {
-            this.validados.push(resultado);
+            validados.value.push(resultado);
           }
         }
       } else {
-        this.validados = [];
+        validados.value = [];
       }
-    },
-    async registrarDatos(): Promise<any> {
-      this.cargando = !this.cargando;
-      this.datos = await CAPTURAR_CAMPOS(null, this.campos);
-      await this.preSubmit();
-      if (this.validados.length > 0) {
-        this.cargando = !this.cargando;
+    };
+
+    const registrarDatos = async (): Promise<any> => {
+      cargando.value = !cargando.value;
+      datos.value = await CAPTURAR_CAMPOS(null, campos.value);
+      await preSubmit();
+      if (validados.value.length > 0) {
+        cargando.value = !cargando.value;
         return await Swal.fire(
           "Campos incorrectos",
-          await this.mensajeValidaciones(),
+          await mensajeValidaciones(),
           "error"
         );
       }
-      this.campos = [];
-      this.campos_form.forEach((campo: any) => this.campos.push(campo));
-      this.datos.created_at = new Date();
-      this.datos.updated_at = new Date();
-      await PROCESAR_FORMULARIO(this.coleccion, this.datos, this.campos, null);
-      await this.$emit("registrado", true);
-      this.dialog_form = !this.dialog_form;
-      this.datos = { created_at: new Date(), updated_at: new Date() };
-      const observer: any = this.$refs.observer;
-      if (observer) {
-        observer.reset();
+      campos.value = [];
+      props.campos_form.forEach((campo: any) => campos.value.push(campo));
+      datos.value.created_at = new Date();
+      datos.value.updated_at = new Date();
+      await PROCESAR_FORMULARIO(props.coleccion, datos.value, campos.value, null);
+      await emit("registrado", true);
+      dialog_form.value = !dialog_form.value;
+      datos.value = { created_at: new Date(), updated_at: new Date() };
+      if (observer.value) {
+        observer.value.reset();
       }
-      this.cargando = !this.cargando;
-    },
-  },
-  created() {
-    this.campos = [];
-    this.campos_form.forEach((campo: any) => this.campos.push(campo));
-  },
+      cargando.value = !cargando.value;
+    };
+
+    onMounted(() => {
+      campos.value = [];
+      props.campos_form.forEach((campo: any) => campos.value.push(campo));
+    });
+
+    return {
+      observer,
+      dialog_form,
+      cargando,
+      campos,
+      datos,
+      validados,
+      validarCombo,
+      mensajeValidaciones,
+      preSubmit,
+      registrarDatos
+    };
+  }
 });
 </script>
 

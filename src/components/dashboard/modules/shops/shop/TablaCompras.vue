@@ -115,7 +115,7 @@
               :compraAnterior="shopEdit"
               :mostrar="showEditPurchase"
               :indexElement="editPurchaseIndex"
-              :wareHouse="wareHouse"
+              :bodegasDisponibles="wareHouse"
             />
           </template>
         </v-simple-table>
@@ -125,23 +125,21 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
+import { defineComponent, ref, computed, watch, onMounted, PropType } from 'vue';
 import { COLUMNAS } from "@/models/Producto";
-
 import { LISTAR_BODEGAS } from "@/generals/Funciones";
 import { REDONDEAR } from "@/generals/procesamientos";
-import { CARGAR_INFORMACION } from "@/services/crud";
-
+import { CARGAR_INFORMACION, LISTAR } from "@/services/crud";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import EditarCompra from "./EditarCompra.vue";
 import { IProductoCompra } from "@/models/ProductoCompra";
-
 import Swal from "sweetalert2";
 import { Product } from "@/domain/model/product/Product";
 import { ProductPurchase } from "@/domain/model/productpurchase/ProductPurchase";
+import { Store } from "@/domain/model/store/Store";
+import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
-export default Vue.extend({
+export default defineComponent({
   name: "TablaCompras",
   components: {
     BuscarElemento,
@@ -149,67 +147,109 @@ export default Vue.extend({
   },
   props: {
     compras: {
-      type: Array as () => Array<ProductPurchase>,
+      type: Array as PropType<Array<ProductSale>>,
+      required: true
     },
-    eliminarDatos: Boolean,
-    anular: Boolean,
+    eliminarDatos: {
+      type: Boolean,
+      default: false
+    },
+    anular: {
+      type: Boolean,
+      default: false
+    }
   },
-  data: () => ({
-    columnas: COLUMNAS,
-    products: [] as ProductPurchase[],
-    newProduct: {} as ProductPurchase,
-    shopEdit: {} as IProductoCompra,
-    wareHouse: [{}],
-    availableProducts: [],
-    showEditPurchase: false,
-    editPurchaseIndex: 1,
-    percentGain: 0,
-    barCode: null,
-  }),
-  computed: {
-    validarProd() {
+  emits: ['eliminar', 'anular'],
+  setup(props, { emit }) {
+    const columnas = ref([
+      { text: "Producto", value: "name" },
+      { text: "Cantidad", value: "quantity" },
+      { text: "Precio", value: "price" },
+      { text: "Subtotal", value: "subtotal" },
+      { text: "Acciones", value: "acciones" },
+    ]);
+    const products = ref<Array<Product>>([]);
+    const newProduct = ref({
+      product: null as Product | null,
+      quantity: 1,
+      price: 0,
+      subtotal: 0,
+    });
+    const shopEdit = ref<IProductoCompra>({} as IProductoCompra);
+    const wareHouse = ref<Array<Store>>([]);
+    const availableProducts = ref<Array<Product>>([]);
+    const showEditPurchase = ref(false);
+    const editPurchaseIndex = ref(1);
+    const percentGain = ref(0);
+    const barCode = ref<string | null>(null);
+    const errorCodigo = ref(false);
+
+    const validarProd = computed(() => {
       if (
-        this.newProduct.bar_code.toString().length >= 9 &&
-        this.newProduct.name !== "" &&
-        this.newProduct.amount >= 1 &&
-        this.newProduct.price_shop >= 1 &&
-        this.newProduct.price_sale >= this.newProduct.price_shop &&
-        this.percentGain >= 0 &&
-        this.newProduct.subtotal >= 1 &&
-        this.newProduct.price_sale > this.newProduct.price_shop &&
-        !this.errorCodigo
+        newProduct.value.product?.bar_code?.toString().length >= 9 &&
+        newProduct.value.product?.name !== "" &&
+        newProduct.value.quantity >= 1 &&
+        newProduct.value.price >= 1 &&
+        newProduct.value.price >= newProduct.value.price &&
+        percentGain.value >= 0 &&
+        newProduct.value.subtotal >= 1 &&
+        newProduct.value.price > newProduct.value.price &&
+        !errorCodigo.value
       ) {
         return false;
       }
       return true;
-    },
-    errorCodigo() {
-      if (this.products.find((producto) => producto.bar_code == this.barCode)) {
-        return true;
+    });
+
+    const loadProducts = async () => {
+      try {
+        const productsSnapshot = await LISTAR("products");
+        availableProducts.value = productsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Product[];
+      } catch (error) {
+        console.error('Error loading products:', error);
+        Swal.fire({
+          title: "Error",
+          text: "Error al cargar los productos",
+          icon: "error"
+        });
       }
-      return false;
-    },
-  },
-  methods: {
-    async listStores() {
-      this.wareHouse = [];
-      const res: any = await LISTAR_BODEGAS();
-      res.forEach((bod: any) => this.wareHouse.unshift(bod.data()));
-    },
-    async listProducts() {
-      this.availableProducts = [];
-      const res = await CARGAR_INFORMACION("products");
-      this.availableProducts = res;
-    },
-    addProduct() {
-      const product: ProductPurchase = { ...this.newProduct };
-      const nuevosProductos: ProductPurchase[] = this.products;
-      nuevosProductos.push(product);
-      this.products = nuevosProductos;
-      this.$emit("enviarProductos", this.products);
-      this.resetNewProduct();
-    },
-    deleteItem(index: number) {
+    };
+
+    const loadWarehouses = async () => {
+      try {
+        const warehousesSnapshot = await LISTAR("stores");
+        wareHouse.value = warehousesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Store[];
+      } catch (error) {
+        console.error('Error loading warehouses:', error);
+        Swal.fire({
+          title: "Error",
+          text: "Error al cargar las bodegas",
+          icon: "error"
+        });
+      }
+    };
+
+    const addProduct = () => {
+      if (newProduct.value.product && newProduct.value.quantity > 0) {
+        const product = {
+          id: newProduct.value.product.id,
+          name: newProduct.value.product.name,
+          quantity: newProduct.value.quantity,
+          price: newProduct.value.price,
+          subtotal: newProduct.value.quantity * newProduct.value.price,
+        };
+        emit('add', product);
+        resetNewProduct();
+      }
+    };
+
+    const deleteItem = (index: number) => {
       Swal.fire({
         title: "¿Esta seguro de Eliminar este item?",
         showDenyButton: true,
@@ -219,117 +259,106 @@ export default Vue.extend({
         denyButtonText: `Cancelar`,
       }).then(async (result) => {
         if (result.isConfirmed) {
-          this.products.splice(index, 1);
-          this.$emit("enviarProductos", this.products);
+          products.value.splice(index, 1);
+          emit('eliminar', index);
         }
       });
-    },
-    resetNewProduct() {
-      const producto: ProductPurchase = {
-        id: "",
-        bar_code: "",
-        name: "",
-        amount: this.newProduct.amount || 1,
-        price_shop: 0,
-        price_sale: 0,
-        taxes: 0,
-        discount: 0,
+    };
+
+    const resetNewProduct = () => {
+      newProduct.value = {
+        product: null,
+        quantity: 1,
+        price: 0,
         subtotal: 0,
       };
-      this.barCode = null;
-      this.newProduct = producto;
-    },
-    findProduct() {
-      this.availableProducts.forEach((prod: Product) => {
-        if (prod.bar_code == this.barCode) {
-          this.newProduct.name = prod.name;
-          this.newProduct.bar_code = prod.bar_code;
-          this.newProduct.price_sale = prod.sale_price;
-          this.newProduct.price_shop = prod.unit_price;
-          this.percentGain = REDONDEAR(
-            ((prod.sale_price - prod.unit_price) / prod.sale_price) * 100,
-            0
-          );
-        }
-      });
-    },
-    calculateUtilitiesByShop() {
-      if (this.percentGain > 0 && this.newProduct.price_shop > 0) {
-        let precio_venta: number =
-          this.newProduct.price_shop * (1 + this.percentGain / 100);
-        this.newProduct.price_sale = REDONDEAR(precio_venta, -2);
+      barCode.value = null;
+    };
+
+    const calculateSubtotal = computed(() => {
+      if (newProduct.value.product && newProduct.value.quantity > 0) {
+        return newProduct.value.quantity * newProduct.value.price;
       }
-      this.calculateSubtotal();
-    },
-    calculateSubtotal() {
-      const subtotal: number =
-        Number(this.newProduct.amount) * Number(this.newProduct.price_shop) +
-        Number(this.newProduct.taxes) -
-        Number(this.newProduct.discount);
-      this.newProduct.subtotal = subtotal;
-    },
-    enterGains() {
-      if (this.percentGain >= 0 && this.newProduct.price_shop) {
-        let precio_venta: number =
-          this.newProduct.price_shop * (1 + this.percentGain / 100);
-        this.newProduct.price_sale = REDONDEAR(precio_venta, -2);
-      }
-    },
-    enterSale() {
-      if (
-        Number(this.newProduct.price_sale) >= Number(this.newProduct.price_shop)
-      ) {
-        const percentGain: number =
-          ((Number(this.newProduct.price_sale) -
-            Number(this.newProduct.price_shop)) /
-            Number(this.newProduct.price_shop)) *
-          100;
-        this.percentGain = Math.trunc(percentGain);
-      } else {
-        this.percentGain = 0;
-      }
-    },
-    selectProduct(product: ProductPurchase): void {
-      const newProduct: ProductPurchase = {
-        id: product.id,
-        bar_code: product.bar_code,
-        name: product.name,
-        amount: this.newProduct.amount,
-        price_shop: this.newProduct.price_shop,
-        price_sale: this.newProduct.price_sale,
-        taxes: this.newProduct.taxes || 0,
-        discount: this.newProduct.discount || 0,
-        subtotal: this.newProduct.subtotal,
-      };
-      this.newProduct = newProduct;
-    },
-    selectEditShop(compra: IProductoCompra, index: number) {
-      this.showEditPurchase = true;
-      this.editPurchaseIndex = index;
-      this.shopEdit = compra;
-    },
-    update(element: any) {
-      this.showEditPurchase = false;
-      this.products[element.indice] = element.compra;
-      this.$emit("enviarProductos", this.products);
-    },
-  },
-  created: function () {
-    this.listStores();
-    this.listProducts();
-    this.resetNewProduct();
-    if (this.compras) {
-      const nuevasCompras: Array<ProductPurchase> = this.compras;
-      this.products = nuevasCompras;
-    }
-    this.columnas = this.columnas.filter((col: any) => {
-      return col.value !== "detalle";
+      return 0;
     });
-  },
-  watch: {
-    eliminarDatos() {
-      this.products = [];
-    },
-  },
+
+    const calculateUtilitiesByShop = () => {
+      if (percentGain.value > 0 && newProduct.value.price > 0) {
+        let precio_venta: number = newProduct.value.price * (1 + percentGain.value / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        newProduct.value.price = precio;
+      }
+      newProduct.value.subtotal = calculateSubtotal.value;
+    };
+
+    const enterGains = () => {
+      if (percentGain.value >= 0 && newProduct.value.price > 0) {
+        let precio_venta: number = newProduct.value.price * (1 + percentGain.value / 100);
+        let precio = REDONDEAR(precio_venta, -2);
+        newProduct.value.price = precio;
+      }
+    };
+
+    const enterSale = () => {
+      if (Number(newProduct.value.price) >= Number(newProduct.value.price)) {
+        const porGanancia: number = ((Number(newProduct.value.price) - Number(newProduct.value.price)) / Number(newProduct.value.price)) * 100;
+        percentGain.value = Math.trunc(porGanancia);
+      } else {
+        percentGain.value = 0;
+      }
+    };
+
+    const selectProduct = (product: Product) => {
+      newProduct.value.product = product;
+      newProduct.value.price = product.price;
+      newProduct.value.quantity = 1;
+      newProduct.value.subtotal = calculateSubtotal.value;
+    };
+
+    const update = (data: { compra: IProductoCompra; indice: number }) => {
+      products.value[data.indice] = data.compra;
+      emit('anular', data.indice);
+      showEditPurchase.value = false;
+    };
+
+    onMounted(async () => {
+      await loadProducts();
+      await loadWarehouses();
+      resetNewProduct();
+    });
+
+    watch(() => props.compras, (newVal) => {
+      products.value = newVal;
+    });
+
+    watch(() => props.eliminarDatos, () => {
+      products.value = [];
+      resetNewProduct();
+    });
+
+    return {
+      columnas,
+      products,
+      newProduct,
+      shopEdit,
+      wareHouse,
+      availableProducts,
+      showEditPurchase,
+      editPurchaseIndex,
+      percentGain,
+      barCode,
+      errorCodigo,
+      validarProd,
+      addProduct,
+      deleteItem,
+      resetNewProduct,
+      calculateSubtotal,
+      calculateUtilitiesByShop,
+      enterGains,
+      enterSale,
+      selectProduct,
+      update
+    };
+  }
 });
 </script>

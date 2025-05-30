@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
 import Swal from "sweetalert2";
 
@@ -79,7 +79,7 @@ import {
   ACTUALIZAR_CAJA,
 } from "@/services/usuarios";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ActualizarCajas",
   data: () => ({
     caja: "",

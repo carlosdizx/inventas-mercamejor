@@ -54,9 +54,9 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "UserPersonalDetails",
   data: () => ({
     cargando: false,

@@ -2,48 +2,47 @@
   <v-container>
     <v-card>
       <v-card-title class="mr-5 ml-5">Consultar Ventas</v-card-title>
-      <ValidationObserver ref="observer" v-slot="{ invalid }">
-        <v-form>
-          <v-card-text>
-            <v-row class="ml-6 mr-6">
-              <v-col>
-                <v-text-field
-                  label="Ingrese fecha inicial de ventas"
-                  v-model="initialDate"
-                  type="date"
-                  outlined
-                  dense
-                ></v-text-field>
-              </v-col>
-              <v-col>
-                <v-text-field
-                  label="Ingrese fecha Final de ventas"
-                  v-model="finalDate"
-                  type="date"
-                  outlined
-                  dense
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row class="mr-5 ml-5">
-              <v-col>
-                <v-btn
-                  @click="findSales()"
-                  x-large
-                  dark
-                  class="color_a mb-3"
-                  block
-                  outlined
-                  dense
-                  :disabled="validarFormulario"
-                  >Buscar Compras</v-btn
-                >
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-form>
-        <v-col v-if="!invalid">.</v-col>
-      </ValidationObserver>
+      <v-form @submit.prevent="findSales">
+        <v-card-text>
+          <v-row class="ml-6 mr-6">
+            <v-col>
+              <v-text-field
+                label="Ingrese fecha inicial de ventas"
+                v-model="initialDate"
+                type="date"
+                outlined
+                dense
+                :rules="[v => !!v || 'La fecha inicial es requerida']"
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                label="Ingrese fecha Final de ventas"
+                v-model="finalDate"
+                type="date"
+                outlined
+                dense
+                :rules="[v => !!v || 'La fecha final es requerida']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row class="mr-5 ml-5">
+            <v-col>
+              <v-btn
+                type="submit"
+                x-large
+                dark
+                class="color_a mb-3"
+                block
+                outlined
+                dense
+                :disabled="validarFormulario"
+                >Buscar Ventas</v-btn
+              >
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-form>
       <v-dialog v-model="dialog" persistent>
         <v-card class="elevation-5">
           <v-card-title>Saldo Total ventas: {{ getTotalSales }}</v-card-title>
@@ -115,8 +114,10 @@ export default defineComponent({
   },
   methods: {
     async findSales() {
-      this.sales = await CONSULT_SALES(this.initialDate, this.finalDate);
-      this.dialog = true;
+      if (!this.validarFormulario) {
+        this.sales = await CONSULT_SALES(this.initialDate, this.finalDate);
+        this.dialog = true;
+      }
     },
   },
   created() {

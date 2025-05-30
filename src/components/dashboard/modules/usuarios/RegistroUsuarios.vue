@@ -254,7 +254,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import { REGISTRO_USUARIO } from "@/services/auth";
 
@@ -263,7 +263,7 @@ import { REGISTRAR_DATOS_USUARIO } from "@/services/usuarios";
 import { ESTADOS_USUARIO, GENEROS, ROLES } from "@/generals/Constantes";
 import { TIPOS_DOCUMENTO } from "@/domain/model/constants/Constants";
 
-export default Vue.extend({
+export default defineComponent({
   name: "RegistroUsuarios",
   data: () => ({
     rolesDisponibles: ROLES,

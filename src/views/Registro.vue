@@ -55,14 +55,14 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import UserPersonalDetails from "@/components/autenticacion/UserPersonalDetails.vue";
 import UserCredentials from "@/components/autenticacion/UserCredentials.vue";
 import { CREAR_CUENTA } from "@/services/auth";
 import { NOTIFICAR_ERROR } from "@/generals/notificaciones";
 import Swal from "sweetalert2";
-import Vue from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Registro",
   components: { UserPersonalDetails, UserCredentials },
   data: () => ({

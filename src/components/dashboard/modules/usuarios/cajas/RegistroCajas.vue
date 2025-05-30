@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 
 import Swal from "sweetalert2";
 
@@ -78,7 +78,7 @@ import {
   LISTAR_CAJAS,
 } from "@/services/usuarios";
 
-export default Vue.extend({
+export default defineComponent({
   name: "RegistroCajas",
   data: () => ({
     empleados: [],
