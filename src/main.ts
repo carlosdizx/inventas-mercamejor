@@ -28,11 +28,11 @@ configure({
   generateMessage: (context) => {
     const messages: Record<string, string> = {
       required: `${context.field} no puede estar vacio, o es un valor errado`,
-      min: `${context.field} requiere mas caracteres, minimo ${context.rule?.params?.[0] ?? ''}`,
-      max: `${context.field} cantidad de caracteres superada, maximo ${context.rule?.params?.[0] ?? ''}`,
+      min: `${context.field} requiere mas caracteres, minimo ${Array.isArray(context.rule?.params) ? context.rule.params[0] : ''}`,
+      max: `${context.field} cantidad de caracteres superada, maximo ${Array.isArray(context.rule?.params) ? context.rule.params[0] : ''}`,
       email: "Correo con formato incorrecto",
       numeric: "Numero incorrecto",
-      digits: `${context.field}: Se necesita ${context.rule?.params?.[0] ?? ''} digitos. (${context.value})`,
+      digits: `${context.field}: Se necesita ${Array.isArray(context.rule?.params) ? context.rule.params[0] : ''} digitos. (${context.value})`,
     };
     return messages[context.rule?.name ?? ''] || `${context.field} es inválido`;
   },

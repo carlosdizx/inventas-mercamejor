@@ -15,8 +15,8 @@
             <v-row class="mx-1">
               <v-col cols="1">
                 <v-tooltip color="orange darken-4" bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span v-bind="attrs" v-on="on">
+                  <template v-slot:activator="{ props }">
+                    <span v-bind="props">
                       <v-btn fab small @click="forzarRecarga">
                         <v-icon>mdi-reload</v-icon>
                       </v-btn>
@@ -107,8 +107,8 @@
           </template>
           <template v-slot:item.calificacion="{ item }">
             <v-tooltip color="primary" bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <span v-bind="props">
                   <v-rating
                     :value="item.calificacion"
                     small
@@ -123,16 +123,16 @@
           </template>
           <template v-slot:item.estado="{ item }">
             <v-tooltip color="green" bottom v-if="item.estado === 'Activo'">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="green" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="green" v-bind="props">
                   mdi-check-circle
                 </v-icon>
               </template>
               <span>Activo</span>
             </v-tooltip>
             <v-tooltip color="red" bottom v-if="item.estado === 'Inactivo'">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="red" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="red" v-bind="props">
                   mdi-close-circle
                 </v-icon>
               </template>
@@ -143,32 +143,32 @@
               bottom
               v-if="item.estado === 'Pendiente'"
             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="warning" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="warning" v-bind="props">
                   mdi-alert-circle
                 </v-icon>
               </template>
               <span>Pendiente</span>
             </v-tooltip>
             <v-tooltip color="purple" bottom v-if="item.estado === 'Revisión'">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="purple" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="purple" v-bind="props">
                   mdi-cube-scan
                 </v-icon>
               </template>
               <span>Revisión</span>
             </v-tooltip>
             <v-tooltip color="green" bottom v-if="item.estado === 'Aprobado'">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="green" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="green" v-bind="props">
                   mdi-cash-check
                 </v-icon>
               </template>
               <span>Aprobado</span>
             </v-tooltip>
             <v-tooltip color="red" bottom v-if="item.estado === 'Desaprobado'">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon color="red" v-bind="attrs" v-on="on">
+              <template v-slot:activator="{ props }">
+                <v-icon color="red" v-bind="props">
                   mdi-cash-remove
                 </v-icon>
               </template>
@@ -211,7 +211,8 @@ export default defineComponent({
     },
     llave: {
       type: String,
-      required: true
+      required: false,
+      default: 'id'
     },
     elimacion: {
       type: Boolean,

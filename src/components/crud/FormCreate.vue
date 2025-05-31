@@ -3,8 +3,8 @@
     <v-btn color="red darken-4" dark @click="dialog_form = !dialog_form">
       <v-icon>mdi-close</v-icon>
     </v-btn>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn fab color="info darken-3" small v-bind="attrs" v-on="on">
+    <template v-slot:activator="{ props }">
+      <v-btn fab color="info darken-3" small v-bind="props">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </template>
@@ -13,21 +13,21 @@
         <h1 class="text-center my-3">
           Formulario de creación para {{ titulo }}
         </h1>
-        <ValidationObserver ref="observer" v-slot="{ invalid }">
+        <VeeForm @submit="registrarDatos" v-slot="{ errors }">
           <v-form
             class="my-2"
             :disabled="cargando"
             autocomplete="off"
-            @submit.prevent="registrarDatos"
           >
             <div v-for="(campo, index) in campos" :key="index">
-              <validation-provider
-                v-slot="{ errors }"
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 1"
               >
                 <v-text-field
+                  v-bind="field"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :type="campo.format"
@@ -37,14 +37,15 @@
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 2"
               >
                 <v-combobox
+                  v-bind="field"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :items="campo.items"
@@ -58,14 +59,15 @@
                   :error-messages="errors"
                   @change="validarCombo(campo)"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 3"
               >
                 <v-textarea
+                  v-bind="field"
                   outlined
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
@@ -74,28 +76,30 @@
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 4"
               >
                 <v-switch
+                  v-bind="field"
                   color="deep-purple"
                   inset
                   :label="campo.label"
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 5"
               >
                 <v-radio-group
+                  v-bind="field"
                   :label="campo.label"
                   row
                   v-model="campo.model"
@@ -109,14 +113,15 @@
                     :value="dato.value"
                   />
                 </v-radio-group>
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 6"
               >
                 <v-select
+                  v-bind="field"
                   :prepend-icon="campo.prepend_icon"
                   :items="campo.items"
                   :label="campo.label"
@@ -129,14 +134,15 @@
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 7"
               >
                 <v-slider
+                  v-bind="field"
                   :label="campo.label"
                   :step="campo.step"
                   :readonly="campo.readOnly"
@@ -148,14 +154,15 @@
                   :error-messages="errors"
                   v-model="campo.model"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 8"
               >
                 <vuetify-money
+                  v-bind="field"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :type="campo.format"
@@ -165,15 +172,15 @@
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <!-- Lista anidada -->
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 9"
               >
                 <v-combobox
+                  v-bind="field"
                   :label="campo.label"
                   prepend-icon="mdi-format-list-bulleted"
                   :items="campo.items"
@@ -197,14 +204,15 @@
                   v-model="campo.model2"
                   :error-messages="errors"
                 />
-              </validation-provider>
-              <validation-provider
-                v-slot="{ errors }"
+              </VeeField>
+              <VeeField
+                v-slot="{ field, errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 10"
               >
                 <v-file-input
+                  v-bind="field"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   dense
@@ -215,19 +223,19 @@
                   v-model="campo.model"
                   :error-messages="errors"
                 />
-              </validation-provider>
+              </VeeField>
             </div>
             <v-btn
               block
               color="success"
-              :disabled="invalid || cargando"
+              :disabled="Object.keys(errors).length > 0 || cargando"
               type="submit"
               :loading="cargando"
             >
               Registrarme <v-icon>mdi-database-plus</v-icon>
             </v-btn>
           </v-form>
-        </ValidationObserver>
+        </VeeForm>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -235,6 +243,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, PropType } from 'vue';
+import { useForm } from 'vee-validate';
 import { VALIDAR_COMBO, VALIDAR_CAMPO } from "@/generals/validaciones";
 import { CAPTURAR_CAMPOS, PROCESAR_FORMULARIO } from "@/generals/procesamientos";
 import Swal from "sweetalert2";
@@ -261,7 +270,6 @@ export default defineComponent({
   },
   emits: ['registrado'],
   setup(props, { emit }) {
-    const observer = ref(null);
     const dialog_form = ref(false);
     const cargando = ref(false);
     const campos = ref([{}]);
@@ -270,6 +278,8 @@ export default defineComponent({
       updated_at: new Date(),
     });
     const validados = ref([""]);
+
+    const { handleSubmit, resetForm } = useForm();
 
     const validarCombo = async (campo: any) => {
       if (campo.validacion) {
@@ -305,7 +315,7 @@ export default defineComponent({
       }
     };
 
-    const registrarDatos = async (): Promise<any> => {
+    const registrarDatos = handleSubmit(async () => {
       cargando.value = !cargando.value;
       datos.value = await CAPTURAR_CAMPOS(null, campos.value);
       await preSubmit();
@@ -325,11 +335,9 @@ export default defineComponent({
       await emit("registrado", true);
       dialog_form.value = !dialog_form.value;
       datos.value = { created_at: new Date(), updated_at: new Date() };
-      if (observer.value) {
-        observer.value.reset();
-      }
+      resetForm();
       cargando.value = !cargando.value;
-    };
+    });
 
     onMounted(() => {
       campos.value = [];
@@ -337,7 +345,6 @@ export default defineComponent({
     });
 
     return {
-      observer,
       dialog_form,
       cargando,
       campos,

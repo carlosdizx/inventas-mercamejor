@@ -205,10 +205,18 @@ export default defineComponent({
   },
   data() {
     return {
-      columnas: COLUMNAS,
+      columnas: [
+        { text: "NIT/Cédula", value: "doc_num", sortable: true },
+        { text: "Nombre", value: "names", sortable: true },
+        { text: "Apellido", value: "surnames", sortable: true },
+        { text: "Dirección", value: "direccion", sortable: true },
+        { text: "Teléfono", value: "celular", sortable: true },
+        { text: "Correo", value: "correo", sortable: true },
+        { text: "Acciones", value: "acciones", sortable: false }
+      ],
       payTypes: [EPayTypePurchase.CONTADO, EPayTypePurchase.CREDITO],
       tiposDocumento: [ETypesShop.COMPRA, ETypesShop.PEDIDO],
-      proveedores: [""],
+      proveedores: [] as Array<{ [key: string]: any }>,
       eliminarDatos: false,
       doc_proveedor: "",
       fec_documento: "",

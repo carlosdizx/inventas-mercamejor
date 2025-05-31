@@ -17,14 +17,23 @@
           <template v-slot:top>
             <v-text-field
               v-model="search"
-              label="Buscar ventas"
+              :label="`Buscar ${nombre}`"
               class="mx-4"
             ></v-text-field>
           </template>
-          <template v-slot:item.acciones="{ item }">
-            <v-btn fab bottom small color="green" @click="devolverItem(item)">
-              <v-icon color="white">mdi-send</v-icon>
-            </v-btn>
+          <template v-slot:item="{ item }">
+            <tr>
+              <td v-for="header in headers" :key="header.value">
+                <template v-if="header.value === 'acciones'">
+                  <v-btn fab bottom small color="green" @click="devolverItem(item)">
+                    <v-icon color="white">mdi-send</v-icon>
+                  </v-btn>
+                </template>
+                <template v-else>
+                  {{ item[header.value] }}
+                </template>
+              </td>
+            </tr>
           </template>
         </v-data-table>
       </v-card-text>
@@ -33,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: "BuscarElemento",
@@ -43,11 +52,11 @@ export default defineComponent({
       required: true
     },
     items: {
-      type: Array,
+      type: Array as PropType<Array<{ [key: string]: any }>>,
       required: true
     },
     headers: {
-      type: Array,
+      type: Array as PropType<Array<{ text: string; value: string; sortable?: boolean }>>,
       required: true
     },
     show: {

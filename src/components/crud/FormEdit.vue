@@ -72,15 +72,16 @@
                     persistent-hint
                   ></v-date-picker>
 
-                  <v-time-picker
+                  <v-text-field
                     v-else-if="campo.type === 'time'"
                     v-model="datos[campo.name]"
                     :label="campo.label"
+                    type="time"
                     :disabled="campo.disabled"
                     :readonly="campo.readonly"
                     :hint="campo.hint"
                     persistent-hint
-                  ></v-time-picker>
+                  ></v-text-field>
 
                   <v-file-input
                     v-else-if="campo.type === 'file'"

@@ -123,11 +123,11 @@ export default defineComponent({
   emits: ['update', 'delete', 'reset'],
   setup(props, { emit }) {
     const headers = ref([
-      { title: "Producto", key: "name" },
-      { title: "Cantidad", key: "amount" },
-      { title: "Precio", key: "sale_price" },
-      { title: "Subtotal", key: "subtotal" },
-      { title: "Acciones", key: "actions", sortable: false }
+      { text: "Producto", value: "name" },
+      { text: "Cantidad", value: "amount" },
+      { text: "Precio", value: "sale_price" },
+      { text: "Subtotal", value: "subtotal" },
+      { text: "Acciones", value: "actions", sortable: false }
     ]);
 
     const descuento_adicional = ref(0);
