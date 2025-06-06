@@ -10,7 +10,7 @@
     </template>
     <v-card class="py-2">
       <v-card-text>
-        <h1 class="text-center my-3">
+        <h1 class="text-center my-3"> 
           Formulario de creación para {{ titulo }}
         </h1>
         <VeeForm @submit="registrarDatos" v-slot="{ errors }">
@@ -39,23 +39,23 @@
                 />
               </VeeField>
               <VeeField
-                v-slot="{ field, errors }"
+                v-slot="{ errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 2"
               >
                 <v-combobox
-                  v-bind="field"
+                  v-model="campo.model"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :items="campo.items"
-                  :item-text="campo.llave"
+                  :item-title="campo.llave || 'title'"
+                  :item-value="campo.llave || 'value'"
                   :multiple="campo.multiple"
                   hide-selected
                   small-chips
                   dense
                   outlined
-                  v-model="campo.model"
                   :error-messages="errors"
                   @change="validarCombo(campo)"
                 />
@@ -156,13 +156,12 @@
                 />
               </VeeField>
               <VeeField
-                v-slot="{ field, errors }"
+                v-slot="{ errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 8"
               >
                 <vuetify-money
-                  v-bind="field"
                   :label="campo.label"
                   :prepend-icon="campo.prepend_icon"
                   :type="campo.format"
@@ -184,7 +183,8 @@
                   :label="campo.label"
                   prepend-icon="mdi-format-list-bulleted"
                   :items="campo.items"
-                  :item-text="campo.llave"
+                  :item-title="campo.llave || 'title'"
+                  :item-value="campo.llave || 'value'"
                   :multiple="campo.multiple"
                   hide-selected
                   small-chips
@@ -248,6 +248,62 @@ import { VALIDAR_COMBO, VALIDAR_CAMPO } from "@/generals/validaciones";
 import { CAPTURAR_CAMPOS, PROCESAR_FORMULARIO } from "@/generals/procesamientos";
 import Swal from "sweetalert2";
 
+interface FormFieldOption {
+  label: string;
+  value: string | number;
+}
+
+interface ComboboxItem {
+  [key: string]: any;
+  title: string;
+  value: string | number;
+}
+
+interface FieldOptions {
+  locale?: string;
+  prefix?: string;
+  suffix?: string;
+  length?: number;
+  precision?: number;
+  decimal?: string;
+  thousands?: string;
+}
+
+interface FormField {
+  type: number;
+  label: string;
+  label2?: string;
+  rules?: string;
+  prepend_icon?: string;
+  format?: string;
+  model: any;
+  model2?: any;
+  items?: ComboboxItem[];
+  items2?: ComboboxItem[];
+  llave?: string;
+  llave2?: string;
+  multiple?: boolean;
+  solo?: boolean;
+  options?: FormFieldOption[];
+  fieldOptions?: FieldOptions;
+  step?: number;
+  readOnly?: boolean;
+  min?: number;
+  max?: number;
+  validacion?: boolean;
+}
+
+interface FormData {
+  created_at: Date;
+  updated_at: Date;
+  [key: string]: any;
+}
+
+interface ValidationResult {
+  isValid: boolean;
+  message?: string;
+}
+
 export default defineComponent({
   name: "FormCreate",
   props: {
@@ -256,11 +312,11 @@ export default defineComponent({
       required: true
     },
     campos_form: {
-      type: Array,
+      type: Array as PropType<FormField[]>,
       required: true
     },
     validaciones: {
-      type: Array,
+      type: Array as PropType<{ tipo: number; nombres: string[] }[]>,
       default: () => []
     },
     coleccion: {
@@ -272,42 +328,50 @@ export default defineComponent({
   setup(props, { emit }) {
     const dialog_form = ref(false);
     const cargando = ref(false);
-    const campos = ref([{}]);
-    const datos = ref({
+    const campos = ref<FormField[]>([]);
+    const datos = ref<FormData>({
       created_at: new Date(),
       updated_at: new Date(),
     });
-    const validados = ref([""]);
+    const validados = ref<string[]>([]);
 
     const { handleSubmit, resetForm } = useForm();
 
-    const validarCombo = async (campo: any) => {
-      if (campo.validacion) {
-        campo.model = await VALIDAR_COMBO(campo.model, campo.items);
-        if (campo.type === 9) {
-          campo.items2 = campo.model[campo.llave2];
+    const validarCombo = async (campo: FormField): Promise<void> => {
+      if (campo.validacion && campo.items) {
+        try {
+          campo.model = await VALIDAR_COMBO(campo.model, campo.items);
+          if (campo.type === 9 && campo.llave2 && campo.model) {
+            campo.items2 = campo.model[campo.llave2];
+          }
+        } catch (error) {
+          console.error('Error validando combo:', error);
+          campo.model = null;
         }
       }
     };
 
-    const mensajeValidaciones = async () => {
-      let msg = "";
-      validados.value.forEach((valid) => (msg += valid + "<br/>"));
-      return msg;
+    const mensajeValidaciones = async (): Promise<string> => {
+      return validados.value.join("<br/>");
     };
 
-    const preSubmit = async () => {
-      if (props.validaciones) {
+    const preSubmit = async (): Promise<void> => {
+      if (props.validaciones && props.validaciones.length > 0) {
         validados.value = [];
         for (const validacion of props.validaciones) {
-          const resultado = await VALIDAR_CAMPO(
-            datos.value,
-            validacion,
-            props.coleccion,
-            false
-          );
-          if (resultado !== "") {
-            validados.value.push(resultado);
+          try {
+            const resultado = await VALIDAR_CAMPO(
+              datos.value,
+              validacion,
+              props.coleccion,
+              false
+            );
+            if (resultado !== "") {
+              validados.value.push(resultado);
+            }
+          } catch (error) {
+            console.error('Error en validación:', error);
+            validados.value.push('Error en la validación del campo');
           }
         }
       } else {
@@ -316,32 +380,58 @@ export default defineComponent({
     };
 
     const registrarDatos = handleSubmit(async () => {
-      cargando.value = !cargando.value;
-      datos.value = await CAPTURAR_CAMPOS(null, campos.value);
-      await preSubmit();
-      if (validados.value.length > 0) {
-        cargando.value = !cargando.value;
-        return await Swal.fire(
-          "Campos incorrectos",
-          await mensajeValidaciones(),
-          "error"
-        );
+      try {
+        cargando.value = true;
+        datos.value = await CAPTURAR_CAMPOS(null, campos.value);
+        await preSubmit();
+
+        if (validados.value.length > 0) {
+          await Swal.fire({
+            title: "Campos incorrectos",
+            html: await mensajeValidaciones(),
+            icon: "error"
+          });
+          return;
+        }
+
+        // Reiniciar campos
+        campos.value = [];
+        props.campos_form.forEach((campo: FormField) => campos.value.push(campo));
+
+        // Actualizar timestamps
+        datos.value.created_at = new Date();
+        datos.value.updated_at = new Date();
+
+        // Procesar formulario
+        await PROCESAR_FORMULARIO(props.coleccion, datos.value, campos.value, null);
+        
+        // Notificar éxito
+        await Swal.fire({
+          title: "Éxito",
+          text: "Registro creado correctamente",
+          icon: "success"
+        });
+
+        // Resetear y cerrar
+        await emit("registrado", true);
+        dialog_form.value = false;
+        datos.value = { created_at: new Date(), updated_at: new Date() };
+        resetForm();
+      } catch (error) {
+        console.error('Error al registrar:', error);
+        await Swal.fire({
+          title: "Error",
+          text: "Hubo un error al procesar el registro",
+          icon: "error"
+        });
+      } finally {
+        cargando.value = false;
       }
-      campos.value = [];
-      props.campos_form.forEach((campo: any) => campos.value.push(campo));
-      datos.value.created_at = new Date();
-      datos.value.updated_at = new Date();
-      await PROCESAR_FORMULARIO(props.coleccion, datos.value, campos.value, null);
-      await emit("registrado", true);
-      dialog_form.value = !dialog_form.value;
-      datos.value = { created_at: new Date(), updated_at: new Date() };
-      resetForm();
-      cargando.value = !cargando.value;
     });
 
     onMounted(() => {
       campos.value = [];
-      props.campos_form.forEach((campo: any) => campos.value.push(campo));
+      props.campos_form.forEach((campo: FormField) => campos.value.push(campo));
     });
 
     return {
@@ -359,4 +449,3 @@ export default defineComponent({
 });
 </script>
 
-<style scoped></style>
