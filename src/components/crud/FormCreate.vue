@@ -115,13 +115,13 @@
                 </v-radio-group>
               </VeeField>
               <VeeField
-                v-slot="{ field, errors }"
+                v-slot="{ errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 6"
               >
+              {{ campo }}
                 <v-select
-                  v-bind="field"
                   :prepend-icon="campo.prepend_icon"
                   :items="campo.items"
                   :label="campo.label"
@@ -173,18 +173,17 @@
                 />
               </VeeField>
               <VeeField
-                v-slot="{ field, errors }"
+                v-slot="{ errors }"
                 :name="campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 9"
               >
                 <v-combobox
-                  v-bind="field"
                   :label="campo.label"
                   prepend-icon="mdi-format-list-bulleted"
                   :items="campo.items"
-                  :item-title="campo.llave || 'title'"
-                  :item-value="campo.llave || 'value'"
+                  :item-title="campo.llave"
+                  :item-value="campo.llave"
                   :multiple="campo.multiple"
                   hide-selected
                   small-chips
@@ -192,7 +191,7 @@
                   outlined
                   v-model="campo.model"
                   :error-messages="errors"
-                  @change="validarCombo(campo)"
+                  @update:model-value="validarCombo(campo)"
                 />
                 <v-select
                   :label="campo.label2"
@@ -246,6 +245,7 @@ import { defineComponent, ref, onMounted, PropType } from 'vue';
 import { useForm } from 'vee-validate';
 import { VALIDAR_COMBO, VALIDAR_CAMPO } from "@/generals/validaciones";
 import { CAPTURAR_CAMPOS, PROCESAR_FORMULARIO } from "@/generals/procesamientos";
+import { LISTAR_SUBCATEGORIAS } from "@/generals/Funciones";
 import Swal from "sweetalert2";
 
 interface FormFieldOption {
@@ -340,13 +340,19 @@ export default defineComponent({
     const validarCombo = async (campo: FormField): Promise<void> => {
       if (campo.validacion && campo.items) {
         try {
-          campo.model = await VALIDAR_COMBO(campo.model, campo.items);
           if (campo.type === 9 && campo.llave2 && campo.model) {
-            campo.items2 = campo.model[campo.llave2];
+            // Get subcategories directly from the selected category object
+            if (campo.model.subcategories && Array.isArray(campo.model.subcategories)) {
+              campo.items2 = campo.model.subcategories;
+            } else {
+              campo.items2 = [];
+            }
+            campo.model2 = null;
           }
         } catch (error) {
           console.error('Error validando combo:', error);
           campo.model = null;
+          campo.model2 = null;
         }
       }
     };
