@@ -193,6 +193,46 @@ import { CONSULTA_DATOS, ELIMINAR } from "@/services/crud";
 import { tipo_dato } from "@/generals/formats";
 import Swal from "sweetalert2";
 
+interface FormField {
+  type: number;
+  label: string;
+  label2?: string;
+  rules?: string;
+  prepend_icon?: string;
+  format?: string;
+  model: any;
+  model2?: any;
+  items?: any[];
+  items2?: any[];
+  llave?: string;
+  llave2?: string;
+  multiple?: boolean;
+  solo?: boolean;
+  options?: { label: string; value: string | number }[];
+  fieldOptions?: {
+    locale?: string;
+    prefix?: string;
+    suffix?: string;
+    length?: number;
+    precision?: number;
+    decimal?: string;
+    thousands?: string;
+  };
+  step?: number;
+  readOnly?: boolean;
+  min?: number;
+  max?: number;
+  validacion?: boolean;
+}
+
+interface TableItem {
+  id: string;
+  documento_ref?: string;
+  calificacion?: number;
+  estado?: string;
+  [key: string]: any;
+}
+
 export default defineComponent({
   name: "Tabla",
   components: { FormCreate, FormEdit, FormView },
@@ -206,7 +246,7 @@ export default defineComponent({
       required: true
     },
     columnas: {
-      type: Array,
+      type: Array as PropType<{ text: string; value: string }[]>,
       required: true
     },
     llave: {
@@ -223,15 +263,15 @@ export default defineComponent({
       default: false
     },
     campos_form: {
-      type: Array,
+      type: Array as PropType<FormField[]>,
       default: () => []
     },
     validaciones: {
-      type: Array,
+      type: Array as PropType<{ tipo: number; nombres: string[] }[]>,
       default: () => []
     },
     roles: {
-      type: Array,
+      type: Array as PropType<string[]>,
       default: () => []
     },
     noCrear: {
@@ -243,7 +283,7 @@ export default defineComponent({
       default: false
     },
     consulta: {
-      type: Array,
+      type: Array as PropType<any[]>,
       default: () => []
     }
   },
@@ -251,7 +291,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const router = useRouter();
     const buscado = ref("");
-    const filas = ref([]);
+    const filas = ref<TableItem[]>([]);
     const cargando = ref(false);
 
     const cargarInformacion = async () => {
