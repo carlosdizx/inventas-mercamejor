@@ -34,8 +34,8 @@
                   dense
                   outlined
                   counter
-                  v-model="campo.model"
                   :error-messages="errors"
+                  v-model="campo.model"
                 />
               </VeeField>
               <VeeField

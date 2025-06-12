@@ -1,310 +1,360 @@
 <template>
-  <div>
-    <v-dialog v-model="dialog_form" max-width="800px">
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">{{ titulo }}</span>
-        </v-card-title>
+  <v-dialog v-model="dialogForm" persistent max-width="600">
+    <template #activator="{ props }">
+      <v-btn v-bind="props" small outlined dark fab color="amber">
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+    </template>
 
-        <v-card-text>
-          <v-container>
-            <v-form @submit.prevent="actualizarDatos">
-              <v-row>
-                <v-col cols="12" sm="6" md="4" v-for="campo in campos" :key="campo.name">
-                  <v-text-field
-                    v-if="campo.type === 'text'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-text-field>
+    <v-btn color="red darken-4" dark @click="dialogForm = !dialogForm">
+      <v-icon>mdi-close</v-icon>
+    </v-btn>
 
-                  <v-textarea
-                    v-else-if="campo.type === 'textarea'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-textarea>
+    <v-card class="py-2">
+      <v-card-text>
+        <h1 class="text-center my-3">Formulario de edición para {{ titulo }}</h1>
+        <Form @submit="actualizarDatos">
+          <div v-for="(campo, index) in campos" :key="index">
+            <Field
+              v-slot="{ errors }"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-if="campo.type === 1"
+            >
+              <v-text-field
+                :label="campo.label"
+                :prepend-icon="campo.prepend_icon"
+                :type="campo.format"
+                dense
+                outlined
+                counter
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-select
-                    v-else-if="campo.type === 'select'"
-                    v-model="datos[campo.name]"
-                    :items="campo.items"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-select>
+            <!-- Campo type 2 - v-combobox -->
+            <Field
+              v-else-if="campo.type === 2"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-combobox
+                v-bind="field"
+                :label="campo.label"
+                :prepend-icon="campo.prepend_icon"
+                :items="campo.items"
+                :item-title="campo.llave"
+                :multiple="campo.multiple"
+                hide-selected
+                small-chips
+                dense
+                outlined
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+                @change="(val) => validarCombo(val, item, campo)"
+              />
+            </Field>
 
-                  <v-checkbox
-                    v-else-if="campo.type === 'checkbox'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-checkbox>
+            <!-- Campo type 3 - v-textarea -->
+            <Field
+              v-else-if="campo.type === 3"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-textarea
+                v-bind="field"
+                outlined
+                :label="campo.label"
+                :prepend-icon="campo.prepend_icon"
+                dense
+                counter
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-switch
-                    v-else-if="campo.type === 'switch'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-switch>
+            <!-- Campo type 4 - v-switch -->
+            <Field
+              v-else-if="campo.type === 4"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-switch
+                v-bind="field"
+                color="deep-purple"
+                inset
+                :label="campo.label"
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-date-picker
-                    v-else-if="campo.type === 'date'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-date-picker>
+            <!-- Campo type 5 - v-radio-group -->
+            <Field
+              v-else-if="campo.type === 5"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-radio-group
+                v-bind="field"
+                :label="campo.label"
+                row
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              >
+                <br />
+                <v-radio
+                  v-for="dato in campo.options"
+                  :key="dato.value"
+                  :label="dato.label"
+                  :value="dato.value"
+                />
+              </v-radio-group>
+            </Field>
 
-                  <v-text-field
-                    v-else-if="campo.type === 'time'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    type="time"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-text-field>
+            <!-- Campo type 6 - v-select -->
+            <Field
+              v-else-if="campo.type === 6"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ errors }"
+            >
+              <v-select
+                :prepend-icon="campo.prepend_icon"
+                :items="campo.items"
+                :label="campo.label"
+                :multiple="campo.multiple"
+                :solo="campo.solo"
+                :item-text="campo.llave"
+                counter
+                outlined
+                dense
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-file-input
-                    v-else-if="campo.type === 'file'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-file-input>
+            <!-- Campo type 7 - v-slider -->
+            <Field
+              v-else-if="campo.type === 7"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-slider
+                v-bind="field"
+                :label="campo.label"
+                :step="campo.step"
+                :readonly="campo.readOnly"
+                :disabled="campo.readOnly"
+                :min="campo.min"
+                :max="campo.max"
+                thumb-label
+                ticks
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-color-picker
-                    v-else-if="campo.type === 'color'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-color-picker>
+            <!-- Campo type 8 - vuetify-money -->
+            <Field
+              v-else-if="campo.type === 8"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ errors }"
+            >
+              <vuetify-money
+                :label="campo.label"
+                :prepend-icon="campo.prepend_icon"
+                :type="campo.format"
+                dense
+                outlined
+                counter
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
 
-                  <v-slider
-                    v-else-if="campo.type === 'slider'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-slider>
+            <!-- Campo type 9 - v-combobox with v-select -->
+            <Field
+              v-else-if="campo.type === 9"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ errors }"
+            >
+              <v-combobox
+                :label="campo.label"
+                prepend-icon="mdi-format-list-bulleted"
+                :items="campo.items"
+                :item-title="campo.llave"
+                :item-value="campo.llave"
+                :multiple="campo.multiple"
+                hide-selected
+                small-chips
+                dense
+                outlined
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+                @update:model-value="(val) => validarCombo(val, item, campo)"
+              />
+              <v-select
+                :label="campo.label2"
+                prepend-icon="mdi-format-list-bulleted"
+                :items="campo.items2"
+                dense
+                outlined
+                small-chips
+                :error-messages="errors"
+                v-model="datos[campo.name2]"
+              />
+            </Field>
 
-                  <v-range-slider
-                    v-else-if="campo.type === 'range-slider'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-range-slider>
-
-                  <v-autocomplete
-                    v-else-if="campo.type === 'autocomplete'"
-                    v-model="datos[campo.name]"
-                    :items="campo.items"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-autocomplete>
-
-                  <v-combobox
-                    v-else-if="campo.type === 'combobox'"
-                    v-model="datos[campo.name]"
-                    :items="campo.items"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  ></v-combobox>
-
-                  <v-radio-group
-                    v-else-if="campo.type === 'radio'"
-                    v-model="datos[campo.name]"
-                    :label="campo.label"
-                    :disabled="campo.disabled"
-                    :readonly="campo.readonly"
-                    :hint="campo.hint"
-                    persistent-hint
-                  >
-                    <v-radio
-                      v-for="item in campo.items"
-                      :key="item.value"
-                      :label="item.text"
-                      :value="item.value"
-                    ></v-radio>
-                  </v-radio-group>
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-container>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog_form = false">
-            Cancelar
-          </v-btn>
+            <!-- Campo type 10 - v-file-input -->
+            <Field
+              v-else-if="campo.type === 10"
+              :name="campo.name"
+              :rules="campo.rules"
+              v-slot="{ field, errors }"
+            >
+              <v-file-input
+                v-bind="field"
+                :label="campo.label"
+                :prepend-icon="campo.prepend_icon"
+                dense
+                outlined
+                counter
+                show-size
+                accept="image/*,.pdf"
+                :error-messages="errors"
+                v-model="datos[campo.name]"
+              />
+            </Field>
+          </div>
           <v-btn
-            color="blue darken-1"
-            text
-            @click="actualizarDatos"
+            block
+            color="primary"
+            :disabled="isSubmitting || cargando"
+            type="submit"
             :loading="cargando"
-            :disabled="cargando"
           >
-            Guardar
+            Actualizar <v-icon>mdi-database-edit</v-icon>
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+        </Form>
+      </v-card-text>
+    </v-card>
+  </v-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, PropType } from 'vue';
-import { useField, useForm } from 'vee-validate';
-import { GUARDAR } from "@/services/crud";
-import { VALIDAR_COMBO } from "@/generals/validaciones";
+<script setup>
+import { ref, watch, onMounted } from "vue";
+import { Form, Field, useForm } from "vee-validate";
 import Swal from "sweetalert2";
 
-export default defineComponent({
-  name: "FormEdit",
-  props: {
-    titulo: {
-      type: String,
-      required: true
-    },
-    campos_form: {
-      type: Array as PropType<any[]>,
-      required: true
-    },
-    coleccion: {
-      type: String,
-      required: true
-    },
-    item: {
-      type: Object as PropType<any>,
-      required: true
-    },
-    validaciones: {
-      type: Object as PropType<any>,
-      default: () => ({})
+import {
+  VALIDAR_CAMPO,
+  VALIDAR_COMBO
+} from "@/generals/validaciones";
+import {
+  CAPTURAR_CAMPOS,
+  PROCESAR_FORMULARIO
+} from "@/generals/procesamientos";
+
+const props = defineProps({
+  titulo: String,
+  campos_form: Array,
+  coleccion: String,
+  item: Object,
+  validaciones: Array,
+});
+
+const emit = defineEmits(["actualizado"]);
+
+const dialogForm = ref(false);
+const cargando = ref(false);
+const campos = ref([]);
+const datos = ref({});
+const validados = ref([]);
+
+const { handleSubmit, isSubmitting } = useForm();
+
+const inicializarForm = () => {
+  campos.value = [...props.campos_form];
+  campos.value.forEach((campo) => {
+    datos.value["created_at"] = props.item["created_at"];
+    datos.value["id"] = props.item["id"];
+    if (campo.type === 9) {
+      datos.value[campo.name] = props.item[campo.name];
+      datos.value[campo.name2] = props.item[campo.name2];
+      datos.value["items2"] = datos.value[campo.name][campo.llave2];
+    } else {
+      datos.value[campo.name] = props.item[campo.name];
     }
-  },
-  emits: ['actualizado'],
-  setup(props, { emit }) {
-    const dialog_form = ref(false);
-    const cargando = ref(false);
-    const campos = ref<any[]>([]);
-    const datos = ref<any>({});
-    const validados = ref<any>({});
+  });
+};
 
-    const { handleSubmit, resetForm } = useForm();
-
-    const inicializarForm = () => {
-      campos.value = props.campos_form;
-      datos.value = { ...props.item };
-      validados.value = { ...props.validaciones };
-    };
-
-    const validarCombo = async (modelo: any, item: any, campo: any) => {
-      if (campo.validacion) {
-        item[campo.name] = await VALIDAR_COMBO(modelo, campo.items);
-      }
-    };
-
-    const mensajeValidaciones = () => {
-      let mensaje = "";
-      for (const key in validados.value) {
-        if (validados.value[key]) {
-          mensaje += validados.value[key] + "\n";
-        }
-      }
-      return mensaje;
-    };
-
-    const preSubmit = async () => {
-      for (const campo of campos.value) {
-        if (campo.validacion) {
-          await validarCombo(datos.value, datos.value, campo);
-        }
-      }
-    };
-
-    const actualizarDatos = handleSubmit(async () => {
-      try {
-        cargando.value = true;
-        await preSubmit();
-        const mensaje = mensajeValidaciones();
-        if (mensaje) {
-          Swal.fire({
-            title: "Error",
-            text: mensaje,
-            icon: "error"
-          });
-          return;
-        }
-        await GUARDAR(props.coleccion, datos.value);
-        emit('actualizado');
-        dialog_form.value = false;
-        resetForm();
-        Swal.fire({
-          title: "Éxito",
-          text: "Datos actualizados correctamente",
-          icon: "success"
-        });
-      } catch (error) {
-        console.error('Error updating data:', error);
-        Swal.fire({
-          title: "Error",
-          text: "Error al actualizar los datos",
-          icon: "error"
-        });
-      } finally {
-        cargando.value = false;
-      }
-    });
-
-    onMounted(() => {
-      inicializarForm();
-    });
-
-    return {
-      dialog_form,
-      cargando,
-      campos,
-      datos,
-      validados,
-      actualizarDatos
-    };
+const validarCombo = async (modelo, item, campo) => {
+  if (campo.validacion) {
+    item[campo.name] = await VALIDAR_COMBO(modelo, campo.items);
+    if (campo.type === 9) {
+      campo.items2 = item[campo.name][campo.llave2];
+    }
   }
+};
+
+const mensajeValidaciones = async () => {
+  return validados.value.map((v) => `${v}<br/>`).join("");
+};
+
+const preSubmit = async () => {
+  validados.value = [];
+  if (props.validaciones) {
+    for (const validacion of props.validaciones) {
+      const resultado = await VALIDAR_CAMPO(
+        datos.value,
+        validacion,
+        props.coleccion,
+        true
+      );
+      if (resultado !== "") {
+        validados.value.push(resultado);
+      }
+    }
+  }
+};
+
+const actualizarDatos = handleSubmit(async () => {
+  cargando.value = true;
+  datos.value = await CAPTURAR_CAMPOS(datos.value, campos.value);
+  datos.value.created_at = new Date();
+  await preSubmit();
+
+  if (validados.value.length > 0) {
+    cargando.value = false;
+    return await Swal.fire(
+      "Campos incorrectos",
+      await mensajeValidaciones(),
+      "error"
+    );
+  }
+
+  await PROCESAR_FORMULARIO(
+    props.coleccion,
+    datos.value,
+    campos.value,
+    props.item
+  );
+  emit("actualizado", true);
+  cargando.value = false;
+  dialogForm.value = false;
+});
+
+onMounted(() => {
+  inicializarForm();
 });
 </script>
 
