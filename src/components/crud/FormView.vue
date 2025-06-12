@@ -3,8 +3,8 @@
     <v-btn color="red darken-4" dark @click="dialog_edit = !dialog_edit">
       <v-icon>mdi-close</v-icon>
     </v-btn>
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn small outlined dark fab color="indigo" v-bind="attrs" v-on="on">
+    <template #activator="{ props }">
+      <v-btn small outlined dark fab color="indigo" v-bind="props">
         <v-icon>mdi-eye</v-icon>
       </v-btn>
     </template>
@@ -12,8 +12,8 @@
       <v-card-text>
         <h1 class="text-center my-3">Formulario de visualización</h1>
         <v-tooltip color="warning">
-          <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">
+          <template #activator="{ props }">
+            <span v-bind="props">
               <v-form class="my-2" autocomplete="off" @submit.prevent="">
                 <div v-for="(campo, index) in campos" :key="index">
                   <v-text-field
@@ -27,13 +27,13 @@
                     dense
                     outlined
                     counter
-                    v-model="datos[campo.name]"
+                    :model-value="datos[campo.name] || ''"
                   />
                   <v-combobox
                     v-if="campo.type === 2"
                     :label="campo.label"
                     :prepend-icon="campo.prepend_icon"
-                    :items="campo.items"
+                    :items="campo.items || []"
                     :item-text="campo.llave"
                     :multiple="campo.multiple"
                     readonly
@@ -41,7 +41,7 @@
                     small-chips
                     dense
                     outlined
-                    v-model="datos[campo.name]"
+                    :model-value="datos[campo.name] || []"
                   />
                   <v-textarea
                     v-if="campo.type === 3"
@@ -97,7 +97,6 @@
                     :min="campo.min"
                     :max="campo.max"
                     thumb-label
-                    ticks
                     v-model="datos[campo.name]"
                   />
                   <vuetify-money
@@ -115,24 +114,27 @@
                       :label="campo.label"
                       prepend-icon="mdi-format-list-bulleted"
                       :items="campo.items"
-                      :item-text="campo.llave"
+                      :item-text="campo.llave || 'text'"
+                      :item-value="campo.llave2 || 'value'"
                       :multiple="campo.multiple"
                       hide-selected
                       small-chips
                       dense
                       outlined
                       readonly
-                      v-model="datos[campo.name]"
+                      :model-value="getDisplayValue(datos[campo.name], campo.llave)"
                     />
                     <v-select
                       :label="campo.label2"
                       prepend-icon="mdi-format-list-bulleted"
                       :items="datos['items2']"
+                      :item-text="campo.llave2 || 'text'"
+                      :item-value="campo.llave2 || 'value'"
                       dense
                       outlined
                       small-chips
                       readonly
-                      v-model="datos[campo.name2]"
+                      :model-value="campo.name2 ? getDisplayValue(datos[campo.name2], campo.llave2) : null"
                     />
                   </div>
                   <v-file-input
@@ -158,17 +160,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, PropType } from "vue";
+
+interface FormField {
+  type: number;
+  name: string;
+  name2?: string;
+  label: string;
+  label2?: string;
+  prepend_icon?: string;
+  format?: string;
+  readOnly?: boolean;
+  items?: any[];
+  items2?: any[];
+  llave?: string;
+  llave2?: string;
+  multiple?: boolean;
+  solo?: boolean;
+  options?: { label: string; value: string | number }[];
+  step?: number;
+  min?: number;
+  max?: number;
+  model?: any;
+  model2?: any;
+  validacion?: boolean;
+}
 
 export default defineComponent({
   name: "FormView",
   props: {
     campos_form: {
-      type: Array,
-      required: true
+      type: Array as PropType<FormField[]>,
+      required: true,
+      default: () => []
     },
     item: {
-      type: Object,
+      type: Object as PropType<Record<string, any>>,
       required: true,
       default: () => ({})
     }
@@ -176,12 +203,24 @@ export default defineComponent({
   setup(props) {
     const dialog_edit = ref(false);
     const cargando = ref(false);
-    const campos = ref([]);
-    const datos = ref({});
+    const campos = ref<FormField[]>([]);
+    const datos = ref<Record<string, any>>({});
+
+    const getDisplayValue = (value: any, llave?: string) => {
+      if (!value) return null;
+      if (typeof value === 'object') {
+        return llave ? value[llave] : value.text || value.label || value.name || JSON.stringify(value);
+      }
+      return value;
+    };
 
     const inicializarForm = () => {
-      campos.value = [...props.campos_form];
-      datos.value = { ...props.item };
+      if (Array.isArray(props.campos_form)) {
+        campos.value = [...props.campos_form];
+      }
+      if (props.item) {
+        datos.value = { ...props.item };
+      }
     };
 
     watch(() => props.item, (newVal) => {
@@ -191,7 +230,7 @@ export default defineComponent({
     }, { immediate: true });
 
     watch(() => props.campos_form, (newVal) => {
-      if (newVal) {
+      if (Array.isArray(newVal)) {
         campos.value = [...newVal];
       }
     }, { immediate: true });
@@ -201,7 +240,7 @@ export default defineComponent({
       cargando,
       campos,
       datos,
-      inicializarForm
+      getDisplayValue
     };
   }
 });
