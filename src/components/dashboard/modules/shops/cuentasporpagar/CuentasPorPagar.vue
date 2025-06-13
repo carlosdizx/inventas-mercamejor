@@ -32,7 +32,7 @@
             </v-dialog>
           </v-container>
         </v-row>
-        <v-simple-table>
+        <!-- <v-simple-table>
           <template v-slot:default>
             <thead>
               <tr>
@@ -66,7 +66,7 @@
               </tr>
             </tbody>
           </template>
-        </v-simple-table>
+        </v-simple-table> -->
       </v-card-text>
     </v-card>
   </v-container>

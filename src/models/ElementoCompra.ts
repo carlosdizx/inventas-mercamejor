@@ -2,16 +2,16 @@
 Sección tabla
 */
 export const COLUMNAS = [
-  { text: "Código de Barras", value: "codigo_barras" },
-  { text: "Descripción de producto", value: "descripcion_producto" },
-  { text: "Bodega", value: "bodega" },
-  { text: "Cantidad", value: "cantidad" },
-  { text: "Precio compra", value: "precio_compra" },
-  { text: "Precio de Venta", value: "precio_venta" },
-  { text: "Impuesto de Venta", value: "impuesto" },
-  { text: "Descuento", value: "descuento" },
-  { text: "Subtotal", value: "subtotal" },
-  { text: "Acciones", value: "acciones" },
+  { title: "Código de Barras", value: "codigo_barras" },
+  { title: "Descripción de producto", value: "descripcion_producto" },
+  { title: "Bodega", value: "bodega" },
+  { title: "Cantidad", value: "cantidad" },
+  { title: "Precio compra", value: "precio_compra" },
+  { title: "Precio de Venta", value: "precio_venta" },
+  { title: "Impuesto de Venta", value: "impuesto" },
+  { title: "Descuento", value: "descuento" },
+  { title: "Subtotal", value: "subtotal" },
+  { title: "Acciones", value: "acciones" },
 ];
 
 /**
@@ -102,10 +102,10 @@ export const CAMPOS = [
 ];
 
 export const COMPRAS_CONSULTA = [
-  { text: "Fecha de Creación", value: "created_at" },
-  { text: "Documento proveedor", value: "doc_supp" },
-  { text: "Nombre del proveedor", value: "nam_supp" },
-  { text: "Apellidos del proveedor", value: "sur_supp" },
-  { text: "Tipo de compra", value: "type_pay" },
-  { text: "Total", value: "total" },
+  { title: "Fecha de Creación", value: "created_at" },
+  { title: "Documento proveedor", value: "doc_supp" },
+  { title: "Nombre del proveedor", value: "nam_supp" },
+  { title: "Apellidos del proveedor", value: "sur_supp" },
+  { title: "Tipo de compra", value: "type_pay" },
+  { title: "Total", value: "total" },
 ];

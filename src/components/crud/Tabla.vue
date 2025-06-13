@@ -331,6 +331,15 @@ export default defineComponent({
     };
 
     const eliminar = async (item: any) => {
+      if (!item || !item.id) {
+        Swal.fire({
+          title: "Error",
+          text: "No se puede eliminar el item porque no tiene un ID válido",
+          icon: "error"
+        });
+        return;
+      }
+
       Swal.fire({
         title: "¿Esta seguro de Eliminar este item?",
         showDenyButton: true,
@@ -341,7 +350,7 @@ export default defineComponent({
       }).then(async (result) => {
         if (result.isConfirmed) {
           try {
-            await ELIMINAR(props.coleccion, item.id);
+            await ELIMINAR(props.coleccion, item);
             await cargarInformacion();
             Swal.fire({
               title: "Éxito",
@@ -361,6 +370,8 @@ export default defineComponent({
     };
 
     const seleccionar = (item: any) => {
+      console.log("seleccionado")
+      console.log(item)
       emit('getItem', item);
     };
 
