@@ -33,15 +33,17 @@
                     v-if="campo.type === 2"
                     :label="campo.label"
                     :prepend-icon="campo.prepend_icon"
-                    :items="campo.items || []"
+                    :items="campo.items"
                     :item-text="campo.llave"
                     :multiple="campo.multiple"
+                    :item-title="campo.llave || 'title'"
+                    :item-value="campo.llave || 'value'"
                     readonly
                     hide-selected
                     small-chips
                     dense
                     outlined
-                    :model-value="datos[campo.name] || []"
+                    :model-value="datos[campo.name] || ''"
                   />
                   <v-textarea
                     v-if="campo.type === 3"
