@@ -250,7 +250,6 @@
             >
               Actualizar <v-icon>mdi-database-edit</v-icon>
             </v-btn>
-            {{ campos }}
           </v-form>
         </VeeForm>
       </v-card-text>

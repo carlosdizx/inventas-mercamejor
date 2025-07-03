@@ -18,6 +18,7 @@
             class="my-2"
             :disabled="cargando"
             autocomplete="off"
+            @submit.prevent="registrarDatos"
           >
             <div v-for="(campo, index) in campos" :key="index">
               <VeeField
@@ -120,7 +121,6 @@
                 :rules="campo.rules"
                 v-if="campo.type === 6"
               >
-              {{ campo }}
                 <v-select
                   :prepend-icon="campo.prepend_icon"
                   :items="campo.items"
@@ -411,17 +411,10 @@ export default defineComponent({
         // Procesar formulario
         await PROCESAR_FORMULARIO(props.coleccion, datos.value, campos.value, null);
         
-        // Notificar éxito
-        await Swal.fire({
-          title: "Éxito",
-          text: "Registro creado correctamente",
-          icon: "success"
-        });
-
         // Resetear y cerrar
         await emit("registrado", true);
+        cargando.value = false;
         dialog_form.value = false;
-        datos.value = { created_at: new Date(), updated_at: new Date() };
         resetForm();
       } catch (error) {
         console.error('Error al registrar:', error);
@@ -454,4 +447,3 @@ export default defineComponent({
   }
 });
 </script>
-
