@@ -23,7 +23,7 @@
             <div v-for="(campo, index) in campos" :key="index">
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 1"
               >
@@ -41,7 +41,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 2"
               >
@@ -63,7 +63,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 3"
               >
@@ -80,7 +80,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 4"
               >
@@ -95,7 +95,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 5"
               >
@@ -117,7 +117,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 6"
               >
@@ -137,7 +137,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 7"
               >
@@ -157,7 +157,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 8"
               >
@@ -174,7 +174,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 9"
               >
@@ -206,7 +206,7 @@
               </VeeField>
               <VeeField
                 v-slot="{ field, errors }"
-                :name="campo.label"
+                :name="campo.name || campo.label"
                 :rules="campo.rules"
                 v-if="campo.type === 10"
               >
@@ -246,7 +246,6 @@ import { useForm } from 'vee-validate';
 import { VALIDAR_COMBO, VALIDAR_CAMPO } from "@/generals/validaciones";
 import { CAPTURAR_CAMPOS, PROCESAR_FORMULARIO } from "@/generals/procesamientos";
 import { LISTAR_SUBCATEGORIAS } from "@/generals/Funciones";
-import Swal from "sweetalert2";
 
 interface FormFieldOption {
   label: string;
@@ -273,6 +272,7 @@ interface FormField {
   type: number;
   label: string;
   label2?: string;
+  name?: string;
   rules?: string;
   prepend_icon?: string;
   format?: string;
@@ -335,7 +335,7 @@ export default defineComponent({
     });
     const validados = ref<string[]>([]);
 
-    const { handleSubmit, resetForm } = useForm();
+    const { handleSubmit, resetForm, setFieldError } = useForm();
 
     const validarCombo = async (campo: FormField): Promise<void> => {
       if (campo.validacion && campo.items) {
@@ -361,9 +361,11 @@ export default defineComponent({
       return validados.value.join("<br/>");
     };
 
-    const preSubmit = async (): Promise<void> => {
+    const preSubmit = async (): Promise<boolean> => {
       if (props.validaciones && props.validaciones.length > 0) {
         validados.value = [];
+        let hasErrors = false;
+        
         for (const validacion of props.validaciones) {
           try {
             const resultado = await VALIDAR_CAMPO(
@@ -374,29 +376,37 @@ export default defineComponent({
             );
             if (resultado !== "") {
               validados.value.push(resultado);
+              // Set the error on the specific field if possible
+              if (validacion.nombres && validacion.nombres.length > 0) {
+                for (const nombreCampo of validacion.nombres) {
+                  const campo = campos.value.find(c => c.label === nombreCampo);
+                  if (campo) {
+                    setFieldError(campo.name || campo.label, resultado);
+                    hasErrors = true;
+                  }
+                }
+              }
             }
           } catch (error) {
             console.error('Error en validación:', error);
             validados.value.push('Error en la validación del campo');
+            hasErrors = true;
           }
         }
-      } else {
-        validados.value = [];
+        return hasErrors;
       }
+      return false;
     };
 
     const registrarDatos = handleSubmit(async () => {
       try {
         cargando.value = true;
         datos.value = await CAPTURAR_CAMPOS(null, campos.value);
-        await preSubmit();
+        
+        const hasValidationErrors = await preSubmit();
 
-        if (validados.value.length > 0) {
-          await Swal.fire({
-            title: "Campos incorrectos",
-            html: await mensajeValidaciones(),
-            icon: "error"
-          });
+        if (hasValidationErrors) {
+          cargando.value = false;
           return;
         }
 
@@ -412,17 +422,13 @@ export default defineComponent({
         await PROCESAR_FORMULARIO(props.coleccion, datos.value, campos.value, null);
         
         // Resetear y cerrar
-        await emit("registrado", true);
-        cargando.value = false;
+        emit("registrado", true);
         dialog_form.value = false;
         resetForm();
       } catch (error) {
         console.error('Error al registrar:', error);
-        await Swal.fire({
-          title: "Error",
-          text: "Hubo un error al procesar el registro",
-          icon: "error"
-        });
+        // You can set a general error here if needed
+        setFieldError('general', 'Hubo un error al procesar el registro');
       } finally {
         cargando.value = false;
       }
