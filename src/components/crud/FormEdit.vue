@@ -4,7 +4,7 @@
       <v-icon>mdi-close</v-icon>
     </v-btn>
     <template v-slot:activator="{ props }">
-      <v-btn v-bind="props" small outlined dark fab color="amber">
+      <v-btn v-bind="props" small outlined dark fab color="amber" @click="abrirModal">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
     </template>
@@ -244,7 +244,7 @@
             <v-btn
               block
               color="primary"
-              :disabled="Object.keys(errors).length > 0 || cargando"
+              :disabled="cargando || !datosCambiaron"
               type="submit"
               :loading="cargando"
             >
@@ -258,7 +258,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { Form, Field, useForm } from "vee-validate";
 import Swal from "sweetalert2";
 
@@ -287,7 +287,21 @@ const campos = ref([]);
 const datos = ref({});
 const validados = ref([]);
 
-const { handleSubmit, isSubmitting } = useForm();
+const { handleSubmit, setFieldError, errors, resetForm } = useForm();
+const isFormValid = computed(() => Object.keys(errors.value).length === 0);
+
+const abrirModal = () => {
+  inicializarForm();
+  resetForm();
+  dialogForm.value = true;
+};
+
+const datosCambiaron = computed(() => {
+  return campos.value.some(campo => {
+    const key = campo.name;
+    return datos.value[key] !== props.item[key];
+  });
+});
 
 const inicializarForm = () => {
   campos.value = [...props.campos_form];
@@ -318,35 +332,56 @@ const mensajeValidaciones = async () => {
 };
 
 const preSubmit = async () => {
-  validados.value = [];
+  let hasErrors = false;
   if (props.validaciones) {
     for (const validacion of props.validaciones) {
-      const resultado = await VALIDAR_CAMPO(
-        datos.value,
-        validacion,
-        props.coleccion,
-        true
-      );
-      if (resultado !== "") {
-        validados.value.push(resultado);
+      // Si la validación es una función personalizada
+      if (typeof validacion.fn === 'function') {
+        const resultado = validacion.fn(datos.value);
+        if (resultado) {
+          hasErrors = true;
+          if (validacion.nombres && validacion.nombres.length > 0) {
+            for (const nombreCampo of validacion.nombres) {
+              setFieldError(nombreCampo, resultado);
+            }
+          }
+        } else if (validacion.nombres && validacion.nombres.length > 0) {
+          // Limpia el error si la validación pasa
+          for (const nombreCampo of validacion.nombres) {
+            setFieldError(nombreCampo, '');
+          }
+        }
+      } else {
+        // Validación tradicional (por compatibilidad)
+        const resultado = await VALIDAR_CAMPO(
+          datos.value,
+          validacion,
+          props.coleccion,
+          true
+        );
+        if (resultado !== "") {
+          hasErrors = true;
+          if (validacion.nombres && validacion.nombres.length > 0) {
+            for (const nombreCampo of validacion.nombres) {
+              setFieldError(nombreCampo, resultado);
+            }
+          }
+        }
       }
     }
   }
+  return hasErrors;
 };
 
 const actualizarDatos = handleSubmit(async () => {
   cargando.value = true;
   datos.value = await CAPTURAR_CAMPOS(datos.value, campos.value);
   datos.value.created_at = new Date();
-  await preSubmit();
+  const hasCustomErrors = await preSubmit();
 
-  if (validados.value.length > 0) {
+  if (hasCustomErrors) {
     cargando.value = false;
-    return await Swal.fire(
-      "Campos incorrectos",
-      await mensajeValidaciones(),
-      "error"
-    );
+    return;
   }
 
   await PROCESAR_FORMULARIO(
