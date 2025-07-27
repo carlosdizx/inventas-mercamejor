@@ -4,8 +4,8 @@ import { InventoryProduct } from "@/domain/model/inventory/Inventory";
 import { Purchase } from "@/domain/model/purchase/Purchase";
 import { EPayTypePurchase } from "@/domain/model/constants/Constants";
 import { SAVE_INVENTORY } from "@/infrastructure/firebase/adapter/inventory/inventoryAdapter";
-import { Sale } from "@/domain/model/sale/Sale";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { Sale } from "@/domain/model/sales/generate/model/SaleGenerate";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
 
 const ZERO = 0;
 

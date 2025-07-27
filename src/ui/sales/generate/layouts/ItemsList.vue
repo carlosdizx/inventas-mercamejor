@@ -110,7 +110,7 @@ import {
   YA_LISTADO,
 } from "@/UseCases/ProductosUseCases";
 import { ProductToList } from "@/domain/model/product/Product";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
 
 export default defineComponent({
   name: "ItemsList",

@@ -1,9 +1,11 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import router from "./router";
+import router from "./app/shared/common/router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VuetifyMoney from "@/plugins/vuetify-money";
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 // Styles
 import 'vuetify/styles'
@@ -40,6 +42,10 @@ configure({
 
 const app = createApp(App);
 
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+
 // Register validation components globally
 app.component('VeeForm', VeeForm);
 app.component('VeeField', VeeField);
@@ -49,4 +55,5 @@ app.use(router)
    .use(store)
    .use(vuetify)
    .use(VuetifyMoney)
+   .use(pinia)
    .mount("#app");

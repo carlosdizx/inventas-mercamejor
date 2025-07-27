@@ -1,7 +1,7 @@
-import { EEstateSale, EPayTypeSale } from "../constants/Constants";
-import { ProductSale } from "../productsale/ProductSale";
+import { EEstateSale, EPayTypeSale } from "@/domain/model/constants/Constants";  
+import { ProductSale } from "./product/ProductSale";
 
-export interface Sale {
+export interface SaleGenerate {
   doc_client: string;
   nam_client: string;
   sur_client: string;

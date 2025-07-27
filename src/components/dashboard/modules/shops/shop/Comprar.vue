@@ -38,7 +38,7 @@ import TablaCompras from "./TablaCompras.vue";
 import BuscarElemento from "@/components/crud/BuscarElemento.vue";
 import { ICompra } from "@/models/Compra";
 import { Purchase } from "@/domain/model/purchase/Purchase";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
 import Swal from "sweetalert2";
 
 import RegistroCompras from "@/components/dashboard/modules/shops/shop/RegistroCompras.vue";

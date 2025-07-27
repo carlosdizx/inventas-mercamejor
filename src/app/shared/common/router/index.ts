@@ -1,5 +1,5 @@
-import { LOGOUT } from "./../services/auth";
-import { OBTENER_ESTADO } from "./../services/usuarios";
+import { LOGOUT } from "../../../../services/auth";
+import { OBTENER_ESTADO } from "../../../../services/usuarios";
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -11,12 +11,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Dashboard",
-    component: () => import("../views/Dashboard.vue"),
+    component: () => import("@/views/Dashboard.vue"),
     meta: {
       requiereAuth: true,
     },
     children: [
-      // Módulo de Compras
+      /* Módulo de Compras
       {
         path: "comprar",
         name: "Comprar",
@@ -32,13 +32,14 @@ const routes: Array<RouteRecordRaw> = [
         name: "CuentasPorPagar",
         component: () => import("../components/dashboard/modules/shops/cuentasporpagar/CuentasOpcion.vue"),
       },
-
+*/
       // Módulo de Ventas
       {
         path: "vender",
         name: "Vender",
-        component: () => import("@/components/dashboard/modules/sales/Sales.vue"),
+        component: () => import("@/ui/sales/generate/pages/SalesGenerateView.vue"),
       },
+      /*
       {
         path: "consultar-ventas",
         name: "ConsultarVentas",
@@ -54,18 +55,20 @@ const routes: Array<RouteRecordRaw> = [
         name: "CuentasPorCobrar",
         component: () => import("../components/dashboard/modules/cuandre_cuentas/CuadreCuentas.vue"),
       },
-
+*/
       // Módulo de Inventario
       {
         path: "productos",
         name: "Productos",
-        component: () => import("../components/dashboard/modules/Productos.vue"),
-      },
+        component: () => import("@/components/dashboard/modules/Productos.vue"),
+      }, 
+      /*
       {
         path: "bodegas",
         name: "Bodegas",
         component: () => import("../components/dashboard/modules/Bodegas.vue"),
       },
+      /*
       {
         path: "movimientos",
         name: "Movimientos",
@@ -87,18 +90,18 @@ const routes: Array<RouteRecordRaw> = [
         path: "usuarios",
         name: "Usuarios",
         component: () => import("../components/dashboard/modules/Usuarios.vue"),
-      }
+      }*/
     ]
   },
   {
     path: "/about",
     name: "About",
-    component: () => import("../views/About.vue"),
+    component: () => import("@/views/About.vue"),
   },
   {
     path: "/inicioSesion",
     name: "InicioSesion",
-    component: () => import("../views/InicioSesion.vue"),
+    component: () => import("@/views/InicioSesion.vue"),
   },
   // {
   //   path: "/registro",
@@ -108,7 +111,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/:pathMatch(.*)*",
     name: "PageNotFound",
-    component: () => import("../views/PageNotFound.vue"),
+    component: () => import("@/views/PageNotFound.vue"),
   },
 ];
 

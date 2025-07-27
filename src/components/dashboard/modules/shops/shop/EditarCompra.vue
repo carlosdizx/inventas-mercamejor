@@ -105,7 +105,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, PropType } from 'vue';
 import { Product } from "@/domain/model/product/Product";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
 import { REDONDEAR } from "@/generals/procesamientos";
 
 export default defineComponent({

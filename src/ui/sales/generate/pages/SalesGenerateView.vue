@@ -2,12 +2,12 @@
   <v-container>
     <v-row>
       <v-col cols="12" md="6">
-        <SalesForm
+        <SalesRegisterLayout
           v-on:codigo_barras="buscarProducto($event)"
           v-on:wihtout_product_register="registerProduct($event)"
           v-on:datos_cliente="generarFactura($event)"
           v-on:save_sale_without_factura="saveSaleWithoutInvoice($event)"
-          ref="SalesForm"
+          ref="SalesRegisterLayout"
         />
       </v-col>
       <v-col cols="12" md="6">
@@ -28,23 +28,23 @@
 </template>
 
 <script lang="ts">
-import SalesForm from "@/components/dashboard/modules/sales/components/SalesForm.vue";
-import ItemsList from "@/components/dashboard/modules/sales/components/ItemsList.vue";
+import SalesRegisterLayout from "@/ui/sales/generate/layouts/SalesRegisterLayout.vue";
+import ItemsList from "@/ui/sales/generate/layouts/ItemsList.vue";
 import { defineComponent, ref } from "vue";
 import Swal from "sweetalert2";
 import { DAR_NUMERO_FACTURA } from "@/generals/Funciones";
 import { CONSULT_ALL_PRODUCT } from "@/UseCases/ProductosUseCases";
 import { REGISTER_NEW_SALE } from "@/domain/useCase/sale/saleSaveUseCase";
-import { Sale } from "@/domain/model/sale/Sale";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
-import { generatePageToPrint } from "@/components/dashboard/modules/sales/components/SalesFunction";
+import { SaleGenerate } from "@/domain/model/sales/generate/model/SaleGenerate";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
+import { generatePageToPrint } from "@/ui/sales/generate/layouts/SalesFunction";
 import { ProductToList } from "@/domain/model/product/Product";
 import addSound from "@/assets/audios/add_product.mp3";
 import notFoundSound from "@/assets/audios/not_found_product.mp3";
 
 export default defineComponent({
   name: "Sales",
-  components: { SalesForm, ItemsList },
+  components: { SalesRegisterLayout, ItemsList },
   setup() {
     const productos = ref<ProductSale[]>([]);
     const productsDatabase = ref<ProductToList[]>([]);
@@ -111,7 +111,7 @@ export default defineComponent({
       productos.value = [];
     };
 
-    const generarFactura = async (sale: Sale) => {
+    const generarFactura = async (sale: SaleGenerate) => {
       if (productos.value.length > 0) {
         sale.sales = [...productos.value];
         const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
@@ -135,7 +135,7 @@ export default defineComponent({
       }
     };
 
-    const saveSaleWithoutInvoice = async (sale: Sale) => {
+    const saveSaleWithoutInvoice = async (sale: SaleGenerate) => {
       if (productos.value.length > 0) {
         sale.sales = [...productos.value];
         const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
@@ -164,7 +164,7 @@ export default defineComponent({
       }
     };
 
-    const print = (sale: Sale) => {
+    const print = (sale: SaleGenerate) => {
       const ventanaImpresion = window.open("", "_blank");
       if (ventanaImpresion) {
         const contenidoImprimir = generatePageToPrint(

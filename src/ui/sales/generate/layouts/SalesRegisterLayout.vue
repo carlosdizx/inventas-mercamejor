@@ -134,6 +134,7 @@
               </v-chip>
             </v-col>
           </v-row>
+          {{ saleStore }}
         </v-form>
       </VeeForm>
     </v-card-text>
@@ -141,48 +142,30 @@
 </template>
 
 <script lang="ts">
+import { useSaleGenerateStore } from '@/ui/sales/generate/store/SalesGenerateViewStore'
+
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
 import { TIPOS_VENTA } from "@/generals/Constantes";
-import DialogClients from "@/components/dashboard/modules/sales/components/DialogClients.vue";
+import DialogClients from "../layouts/DialogClients.vue";
 import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
-import { Sale } from "@/domain/model/sale/Sale";
 import {
   FECHA_TO_STRING_INPUT,
-  STRINT_TO_FECHA,
 } from "@/generals/procesamientos";
 import { Client } from "@/domain/model/client/Client";
-import { EEstateSale, EPayTypeSale } from "@/domain/model/constants/Constants";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
 
 export default defineComponent({
-  name: "SalesForm",
+  name: "SalesGenerateView",
   components: { DialogClients },
   emits: ['codigo_barras', 'wihtout_product_register', 'datos_cliente', 'save_sale_without_factura'],
   setup(props, { emit }) {
+    const saleStore = useSaleGenerateStore()
     const barcodeField = ref(null);
     const priceField = ref(null);
     const descripField = ref(null);
     const enterCount = ref(0);
     const bar_code = ref(null);
-    const sale = ref({
-      doc_client: "",
-      nam_client: "Clientes varios",
-      sur_client: "",
-      cod_invoice: "",
-      sale_type: EPayTypeSale.CONTADO,
-      pay_type: "",
-      pay_date: new Date(),
-      box: "",
-      sales: [] as Array<ProductSale>,
-      subtotal: 0,
-      discount: 0,
-      taxes: 0,
-      total: 0,
-      state: EEstateSale.APROBADO,
-      created_at: new Date(),
-      updated_at: new Date(),
-    } as Sale);
+    const sale = saleStore.currentSale;
     const productNotRegister = ref({
       price: null,
       description: "",
@@ -276,6 +259,7 @@ export default defineComponent({
     });
 
     return {
+      saleStore,
       barcodeField,
       priceField,
       descripField,

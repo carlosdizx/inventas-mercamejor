@@ -4,7 +4,7 @@ import {
 } from "@/infrastructure/firebase/template/basicOperations";
 import { Product, ProductToList } from "@/domain/model/product/Product";
 import Swal from "sweetalert2";
-import { ProductSale } from "@/domain/model/productsale/ProductSale";
+import { ProductSale } from "@/domain/model/sales/generate/model/product/ProductSale";
 import { GET_ALL_PRODUCTS } from "@/infrastructure/firebase/adapter/product/productAdapter";
 
 export const BUSCAR_PRODUCTOS_CODIGO_BARRAS = async (

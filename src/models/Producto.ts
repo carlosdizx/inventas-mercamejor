@@ -2,6 +2,7 @@
  Sección tabla
  */
 export const COLUMNAS: any[] = [
+  { title: "Detalle", value: "detalle" },
   { title: "Código de barras", value: "bar_code" },
   { title: "Nombre", value: "name" },
   { title: "Total unidades", value: "amount" },
