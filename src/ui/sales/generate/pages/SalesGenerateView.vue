@@ -14,10 +14,6 @@
         <v-row>
           <v-col>
             <ItemsList 
-              :items="productos" 
-              @update="updateProduct"
-              @delete="deleteProduct"
-              @reset="resetProducts"
               ref="ItemsList" 
             />
           </v-col>
@@ -28,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { useSaleGenerateStore } from '@/ui/sales/generate/store/SalesGenerateViewStore'
 import SalesRegisterLayout from "@/ui/sales/generate/layouts/SalesRegisterLayout.vue";
 import ItemsList from "@/ui/sales/generate/layouts/ItemsList.vue";
 import { defineComponent, ref } from "vue";
@@ -46,11 +43,13 @@ export default defineComponent({
   name: "Sales",
   components: { SalesRegisterLayout, ItemsList },
   setup() {
-    const productos = ref<ProductSale[]>([]);
     const productsDatabase = ref<ProductToList[]>([]);
     const audio = new Audio();
     const add = addSound;
     const notFound = notFoundSound;
+
+    const saleStore = useSaleGenerateStore()
+    
 
     const buscarProducto = async (codigo_barras: string) => {
       const producto = productsDatabase.value.find(
@@ -67,7 +66,7 @@ export default defineComponent({
           discount: 0,
           subtotal: producto.sale_price,
         };
-        productos.value.push(newProduct);
+        saleStore.addProduct(newProduct);
         // audio.src = add;
         // await audio.play();
       } else {
@@ -93,30 +92,38 @@ export default defineComponent({
         discount: 0,
         subtotal: Number(product.price),
       };
-      productos.value.push(newProduct);
+      saleStore.addProduct(newProduct);
     };
 
     const updateProduct = (updatedProduct: ProductSale) => {
-      const index = productos.value.findIndex(p => p.bar_code === updatedProduct.bar_code);
+      const index = saleStore.currentSale.sales.findIndex(p => 
+        (updatedProduct.bar_code && p.bar_code === updatedProduct.bar_code) || 
+        (!updatedProduct.bar_code && p.name === updatedProduct.name)
+      );
       if (index !== -1) {
-        productos.value[index] = updatedProduct;
+        saleStore.updateProduct(index, updatedProduct);
       }
     };
 
     const deleteProduct = (product: ProductSale) => {
-      productos.value = productos.value.filter(p => p.bar_code !== product.bar_code);
+      const index = saleStore.currentSale.sales.findIndex(p => 
+        (product.bar_code && p.bar_code === product.bar_code) || 
+        (!product.bar_code && p.name === product.name)
+      );
+      if (index !== -1) {
+        saleStore.removeProduct(index);
+      }
     };
 
     const resetProducts = () => {
-      productos.value = [];
+      saleStore.clearSale();
     };
 
     const generarFactura = async (sale: SaleGenerate) => {
-      if (productos.value.length > 0) {
-        sale.sales = [...productos.value];
-        const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
-        sale.total = total;
-        sale.subtotal = total;
+      if (saleStore.currentSale.sales.length > 0) {
+        sale.sales = [...saleStore.currentSale.sales];
+        sale.total = saleStore.currentSale.total;
+        sale.subtotal = saleStore.currentSale.subtotal;
         print({ ...sale });
         await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
@@ -136,11 +143,10 @@ export default defineComponent({
     };
 
     const saveSaleWithoutInvoice = async (sale: SaleGenerate) => {
-      if (productos.value.length > 0) {
-        sale.sales = [...productos.value];
-        const total = productos.value.reduce((sum, item) => sum + item.subtotal, 0);
-        sale.total = total;
-        sale.subtotal = total;
+      if (saleStore.currentSale.sales.length > 0) {
+        sale.sales = [...saleStore.currentSale.sales];
+        sale.total = saleStore.currentSale.total;
+        sale.subtotal = saleStore.currentSale.subtotal;
         await REGISTER_NEW_SALE({ ...sale });
         const consecutivo = await DAR_NUMERO_FACTURA(1);
         if (typeof consecutivo === "boolean") {
@@ -190,7 +196,6 @@ export default defineComponent({
     init();
 
     return {
-      productos,
       productsDatabase,
       buscarProducto,
       registerProduct,

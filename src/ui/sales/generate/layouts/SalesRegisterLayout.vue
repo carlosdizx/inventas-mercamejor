@@ -134,7 +134,6 @@
               </v-chip>
             </v-col>
           </v-row>
-          {{ saleStore }}
         </v-form>
       </VeeForm>
     </v-card-text>
@@ -143,6 +142,7 @@
 
 <script lang="ts">
 import { useSaleGenerateStore } from '@/ui/sales/generate/store/SalesGenerateViewStore'
+import { ProductSale } from '@/domain/model/sales/generate/model/product/ProductSale'
 
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
@@ -152,6 +152,7 @@ import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
 import {
   FECHA_TO_STRING_INPUT,
 } from "@/generals/procesamientos";
+import { EPayTypeSale} from "@/domain/model/constants/Constants";
 import { Client } from "@/domain/model/client/Client";
 
 export default defineComponent({
@@ -185,27 +186,28 @@ export default defineComponent({
     };
 
     const buscarCliente = async () => {
-      if (sale.value.doc_client) {
-        const resultado = await FIND_CLIENT_BY_DOCUMENT(sale.value.doc_client);
+      if (sale.doc_client) {
+        const resultado = await FIND_CLIENT_BY_DOCUMENT(sale.doc_client);
         if (resultado) {
           cambiarCliente(resultado);
         } else {
           Swal.fire("Cliente no encontrado");
-          sale.value.doc_client = "";
-          sale.value.sur_client = "Clientes varios";
-          sale.value.nam_client = "";
+          sale.doc_client = "";
+          sale.sur_client = "Clientes varios";
+          sale.nam_client = "";
         }
       }
     };
 
     const cambiarCliente = (client: Client) => {
-      sale.value.doc_client = client.doc_num;
-      sale.value.sur_client = client.surnames;
-      sale.value.nam_client = client.names;
+      sale.doc_client = client.doc_num;
+      sale.sur_client = client.surnames;
+      sale.nam_client = client.names;
     };
 
     const buscarProducto = () => {
       emit('codigo_barras', bar_code.value);
+      bar_code.value = null;
     };
 
     const registerSaleNotProduct = () => {
@@ -227,7 +229,6 @@ export default defineComponent({
       if (event.key === "Enter") {
         enterCount.value++;
         if (enterCount.value === 2) {
-          buscarProducto();
           enterCount.value = 0;
         }
         if (field === "priceField") {
@@ -241,11 +242,12 @@ export default defineComponent({
     };
 
     const registrarVenta = () => {
-      emit('save_sale_without_factura', sale.value);
+      
+      emit('save_sale_without_factura', sale);
     };
 
     const posicionFiltrada = computed(() => {
-      return tipos_venta.value.filter((tipo) => tipo.value !== EPayTypeSale.CREDITO);
+      return tipos_venta.value.filter((tipo: EPayTypeSale) => tipo.valueOf() !== EPayTypeSale.CREDITO);
     });
 
     onMounted(() => {
