@@ -27,7 +27,6 @@ export const useSaleGenerateStore = defineStore('saleGenerate', {
   actions: {
     addProduct(product: ProductSale) {
       if (!product.bar_code || product.bar_code === '') {
-        console.log('Producto sin código de barras, agregando como nuevo');
         this.currentSale.sales.push(product);
       } else {
         const existingProductIndex = this.currentSale.sales.findIndex(p => 
@@ -35,7 +34,6 @@ export const useSaleGenerateStore = defineStore('saleGenerate', {
         );
         
         if (existingProductIndex !== -1) {
-          console.log('Producto existente encontrado, incrementando cantidad');
           this.currentSale.sales[existingProductIndex].amount++;
           this.currentSale.sales[existingProductIndex].subtotal = 
             this.currentSale.sales[existingProductIndex].amount * 
