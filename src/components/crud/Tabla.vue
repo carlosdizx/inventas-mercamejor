@@ -297,11 +297,17 @@ export default defineComponent({
     const cargarInformacion = async () => {
       cargando.value = true;
       try {
-        const datos = await LISTAR(props.coleccion);
-        filas.value = datos.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        const snapshot = await LISTAR(props.coleccion);
+        const procesadas: TableItem[] = [];
+        for (const doc of snapshot.docs) {
+          const obj: any = JSON.parse(JSON.stringify(doc.data()));
+          obj.id = doc.id;
+          for (const [key, value] of Object.entries(obj)) {
+            obj[key] = await tipo_dato(value as any);
+          }
+          procesadas.push(obj);
+        }
+        filas.value = procesadas;
       } catch (error) {
         console.error('Error loading data:', error);
         Swal.fire({
