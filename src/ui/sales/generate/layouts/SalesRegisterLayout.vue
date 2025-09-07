@@ -1,64 +1,77 @@
 <template>
-  <v-card class="mb-2">
-    <v-card-text>
-      <h1 class="mx-auto text-center">Formulario para registro de ventas</h1>
+    <v-card-text class="pa-6">
+      <h1 class="mx-auto text-center mb-6" style="color: #333; font-weight: 500;">Formulario para registro de ventas</h1>
+      <DialogClients v-on:cliente="cambiarCliente($event)" ref="dialogClientsRef" />
     </v-card-text>
-    <DialogClients v-on:cliente="cambiarCliente($event)" ref="DialogClients" />
-    <v-card-text>
+    <v-card-text class="pa-6 pt-0">
       <VeeForm @submit="onSubmit" v-slot="{ errors }">
         <v-form @submit.prevent="">
-          <v-col>
-            <VeeField
-              v-slot="{ field, errors }"
-              name="doc_client"
-              rules="required|min:6|max:20"
-            >
-              <v-text-field
-                v-bind="field"
-                label="Documento de identidad"
-                append-outer-icon="mdi-magnify"
-                @click:append-outer="abrirDialogoLisadoClientes"
-                clearable
-                dense
+          <v-row>
+            <v-col cols="12" class="pb-2">
+              <VeeField
+                v-slot="{ field, errors }"
+                name="doc_client"
+                rules="min:6|max:20"
+              >
+                <v-text-field
+                  v-bind="field"
+                  label="Documento de identidad"
+                  clearable
+                  outlined
+                  counter
+                  v-model="sale.doc_client"
+                  @keyup.enter="buscarCliente()"
+                  :error-messages="errors"
+                  style="background-color: #fafafa;"
+                  class="custom-field"
+                  hide-details="auto"
+                >
+                  <template #append>
+                    <v-icon 
+                      @click="abrirDialogoLisadoClientes"
+                      style="cursor: pointer; color: #666; font-size: 28px;"
+                      class="search-icon"
+                      size="large"
+                    >
+                      mdi-magnify
+                    </v-icon>
+                  </template>
+                </v-text-field>
+              </VeeField>
+            </v-col>
+            <v-col cols="12" class="pb-2" v-if="nombreCompletoCliente">
+              <v-card 
+                class="client-info-card"
+                elevation="0"
                 outlined
-                counter
-                v-model="sale.doc_client"
-                @keyup.enter="buscarCliente()"
-                :error-messages="errors"
-              />
-            </VeeField>
-          </v-col>
-          <v-col>
-            <v-text-field
-              label="Nombre cliente"
-              prepend-icon="mdi-account"
-              dense
-              outlined
-              counter
-              :value="`${sale.nam_client + ' ' + sale.sur_client}`"
-              readonly
-              disabled
-            />
-          </v-col>
-          <v-col>
-            <VeeField
-              v-slot="{ field, errors }"
-              name="sale_type"
-              rules="required"
-            >
-              <v-select
-                v-bind="field"
-                prepend-icon="mdi-home"
-                :items="posicionFiltrada"
-                label="Tipos de venta"
-                solo
-                outlined
-                dense
-                v-model="sale.sale_type"
-                :error-messages="errors"
-              />
-            </VeeField>
-          </v-col>
+              >
+                <v-card-text class="pa-3">
+                  <div class="d-flex align-center">
+                    <v-icon color="primary" class="mr-3">mdi-account</v-icon>
+                    <span class="text-body-1">{{ nombreCompletoCliente }}</span>
+                  </div>
+                </v-card-text>
+              </v-card>
+            </v-col>
+            <v-col cols="12" class="pb-2">
+              <VeeField
+                v-slot="{ field, errors }"
+                name="sale_type"
+                rules="required"
+              >
+                <v-select
+                  v-bind="field"
+                  prepend-icon="mdi-home"
+                  :items="posicionFiltrada"
+                  label="Tipos de venta"
+                  outlined
+                  v-model="sale.sale_type"
+                  :error-messages="errors"
+                  style="background-color: #fafafa;"
+                />
+              </VeeField>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col>
               <v-text-field
@@ -137,7 +150,6 @@
         </v-form>
       </VeeForm>
     </v-card-text>
-  </v-card>
 </template>
 
 <script lang="ts">
@@ -161,9 +173,10 @@ export default defineComponent({
   emits: ['codigo_barras', 'wihtout_product_register', 'datos_cliente', 'save_sale_without_factura'],
   setup(props, { emit }) {
     const saleStore = useSaleGenerateStore()
-    const barcodeField = ref(null);
-    const priceField = ref(null);
-    const descripField = ref(null);
+    const barcodeField = ref<any>(null);
+    const priceField = ref<any>(null);
+    const descripField = ref<any>(null);
+    const dialogClientsRef = ref<any>(null);
     const enterCount = ref(0);
     const bar_code = ref(null);
     const sale = saleStore.currentSale;
@@ -181,8 +194,9 @@ export default defineComponent({
     };
 
     const abrirDialogoLisadoClientes = () => {
-      const dialog = refs.DialogClients;
-      dialog.cambiarEstado();
+      if (dialogClientsRef.value) {
+        dialogClientsRef.value.abrirModal();
+      }
     };
 
     const buscarCliente = async () => {
@@ -200,7 +214,8 @@ export default defineComponent({
     };
 
     const cambiarCliente = (client: Client) => {
-      sale.doc_client = client.doc_num;
+        console.log("buscar cliente", client)
+        sale.doc_client = client.doc_num;
       sale.sur_client = client.surnames;
       sale.nam_client = client.names;
     };
@@ -250,6 +265,13 @@ export default defineComponent({
       return tipos_venta.value.filter((tipo: EPayTypeSale) => tipo.valueOf() !== EPayTypeSale.CREDITO);
     });
 
+    const nombreCompletoCliente = computed(() => {
+      if (sale.nam_client && sale.sur_client) {
+        return `${sale.nam_client} ${sale.sur_client}`;
+      }
+      return sale.nam_client || '';
+    });
+
     onMounted(() => {
       if (barcodeField.value && typeof barcodeField.value.focus === "function") {
         barcodeField.value.focus();
@@ -265,6 +287,7 @@ export default defineComponent({
       barcodeField,
       priceField,
       descripField,
+      dialogClientsRef,
       enterCount,
       bar_code,
       sale,
@@ -274,6 +297,7 @@ export default defineComponent({
       dialog_list,
       enfoque,
       posicionFiltrada,
+      nombreCompletoCliente,
       abrirDialogoLisadoClientes,
       buscarCliente,
       cambiarCliente,
@@ -288,3 +312,80 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+/* Estilos para el campo personalizado */
+.custom-field {
+  border-radius: 8px !important;
+}
+
+.custom-field .v-input__control .v-input__slot {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  background-color: #fafafa !important;
+}
+
+.custom-field .v-input__control .v-input__slot:hover {
+  border-color: #bdbdbd !important;
+}
+
+.custom-field .v-input__control .v-input__slot.v-input__slot--focused {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1) !important;
+}
+
+.custom-field .v-label {
+  color: #666 !important;
+  font-weight: 400 !important;
+}
+
+.custom-field .v-input__icon--prepend .v-icon {
+  color: #666 !important;
+}
+
+.custom-field.v-input--is-disabled .v-input__control .v-input__slot {
+  background-color: #f5f5f5 !important;
+  border-color: #e0e0e0 !important;
+}
+
+.custom-field.v-input--is-disabled .v-label {
+  color: #999 !important;
+}
+
+.custom-field.v-input--is-disabled .v-input__icon--prepend .v-icon {
+  color: #999 !important;
+}
+
+/* Estilos para el ícono de búsqueda */
+.search-icon {
+  cursor: pointer !important;
+  color: #666 !important;
+  font-size: 28px !important;
+  transition: color 0.2s ease !important;
+  padding: 8px !important;
+  margin: 0 auto !important;
+}
+
+.search-icon:hover {
+  color: #1976d2 !important;
+}
+
+/* Contenedor del ícono de búsqueda */
+.custom-field .v-input__append {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 16px !important;
+  min-width: 56px !important;
+  margin-right: 8px !important;
+}
+
+/* Tarjeta de información del cliente */
+.client-info-card {
+  border-radius: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  background-color: #fafafa !important;
+}
+</style>
+

@@ -7,11 +7,13 @@
       <v-list-item
         v-for="(subitem, subindex) of item.items"
         :key="subindex"
+        class="my-2 px-4 py-3 rounded-lg grey lighten-3 d-flex align-center"
+        dense
         link
         @click="navegarA(subitem.id)"
       >
-        <v-icon>{{ subitem.icono }}</v-icon>
-        <v-list-item-title>{{ subitem.titulo }}</v-list-item-title>
+        <v-icon class="mr-2">{{ subitem.icono }}</v-icon>
+        <span class="font-weight-medium">{{ subitem.titulo }}</span>
       </v-list-item>
     </div>
   </div>
