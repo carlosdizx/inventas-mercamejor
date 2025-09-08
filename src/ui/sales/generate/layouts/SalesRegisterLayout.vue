@@ -4,7 +4,7 @@
       <DialogClients v-on:cliente="cambiarCliente($event)" ref="dialogClientsRef" />
     </v-card-text>
     <v-card-text class="pa-6 pt-0">
-      <VeeForm @submit="onSubmit" v-slot="{ errors }">
+      <VeeForm v-slot="{ errors }">
         <v-form @submit.prevent="">
           <v-row>
             <v-col cols="12" class="pb-2">
@@ -19,7 +19,7 @@
                   clearable
                   outlined
                   counter
-                  v-model="sale.doc_client"
+                  v-model="docClient"
                   @keyup.enter="buscarCliente()"
                   :error-messages="errors"
                   style="background-color: #fafafa;"
@@ -39,7 +39,7 @@
                 </v-text-field>
               </VeeField>
             </v-col>
-            <v-col cols="12" class="pb-2" v-if="nombreCompletoCliente">
+            <v-col cols="12" class="pb-2">
               <v-card 
                 class="client-info-card"
                 elevation="0"
@@ -57,7 +57,6 @@
               <VeeField
                 v-slot="{ field, errors }"
                 name="sale_type"
-                rules="required"
               >
                 <v-select
                   v-bind="field"
@@ -172,6 +171,7 @@ export default defineComponent({
   components: { DialogClients },
   emits: ['codigo_barras', 'wihtout_product_register', 'datos_cliente', 'save_sale_without_factura'],
   setup(props, { emit }) {
+    const docClient = ref<any>(null);
     const saleStore = useSaleGenerateStore()
     const barcodeField = ref<any>(null);
     const priceField = ref<any>(null);
@@ -188,10 +188,6 @@ export default defineComponent({
     const tipos_venta = ref(TIPOS_VENTA);
     const dialog_list = ref(false);
     const enfoque = ref(false);
-
-    const onSubmit = (values: any) => {
-      console.log('Form submitted:', values);
-    };
 
     const abrirDialogoLisadoClientes = () => {
       if (dialogClientsRef.value) {
@@ -214,7 +210,6 @@ export default defineComponent({
     };
 
     const cambiarCliente = (client: Client) => {
-        console.log("buscar cliente", client)
         sale.doc_client = client.doc_num;
       sale.sur_client = client.surnames;
       sale.nam_client = client.names;
@@ -257,19 +252,21 @@ export default defineComponent({
     };
 
     const registrarVenta = () => {
-      
       emit('save_sale_without_factura', sale);
     };
 
     const posicionFiltrada = computed(() => {
-      return tipos_venta.value.filter((tipo: EPayTypeSale) => tipo.valueOf() !== EPayTypeSale.CREDITO);
+      if(sale.nam_client === "") {
+        return [EPayTypeSale.CONTADO];
+      }
+      return tipos_venta.value;
     });
 
     const nombreCompletoCliente = computed(() => {
       if (sale.nam_client && sale.sur_client) {
         return `${sale.nam_client} ${sale.sur_client}`;
       }
-      return sale.nam_client || '';
+      return sale.nam_client || 'Cliente Varios';
     });
 
     onMounted(() => {
@@ -283,6 +280,7 @@ export default defineComponent({
     });
 
     return {
+      docClient,
       saleStore,
       barcodeField,
       priceField,
@@ -306,8 +304,7 @@ export default defineComponent({
       resetProduct,
       resetProductNotRegister,
       handleKeyDown,
-      registrarVenta,
-      onSubmit
+      registrarVenta
     };
   },
 });

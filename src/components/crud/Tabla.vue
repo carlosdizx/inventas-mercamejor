@@ -376,8 +376,6 @@ export default defineComponent({
     };
 
     const seleccionar = (item: any) => {
-      console.log("seleccionado")
-      console.log(item)
       emit('getItem', item);
     };
 
