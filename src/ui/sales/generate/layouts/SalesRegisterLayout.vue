@@ -42,14 +42,37 @@
             <v-col cols="12" class="pb-2">
               <v-card 
                 class="client-info-card"
+                :class="{ 'resaltado-verde': nombreCompletoCliente !== 'Clientes Varios' }"
                 elevation="0"
                 outlined
               >
-                <v-card-text class="pa-3">
+              <v-card-text class="pa-3">
+                <div class="d-flex align-center justify-space-between w-100">
+                  
+                  <!-- Izquierda: icono + nombre -->
                   <div class="d-flex align-center">
-                    <v-icon color="primary" class="mr-3">mdi-account</v-icon>
+                    <v-icon 
+                      color="primary" 
+                      class="mr-3" 
+                      v-if="nombreCompletoCliente !== 'Clientes Varios'"
+                    >
+                      mdi-account
+                    </v-icon>
                     <span class="text-body-1">{{ nombreCompletoCliente }}</span>
                   </div>
+
+                  <!-- Derecha: botón de basurita -->
+                  <v-btn
+                    v-if="nombreCompletoCliente !== 'Clientes Varios'"
+                    icon
+                    size="small"
+                    color="error"
+                    @click="resetClient"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+
+                </div>
                 </v-card-text>
               </v-card>
             </v-col>
@@ -195,6 +218,12 @@ export default defineComponent({
       }
     };
 
+    const resetClient = () => {
+      sale.doc_client = "";
+      sale.sur_client = "";
+      sale.nam_client = "";
+    };
+    
     const buscarCliente = async () => {
       if (sale.doc_client) {
         const resultado = await FIND_CLIENT_BY_DOCUMENT(sale.doc_client);
@@ -202,12 +231,10 @@ export default defineComponent({
           cambiarCliente(resultado);
         } else {
           Swal.fire("Cliente no encontrado");
-          sale.doc_client = "";
-          sale.sur_client = "Clientes varios";
-          sale.nam_client = "";
+          resetClient();
         }
       }
-    };
+    }; 
 
     const cambiarCliente = (client: Client) => {
         sale.doc_client = client.doc_num;
@@ -266,17 +293,28 @@ export default defineComponent({
       if (sale.nam_client && sale.sur_client) {
         return `${sale.nam_client} ${sale.sur_client}`;
       }
-      return sale.nam_client || 'Cliente Varios';
+      return sale.nam_client || 'Clientes Varios';
     });
 
+    const handleKeyDownn = (e: KeyboardEvent) => {
+      if (e.key === "F12") {
+        e.preventDefault(); // evita que abra las DevTools
+        dialogClientsRef.value.abrirModal();
+      }
+      if(e.key === "F2") {
+        barcodeField.value.focus();
+      }
+    };
+
     onMounted(() => {
+      window.addEventListener("keydown", handleKeyDownn);
       if (barcodeField.value && typeof barcodeField.value.focus === "function") {
         barcodeField.value.focus();
       }
     });
 
     onBeforeUnmount(() => {
-      // Cleanup if needed
+      window.removeEventListener("keydown", handleKeyDownn);
     });
 
     return {
@@ -298,6 +336,7 @@ export default defineComponent({
       nombreCompletoCliente,
       abrirDialogoLisadoClientes,
       buscarCliente,
+      resetClient,
       cambiarCliente,
       buscarProducto,
       registerSaleNotProduct,
@@ -383,6 +422,12 @@ export default defineComponent({
   border-radius: 8px !important;
   border: 1px solid #e0e0e0 !important;
   background-color: #fafafa !important;
+}
+
+.resaltado-verde {
+  border: 1px solid #4caf50;   /* borde verde */
+  background-color: #e8f5e9;   /* verde claro */
+  color: #2e7d32;              /* texto verde */
 }
 </style>
 
