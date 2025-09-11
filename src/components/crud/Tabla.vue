@@ -324,16 +324,18 @@ export default defineComponent({
       cargarInformacion();
     };
 
-    const filtrarPorLlave = (value: any, search: string, item: any) => {
-      if (!search) return true;
-      const searchLower = search.toLowerCase();
-      return Object.keys(item).some(key => {
-        const value = item[key];
-        if (typeof value === 'string') {
-          return value.toLowerCase().includes(searchLower);
+    const filtrarPorLlave = (valor: any, buscado: any): boolean => {
+      if (typeof valor === "string" && typeof buscado === "string") {
+        if (buscado.trim().length !== 0) {
+          return (
+            valor
+              .toString()
+              .toLocaleUpperCase()
+              .indexOf(buscado.toUpperCase()) !== -1
+          );
         }
-        return false;
-      });
+      }
+      return false;
     };
 
     const eliminar = async (item: any) => {

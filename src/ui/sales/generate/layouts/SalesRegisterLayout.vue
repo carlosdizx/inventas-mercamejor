@@ -25,6 +25,7 @@
                   style="background-color: #fafafa;"
                   class="custom-field"
                   hide-details="auto"
+                  :disabled="nombreCompletoCliente !== 'Clientes Varios'"
                 >
                   <template #append>
                     <v-icon 
@@ -49,7 +50,6 @@
               <v-card-text class="pa-3">
                 <div class="d-flex align-center justify-space-between w-100">
                   
-                  <!-- Izquierda: icono + nombre -->
                   <div class="d-flex align-center">
                     <v-icon 
                       color="primary" 
@@ -61,7 +61,6 @@
                     <span class="text-body-1">{{ nombreCompletoCliente }}</span>
                   </div>
 
-                  <!-- Derecha: botón de basurita -->
                   <v-btn
                     v-if="nombreCompletoCliente !== 'Clientes Varios'"
                     icon
@@ -299,7 +298,7 @@ export default defineComponent({
     const handleKeyDownn = (e: KeyboardEvent) => {
       if (e.key === "F12") {
         e.preventDefault(); // evita que abra las DevTools
-        dialogClientsRef.value.abrirModal();
+        dialogClientsRef.value.cambiarEstado();
       }
       if(e.key === "F2") {
         barcodeField.value.focus();

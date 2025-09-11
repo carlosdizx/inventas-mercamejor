@@ -1,7 +1,5 @@
 <template>
   <div>
-
-    <!-- Modal de búsqueda de clientes -->
     <v-dialog v-model="dialog_list" persistent max-width="900" scrollable>
       <v-card class="modal-card">
         <v-card-title class="modal-header">
@@ -9,16 +7,7 @@
             <v-icon class="mr-3" color="primary" size="24">mdi-account-search</v-icon>
             <span class="text-h5" style="font-weight: 500; color: #333;">Buscar Clientes</span>
           </div>
-          <v-btn 
-            color="grey" 
-            icon 
-            @click="cerrarModal"
-            class="close-btn"
-          >
-            <v-icon size="20">mdi-close</v-icon>
-          </v-btn>
         </v-card-title>
-        <v-divider></v-divider>
         <v-card-text class="modal-content">
           <Tabla
             coleccion="clients"
@@ -34,7 +23,7 @@
         <v-card-actions class="modal-actions">
           <v-spacer></v-spacer>
           <v-btn 
-            color="grey" 
+            color="red" 
             text 
             @click="cerrarModal"
             class="cancel-btn"
