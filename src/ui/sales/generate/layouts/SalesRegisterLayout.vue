@@ -11,7 +11,7 @@
               <VeeField
                 v-slot="{ field, errors }"
                 name="doc_client"
-                rules="min:6|max:20"
+                rules="min:1|max:20"
               >
                 <v-text-field
                   v-bind="field"
@@ -19,8 +19,7 @@
                   clearable
                   outlined
                   counter
-                  v-model="docClient"
-                  @keyup.enter="buscarCliente()"
+                  @keyup.enter="buscarCliente(field.value)"
                   :error-messages="errors"
                   style="background-color: #fafafa;"
                   class="custom-field"
@@ -160,6 +159,7 @@
               </v-btn>
             </v-col>
           </v-row>
+          {{ docClient }}
           <v-row v-if="!enfoque">
             <v-col class="text-center">
               <v-chip color="red">
@@ -175,8 +175,6 @@
 
 <script lang="ts">
 import { useSaleGenerateStore } from '@/ui/sales/generate/store/SalesGenerateViewStore'
-import { ProductSale } from '@/domain/model/sales/generate/model/product/ProductSale'
-
 import { defineComponent, ref, computed, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
 import { TIPOS_VENTA } from "@/generals/Constantes";
@@ -193,7 +191,7 @@ export default defineComponent({
   components: { DialogClients },
   emits: ['codigo_barras', 'wihtout_product_register', 'datos_cliente', 'save_sale_without_factura'],
   setup(props, { emit }) {
-    const docClient = ref<any>(null);
+    const docClient = ref<string>("");
     const saleStore = useSaleGenerateStore()
     const barcodeField = ref<any>(null);
     const priceField = ref<any>(null);
@@ -223,20 +221,27 @@ export default defineComponent({
       sale.nam_client = "";
     };
     
-    const buscarCliente = async () => {
-      if (sale.doc_client) {
-        const resultado = await FIND_CLIENT_BY_DOCUMENT(sale.doc_client);
+    const buscarCliente = async (docClient: string) => {
+      if (docClient !== "") {
+        const resultado = await FIND_CLIENT_BY_DOCUMENT(docClient);
         if (resultado) {
           cambiarCliente(resultado);
+          barcodeField.value.focus()
         } else {
-          Swal.fire("Cliente no encontrado");
+          Swal.fire({
+            title: "Cliente no encontrado",
+            icon: "warning",
+            showConfirmButton: false,
+            timer: 500,
+            timerProgressBar: false
+          });
           resetClient();
         }
       }
     }; 
 
     const cambiarCliente = (client: Client) => {
-        sale.doc_client = client.doc_num;
+      sale.doc_client = client.doc_num;
       sale.sur_client = client.surnames;
       sale.nam_client = client.names;
     };
