@@ -182,6 +182,7 @@ import DialogClients from "../layouts/DialogClients.vue";
 import { FIND_CLIENT_BY_DOCUMENT } from "@/domain/useCase/client/clientUseCase";
 import {
   FECHA_TO_STRING_INPUT,
+  STRINT_TO_FECHA
 } from "@/generals/procesamientos";
 import { EPayTypeSale} from "@/domain/model/constants/Constants";
 import { Client } from "@/domain/model/client/Client";
@@ -220,13 +221,17 @@ export default defineComponent({
       sale.sur_client = "";
       sale.nam_client = "";
     };
+
+    const focusBarCode = () => {
+      barcodeField.value.focus()
+    }
     
     const buscarCliente = async (docClient: string) => {
       if (docClient !== "") {
         const resultado = await FIND_CLIENT_BY_DOCUMENT(docClient);
         if (resultado) {
           cambiarCliente(resultado);
-          barcodeField.value.focus()
+          focusBarCode();
         } else {
           Swal.fire({
             title: "Cliente no encontrado",
@@ -283,7 +288,31 @@ export default defineComponent({
     };
 
     const registrarVenta = () => {
-      emit('save_sale_without_factura', sale);
+      Swal.fire({
+        title: "Registrar venta?",
+        text: "La venta se registrara como confirmada!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Registrar!",
+        cancelButtonText: `Cancelar!`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          sale.pay_date = STRINT_TO_FECHA(FECHA_TO_STRING_INPUT(new Date()));
+          emit('datos_cliente', sale);
+          Swal.fire({
+            icon: "success",
+            title: "Registro exitoso",
+            text: "La venta se registro exitosamente",
+            showConfirmButton: false,
+            timer: 800,
+          });
+          saleStore.clearSale();
+          focusBarCode();
+        }
+      });
+      focusBarCode();
     };
 
     const posicionFiltrada = computed(() => {
@@ -301,19 +330,24 @@ export default defineComponent({
     });
 
     const handleKeyDownn = (e: KeyboardEvent) => {
-      if (e.key === "F12") {
+      if(e.key === "F1") {
+        e.preventDefault();
+        emit('save_sale_without_factura', sale);
+      }
+      else if(e.key === "F2") {
+        e.preventDefault();
+        focusBarCode();
+      }
+      else if (e.key === "F12") {
         e.preventDefault(); // evita que abra las DevTools
         dialogClientsRef.value.cambiarEstado();
-      }
-      if(e.key === "F2") {
-        barcodeField.value.focus();
       }
     };
 
     onMounted(() => {
       window.addEventListener("keydown", handleKeyDownn);
       if (barcodeField.value && typeof barcodeField.value.focus === "function") {
-        barcodeField.value.focus();
+        focusBarCode();
       }
     });
 
@@ -338,6 +372,7 @@ export default defineComponent({
       enfoque,
       posicionFiltrada,
       nombreCompletoCliente,
+      focusBarCode,
       abrirDialogoLisadoClientes,
       buscarCliente,
       resetClient,

@@ -7,7 +7,7 @@
           v-on:wihtout_product_register="registerProduct($event)"
           v-on:datos_cliente="generarFactura($event)"
           v-on:save_sale_without_factura="saveSaleWithoutInvoice($event)"
-          ref="SalesRegisterLayout"
+          ref="salesRegisterLayout"
         />
       </v-col>
       <v-col cols="12" md="6">
@@ -46,10 +46,16 @@ export default defineComponent({
     const productsDatabase = ref<ProductToList[]>([]);
     const audio = new Audio();
     const add = addSound;
+    const salesRegisterLayout = ref<any>(null);
     const notFound = notFoundSound;
 
     const saleStore = useSaleGenerateStore()
     
+    const focusBarCode = () => {
+      if (salesRegisterLayout.value) {
+        salesRegisterLayout.value.abrirModal();
+      }
+    };
 
     const buscarProducto = async (codigo_barras: string) => {
       const producto = productsDatabase.value.find(
@@ -177,11 +183,10 @@ export default defineComponent({
           sale,
           "Autoservicio la econommia"
         );
-        ventanaImpresion.document.write("<html><head><title>Impresión</title>");
-        ventanaImpresion.document.write("</head><body>");
-        ventanaImpresion.document.write(contenidoImprimir);
-        ventanaImpresion.document.write("</body></html>");
-        ventanaImpresion.document.close();
+
+        ventanaImpresion.document.title = "Impresión";
+        ventanaImpresion.document.body.innerHTML = contenidoImprimir;
+
         ventanaImpresion.print();
         ventanaImpresion.close();
       } else {
