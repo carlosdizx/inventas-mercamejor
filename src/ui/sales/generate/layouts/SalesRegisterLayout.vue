@@ -8,22 +8,16 @@
         <v-form @submit.prevent="">
           <v-row>
             <v-col cols="12" class="pb-2">
-              <VeeField
-                v-slot="{ field, errors }"
-                name="doc_client"
-                rules="min:1|max:20"
-              >
                 <v-text-field
-                  v-bind="field"
                   label="Documento de identidad"
                   clearable
                   outlined
-                  counter
-                  @keyup.enter="buscarCliente(field.value)"
+                  v-model="docClient"
+                  @keyup.enter="buscarCliente"
                   :error-messages="errors"
                   style="background-color: #fafafa;"
                   class="custom-field"
-                  hide-details="auto"
+                  autocomplete="off"
                   :disabled="nombreCompletoCliente !== 'Clientes Varios'"
                 >
                   <template #append>
@@ -37,7 +31,6 @@
                     </v-icon>
                   </template>
                 </v-text-field>
-              </VeeField>
             </v-col>
             <v-col cols="12" class="pb-2">
               <v-card 
@@ -75,12 +68,7 @@
               </v-card>
             </v-col>
             <v-col cols="12" class="pb-2">
-              <VeeField
-                v-slot="{ field, errors }"
-                name="sale_type"
-              >
                 <v-select
-                  v-bind="field"
                   prepend-icon="mdi-home"
                   :items="posicionFiltrada"
                   label="Tipos de venta"
@@ -89,7 +77,6 @@
                   :error-messages="errors"
                   style="background-color: #fafafa;"
                 />
-              </VeeField>
             </v-col>
           </v-row>
           <v-row>
@@ -107,8 +94,8 @@
                 dense
                 outlined
                 clearable
-                counter
                 v-model="bar_code"
+                autocomplete="off"
                 @keyup.enter="buscarProducto"
                 @focus="enfoque = true"
                 @focusout="enfoque = false"
@@ -129,7 +116,6 @@
                   productNotRegister.price > 999999
                 "
                 outlined
-                counter
                 type="number"
                 v-model="productNotRegister.price"
                 @keyup.enter="registerSaleNotProduct"
@@ -143,7 +129,6 @@
                 clearable
                 dense
                 outlined
-                counter
                 type="string"
                 v-model="productNotRegister.description"
                 @keyup.enter="registerSaleNotProduct"
@@ -159,7 +144,6 @@
               </v-btn>
             </v-col>
           </v-row>
-          {{ docClient }}
           <v-row v-if="!enfoque">
             <v-col class="text-center">
               <v-chip color="red">
@@ -226,9 +210,9 @@ export default defineComponent({
       barcodeField.value.focus()
     }
     
-    const buscarCliente = async (docClient: string) => {
-      if (docClient !== "") {
-        const resultado = await FIND_CLIENT_BY_DOCUMENT(docClient);
+    const buscarCliente = async () => {
+      if (docClient.value !== "") {
+        const resultado = await FIND_CLIENT_BY_DOCUMENT(docClient.value);
         if (resultado) {
           cambiarCliente(resultado);
           focusBarCode();
@@ -246,6 +230,7 @@ export default defineComponent({
     }; 
 
     const cambiarCliente = (client: Client) => {
+      docClient.value = client.doc_num;
       sale.doc_client = client.doc_num;
       sale.sur_client = client.surnames;
       sale.nam_client = client.names;
